@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.ScheduleContentsMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.ScheduleContents" >
+  	<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
+    <result column="schedule_id" property="scheduleId" jdbcType="INTEGER" />
+    <result column="content_id" property="contentId" jdbcType="INTEGER" />
+    <result column="cancelled" property="cancelled" jdbcType="INTEGER" />
+    <result column="changed" property="changed" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="from_time" property="fromTime" jdbcType="TIMESTAMP" />
+    <result column="to_time" property="toTime" jdbcType="TIMESTAMP" />
+    <result column="content_type" property="contentType" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="category" property="category" jdbcType="VARCHAR" />
+    <result column="director" property="director" jdbcType="VARCHAR" />
+    <result column="actors" property="actors" jdbcType="VARCHAR" />
+    <result column="content_provider" property="contentProvider" jdbcType="VARCHAR" />
+    <result column="file_format" property="fileFormat" jdbcType="VARCHAR" />
+    <result column="age_restriction" property="ageRestriction" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" jdbcType="INTEGER" />
+    <result column="bandwidth" property="bandwidth" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Where_Clause" >
+  	<where >
+  	  <foreach collection="oredCriteria" item="criteria" separator="and" >
+  	  	<if test="criteria.valid" >
+  	  	  <trim prefix=" (" suffix=")" prefixOverrides="or">
+  	  	    <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  or ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  or ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  or ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  or ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+  	  	  </trim>
+  	  	</if>
+  	  </foreach>  	  
+  	</where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    schedule_id, content_id, cancelled, changed, start_time, end_time, created_at, updated_at
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.ScheduleContentsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from schedule_contents
+    <if test="_parameter != null" >
+      <include refid="Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectScheduleContents" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.ScheduleContentsExample" >
+  	select 	schedule_id, content_id, cancelled, changed, start_time, end_time, type as content_type, title, category, director, actors, content_provider, file_format, age_restriction,
+  			description, url, duration, bitrate, t1.created_at, t1.updated_at
+  	from 	schedule_contents t1, contents t2  	
+  	<if test="_parameter != null" >
+      <include refid="Where_Clause" />
+    </if>
+    and t1.content_id	= t2.id
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectBandwidthCheckScheduleContents" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.ScheduleContents" >
+  	select 	t1.schedule_id, content_id, cancelled, changed, start_time, end_time, type as content_type, title, category, director, actors, content_provider, file_format, age_restriction,
+  			description, url, duration, bitrate, t1.created_at, t1.updated_at
+  	from 	schedule_contents t1, contents t2, schedule t3, service_area_schedule t4  	
+  	where t1.content_id 		= t2.id
+  	and	  t1.schedule_id		= t3.id
+  	and	  t3.id					= t4.schedule_id
+  	and	  t4.service_area_id	= #{serviceAreaId,jdbcType=INTEGER}
+  	and   (
+  			(t3.start_date between #{fromTime,jdbcType=TIMESTAMP} and #{toTime,jdbcType=TIMESTAMP} or t3.end_date between #{fromTime,jdbcType=TIMESTAMP} and #{toTime,jdbcType=TIMESTAMP})
+  			or
+  			(t3.start_date <![CDATA[<=]]>  #{fromTime,jdbcType=TIMESTAMP} and t3.end_date <![CDATA[>=]]> #{toTime,jdbcType=TIMESTAMP})
+		  )
+	and	  t1.cancelled 		= 0
+  	order by start_time asc
+  </select>  
+  <select id="selectScheduleContentsByScheduleId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select 	schedule_id, content_id, cancelled, changed, start_time, end_time, url, type as content_type, duration
+  	from 	schedule_contents t1, contents t2
+  	where	t1.content_id	= t2.id
+  	and		t1.schedule_id 	= #{id,jdbcType=INTEGER}  	
+  </select>
+  <select id="selectScheduleContentsByContentId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select 	schedule_id, content_id, title, cancelled, changed, start_time, end_time, url, type as content_type, duration
+  	from 	schedule_contents t1, contents t2
+  	where	t1.content_id	= t2.id
+  	and		t1.content_id 	= #{id,jdbcType=INTEGER}  	
+  </select>
+  <select id="selectScheduleContentsByServiceAreaId" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.ScheduleContents" >
+  	select t1.service_area_id, t1.schedule_id, t2.name, t2.start_date, t2.end_date, t3.content_id, t3.changed, t3.cancelled, t3.start_time, t3.end_time, 
+	t4.type as content_type, t4.title, t4.category, t4.director, t4.actors, t4.content_provider, t4.file_format, t4.age_restriction, t4.description, t4.url, t4.duration, t4.bitrate, 
+	t3.created_at, t3.updated_at
+	from	service_area_schedule t1, schedule t2, schedule_contents t3, contents t4
+	where	t1.schedule_id		= t2.id
+	and		t2.id				= t3.schedule_id
+	and		t3.content_id		= t4.id
+	and		t1.service_area_id	= #{serviceAreaId,jdbcType=INTEGER}
+	and		t2.start_date		between #{fromTime,jdbcType=TIMESTAMP} and #{toTime,jdbcType=TIMESTAMP}
+	order by t3.start_time asc
+  </select>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.ScheduleContentsExample" >
+    delete from schedule_contents
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.ScheduleContents" >
+    insert into schedule_contents (schedule_id, content_id, cancelled, changed, start_time, end_time, 
+      created_at, updated_at)
+    values (#{scheduleId,jdbcType=INTEGER}, #{contentId,jdbcType=INTEGER}, #{cancelled,jdbcType=INTEGER}, #{changed,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.ScheduleContents" >
+    insert into schedule_contents
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="scheduleId != null" >
+        schedule_id,
+      </if>
+      <if test="contentId != null" >
+        content_id,
+      </if>
+      <if test="cancelled != null" >
+      	cancelled,
+      </if>
+      <if test="changed != null" >
+      	changed,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="scheduleId != null" >
+        #{scheduleId,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="cancelled != null" >
+      	#{cancelled,jdbcType=INTEGER},
+      </if>
+      <if test="changed != null" >
+      	#{changed,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.ScheduleContentsExample" resultType="java.lang.Integer" >
+    select count(*) from schedule_contents
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update schedule_contents
+    <set >
+      <if test="record.scheduleId != null" >
+        schedule_id = #{record.scheduleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.contentId != null" >
+        content_id = #{record.contentId,jdbcType=INTEGER},
+      </if>
+      <if test="record.cancelled != null" >
+      	cancelled = #{record.cancelled,jdbcType=INTEGER},
+      </if>
+      <if test="record.changed != null" >
+      	changed = #{record.changed,jdbcType=INTEGER},
+      </if>
+      <if test="record.startTime != null" >
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null" >
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createdAt != null" >
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatedAt != null" >
+        updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update schedule_contents
+    set schedule_id = #{record.scheduleId,jdbcType=INTEGER},
+      content_id = #{record.contentId,jdbcType=INTEGER},
+      cancelled  = #{record.cancelled,jdbcType=INTEGER},
+      changed    = #{record.changed,jdbcType=INTEGER},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{record.updatedAt,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

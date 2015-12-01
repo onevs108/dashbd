@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.EnbApMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.EnbAp" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <result column="plmn" property="plmn" jdbcType="VARCHAR" />
+    <result column="circle" property="circle" jdbcType="VARCHAR" />
+    <result column="circle_name" property="circleName" jdbcType="VARCHAR" />
+    <result column="cluster_id" property="clusterId" jdbcType="INTEGER" />
+    <result column="ipaddress" property="ipaddress" jdbcType="VARCHAR" />
+    <result column="earfcn" property="earfcn" jdbcType="VARCHAR" />
+    <result column="mbsfn" property="mbsfn" jdbcType="VARCHAR" />
+    <result column="mbms_service_area_id" property="mbmsServiceAreaId" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="and" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="or" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  or ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  or ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  or ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  or ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, name, longitude, latitude, plmn, circle, circle_name, cluster_id, ipaddress, earfcn, 
+    mbsfn, mbms_service_area_id, created_at, updated_at
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.EnbApExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from enb_ap
+    <if test="_parameter != null" >
+      <include refid="Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from enb_ap
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from enb_ap
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.EnbApExample" >
+    delete from enb_ap
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.EnbAp" >
+    insert into enb_ap (id, name, longitude, 
+      latitude, plmn, circle, 
+      circle_name, cluster_id, ipaddress, 
+      earfcn, mbsfn, mbms_service_area_id, 
+      created_at, updated_at)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
+      #{latitude,jdbcType=DECIMAL}, #{plmn,jdbcType=VARCHAR}, #{circle,jdbcType=VARCHAR}, 
+      #{circleName,jdbcType=VARCHAR}, #{clusterId,jdbcType=INTEGER}, #{ipaddress,jdbcType=VARCHAR}, 
+      #{earfcn,jdbcType=VARCHAR}, #{mbsfn,jdbcType=VARCHAR}, #{mbmsServiceAreaId,jdbcType=INTEGER}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.EnbAp" >
+    insert into enb_ap
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+      <if test="plmn != null" >
+        plmn,
+      </if>
+      <if test="circle != null" >
+        circle,
+      </if>
+      <if test="circleName != null" >
+        circle_name,
+      </if>
+      <if test="clusterId != null" >
+        cluster_id,
+      </if>
+      <if test="ipaddress != null" >
+        ipaddress,
+      </if>
+      <if test="earfcn != null" >
+        earfcn,
+      </if>
+      <if test="mbsfn != null" >
+        mbsfn,
+      </if>
+      <if test="mbmsServiceAreaId != null" >
+        mbms_service_area_id,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="plmn != null" >
+        #{plmn,jdbcType=VARCHAR},
+      </if>
+      <if test="circle != null" >
+        #{circle,jdbcType=VARCHAR},
+      </if>
+      <if test="circleName != null" >
+        #{circleName,jdbcType=VARCHAR},
+      </if>
+      <if test="clusterId != null" >
+        #{clusterId,jdbcType=INTEGER},
+      </if>
+      <if test="ipaddress != null" >
+        #{ipaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="earfcn != null" >
+        #{earfcn,jdbcType=VARCHAR},
+      </if>
+      <if test="mbsfn != null" >
+        #{mbsfn,jdbcType=VARCHAR},
+      </if>
+      <if test="mbmsServiceAreaId != null" >
+        #{mbmsServiceAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.EnbApExample" resultType="java.lang.Integer" >
+    select count(*) from enb_ap
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update enb_ap
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.longitude != null" >
+        longitude = #{record.longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.latitude != null" >
+        latitude = #{record.latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.plmn != null" >
+        plmn = #{record.plmn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.circle != null" >
+        circle = #{record.circle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.circleName != null" >
+        circle_name = #{record.circleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.clusterId != null" >
+        cluster_id = #{record.clusterId,jdbcType=INTEGER},
+      </if>
+      <if test="record.ipaddress != null" >
+        ipaddress = #{record.ipaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.earfcn != null" >
+        earfcn = #{record.earfcn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mbsfn != null" >
+        mbsfn = #{record.mbsfn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mbmsServiceAreaId != null" >
+        mbms_service_area_id = #{record.mbmsServiceAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="record.createdAt != null" >
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatedAt != null" >
+        updated_at = #{record.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update enb_ap
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      longitude = #{record.longitude,jdbcType=DECIMAL},
+      latitude = #{record.latitude,jdbcType=DECIMAL},
+      plmn = #{record.plmn,jdbcType=VARCHAR},
+      circle = #{record.circle,jdbcType=VARCHAR},
+      circle_name = #{record.circleName,jdbcType=VARCHAR},
+      cluster_id = #{record.clusterId,jdbcType=INTEGER},
+      ipaddress = #{record.ipaddress,jdbcType=VARCHAR},
+      earfcn = #{record.earfcn,jdbcType=VARCHAR},
+      mbsfn = #{record.mbsfn,jdbcType=VARCHAR},
+      mbms_service_area_id = #{record.mbmsServiceAreaId,jdbcType=INTEGER},
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{record.updatedAt,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.catenoid.dashbd.dao.model.EnbAp" >
+    update enb_ap
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="plmn != null" >
+        plmn = #{plmn,jdbcType=VARCHAR},
+      </if>
+      <if test="circle != null" >
+        circle = #{circle,jdbcType=VARCHAR},
+      </if>
+      <if test="circleName != null" >
+        circle_name = #{circleName,jdbcType=VARCHAR},
+      </if>
+      <if test="clusterId != null" >
+        cluster_id = #{clusterId,jdbcType=INTEGER},
+      </if>
+      <if test="ipaddress != null" >
+        ipaddress = #{ipaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="earfcn != null" >
+        earfcn = #{earfcn,jdbcType=VARCHAR},
+      </if>
+      <if test="mbsfn != null" >
+        mbsfn = #{mbsfn,jdbcType=VARCHAR},
+      </if>
+      <if test="mbmsServiceAreaId != null" >
+        mbms_service_area_id = #{mbmsServiceAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.catenoid.dashbd.dao.model.EnbAp" >
+    update enb_ap
+    set name = #{name,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      plmn = #{plmn,jdbcType=VARCHAR},
+      circle = #{circle,jdbcType=VARCHAR},
+      circle_name = #{circleName,jdbcType=VARCHAR},
+      cluster_id = #{clusterId,jdbcType=INTEGER},
+      ipaddress = #{ipaddress,jdbcType=VARCHAR},
+      earfcn = #{earfcn,jdbcType=VARCHAR},
+      mbsfn = #{mbsfn,jdbcType=VARCHAR},
+      mbms_service_area_id = #{mbmsServiceAreaId,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

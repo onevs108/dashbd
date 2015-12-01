@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.BmscMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Bmsc" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="circle" property="circle" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="BmscServiceAreaEnbApMap" type="com.catenoid.dashbd.dao.model.BmscServiceAreaEnbAp" >
+  	<id column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
+  	<result column="bmsc_name" property="bmscName" jdbcType="VARCHAR" />
+  	<result column="bmsc_circle" property="bmscCircle" jdbcType="VARCHAR" />  	
+  	<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
+  	<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
+  	<result column="service_area_city" property="serviceAreaCity" jdbcType="VARCHAR" />
+  	<result column="enb_ap_id" property="enbApId" jdbcType="INTEGER" />
+  	<result column="enb_ap_name" property="enbApName" jdbcType="VARCHAR" />
+  	<result column="longitude" property="longitude" jdbcType="DECIMAL" />
+  	<result column="latitude" property="latitude" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="BmscServiceAreaMap" type="com.catenoid.dashbd.dao.model.BmscServiceArea" >
+  	<id column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
+  	<result column="bmsc_name" property="bmscName" jdbcType="VARCHAR" />
+  	<result column="bmsc_circle" property="bmscCircle" jdbcType="VARCHAR" />  	
+  	<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
+  	<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
+  	<result column="service_area_city" property="serviceAreaCity" jdbcType="VARCHAR" />
+  	<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, name, circle, created_at, updated_at
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.BmscExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bmsc
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bmsc
+    where id = #{id,jdbcType=INTEGER}
+  </select>  
+  <select id="selectBmscServiceAreaEnbAp" resultMap="BmscServiceAreaEnbApMap" parameterType="java.lang.Integer" >
+  	select t1.bmsc_id, (select name from bmsc where id=t1.bmsc_id limit 1) as bmsc_name, (select circle from bmsc where id=t1.bmsc_id limit 1) as bmsc_circle,
+	t2.service_area_id, (select name from service_area where id=t1.service_area_id limit 1) as service_area_name, (select city from service_area where id=t1.service_area_id limit 1) as service_area_city,
+	t2.enb_ap_id, (select name from enb_ap where id=t2.enb_ap_id limit 1) as enb_ap_name, (select longitude from enb_ap where id=t2.enb_ap_id limit 1) as longitude, (select latitude from enb_ap where id=t2.enb_ap_id limit 1) as latitude
+	from bmsc_service_area t1, service_area_enb_ap t2 
+	where t1.service_area_id=t2.service_area_id
+	and t1.bmsc_id = #{id,jdbcType=INTEGER};
+  </select>
+  <select id="selectBmscServiceArea" resultMap="BmscServiceAreaMap" parameterType="java.lang.Integer" >
+  	select bmsc_id, (select name from bmsc where id=bmsc_id limit 1) as bmsc_name, (select circle from bmsc where id=bmsc_id limit 1) as bmsc_circle,
+	service_area_id, (select name from service_area where id=service_area_id limit 1) as service_area_name, (select city from service_area where id=service_area_id limit 1) as service_area_city,
+	created_at, updated_at
+	from bmsc_service_area 
+	where bmsc_id = #{id,jdbcType=INTEGER}; 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bmsc
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.BmscExample" >
+    delete from bmsc
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.Bmsc" >
+    insert into bmsc (id, name, circle, 
+      created_at, updated_at)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{circle,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.Bmsc" >
+    insert into bmsc
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="circle != null" >
+        circle,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="circle != null" >
+        #{circle,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.BmscExample" resultType="java.lang.Integer" >
+    select count(*) from bmsc
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update bmsc
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.circle != null" >
+        circle = #{record.circle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdAt != null" >
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      </if>      
+        updated_at = now(),
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update bmsc
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      circle = #{record.circle,jdbcType=VARCHAR},
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updated_at = now()
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.catenoid.dashbd.dao.model.Bmsc" >
+    update bmsc
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="circle != null" >
+        circle = #{circle,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>      
+        updated_at = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.catenoid.dashbd.dao.model.Bmsc" >
+    update bmsc
+    set name = #{name,jdbcType=VARCHAR},
+      circle = #{circle,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

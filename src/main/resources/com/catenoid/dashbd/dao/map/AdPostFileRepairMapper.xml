@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.AdPostFileRepairMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.AdPostFileRepair" >
+    <id column="service_id" property="serviceId" jdbcType="INTEGER" />
+    <result column="cancelled" property="cancelled" jdbcType="INTEGER" />
+    <result column="offset_time" property="offsetTime" jdbcType="INTEGER" />
+    <result column="random_time" property="randomTime" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    service_id, cancelled, offset_time, random_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.AdPostFileRepairExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ad_post_file_repair
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ad_post_file_repair
+    where service_id 	= #{serviceId,jdbcType=INTEGER}
+    and   cancelled 	= 0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ad_post_file_repair
+    where service_id = #{serviceId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.AdPostFileRepairExample" >
+    delete from ad_post_file_repair
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.AdPostFileRepair" >
+    insert into ad_post_file_repair (service_id, cancelled, offset_time, 
+      random_time)
+    values (#{serviceId,jdbcType=INTEGER}, #{cancelled,jdbcType=INTEGER}, #{offsetTime,jdbcType=INTEGER}, 
+      #{randomTime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.AdPostFileRepair" >
+    insert into ad_post_file_repair
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="serviceId != null" >
+        service_id,
+      </if>
+      <if test="cancelled != null" >
+        cancelled,
+      </if>
+      <if test="offsetTime != null" >
+        offset_time,
+      </if>
+      <if test="randomTime != null" >
+        random_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="serviceId != null" >
+        #{serviceId,jdbcType=INTEGER},
+      </if>
+      <if test="cancelled != null" >
+        #{cancelled,jdbcType=INTEGER},
+      </if>
+      <if test="offsetTime != null" >
+        #{offsetTime,jdbcType=INTEGER},
+      </if>
+      <if test="randomTime != null" >
+        #{randomTime,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.AdPostFileRepairExample" resultType="java.lang.Integer" >
+    select count(*) from ad_post_file_repair
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update ad_post_file_repair
+    <set >
+      <if test="record.serviceId != null" >
+        service_id = #{record.serviceId,jdbcType=INTEGER},
+      </if>
+      <if test="record.cancelled != null" >
+        cancelled = #{record.cancelled,jdbcType=INTEGER},
+      </if>
+      <if test="record.offsetTime != null" >
+        offset_time = #{record.offsetTime,jdbcType=INTEGER},
+      </if>
+      <if test="record.randomTime != null" >
+        random_time = #{record.randomTime,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update ad_post_file_repair
+    set service_id = #{record.serviceId,jdbcType=INTEGER},
+      cancelled = #{record.cancelled,jdbcType=INTEGER},
+      offset_time = #{record.offsetTime,jdbcType=INTEGER},
+      random_time = #{record.randomTime,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.catenoid.dashbd.dao.model.AdPostFileRepair" >
+    update ad_post_file_repair
+    <set >
+      <if test="cancelled != null" >
+        cancelled = #{cancelled,jdbcType=INTEGER},
+      </if>
+      <if test="offsetTime != null" >
+        offset_time = #{offsetTime,jdbcType=INTEGER},
+      </if>
+      <if test="randomTime != null" >
+        random_time = #{randomTime,jdbcType=INTEGER},
+      </if>
+    </set>
+    where service_id = #{serviceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.catenoid.dashbd.dao.model.AdPostFileRepair" >
+    update ad_post_file_repair
+    set cancelled = #{cancelled,jdbcType=INTEGER},
+      offset_time = #{offsetTime,jdbcType=INTEGER},
+      random_time = #{randomTime,jdbcType=INTEGER}
+    where service_id = #{serviceId,jdbcType=INTEGER}
+  </update>
+</mapper>

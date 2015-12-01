@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.ServiceMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Service" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="services_id" property="servicesId" jdbcType="INTEGER" />
+    <result column="service_type_id" property="serviceTypeId" jdbcType="INTEGER" />
+    <result column="service_type_name" property="serviceTypeName" jdbcType="VARCHAR" />
+    <result column="service_str_id" property="serviceStrId" jdbcType="VARCHAR" />
+    <result column="service_class" property="serviceClass" jdbcType="VARCHAR" />
+    <result column="retrieve_interval" property="retrieveInterval" jdbcType="INTEGER" />
+    <result column="cancelled" property="cancelled" jdbcType="INTEGER" />
+    <result column="qos_gbr" property="qosGBR" jdbcType="INTEGER" />
+    <result column="qos_qci" property="qosQCI" jdbcType="INTEGER" />
+    <result column="arp_level" property="arpLevel" jdbcType="INTEGER" />
+    <result column="arp_pre_emption_capability" property="arpPreEmptionCapability" jdbcType="INTEGER" />
+    <result column="arp_pre_emption_vulnerability" property="arpPreEmptionVulnerability" jdbcType="INTEGER" />
+    <result column="fec_type" property="fecType" jdbcType="VARCHAR" />
+    <result column="fec_ratio" property="fecRatio" jdbcType="INTEGER" />
+    <result column="segment_available_offset" property="segmentAvailableOffset" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="and" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="or" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  or ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  or ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  or ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  or ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, services_id, service_type_id, service_str_id, service_class, 
+    retrieve_interval, cancelled
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.ServiceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from service
+    <if test="_parameter != null" >
+      <include refid="Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from service
+    where id = #{id,jdbcType=INTEGER}
+    and	  cancelled = 0
+  </select>
+  <select id="selectTypeTransferConfig" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select 	t2.id, services_id, t1.cancelled, service_type_id, t3.name as service_type_name, service_str_id, service_class, retrieve_interval,
+			qos_gbr, qos_qci, arp_level, arp_pre_emption_capability, arp_pre_emption_vulnerability, 
+        	fec_type, fec_ratio, segment_available_offset, t1.created_at, t1.updated_at
+	from 	services t1, service t2, service_types t3, transfer_config t4
+	where	t1.id				= t2.services_id
+	and		t2.service_type_id	= t3.id
+	and		t2.id				= t4.service_id
+	and		t2.id				= #{id,jdbcType=INTEGER}
+	and		t1.cancelled		= 0
+  </select>
+  <select id="selectBmscAgentKey" resultType="map" parameterType="java.lang.Integer" >
+  	select 
+  		agent_key, ipaddress, t4.name as bmsc_name
+	from
+		service t1, service_service_area t2, bmsc_service_area t3, bmsc t4
+	where
+		t1.id				= t2.service_id
+	and	t2.service_area_id	= t3.service_area_id
+	and	t3.bmsc_id			= t4.id
+	and	t1.id				= #{id,jdbcType=INTEGER}
+	and	t1.cancelled		= 0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from service
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.ServiceExample" >
+    delete from service
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.Service" >
+    insert into service (id, services_id,  
+      service_type_id, service_str_id, service_class, 
+      retrieve_interval, cancelled)
+    values (#{id,jdbcType=INTEGER}, #{servicesId,jdbcType=INTEGER},
+      #{serviceTypeId,jdbcType=INTEGER}, #{serviceStrId,jdbcType=VARCHAR}, #{serviceClass,jdbcType=VARCHAR}, 
+      #{retrieveInterval,jdbcType=INTEGER}, #{cancelled,jdbcType=INTEGER})
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.Service" >
+    insert into service
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="servicesId != null" >
+        services_id,
+      </if>
+      <if test="serviceTypeId != null" >
+        service_type_id,
+      </if>
+      <if test="serviceStrId != null" >
+        service_str_id,
+      </if>
+      <if test="serviceClass != null" >
+        service_class,
+      </if>
+      <if test="retrieveInterval != null" >
+        retrieve_interval,
+      </if>
+      <if test="cancelled != null" >
+      	cancelled,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="servicesId != null" >
+        #{servicesId,jdbcType=INTEGER},
+      </if>
+      <if test="serviceTypeId != null" >
+        #{serviceTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="serviceStrId != null" >
+        #{serviceStrId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceClass != null" >
+        #{serviceClass,jdbcType=VARCHAR},
+      </if>
+      <if test="retrieveInterval != null" >
+        #{retrieveInterval,jdbcType=INTEGER},
+      </if>
+      <if test="cancelled != null" >
+      	#{cancelled,jdbcType=INTEGER},
+      </if>
+    </trim>
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.ServiceExample" resultType="java.lang.Integer" >
+    select count(*) from service
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update service
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.servicesId != null" >
+        services_id = #{record.servicesId,jdbcType=INTEGER},
+      </if>
+      <if test="record.serviceTypeId != null" >
+        service_type_id = #{record.serviceTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.serviceStrId != null" >
+        service_str_id = #{record.serviceStrId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.serviceClass != null" >
+        service_class = #{record.serviceClass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retrieveInterval != null" >
+        retrieve_interval = #{record.retrieveInterval,jdbcType=INTEGER},
+      </if>
+      <if test="record.cancelled != null" >
+      	cancelled = #{record.cancelled,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update service
+    set id = #{record.id,jdbcType=INTEGER},
+      services_id = #{record.servicesId,jdbcType=INTEGER},
+      service_type_id = #{record.serviceTypeId,jdbcType=INTEGER},
+      service_str_id = #{record.serviceStrId,jdbcType=VARCHAR},
+      service_class = #{record.serviceClass,jdbcType=VARCHAR},
+      retrieve_interval = #{record.retrieveInterval,jdbcType=INTEGER},
+      cancelled = #{record.cancelled,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.catenoid.dashbd.dao.model.Service" >
+    update service
+    <set >
+      <if test="servicesId != null" >
+        services_id = #{servicesId,jdbcType=INTEGER},
+      </if>
+      <if test="serviceTypeId != null" >
+        service_type_id = #{serviceTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="serviceStrId != null" >
+        service_str_id = #{serviceStrId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceClass != null" >
+        service_class = #{serviceClass,jdbcType=VARCHAR},
+      </if>
+      <if test="retrieveInterval != null" >
+        retrieve_interval = #{retrieveInterval,jdbcType=INTEGER},
+      </if>
+      <if test="cancelled != null" >
+      	cancelled = #{cancelled,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.catenoid.dashbd.dao.model.Service" >
+    update service
+    set services_id = #{servicesId,jdbcType=INTEGER},
+      service_type_id = #{serviceTypeId,jdbcType=INTEGER},
+      service_str_id = #{serviceStrId,jdbcType=VARCHAR},
+      service_class = #{serviceClass,jdbcType=VARCHAR},
+      retrieve_interval = #{retrieveInterval,jdbcType=INTEGER},
+      cancelled = #{cancelled,jdbcType=INTEGER)
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

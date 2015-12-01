@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.ServiceAreaMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.ServiceArea" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="bandwidth" property="bandwidth" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ServiceAreaEnbApMap" type="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
+  	<id column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
+  	<result column="service_area_bandwidth" property="serviceAreaBandwidth" jdbcType="INTEGER" />
+  	<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
+  	<result column="service_area_city" property="serviceAreaCity" jdbcType="VARCHAR" />
+  	<result column="enb_ap_id" property="enbApId" jdbcType="INTEGER" />
+  	<result column="enb_ap_name" property="enbApName" jdbcType="VARCHAR" />
+  	<result column="longitude" property="longitude" jdbcType="DECIMAL" />
+  	<result column="latitude" property="latitude" jdbcType="DECIMAL" />
+  	<result column="plmn" property="plmn" jdbcType="VARCHAR" />
+  	<result column="mbsfn" property="mbsfn" jdbcType="VARCHAR" />
+  	<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="and" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="or" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  or ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  or ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  or ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  or ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, bandwidth, name, city, created_at, updated_at
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from service_area
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from service_area
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectServiceAreaEnbAp" resultMap="ServiceAreaEnbApMap" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaExample" >
+  	select 
+	t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
+	t3.name as service_area_name, 
+	t3.city as service_area_city,
+	enb_ap_id, t2.name as enb_ap_name, 
+	t2.longitude as longitude, 
+	t2.latitude as latitude, 
+	t2.plmn as plmn,
+	t2.mbsfn as mbsfn,
+	t1.created_at, t1.updated_at
+	from service_area_enb_ap t1, enb_ap t2, service_area t3
+	<if test="_parameter != null" >
+      <include refid="Where_Clause" />
+    </if>
+    and t1.enb_ap_id = t2.id
+    and t1.service_area_id = t3.id
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectServiceAreaEnbApRangeOuterJoin" resultMap="ServiceAreaEnbApMap" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaExample" >
+  	select 
+	t1.service_area_id, 
+    (select bandwidth from service_area where id=t1.service_area_id limit 1) as service_area_bandwidth, 
+	(select name from service_area where id=t1.service_area_id limit 1)  as service_area_name, 
+	(select city from service_area where id=t1.service_area_id limit 1)  as service_area_city,
+	t2.id as enb_ap_id, t2.name as enb_ap_name, 
+	t2.longitude as longitude, 
+	t2.latitude as latitude, 
+	t2.plmn as plmn,
+	t2.mbsfn as mbsfn,
+	t1.created_at, t1.updated_at
+	from 	service_area_enb_ap t1 right outer join enb_ap t2 on t1.enb_ap_id = t2.id
+	<if test="_parameter != null" >
+      <include refid="Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from service_area
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaExample" >
+    delete from service_area
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >
+    insert into service_area (id, bandwidth, name, city, 
+      created_at, updated_at)
+    values (#{id,jdbcType=INTEGER}, #{bandwidth,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >
+    insert into service_area
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="bandwidth != null" >
+      	bandwidth,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="bandwidth != null" >
+      	#{bandwidth,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaExample" resultType="java.lang.Integer" >
+    select count(*) from service_area
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update service_area
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.bandwidth != null" >
+      	bandwidth = #{record.bandwidth,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null" >
+        city = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdAt != null" >
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      </if>
+        updated_at = now(),
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update service_area
+    set id = #{record.id,jdbcType=INTEGER},
+      bandwidth = #{record.bandwidth,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      city = #{record.city,jdbcType=VARCHAR},
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updated_at = now()
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >
+    update service_area
+    <set >
+      <if test="bandwidth != null" >
+      	bandwidth = #{bandwidth,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+        updated_at = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >
+    update service_area
+    set bandwidth = #{bandwidth,jdbcType=INTEGER}, 
+      name = #{name,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

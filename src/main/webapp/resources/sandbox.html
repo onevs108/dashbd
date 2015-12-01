@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<script src="http://underscorejs.org/underscore-min.js"></script>
+		<script>
+		var BandwidthTable = function() {
+				this.blocks = [];
+			};
+
+		_.extend(BandwidthTable.prototype, {
+			addBlock: function(start, end, bandwidth) {
+				this.blocks.push({
+					start: start,
+					end: end,
+					bandwidth: bandwidth
+				});
+			},
+			addSection: function(start, end, bandwidth) {
+				var start_index = this.getBlockIndexIncludesTimestamp(start),
+					end_index = this.getBlockIndexIncludesTimestamp(end);
+
+				if(start_index < 0 && end_index < 0) {
+					this.addBlock(start, end, bandwidth);
+				} else if(start_index >= 0 && end_index < 0) {
+					this.addBlock(this.getBlock(start_index).end, end, bandwidth);
+					this.splitBlock(start_index, start);
+				} else if(start_index < 0 && end_index >= 0) {
+					this.addBlock(start, this.getBlock(end_index).start, bandwidth);
+					this.splitBlock(end_index, end);
+				} else {
+					this.splitBlock(start_index, start);
+					this.splitBlock(end_index, end);
+					this.increaseBandwidthInSectionByStep(start, end, bandwidth);
+				}
+			},
+			getBlock: function(index) {
+				return this.blocks[index];
+			},
+			splitBlock: function(index, timestamp) {
+				var block = this.getBlock(index);
+
+				if(block) {
+					if(this.blocks.length > 1) {
+						this.blocks = this.blocks.splice(index, 1);
+					} else {
+						this.blocks = [];
+					}
+
+					this.addBlock(block.start, timestamp, block.bandwidth);
+					this.addBlock(timestamp, block.end, block.bandwidth);
+				}
+			},
+			getBlockIndexIncludesTimestamp: function(timestamp) {
+				return _.findIndex(this.blocks, function(block) {
+					return block.start < timestamp && block.end > timestamp;
+				});
+			},
+			increaseBandwidthInSectionByStep: function(start, end, bandwidth) {
+				this.blocks = _.map(this.blocks, function(block) {
+					if(block.start >= start && block.end <= end) {
+						block.bandwidth += bandwidth;
+					}
+
+					return block;
+				});
+			},
+			getMaxBandwidthInSection: function(start, end) {
+				if(this.blocks.length > 0) {
+					return _.chain(this.blocks)
+						.filter(function(block) {
+							return block.start >= start && block.end <= end;
+						})
+						.map(function(block) {
+							return block.bandwidth;
+						})
+						.max()
+						.value();
+				} else {
+					return 0;
+				}
+			},
+			toString: function() {
+				return _.chain(this.blocks)
+					.sortBy(function(block) {
+						return block.start;
+					})
+					.map(function(block) {
+						return block.start + ' - ' + block.end + ': ' + block.bandwidth;
+					})
+					.value()
+					.join('\n');
+			}
+		});
+
+	var bt = new BandwidthTable();
+
+	bt.addSection(10, 20, 1);
+	bt.addSection(15, 25, 1);
+	console.log(bt.toString());
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

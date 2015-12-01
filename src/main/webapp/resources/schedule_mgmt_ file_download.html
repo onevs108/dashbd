@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Mgmt</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+</head>
+<body>
+<div id="wrapper">
+
+    <!-- sidebar -->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        Logo
+                    </div>
+                    <div class="logo-element">
+                        logo
+                    </div>
+                </li>
+                <li>
+                    <a href="user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                </li>
+                <li class="landing_link">
+                    <a href="schedule_mgmt.html"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav><!-- sidebar end -->
+
+    <!-- content -->
+    <div id="page-wrapper" class="gray-bg">
+
+        <!-- content header -->
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-success " href="#"><i class="fa fa-bars"></i> </a>
+                    <form role="search" class="navbar-form-custom" action="search_results.html">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search" class="form-control" name="top-search" id="top-search">
+                        </div>
+                    </form>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a>
+                        <i class="fa fa-user"></i>User Name
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="mailbox.html">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="profile.html">
+                                    <div>
+                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                        <span class="pull-right text-muted small">12 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="grid_options.html">
+                                    <div>
+                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <div class="text-center link-block">
+                                    <a href="notifications.html">
+                                        <strong>See All Alerts</strong>
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="login.html">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div><!-- content header end -->
+
+        <!-- content body -->
+        <div class="wrapper wrapper-content">
+
+            <!-- Contents -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Schedule Mgmt</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-sm-3 m-b-sm">
+                                    <select class="input-sm form-control input-s-sm">
+                                        <option value="0">File Download</option>
+                                        <option value="1">Streaming</option>
+                                        <option value="2">Carousel MultiMedia Files</option>
+                                        <option value="3">Carousel Single File</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form method="get" class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Service Name</label>
+                                            <div class="col-sm-9"><input type="text" class="form-control"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Language</label>
+                                            <div class="col-sm-9"><input type="text" class="form-control"></div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Transfer Config</label>
+                                            <div class="col-sm-9">
+                                                <h5>QoS</h5>
+                                                <div class="well">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">GBR</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">QCI</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">Random Time</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">ARP</label>
+                                                        <div class="col-sm-9">
+                                                            <div class="well">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-6 col-md-4 control-label">ARP Level</label>
+                                                                    <div class="col-sm-6 col-md-8"><input type="text" class="form-control input-sm"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-6 col-md-4 control-label">PreEmptionCapabiity</label>
+                                                                    <div class="col-sm-6 col-md-8">
+                                                                        <div class="swich">
+                                                                            <div class="onoffswitch">
+                                                                                <input type="checkbox" checked class="onoffswitch-checkbox" id="example1">
+                                                                                <label class="onoffswitch-label" for="example1">
+                                                                                    <span class="onoffswitch-inner"></span>
+                                                                                    <span class="onoffswitch-switch"></span>
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-6 col-md-4 control-label">PreEmptionVulnerability</label>
+                                                                    <div class="col-sm-6 col-md-8">
+                                                                        <div class="swich">
+                                                                            <div class="onoffswitch">
+                                                                                <input type="checkbox" checked class="onoffswitch-checkbox" id="example2">
+                                                                                <label class="onoffswitch-label" for="example2">
+                                                                                    <span class="onoffswitch-inner"></span>
+                                                                                    <span class="onoffswitch-switch"></span>
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <h5>FEC</h5>
+                                                <div class="well">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">Type</label>
+                                                        <div class="col-sm-9">
+                                                            <select class="input form-control">
+                                                                <option value="0">NoFec</option>
+                                                                <option value="1">Streaming</option>
+                                                                <option value="2">Carousel MultiMedia Files</option>
+                                                                <option value="3">Carousel Single File</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">Ratio</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Service Area</label>
+                                            <div class="col-sm-3 m-b-sm"><button type="button" class="btn btn-success">Add Service Area</button></div>
+                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs"></div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Schedule</label>
+                                            <div class="col-sm-3"><button type="button" class="btn btn-success">Add Schedule</button></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-9 col-sm-offset-3">
+                                                <ul class="schedule-list">
+                                                    <li>
+                                                        <div class="well">
+                                                            <div class="form-group">
+                                                                <label class="col-sm-3 control-label">Start</label>
+                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs"></div>
+                                                                <label class="col-sm-3 control-label">Stop</label>
+                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs"></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-3 control-label">Content</label>
+                                                                <div class="col-sm-9"><button type="button" class="btn btn-success btn-sm">Add Content Schedule</button></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="col-sm-9 col-sm-offset-3">
+                                                                    <ul class="schedule-list">
+                                                                        <li>
+                                                                            <div class="well">
+                                                                                <div class="form-group">
+                                                                                    <label class="col-md-3 control-label">File URI</label>
+                                                                                    <div class="col-md-9"><input type="text" class="form-control input-sm m-b-xs"></div>
+                                                                                    <label class="col-md-3 control-label">Start</label>
+                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm"></div>
+                                                                                    <label class="col-md-3 control-label">Stop</label>
+                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm"></div>
+                                                                                    <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="col-sm-12 text-right"><button type="button" class="btn btn-danger">Schedule Delete</button></div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Associated Delivery</label>
+                                            <div class="col-sm-9">
+                                                <div class="swich m-b-sm">
+                                                    <div class="onoffswitch">
+                                                        <input type="checkbox" checked class="onoffswitch-checkbox" id="example3">
+                                                        <label class="onoffswitch-label" for="example3">
+                                                            <span class="onoffswitch-inner"></span>
+                                                            <span class="onoffswitch-switch"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="well">
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 control-label">Post File Pepair</label>
+                                                        <div class="col-md-9">
+                                                            <div class="swich m-b-n">
+                                                                <div class="onoffswitch">
+                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="example4">
+                                                                    <label class="onoffswitch-label" for="example4">
+                                                                        <span class="onoffswitch-inner"></span>
+                                                                        <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-3 control-label">Reception Report</label>
+                                                        <div class="col-md-9">
+                                                            <div class="swich m-b-n">
+                                                                <div class="onoffswitch">
+                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="example5">
+                                                                    <label class="onoffswitch-label" for="example5">
+                                                                        <span class="onoffswitch-inner"></span>
+                                                                        <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">Report Type</label>
+                                                        <div class="col-sm-9">
+                                                            <select class="input input-sm form-control">
+                                                                <option value="0">Rack</option>
+                                                                <option value="1">StaR-all</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">Sample Percentage</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">Offset Time</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">Random Time</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- content body end -->
+    </div><!-- content end -->
+
+</div><!-- wrapper end -->
+
+<!-- Mainly scripts -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- FooTable -->
+<script src="js/plugins/footable/footable.all.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="js/inspinia.js"></script>
+<script src="js/plugins/pace/pace.min.js"></script>
+
+<!-- Page-Level Scripts -->
+</body>
+</html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "HTTP://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="REUSE" />
+	</settings>
+	
+	<!-- 
+	<typeAliases>
+		<typeAlias type="kr.co.nethru.vo.UserVo" alias="UserVo"/>
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="kr/co/nethru/dao/sql/user-manager.xml" />
+	</mappers>
+	 -->
+
+	<mappers>
+		<mapper resource="com/catenoid/dashbd/dao/map/BmscMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/BmscServiceAreaMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ContentsMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/EnbApMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/OperatorBmscMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/OperatorMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceAreaEnbApMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceAreaMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/UsersMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceAreaScheduleMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ScheduleMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ScheduleContentsMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServicesMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceTypeMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceNamesMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceServiceAreaMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ServiceScheduleMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/TransferConfigMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/AdPostFileRepairMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/AdReceptionReportMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/TransReportMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/StatusNotifyMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/ContentsImagesMapper.xml" />
+	</mappers>
+	
+</configuration>

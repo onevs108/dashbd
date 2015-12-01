@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.TransferConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.TransferConfig" >
+    <result column="service_id" property="serviceId" jdbcType="INTEGER" />
+    <result column="qos_gbr" property="qosGbr" jdbcType="INTEGER" />
+    <result column="qos_qci" property="qosQci" jdbcType="INTEGER" />
+    <result column="arp_level" property="arpLevel" jdbcType="INTEGER" />
+    <result column="arp_pre_emption_capability" property="arpPreEmptionCapability" jdbcType="INTEGER" />
+    <result column="arp_pre_emption_vulnerability" property="arpPreEmptionVulnerability" jdbcType="INTEGER" />
+    <result column="fec_type" property="fecType" jdbcType="VARCHAR" />
+    <result column="fec_ratio" property="fecRatio" jdbcType="INTEGER" />
+    <result column="segment_available_offset" property="segmentAvailableOffset" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    service_id, qos_gbr, qos_qci, arp_level, arp_pre_emption_capability, arp_pre_emption_vulnerability, 
+    fec_type, fec_ratio, segment_available_offset
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.TransferConfigExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from transfer_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select 
+  	<include refid="Base_Column_List" />
+  	from transfer_config
+  	where service_id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.TransferConfigExample" >
+    delete from transfer_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <delete id="deleteByServiceId" parameterType="java.lang.Integer" >
+  	delete from transfer_config
+  	where service_id = #{id,jdbcType=INTEGER]
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.TransferConfig" >
+    insert into transfer_config (service_id, qos_gbr, qos_qci, 
+      arp_level, arp_pre_emption_capability, 
+      arp_pre_emption_vulnerability, fec_type, 
+      fec_ratio, segment_available_offset)
+    values (#{serviceId,jdbcType=INTEGER}, #{qosGbr,jdbcType=INTEGER}, #{qosQci,jdbcType=INTEGER}, 
+      #{arpLevel,jdbcType=INTEGER}, #{arpPreEmptionCapability,jdbcType=INTEGER}, 
+      #{arpPreEmptionVulnerability,jdbcType=INTEGER}, #{fecType,jdbcType=VARCHAR}, 
+      #{fecRatio,jdbcType=INTEGER}, #{segmentAvailableOffset,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.TransferConfig" >
+    insert into transfer_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="serviceId != null" >
+        service_id,
+      </if>
+      <if test="qosGbr != null" >
+        qos_gbr,
+      </if>
+      <if test="qosQci != null" >
+        qos_qci,
+      </if>
+      <if test="arpLevel != null" >
+        arp_level,
+      </if>
+      <if test="arpPreEmptionCapability != null" >
+        arp_pre_emption_capability,
+      </if>
+      <if test="arpPreEmptionVulnerability != null" >
+        arp_pre_emption_vulnerability,
+      </if>
+      <if test="fecType != null" >
+        fec_type,
+      </if>
+      <if test="fecRatio != null" >
+        fec_ratio,
+      </if>
+      <if test="segmentAvailableOffset != null" >
+        segment_available_offset,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="serviceId != null" >
+        #{serviceId,jdbcType=INTEGER},
+      </if>
+      <if test="qosGbr != null" >
+        #{qosGbr,jdbcType=INTEGER},
+      </if>
+      <if test="qosQci != null" >
+        #{qosQci,jdbcType=INTEGER},
+      </if>
+      <if test="arpLevel != null" >
+        #{arpLevel,jdbcType=INTEGER},
+      </if>
+      <if test="arpPreEmptionCapability != null" >
+        #{arpPreEmptionCapability,jdbcType=INTEGER},
+      </if>
+      <if test="arpPreEmptionVulnerability != null" >
+        #{arpPreEmptionVulnerability,jdbcType=INTEGER},
+      </if>
+      <if test="fecType != null" >
+        #{fecType,jdbcType=VARCHAR},
+      </if>
+      <if test="fecRatio != null" >
+        #{fecRatio,jdbcType=INTEGER},
+      </if>
+      <if test="segmentAvailableOffset != null" >
+        #{segmentAvailableOffset,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.TransferConfigExample" resultType="java.lang.Integer" >
+    select count(*) from transfer_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update transfer_config
+    <set >
+      <if test="record.serviceId != null" >
+        service_id = #{record.serviceId,jdbcType=INTEGER},
+      </if>
+      <if test="record.qosGbr != null" >
+        qos_gbr = #{record.qosGbr,jdbcType=INTEGER},
+      </if>
+      <if test="record.qosQci != null" >
+        qos_qci = #{record.qosQci,jdbcType=INTEGER},
+      </if>
+      <if test="record.arpLevel != null" >
+        arp_level = #{record.arpLevel,jdbcType=INTEGER},
+      </if>
+      <if test="record.arpPreEmptionCapability != null" >
+        arp_pre_emption_capability = #{record.arpPreEmptionCapability,jdbcType=INTEGER},
+      </if>
+      <if test="record.arpPreEmptionVulnerability != null" >
+        arp_pre_emption_vulnerability = #{record.arpPreEmptionVulnerability,jdbcType=INTEGER},
+      </if>
+      <if test="record.fecType != null" >
+        fec_type = #{record.fecType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fecRatio != null" >
+        fec_ratio = #{record.fecRatio,jdbcType=INTEGER},
+      </if>
+      <if test="record.segmentAvailableOffset != null" >
+        segment_available_offset = #{record.segmentAvailableOffset,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update transfer_config
+    set service_id = #{record.serviceId,jdbcType=INTEGER},
+      qos_gbr = #{record.qosGbr,jdbcType=INTEGER},
+      qos_qci = #{record.qosQci,jdbcType=INTEGER},
+      arp_level = #{record.arpLevel,jdbcType=INTEGER},
+      arp_pre_emption_capability = #{record.arpPreEmptionCapability,jdbcType=INTEGER},
+      arp_pre_emption_vulnerability = #{record.arpPreEmptionVulnerability,jdbcType=INTEGER},
+      fec_type = #{record.fecType,jdbcType=VARCHAR},
+      fec_ratio = #{record.fecRatio,jdbcType=INTEGER},
+      segment_available_offset = #{record.segmentAvailableOffset,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.catenoid.dashbd.dao.model.TransferConfig" >
+  	update transfer_config
+  	<set>
+  	  <if test="qosGbr != null" >
+  	  	qos_gbr = #{qosGbr,jdbcType=INTEGER},
+  	  </if>
+  	  <if test="qosQci != null" >
+  	  	qos_qci = #{qosQci,jdbcType=INTEGER},
+  	  </if>
+  	  <if test="arpLevel != null" >
+  	  	arp_level = #{arpLevel,jdbcType=INTEGER},
+  	  </if>
+  	  <if test="arpPreEmptionCapability != null" >
+  	  	arp_pre_emption_capability = #{arpPreEmptionCapability,jdbcType=INTEGER},
+  	  </if>
+  	  <if test="arpPreEmptionVulnerability != null" >
+  	  	arp_pre_emption_vulnerability = #{arpPreEmptionVulnerability,jdbcType=INTEGER},
+  	  </if>
+  	  <if test="fecType != null" >
+  	  	fec_type = #{fecType,jdbcType=VARCHAR},
+  	  </if>
+  	  <if test="fecRatio != null" >
+  	  	fec_ratio = #{fecRatio,jdbcType=INTEGER},
+  	  </if>
+  	  <if test="segmentAvailableOffset != null" >
+  	  	segment_available_offset = #{segmentAvailableOffset,jdbcType=INTEGER},
+  	  </if>
+  	</set>
+  	where service_id = #{service_id,jdbcType=INTEGER}
+  </update>
+</mapper>

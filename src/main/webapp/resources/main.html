@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main</title>
+
+	<script src="app-js/bower_components/requirejs/require.js"></script>
+	<script src="app-js/conf.js"></script>
+	<script src="app-js/apps/main.js"></script>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="css/plugins/chartist/chartist.min.css" rel="stylesheet">
+
+	<script src="js/jquery-2.1.1.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+</head>
+<body>
+<div id="wrapper">
+
+    <!-- sidebar -->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        Logo
+                    </div>
+                    <div class="logo-element">
+                        logo
+                    </div>
+                </li>
+                <li>
+                    <a href="user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="schedule_mgmt_eepg.html"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav><!-- sidebar end -->
+
+    <!-- content -->
+    <div id="page-wrapper" class="gray-bg">
+
+        <!-- content header -->
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-success " href="#"><i class="fa fa-bars"></i> </a>
+                    <form role="search" class="navbar-form-custom" action="search_results.html">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search" class="form-control" name="top-search" id="top-search">
+                        </div>
+                    </form>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <a>
+                        <i class="fa fa-user"></i>User Name
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="mailbox.html">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="profile.html">
+                                    <div>
+                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                        <span class="pull-right text-muted small">12 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="grid_options.html">
+                                    <div>
+                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <div class="text-center link-block">
+                                    <a href="notifications.html">
+                                        <strong>See All Alerts</strong>
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="login.html">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div><!-- content header end -->
+
+        <!-- content body -->
+        <div class="wrapper wrapper-content">
+
+            <!-- User Mgmt -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Service Area Mgmt</h5>
+                            <div class="ibox-tools">
+                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a-->
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-sm-3 m-b-sm">
+                                    <select class="input-sm form-control input-s-sm" id="operator">
+                                        <option value="">Select one</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="input-sm form-control input-s-sm" id="bmsc">
+                                        <option value="">Select one</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="google_map" id="map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information Of Service Area -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Information Of Service Area 100</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <div class="contents-box">
+                                        <div class="file">
+                                            <div class="image">
+                                                <img alt="image" class="img-responsive" src="img/p1.jpg">
+                                            </div>
+                                            <div class="file-name">
+                                                Italy street
+                                            </div>
+                                            <div class="progress">
+                                                <div class="now"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="contents-box">
+                                        <div class="file">
+                                            <div class="image">
+                                                <img alt="image" class="img-responsive" src="img/p2.jpg">
+                                            </div>
+                                            <div class="file-name">
+                                                Italy street
+                                            </div>
+                                            <div class="progress">
+                                                <div class="now"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="contents-box">
+                                        <div class="file">
+                                            <div class="image">
+                                                <img alt="image" class="img-responsive" src="img/p3.jpg">
+                                            </div>
+                                            <div class="file-name">
+                                                Italy street
+                                            </div>
+                                            <div class="progress">
+                                                <div class="now"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <div class="contents-box">
+                                        <div class="file">
+                                            <div class="image">
+                                                <img alt="image" class="img-responsive" src="img/p4.jpg">
+                                            </div>
+                                            <div class="file-name">
+                                                Italy street
+                                            </div>
+                                            <div class="progress">
+                                                <div class="now"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h5>View</h5>
+                                    <div class="contents-box">
+                                        <div id="ct-chart3" class="ct-perfect-fourth"></div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <h5>Bandwidth is being used</h5>
+                                    <div class="contents-box">
+                                        <div id="ct-chart5" class="ct-perfect-fourth"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>BM-SC</h5>
+                        </div>
+                        <div class="ibox-content">
+                            Graph Here
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>CMS</h5>
+                        </div>
+                        <div class="ibox-content">
+                            Graph Here
+                        </div>
+                    </div>
+                </div>
+                <!--div class="col-md-6 col-lg-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Notify Server</h5>
+                        </div>
+                        <div class="ibox-content">
+                            Graph Here
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Portal</h5>
+                        </div>
+                        <div class="ibox-content">
+                            Graph Here
+                        </div>
+                    </div>
+                </div-->
+            </div>
+
+        </div><!-- content body end -->
+    </div><!-- content end -->
+
+</div><!-- wrapper end -->
+
+<script>
+	$(document).ready(function() {
+		require([
+			'js/plugins/chartist/chartist.min.js'
+		], function(Chartist) {
+			new Chartist.Bar('#ct-chart3', {
+				labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+				series: [
+					[800000, 1200000, 1400000, 1300000],
+					[200000, 400000, 500000, 300000],
+					[100000, 200000, 400000, 600000]
+				]
+			}, {
+				stackBars: true,
+				axisY: {
+					labelInterpolationFnc: function(value) {
+						return (value / 1000) + 'k';
+					}
+				}
+			}).on('draw', function(data) {
+				if(data.type === 'bar') {
+					data.element.attr({
+						style: 'stroke-width: 30px'
+					});
+				}
+			});
+
+			var data = {
+					series: [5, 3, 4]
+				};
+
+			var sum = function(a, b) { return a + b };
+
+			new Chartist.Pie('#ct-chart5', data, {
+				labelInterpolationFnc: function(value) {
+					return Math.round(value / data.series.reduce(sum) * 100) + '%';
+				}
+			});
+		});
+	});
+</script>
+
+</body>
+</html>

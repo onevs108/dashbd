@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.TransReportMapper" >
+  <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.TransReport" >
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="transaction_id" property="transactionId" jdbcType="INTEGER" />
+    <result column="agent_key" property="agentKey" jdbcType="VARCHAR" />
+    <result column="services_id" property="servicesId" jdbcType="INTEGER" />
+    <result column="service_id" property="serviceId" jdbcType="INTEGER" />
+    <result column="send_dtm" property="sendDtm" jdbcType="TIMESTAMP" />
+    <result column="result_code" property="resultCode" jdbcType="INTEGER" />
+    <result column="retry_count" property="retryCount" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.catenoid.dashbd.dao.model.TransReport" extends="BaseResultMap" >
+    <result column="result_msg" property="resultMsg" jdbcType="LONGVARCHAR" />
+    <result column="send_msg" property="sendMsg" jdbcType="LONGVARCHAR" />
+    <result column="recv_msg" property="recvMsg" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="and" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="or" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  or ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  or ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  or ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  or ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="and" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="or" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  or ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  or ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  or ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  or ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, transaction_id, agent_key, services_id, send_dtm, result_code, retry_count,
+    created_at, updated_at
+  </sql>
+  <sql id="Blob_Column_List" >
+    result_msg, send_msg, recv_msg
+  </sql>
+  <select id="selectCount" resultType="java.lang.Integer" >
+  	select count(*) from trans_report
+  </select>
+  <select id="selectCountByServiceAreaId" resultType="java.lang.Integer" parameterType="map" >
+  	select count(*)
+	from trans_report t1, services t2, service t3, service_service_area t4
+	where 	t1.services_id		= t2.id
+	and		t2.id				= t3.services_id
+	and		t3.id				= t4.service_id
+	and		t4.service_area_id	= #{record.serviceAreaId,jdbcType=INTEGER}
+	and		t1.send_dtm			between #{record.startDate,jdbcType=VARCHAR} and #{record.endDate,jdbcType=VARCHAR}
+	<if test="record.resultCodeClause != null" >
+      and ${record.resultCodeClause}
+    </if>
+  </select>
+  <select id="selectByServiceAreaId" resultMap="ResultMapWithBLOBs" parameterType="map" >
+  	select transaction_id, t1.services_id, t4.service_id, agent_key, send_dtm, result_code, ifnull(result_msg, '') as result_msg
+	from trans_report t1, services t2, service t3, service_service_area t4
+	where 	t1.services_id		= t2.id
+	and		t2.id				= t3.services_id
+	and		t3.id				= t4.service_id
+	and		t4.service_area_id	= #{record.serviceAreaId,jdbcType=INTEGER}
+	and		t1.send_dtm			between #{record.startDate,jdbcType=VARCHAR} and #{record.endDate,jdbcType=VARCHAR}
+	<if test="record.resultCodeClause != null" >
+      and ${record.resultCodeClause}
+    </if>
+	order by t1.send_dtm
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select
+  	<include refid="Base_Column_List" />
+    from trans_report
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.catenoid.dashbd.dao.model.TransReportExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from trans_report
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.TransReportExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from trans_report
+    <if test="_parameter != null" >
+      <include refid="Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.TransReportExample" >
+    delete from trans_report
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.TransReport" >    
+    insert into trans_report (transaction_id, agent_key, services_id, 
+      send_dtm, result_code, retry_count, 
+      created_at, updated_at, result_msg, send_msg, recv_msg
+      )
+    values ((select transaction_id from (SELECT case when transaction_id + 1 >= 65535 then 101 else transaction_id + 1 end as transaction_id FROM trans_report ORDER BY updated_at DESC LIMIT 1) as t), 
+      #{agentKey,jdbcType=VARCHAR}, #{servicesId,jdbcType=INTEGER}, 
+      #{sendDtm,jdbcType=TIMESTAMP}, #{resultCode,jdbcType=INTEGER}, #{retryCount,jdbcType=INTEGER}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, #{resultMsg,jdbcType=LONGVARCHAR}
+      #{sendMsg,jdbcType=LONGVARCHAR}, #{recvMsg,jdbcType=LONGVARCHAR}
+      )
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  <insert id="insertSelective" parameterType="com.catenoid.dashbd.dao.model.TransReport" >  	
+    insert into trans_report     	
+    <trim prefix="(" suffix=")" suffixOverrides="," >      
+        transaction_id,
+      <if test="agentKey != null" >
+        agent_key,
+      </if>
+      <if test="servicesId != null" >
+        services_id,
+      </if>
+      <if test="sendDtm != null" >
+        send_dtm,
+      </if>
+      <if test="resultCode != null" >
+        result_code,
+      </if>
+      <if test="retryCount != null" >
+        retry_count,
+      </if>
+      <if test="sendMsg != null" >
+      	send_msg,
+      </if>
+      <if test="recvMsg != null" >
+      	recv_msg,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+      <if test="resultMsg != null" >
+        result_msg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," > 
+      <choose>
+      	<when test="transactionId != null">
+      	  #{transactionId,jdbcType=INTEGER},
+      	</when>
+      	<otherwise>
+      	  (select transaction_id from (SELECT case when transaction_id + 1 >= 65535 then 101 else transaction_id + 1 end as transaction_id FROM trans_report ORDER BY updated_at DESC LIMIT 1) as t),
+      	</otherwise>
+      </choose>
+      <if test="agentKey != null" >
+        #{agentKey,jdbcType=VARCHAR},
+      </if>
+      <if test="servicesId != null" >
+        #{servicesId,jdbcType=INTEGER},
+      </if>
+      <if test="sendDtm != null" >
+        CURRENT_TIMESTAMP,
+      </if>
+      <if test="resultCode != null" >
+        #{resultCode,jdbcType=INTEGER},
+      </if>
+      <if test="retryCount != null" >
+        #{retryCount,jdbcType=INTEGER},
+      </if>
+      <if test="sendMsg != null" >
+      	#{sendMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="recvMsg != null" >
+      	#{recvMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resultMsg != null" >
+        #{resultMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </trim> 
+    <selectKey resultType="int" keyProperty="id" order="AFTER"> 
+         SELECT LAST_INSERT_ID()
+    </selectKey>   
+  </insert>
+  <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.TransReportExample" resultType="java.lang.Integer" >
+    select count(*) from trans_report
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update trans_report
+    <set >
+      <if test="record.transactionId != null" >
+        transaction_id = #{record.transactionId,jdbcType=INTEGER},
+      </if>
+      <if test="record.agentKey != null" >
+        agent_key = #{record.agentKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.servicesId != null" >
+        services_id = #{record.servicesId,jdbcType=INTEGER},
+      </if>
+      <if test="record.sendDtm != null" >
+        send_dtm = #{record.sendDtm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.resultCode != null" >
+        result_code = #{record.resultCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.retryCount != null" >
+        retry_count = #{record.retryCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.sendMsg != null" >
+      	send_msg = #{record.sendMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.recvMsg != null" >
+      	recv_msg = #{record.recvMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.createdAt != null" >
+        created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatedAt != null" >
+        updated_at = now(),
+      </if>
+      <if test="record.resultMsg != null" >
+        result_msg = #{record.resultMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update trans_report
+    set transaction_id = #{record.transactionId,jdbcType=INTEGER},
+      agent_key = #{record.agentKey,jdbcType=VARCHAR},
+      services_id = #{record.servicesId,jdbcType=INTEGER},
+      send_dtm = #{record.sendDtm,jdbcType=TIMESTAMP},
+      result_code = #{record.resultCode,jdbcType=INTEGER},
+      retry_count = #{record.retryCount,jdbcType=INTEGER},
+      send_msg = #{record.sendMsg,jdbcType=LONGVARCHAR},
+      recv_msg = #{record.recvMsg,jdbcType=LONGVARCHAR},
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updated_at = now(),
+      result_msg = #{record.resultMsg,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update trans_report
+    set transaction_id = #{record.transactionId,jdbcType=INTEGER},
+      agent_key = #{record.agentKey,jdbcType=VARCHAR},
+      services_id = #{record.servicesId,jdbcType=INTEGER},
+      send_dtm = #{record.sendDtm,jdbcType=TIMESTAMP},
+      result_code = #{record.resultCode,jdbcType=INTEGER},
+      retry_count = #{record.retryCount,jdbcType=INTEGER},
+      send_msg = #{record.sendMsg,jdbcType=LONGVARCHAR},
+      recv_msg = #{record.recvMsg,jdbcType=LONGVARCHAR},
+      created_at = #{record.createdAt,jdbcType=TIMESTAMP},
+      updated_at = now()
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>  
+</mapper>
