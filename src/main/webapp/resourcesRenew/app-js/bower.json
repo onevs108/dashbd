@@ -1,0 +1,22 @@
+{
+  "name": "DashBD",
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "requirejs": "~2.1.20",
+    "underscore": "~1.8.3",
+    "backbone": "~1.2.3",
+    "requirejs-plugins": "~1.0.3",
+    "async": "~1.4.2",
+    "js-marker-clusterer": "https://github.com/googlemaps/js-marker-clusterer.git#gh-pages",
+    "toastr": "~2.1.2",
+    "simplePagination.js": "*",
+    "dragula.js": "dragula#~3.5.4"
+  }
+}
