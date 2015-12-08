@@ -423,6 +423,9 @@ public class ScheduleController {
 			int total_bitrate = conData.getBitrate();
 			/// 추가할 컨텐츠의 start_time ~ end_time 계산
 			Date fromDate = new Date(getFormatDateTime(request.getParameter("start_time"), "yyyy-MM-dd HH:mm:ss").getTime() - (FB_GUARD_SECOND * 1000));
+			new Date(System.currentTimeMillis()).getHours();
+			
+			
 			Date toDate = new Date(getFormatDateTime(request.getParameter("start_time"), "yyyy-MM-dd HH:mm:ss").getTime() + ((conData.getDuration() + FB_GUARD_SECOND) * 1000));			
 			logger.info("from TIME: " + getFormatDateTime(fromDate, "yyyy-MM-dd HH:mm:ss") + ", to TIME: " + getFormatDateTime(toDate, "yyyy-MM-dd HH:mm:ss"));
 			

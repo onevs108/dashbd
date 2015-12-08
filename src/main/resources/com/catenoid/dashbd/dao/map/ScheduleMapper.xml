@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.catenoid.dashbd.dao.ScheduleMapper" >
+
+
+
+	<select id="selectSchdule" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+			SELECT ID, NAME
+				, DATE_FORMAT(start_date, '%Y%m%d%H%i') start_date
+				, DATE_FORMAT(start_date , '%Y') start_year 
+				, DATE_FORMAT(start_date , '%m') start_month
+				, DATE_FORMAT(start_date , '%d') start_day
+				, DATE_FORMAT(start_date , '%H') start_hour
+				, DATE_FORMAT(start_date , '%i') start_mins
+				
+				, DATE_FORMAT(end_date, '%Y%m%d%H%i') end_date
+				, DATE_FORMAT(end_date , '%Y') end_year 
+				, DATE_FORMAT(end_date , '%m') end_month
+				, DATE_FORMAT(end_date , '%d') end_day
+				, DATE_FORMAT(end_date , '%H') end_hour
+				, DATE_FORMAT(end_date , '%i') end_mins
+			FROM schedule 
+			WHERE 1=1
+			-- AND DATE_FORMAT(start_date , '%Y%m%d') = DATE_FORMAT(NOW() , '%Y%m%d');
+		]]>
+	</select>
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />

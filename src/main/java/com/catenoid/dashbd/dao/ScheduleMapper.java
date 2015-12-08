@@ -2,10 +2,17 @@ package com.catenoid.dashbd.dao;
 
 import com.catenoid.dashbd.dao.model.Schedule;
 import com.catenoid.dashbd.dao.model.ScheduleExample;
+
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ScheduleMapper {
+	
+	/* inbo coding START*/
+	List<Map> selectSchdule(Map map);
+	/* inbo coding END*/
     int countByExample(ScheduleExample example);
 
     int deleteByExample(ScheduleExample example);

@@ -14,7 +14,108 @@
     <link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
     <link href="../resourcesRenew/css/timetable/demo.css" rel="stylesheet" >
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
+    
+	<!-- Mainly scripts -->
+	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
+	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	
+	<!-- FooTable -->
+	<script src="../resourcesRenew/js/plugins/footable/footable.all.min.js"></script>
+	
+	<!-- Custom and plugin javascript -->
+	<script src="../resourcesRenew/js/inspinia.js"></script>
+	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
+	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
+	
+	<!-- Page-Level Scripts -->
+<script>
+	$(function() {
+		
+			var param = {
+				companyCode : 'ccc',
+				tagType		: 'ttt'
+			};
+			
+			$.ajax({
+				type : "POST",
+				url : "getSchedule.do",
+				data : param,
+				dataType : "json",
+				success : function( data ) {
+					//alert('receive data');
+					setTimeTable(data);
+					/*
+					var resultCode = data.resultInfo.resultCode
+					var resultMsg = data.resultInfo.resultMsg
+
+					if (resultCode == system_success_code) {
+						//render.setData( $obj, data.data );
+					} else {
+						alert("["+resultCode+"]\n"+resultMsg);
+						$.unblockUI();
+					}
+					*/
+				},
+				error : function(request, status, error) {
+					alert("request=" +request +",status=" + status + ",error=" + error);
+				}
+			});
+			$("#btnScheduleDetail").click(function() {
+				//var url = "/prod/farmProdPlanReqListByItemAll.do";
+				//var year = $(this).parent().find("td").eq(3).text();
+				//var param = {};
+				//param["prodYear"] = year;
+				//submitValues("/prod/createProdPlan.do", {});
+				location.href = "schdMgmtDetail.do";
+			});
+			
+			
+		});
+	
+		function setTimeTable(data ){
+			var contents = data.contents;
+			var viewStartHour = data.viewStartHour;
+			var timetable = new Timetable();
+			//현재시점에서 2시전, 끝까지.
+			timetable.setScope(viewStartHour,0);
+            timetable.addLocations(['depth1', 'depth2', 'depth3', 'depth4']);
+			
+			for ( var i=0; i<contents.length; i++) {
+				var name = contents[i].name;
+				var start_year = contents[i].start_year;
+				var start_month = contents[i].start_month;
+				var start_day = contents[i].start_day;
+				var start_hour = contents[i].start_hour;
+				var start_mins = contents[i].start_mins;
+				
+				var end_year = contents[i].end_year;
+				var end_month = contents[i].end_month;
+				var end_day = contents[i].end_day;
+				var end_hour = contents[i].end_hour;
+				var end_mins = contents[i].end_mins;
+				
+				
+				timetable.addEvent(contents[i].NAME, 'depth1', new Date(start_year,start_month, start_day,start_hour,start_mins ),
+						 							new Date(end_year,end_month, end_day,end_hour,end_mins ),
+						 							'#');
+				if ( i == 3 )
+					break;
+			}
+			var renderer = new Timetable.Renderer(timetable);
+            renderer.draw('.timetable');
+            
+             /*
+             timetable.addEvent('Sightseeing', 'depth1', new Date(2015,7,17,10,45), new Date(2015,7,17,12,30), '#');
+             timetable.addEvent('Zumba', 'depth2', new Date(2015,7,17,12), new Date(2015,7,17,13), '#');
+             timetable.addEvent('Zumbu', 'depth2', new Date(2015,7,17,13,30), new Date(2015,7,17,15), '#');
+             timetable.addEvent('Lasergaming', 'depth3', new Date(2015,7,17,17,45), new Date(2015,7,17,19,30), '#');
+             timetable.addEvent('All-you-can-eat grill', 'depth4', new Date(2015,7,17,21), new Date(2015,7,18,1,30), '#');
+             */
+             
+		}
+	</script>
 </head>
 <body>
 <div id="wrapper">
@@ -50,7 +151,7 @@
                     <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
                 </li>
                 <li class="landing_link">
-                    <a href="schedule_mgmt_eepg.html"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                    <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
                 </li>
             </ul>
         </div>
@@ -167,35 +268,6 @@
                                 <div class="timetable"></div>
                                 eEPG Here
                             </div>
-                            
-                             <script>
-                             var timetable = new Timetable();
-
-                             timetable.setScope(9,2)
-
-                             timetable.addLocations(['Rotterdam', 'Madrid', 'Los Angeles', 'London', 'New York', 'Jakarta', 'Tokyo']);
-
-                             timetable.addEvent('Sightseeing', 'Rotterdam', new Date(2015,7,17,10,45), new Date(2015,7,17,12,30), '#');
-                             timetable.addEvent('Zumba', 'Madrid', new Date(2015,7,17,12), new Date(2015,7,17,13), '#');
-                             timetable.addEvent('Zumbu', 'Madrid', new Date(2015,7,17,13,30), new Date(2015,7,17,15), '#');
-                             timetable.addEvent('Lasergaming', 'London', new Date(2015,7,17,17,45), new Date(2015,7,17,19,30), '#');
-                             timetable.addEvent('All-you-can-eat grill', 'New York', new Date(2015,7,17,21), new Date(2015,7,18,1,30), '#');
-                             timetable.addEvent('Hackathon', 'Tokyo', new Date(2015,7,17,11,30), new Date(2015,7,17,20)); // url is optional and is not used for this event
-                             timetable.addEvent('Tokyo Hackathon Livestream', 'Los Angeles', new Date(2015,7,17,12,30), new Date(2015,7,17,16,15)); // url is optional and is not used for this event
-                             timetable.addEvent('Lunch', 'Jakarta', new Date(2015,7,17,9,30), new Date(2015,7,17,11,45), '#');
-
-                             var renderer = new Timetable.Renderer(timetable);
-                             renderer.draw('.timetable');
-						    </script>
-						      <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-						    <script>
-						      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-						      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-						      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-						      e.src='//www.google-analytics.com/analytics.js';
-						      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-						      ga('create','UA-37417680-5');ga('send','pageview');
-						    </script>
                             <div class="">
 	                            <button type="button" class="btn btn-success btn-sm" id="btnScheduleDetail">eEPG management</button>
                             </div>
@@ -209,32 +281,6 @@
 
 </div><!-- wrapper end -->
 
-<!-- Mainly scripts -->
-<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
-<script src="../resourcesRenew/js/bootstrap.min.js"></script>
-<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-<!-- FooTable -->
-<script src="../resourcesRenew/js/plugins/footable/footable.all.min.js"></script>
-
-<!-- Custom and plugin javascript -->
-<script src="../resourcesRenew/js/inspinia.js"></script>
-<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
-
-<script>
-<!-- Page-Level Scripts -->
-$(function() {
-		$("#btnScheduleDetail").click(function() {
-			//var url = "/prod/farmProdPlanReqListByItemAll.do";
-		//	var year = $(this).parent().find("td").eq(3).text();
-	//		var param = {};
-//			param["prodYear"] = year;
-			//submitValues("/prod/createProdPlan.do", {});
-			location.href = "schdMgmtDetail.do";
-		});
-		
-	});
-</script>
 </body>
 </html>
