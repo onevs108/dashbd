@@ -2,10 +2,18 @@ package com.catenoid.dashbd.dao;
 
 import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ContentsExample;
+
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ContentsMapper {
+	
+	/* inbo coding START*/
+	List<Map> selectContents(Map map);
+	/* inbo coding END*/
+	
     int countByExample(ContentsExample example);
 
     int deleteByExample(ContentsExample example);

@@ -12,6 +12,7 @@ public interface ScheduleMapper {
 	
 	/* inbo coding START*/
 	List<Map> selectSchdule(Map map);
+	int addScheduleWithInitContent(Map map);
 	/* inbo coding END*/
     int countByExample(ScheduleExample example);
 

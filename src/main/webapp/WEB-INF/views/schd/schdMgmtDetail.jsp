@@ -11,13 +11,16 @@
     <link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
     <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/plugins/datapicker/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
+
     
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
 	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
 	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 	
 	<!-- FooTable -->
 	<script src="../resourcesRenew/js/plugins/footable/footable.all.min.js"></script>
@@ -85,100 +88,152 @@
 	</style>
 	
 <script>
+	var content_id = "";
+	var g_name = "";
 	$(document).ready(function() {
+		$('#datepickerDate').datepicker({
+            format: "yyyy.mm.dd",
+            autoclose : true
+        });  
+		
 		ctrl.initialize();
 		
 		$("#go-search").click(function() {
-			//ajax
-			var contents = [
-			                {
-			                	title: "title1",
-			                	time : "90minutes"
-			                },
-			                {
-			                	title: "title2",
-			                	time : "45minutes"
-			                }
-			               ];
-			
-			
-			$(".search-list").show();
-			
-			//location.href = "schdMgmtDetail.do";
+			var param = {
+					title : $("#form-title").val()
+				};
+			$.ajax({
+				type : "POST",
+				url : "getContents.do",
+				data : param,
+				dataType : "json",
+				success : function( data ) {
+					getContents(data.contents);
+				},
+				error : function(request, status, error) {
+					alert("request=" +request +",status=" + status + ",error=" + error);
+				}
+			});
 		});
 	});
 
+	
 	var ctrl = {
 		initialize : function() {
-			//ajax: load schedule
-			 var schedules = [ //"schedules" is list for events which have start and end.
-                               {
-                                   end: "2015/12/10 3:00",
-                                   start: "2015/12/10 1:40",
-                                   title: "<a href='schedule.do'>Meeting A</a>"
-                               },
-                               {
-                                   end: "2015/12/10 2:41",
-                                   start: "2015/12/10 2:30",
-                                   title: "<a href='schedule.do'>Conference B</a> <br>", //You can use html tags
-                                   css:{backgroundColor:"#f39c12",height:"100px"}
-                                   //You can use most of CSS properties.But only pixel is allow for height.
-                               },
-                               {
-                                   end: "2015/12/10 14:00",
-                                   start: "2015/12/10 12:30",
-                                   title: " MLB Chicago CUBS <br> vs Cleveland Indians", //You can use html tags
-                                   css:{backgroundColor:"#f39c12",height:"100px"}
-                                   //You can use most of CSS properties.But only pixel is allow for height.
-                               },
-                               {
-                                   end: "2015/12/10 17:40",
-                                   start: "2015/12/10 17:00",
-                                   title: "(Live)News today <br>", //You can use html tags
-                                   css:{backgroundColor:"#f39c12",height:"100px"}
-                                   //You can use most of CSS properties.But only pixel is allow for height.
-                               },
-                               {
-                                   end: "2015/12/10 22:40",
-                                   start: "2015/12/10 22:00",
-                                   title: "(Live)News last<br>", //You can use html tags
-                                   css:{backgroundColor:"#f39c12",height:"100px"}
-                                   //You can use most of CSS properties.But only pixel is allow for height.
-                               }
-                           ];
-       
-           	 $('#schedule').graspSchedule({
-           	    schedules:schedules,
-           	    //events:events,
-           	    options:{ // You can change default setting. Not require.
-           	        classnames: { //If you use this plugin many time in a page, you have to change these.
-           	            schedule: "schedule",
-           	            event: "event",
-           	            time: "time"
-           	        },
-           	        css:{
-           	            event:{
-           	                height:"50px"
-           	            },
-           	            schedule:{
-           	                height:"70px"
-           	            },
-           	            zIndexStart:0,
-           	            marginTop:"0px",
-           	            marginLeft:"0px",
-           	        },
-           	        time:true,//show time on left side
-           	        insideTime:true,//show time inside
-           	        timeFormat:'HH:mm',
-           	        daysFormat:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-           	    }
-           	});
+			var param = {
+					serviceId : '3048'
+				};
+				
+				$.ajax({
+					type : "POST",
+					url : "getSchedule.do",
+					data : param,
+					dataType : "json",
+					success : function( data ) {
+						setTimeTable(data);
+					},
+					error : function(request, status, error) {
+						alert("request=" +request +",status=" + status + ",error=" + error);
+					}
+				});
 		}
 	};
 	
-	function popupShow(title){
+	function getContents(data){
+
+		var $list = $("#result_list");
+		
+		// list 초기화
+		$list.empty();
+		console.log('here');
+		for ( var i=0; i<data.length; i++) {
+			var $tr = $("<tr/>");
+			var $td_title = $("<td/>");
+			
+			var $a = $("<a/>");
+			var title = data[i].title;
+			var id = data[i].id;
+			var title = data[i].title;
+			$a.append(title);
+			$a.attr("href","javascript:popupShow('" + id +  "','" + title + "')");
+			$td_title.append( $a);
+			
+			
+			$tr.append( $td_title );
+			$list.append( $tr );
+		}
+		
+		// pagging 초기화
+		$(".pagging").empty();
+		/*
+		$("#content-table tbody").quickPager( {
+			pageSize: 3,
+			naviSize: 3,
+			currentPage: 1,
+			holder: ".pagging"
+		});
+		*/
+		
+		$(".search-list").show();
+	}
+	
+	function setTimeTable(data ){
+		
+		var contents = data.contents;
+		var schedules = [];
+		for ( var i = 0; i < contents.length; i++) {
+			var id = contents[i].ID;
+			var name = contents[i].NAME;
+			var broadcast_info_id = contents[i].broadcast_info_id;
+			
+			var start_date = contents[i].start_date;
+			var end_date = contents[i].end_date;
+			var schedule =    {
+             	   	start: start_date,                  
+	 				end: end_date,
+                    title: "<a href='schedule.do?id=" + id + "'>" + name +"</a>"
+            };
+			if (broadcast_info_id == null || broadcast_info_id == "")
+				schedule['css'] = {backgroundColor:"#63BC09",height:"100px"};
+			else
+				schedule['css'] = {backgroundColor:"#f39c12",height:"100px"};
+			
+			schedules.push( schedule );
+		}
+   
+	  	 $('#schedule').graspSchedule({
+       	    schedules:schedules,
+       	    //events:events,
+       	    options:{ // You can change default setting. Not require.
+       	        classnames: { //If you use this plugin many time in a page, you have to change these.
+       	            schedule: "schedule",
+       	            event: "event",
+       	            time: "time"
+       	        },
+       	        css:{
+       	            event:{
+       	                height:"50px"
+       	            },
+       	            schedule:{
+       	                height:"70px"
+       	            },
+       	            zIndexStart:0,
+       	            marginTop:"0px",
+       	            marginLeft:"0px",
+       	        },
+       	        time:true,//show time on left side
+       	        insideTime:true,//show time inside
+       	        timeFormat:'HH:mm',
+       	        daysFormat:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+       	    }
+       	});
+	}
+	function popupShow(id, name){
+		content_id = id;
+		g_name = name;
+		console.log(id +','+ g_name);
 		$(".pbox").css("top", $(window).scrollTop() + 100 + "px");
-		$("#popupTitle").html(title);
+		$("#popupTitle").html(id);
 		$("#addSchedule").show();
 	}
 </script>
@@ -294,12 +349,13 @@
             </nav>
         </div><!-- content header end -->
 
+
         <!-- content body -->
         <div class="wrapper wrapper-content">
 
             <!-- Contents -->
             <div class="row">
-            
+            <input type="hidden" id="serviceAreaId" value="3048"/>
             <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
@@ -309,13 +365,18 @@
                                 <a class="close-link"><i class="fa fa-times"></i></a-->
                             </div>
                         </div>
+                        
                         <div class="ibox-content">
+                        <form method="get" class="form-horizontal">
                             <div class="row">
                                 <div class="col-sm-8" id="epg-table">
+                                	<div class="date_time">
+                                		<input type="text" class="col-md-4 form-control" id="datepickerDate">
+                                	</div>
 									<div id="schedule"></div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <form method="get" class="form-horizontal">
+                                    
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">Category</label>
                                             <!--div class="col-md-8">
@@ -337,17 +398,27 @@
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="search-list" style="display:none">
+                                        
                                             <h5>Search Result</h5>
-                                            <ul id="content-entries">
-                                            	<li>result one (45:00)</li>
-                                            	<li><a href="javascript:popupShow('result two');">result two</a></li>
-                                            	<li>result three</li>
-                                            	<li>Band of Brothers Season1, ep 09 (50:25)</li>
-                                            </ul>
+                                            <table class="footable table table-bordered" data-page-size="10" id="content-table">
+			                                    <tbody id="result_list">
+			                                    </tbody>
+			                                    <!-- 
+			                                    <tfoot>
+			                                    <tr>
+			                                        <td colspan="9">
+			                                            <ul class="pagination pull-right">
+			                                            </ul>
+			                                        </td>
+			                                    </tr>
+			                                    </tfoot>
+			                                     -->
+			                                </table>
                                         </div>
-                                    </form>
+                                    
                                 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -379,11 +450,11 @@
 					<center><h3 id="popupTitle"></h3></center></br>
 					<div class="form-group">
                         <label class="col-md-4 control-label">Start Time</label>
-                        <div class="col-md-8"><input type="text" id="form-category" class="form-control input-sm"></div>
+                        <div class="col-md-8"><input type="text" id="startTime" class="form-control input-sm"></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label">End Time</label>
-                        <div class="col-md-8"><input type="text" id="form-category" class="form-control input-sm"></div>
+                        <div class="col-md-8"><input type="text" id="endTime" class="form-control input-sm"></div>
                     </div>
 				</form>
 				
@@ -407,7 +478,30 @@
 		$("a[name=ntCloseBtn]").on("click", function() {
 			$(".popupbox").hide();
 			//ajax add schedule
-			alert('add schedule & refresh schedule');
+			
+			alert('add schedule(content_id=' + content_id + ',g_name=' + g_name + ')');
+			var param = {
+				serviceAreaId : $("#serviceAreaId").val(),
+				contentId : content_id,
+				titleName : g_name,
+				startTime : $("#startTime").val(),
+				endTime: $("#endTime").val()
+			};
+			
+			$.ajax({
+				type : "POST",
+				url : "addScheduleWithInitContent.do",
+				data : param,
+				dataType : "json",
+				success : function( data ) {
+					alert('Success to add schedule');
+				},
+				error : function(request, status, error) {
+					alert("request=" +request +",status=" + status + ",error=" + error);
+				}
+			});
+			
+			location.reload();
 			//$('#schedule').empty();
 			//ajax: load schedule
 			//ctrl.initialize();

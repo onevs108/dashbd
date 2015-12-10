@@ -34,8 +34,7 @@
 	$(function() {
 		
 			var param = {
-				companyCode : 'ccc',
-				tagType		: 'ttt'
+				serviceId : '3048'
 			};
 			
 			$.ajax({
@@ -80,7 +79,7 @@
 			var timetable = new Timetable();
 			//현재시점에서 2시전, 끝까지.
 			timetable.setScope(viewStartHour,0);
-            timetable.addLocations(['depth1', 'depth2', 'depth3', 'depth4']);
+            timetable.addLocations(['depth1', 'depth2']);
 			
 			for ( var i=0; i<contents.length; i++) {
 				var name = contents[i].name;

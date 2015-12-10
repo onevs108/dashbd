@@ -58,20 +58,20 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping( value = "/view/getSchedule.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
-	public Map< String, Object > insertAccountUserAjax( @RequestParam Map< String, Object > params,
+	public Map< String, Object > getSchedule( @RequestParam Map< String, Object > params,
 	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		
+		//params.put("serviceId", "3048");
 		List<Map> list = mapper.selectSchdule(params);
 		
-		Map< String, Object > returnMap = new HashMap< String, Object >();
-        returnMap.put( "resultCode", "1000" );
-        returnMap.put( "resultMsg", "SUCCESS");
-        
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) - 2;
         if (hour < 0)
         	hour = 0;
+        
+        Map< String, Object > returnMap = new HashMap< String, Object >();
+        returnMap.put( "resultCode", "1000" );
+        returnMap.put( "resultMsg", "SUCCESS");
         
         Map< String, Object > resultMap = new HashMap< String, Object >();
         resultMap.put( "resultInfo", returnMap );
@@ -80,6 +80,25 @@ public class ScheduleMgmtController {
         
 		return (Map<String, Object>) resultMap;
 	}
+	
+	@RequestMapping(value = "view/addScheduleWithInitContent.do", produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public Map< String, Object > addScheduleWithInitContent( @RequestParam Map< String, Object > params,
+            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		int ret = mapper.addScheduleWithInitContent(params);
+		logger.info("addScheduleWithInitContent [ret={}]", ret);
+		Map< String, Object > returnMap = new HashMap< String, Object >();
+        returnMap.put( "resultCode", "1000" );
+        returnMap.put( "resultMsg", "SUCCESS");
+        Map< String, Object > resultMap = new HashMap< String, Object >();
+        resultMap.put( "resultInfo", returnMap );
+                
+		return (Map<String, Object>) resultMap;
+	}
+	
 	
 	@RequestMapping(value = "view/schdMgmtDetail.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public String schdMgmtDetail(Locale locale, Model model) throws UnsupportedEncodingException {
