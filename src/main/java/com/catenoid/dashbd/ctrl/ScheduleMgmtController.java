@@ -107,10 +107,15 @@ public class ScheduleMgmtController {
 		return "schd/schdMgmtDetail";
 	}
 	
-	@RequestMapping(value = "view/schedule.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value = "view/addBroadcast.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public String schedule(Locale locale, Model model) throws UnsupportedEncodingException {
 
-			
+		//@ insert broadcast_info
+		//@ update schedule broadcast id
 		return "schd/schedule";
 	}
+	
+	
+	
+	
 }

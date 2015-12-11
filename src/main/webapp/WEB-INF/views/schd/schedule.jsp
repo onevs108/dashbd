@@ -139,10 +139,8 @@
                 </ul>
             </nav>
         </div><!-- content header end -->
-
         <!-- content body -->
         <div class="wrapper wrapper-content">
-
             <!-- Contents -->
             <div class="row">
                 <div class="col-lg-12">
