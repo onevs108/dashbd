@@ -1,16 +1,48 @@
 package com.catenoid.dashbd.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.catenoid.dashbd.ctrl.ScheduleMgmtController;
+import com.catenoid.dashbd.util.HttpNetAgent;
+import com.catenoid.dashbd.util.HttpNetAgentException;
 
 @Service
 public class XmlManager {
+	
+	private static final Logger logger = LoggerFactory.getLogger(XmlManager.class);
+	
+	@Value("#{config['b2.interface.url']}")
+	private String b2InterfefaceURL;
+	
+	public String createBroadcast(Map params){
+		String retBody = "SUCCESS";
+		
+		try {
+			//@set param to XML
+			String reqBody = testMaking();
+			//@ xml send 
+			retBody = new HttpNetAgent().execute(b2InterfefaceURL, "", reqBody, false);
+			//@ parsing
+			
+		} catch (Exception e) {
+			logger.error("", e);
+			retBody = e.getMessage();
+		}
+		
+		return retBody;
+	}
 	public String testMaking(){
 
 			Element message = new Element("message");

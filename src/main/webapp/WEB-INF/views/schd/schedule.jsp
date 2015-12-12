@@ -15,6 +15,7 @@
     
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
+	<script src="../resourcesRenew/js/jquery.form.js"></script>
 	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
 	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -28,6 +29,72 @@
 	<!-- Page-Level Scripts -->
 	
 	<!-- Page-Level Scripts -->
+	<script>
+	
+	$(document).ready(function() {
+		  
+		$("#broadcastType").on("change", function() {
+			if ( $(this).val() == "0" ) {
+				$("#bcType_fileDownload").show();
+				$("#bcType_streaming").hide();
+			}else{
+				$("#bcType_fileDownload").hide();
+				$("#bcType_streaming").show();
+			}
+		});
+		
+		
+		$("#frmScheduleReg").ajaxForm({
+			dataType : "json",
+			beforeSubmit : function(data, frm, opt) {
+				/*
+				if (!validation($("#frmScheduleReg"))) {
+					return false;
+				}
+				*/
+				
+
+			},
+			success : function(result) {
+				console.log("success in");
+				var resultCode = result.resultInfo.resultCode
+				var resultMsg = result.resultInfo.resultMsg
+
+				if (resultCode == 1000) {
+					alert(resultMsg);
+					document.location = "schdMgmtDetail.do";
+				} else {
+					alert("["+resultCode+"]\n"+resultMsg);
+					
+				}
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	});
+	
+	
+	function validation( from ) {
+
+		var $form = from;
+		var retFlag = true;
+		console.log('here0');
+		$form.find("input").each(function(idx) {
+			if (retFlag && $(this).attr("required")) {
+				console.log('here1');
+				if ($(this).val() == '') {
+					console.log('here2');
+					alert($(this).attr("alt") + '필수항목 입니다.');
+					retFlag = false;
+					
+				}
+			}
+		});
+		return retFlag;
+	}
+
+</script>
 </head>
 <body>
 <div id="wrapper">
@@ -155,25 +222,27 @@
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
-                                    <select class="input-sm form-control input-s-sm">
+                                    <select class="input-sm form-control input-s-sm" id="broadcastType">
                                         <option value="0">File Download</option>
                                         <option value="1">Streaming</option>
+                                        <!-- 
                                         <option value="2">Carousel MultiMedia Files</option>
                                         <option value="3">Carousel Single File</option>
+                                         -->
                                     </select>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form method="get" class="form-horizontal">
+                                    <form class=" form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Service Name</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control"></div>
+                                            <div class="col-sm-9"><input type="text" class="form-control" id="service_name" name="service_name" required="required" alt='service name'></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Language</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control"></div>
+                                            <div class="col-sm-9"><input type="text" class="form-control" id="language" name="language" required="required"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
@@ -183,30 +252,30 @@
                                                 <div class="well">
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">GBR</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                        <div class="col-sm-9">
+                                                        	<input type="text" class="form-control input-sm" id="GBR" name="GBR"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">QCI</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                        <div class="col-sm-9">
+                                                        	<input type="text" class="form-control input-sm" id="QCI" name="QCI"></div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Random Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
-                                                    </div>
+                                                   
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">ARP</label>
                                                         <div class="col-sm-9">
                                                             <div class="well">
                                                                 <div class="form-group">
                                                                     <label class="col-sm-6 col-md-4 control-label">ARP Level</label>
-                                                                    <div class="col-sm-6 col-md-8"><input type="text" class="form-control input-sm"></div>
+                                                                    <div class="col-sm-6 col-md-8">
+                                                                    	<input type="text" class="form-control input-sm"  id="level" name="level"></div>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-sm-6 col-md-4 control-label">PreEmptionCapabiity</label>
                                                                     <div class="col-sm-6 col-md-8">
                                                                         <div class="swich">
                                                                             <div class="onoffswitch">
-                                                                                <input type="checkbox" checked class="onoffswitch-checkbox" id="example1">
+                                                                                <input type="checkbox" checked class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity">
                                                                                 <label class="onoffswitch-label" for="example1">
                                                                                     <span class="onoffswitch-inner"></span>
                                                                                     <span class="onoffswitch-switch"></span>
@@ -220,7 +289,7 @@
                                                                     <div class="col-sm-6 col-md-8">
                                                                         <div class="swich">
                                                                             <div class="onoffswitch">
-                                                                                <input type="checkbox" checked class="onoffswitch-checkbox" id="example2">
+                                                                                <input type="checkbox" checked class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability">
                                                                                 <label class="onoffswitch-label" for="example2">
                                                                                     <span class="onoffswitch-inner"></span>
                                                                                     <span class="onoffswitch-switch"></span>
@@ -238,7 +307,7 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Type</label>
                                                         <div class="col-sm-9">
-                                                            <select class="input form-control">
+                                                            <select class="input form-control"  id="" name="">
                                                                 <option value="0">NoFec</option>
                                                                 <option value="1">Streaming</option>
                                                                 <option value="2">Carousel MultiMedia Files</option>
@@ -248,7 +317,12 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Ratio</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="" name=""></div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group" id="bcType_streaming">
+                                                        <label class="col-sm-3 control-label">SegmentationAvailableOffset</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="" name=""></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -271,38 +345,57 @@
                                                         <div class="well">
                                                             <div class="form-group">
                                                                 <label class="col-sm-3 control-label">Start</label>
-                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs"></div>
+                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs" id="" name=""></div>
                                                                 <label class="col-sm-3 control-label">Stop</label>
-                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs"></div>
+                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs" id="" name=""></div>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label class="col-sm-3 control-label">Content</label>
-                                                                <div class="col-sm-9"><button type="button" class="btn btn-success btn-sm">Add Content Schedule</button></div>
+                                                            <div id="bcType_fileDownload">
+                                                                <div class="form-group">
+	                                                                <label class="col-sm-3 control-label">Content</label>
+	                                                                <div class="col-sm-9"><button type="button" class="btn btn-success btn-sm">Add Content Schedule</button></div>
+	                                                            </div>
+	                                                            <div class="form-group">
+	                                                                <div class="col-sm-9 col-sm-offset-3">
+	                                                                    <ul class="schedule-list">
+	                                                                        <li>
+	                                                                            <div class="well">
+	                                                                                <div class="form-group">
+	                                                                                    <label class="col-md-3 control-label">File URI</label>
+	                                                                                    <div class="col-md-9"><input type="text" class="form-control input-sm m-b-xs" id="" name=""></div>
+	                                                                                    <label class="col-md-3 control-label">Start</label>
+	                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm" id="" name=""></div>
+	                                                                                    <label class="col-md-3 control-label">Stop</label>
+	                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm" id="" name=""></div>
+	                                                                                    <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
+	                                                                                </div>
+	                                                                            </div>
+	                                                                        </li>
+	                                                                    </ul>
+	                                                                </div>
+	                                                                <div class="col-sm-12 text-right"><button type="button" class="btn btn-danger">Schedule Delete</button></div>
+	                                                            </div>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <div class="col-sm-9 col-sm-offset-3">
-                                                                    <ul class="schedule-list">
-                                                                        <li>
-                                                                            <div class="well">
-                                                                                <div class="form-group">
-                                                                                    <label class="col-md-3 control-label">File URI</label>
-                                                                                    <div class="col-md-9"><input type="text" class="form-control input-sm m-b-xs"></div>
-                                                                                    <label class="col-md-3 control-label">Start</label>
-                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm"></div>
-                                                                                    <label class="col-md-3 control-label">Stop</label>
-                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm"></div>
-                                                                                    <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                                <div class="col-sm-12 text-right"><button type="button" class="btn btn-danger">Schedule Delete</button></div>
-                                                            </div>
+                                                            
+                                                            
                                                         </div>
                                                     </li>
                                                 </ul>
                                             </div>
+                                        </div>
+                                        <div id="bcType_streaming" style="display:none">
+	                                       <div class="form-group">
+                                            <label class="col-sm-3 control-label">ContentSet</label>
+                                            <div class="col-sm-9">
+                                               
+                                                <div class="well">
+                                                  
+                                                    <div class="form-group">
+                                                        <label class="col-sm-3 control-label">mpt</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
@@ -310,7 +403,7 @@
                                             <div class="col-sm-9">
                                                 <div class="swich m-b-sm">
                                                     <div class="onoffswitch">
-                                                        <input type="checkbox" checked class="onoffswitch-checkbox" id="example3">
+                                                        <input type="checkbox" checked class="onoffswitch-checkbox" id="" name="">
                                                         <label class="onoffswitch-label" for="example3">
                                                             <span class="onoffswitch-inner"></span>
                                                             <span class="onoffswitch-switch"></span>
@@ -323,7 +416,7 @@
                                                         <div class="col-md-9">
                                                             <div class="swich m-b-n">
                                                                 <div class="onoffswitch">
-                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="example4">
+                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="" name="">
                                                                     <label class="onoffswitch-label" for="example4">
                                                                         <span class="onoffswitch-inner"></span>
                                                                         <span class="onoffswitch-switch"></span>
@@ -337,7 +430,7 @@
                                                         <div class="col-md-9">
                                                             <div class="swich m-b-n">
                                                                 <div class="onoffswitch">
-                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="example5">
+                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="" name="">
                                                                     <label class="onoffswitch-label" for="example5">
                                                                         <span class="onoffswitch-inner"></span>
                                                                         <span class="onoffswitch-switch"></span>
@@ -357,32 +450,31 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Sample Percentage</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Offset Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Random Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
+                                        <div class="form-group">
+				                        	<div class="col-sm-5"></div>
+				                        	<div class="col-sm-">
+					                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnOK" style="margin-left:10px;margin-top:10px">OK</button>
+					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>&nbsp;&nbsp;
+				                        	</div>
+									    </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                        	<div class="col-sm-5"></div>
-                        	<div class="col-sm-">
-	                        	<button class="col-sm-2 btn btn-success" type="button" id="go-search" style="margin-left:10px;margin-top:10px">OK</button>
-	                        	<button class="col-sm-2 btn btn-success" type="button" id="go-search" style="margin-left:10px;margin-top:10px">Cancel</button>&nbsp;&nbsp;
-						    	<button class="col-sm-2 btn btn-success" type="button" id="go-search" style="margin-left:10px;margin-top:10px">List</button>
-                        	</div>
-					    </div>
+                        
                     </div>
                 </div>
             </div>
