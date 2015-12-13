@@ -8,7 +8,7 @@
 		<![CDATA[
 			SELECT ID
 				, NAME
-				, broadcast_info_id
+				, BCID
 				, DATE_FORMAT(start_date, '%Y/%m/%d %H:%i') start_date
 				, DATE_FORMAT(end_date, '%Y/%m/%d %H:%i') end_date
 				
@@ -29,6 +29,30 @@
 			order by start_date asc
 		]]>
 	</select>
+	
+	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+			SELECT id
+				, name
+				, BCID
+				, DATE_FORMAT(start_date, '%Y/%m/%d %H:%i%s') start_date
+				, DATE_FORMAT(end_date, '%Y/%m/%d %H:%i:%s') end_date
+
+				, DATE_FORMAT(start_date , '%H') start_hour
+				, DATE_FORMAT(start_date , '%i') start_mins
+				, DATE_FORMAT(start_date , '%s') start_second
+				
+
+				, DATE_FORMAT(end_date , '%H') end_hour
+				, DATE_FORMAT(end_date , '%i') end_mins
+				, DATE_FORMAT(end_date , '%s') end_second
+			FROM schedule s 
+			WHERE 1=1
+			AND id = #{id} 
+		--	AND DATE_FORMAT(start_date , '%Y%m%d') = DATE_FORMAT(NOW() , '%Y%m%d');
+			order by start_date asc
+		]]>
+	</select>
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
 			(service_area_id, content_id, name, start_date, end_date)
@@ -38,6 +62,35 @@
 				,  str_to_date(concat(DATE_FORMAT(now() , '%Y%m%d'), #{endTime}), '%Y%m%d%H%i')
 			)
 	</insert>
+	
+	<insert id = "insertBroadcastInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="BCID">
+		
+		INSERT INTO broadcast_info(transactionId 
+			, service
+			, service_name
+			, language
+			, GBR
+			, QCI
+			, level
+			, preEmptionCapabiity
+			, preEmptionVulnerability
+		)values(#{transactionId}
+			, #{serviceType}
+			, #{name}
+			, #{serviceLanguage}
+			, #{GBR}
+			, #{QCI}
+			, #{level}
+			, #{preEmptionCapabiity}
+			, #{preEmptionVulnerability}
+		)
+	</insert>
+	
+	<update id = "updateSchedule" parameterType="java.util.Map">
+		update schedule
+		set BCID = #{BCID} 
+		where id = #{id}
+	</update>
 	
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >
     <id column="id" property="id" jdbcType="INTEGER" />

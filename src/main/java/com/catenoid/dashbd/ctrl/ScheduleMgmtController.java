@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
@@ -37,9 +38,9 @@ import com.catenoid.dashbd.util.HttpNetAgentException;
 
 @Controller
 public class ScheduleMgmtController {
-
-	private static final Logger logger = LoggerFactory.getLogger(ScheduleMgmtController.class);
 	
+	private static final Logger logger = LoggerFactory.getLogger(ScheduleMgmtController.class);
+	long transID = 0;
 	@Autowired
 	private SqlSession sqlSession;
 	@Autowired
@@ -151,15 +152,17 @@ public class ScheduleMgmtController {
 	
 	/**
 	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지
-	 * @param locale
-	 * @param model
-	 * @return
-	 * @throws UnsupportedEncodingException
 	 */
 	@RequestMapping(value = "view/schedule.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String schedule(Locale locale, Model model) throws UnsupportedEncodingException {
+	public ModelAndView schedule( @RequestParam Map< String, Object > params) throws UnsupportedEncodingException {
+		
+		ModelAndView mv = new ModelAndView( "schd/schedule" );
 		logger.info("schedule ");
-		return "schd/schedule";
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		Map mapSchedule = mapper.selectSchduleTime(params);
+		mv.addObject( "mapSchedule", mapSchedule );
+		return mv;
 	}
 	
 	/**
@@ -172,23 +175,56 @@ public class ScheduleMgmtController {
 	@RequestMapping(value = "view/scheduleReg.do", method = RequestMethod.POST)
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, Object > params,
-            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+            HttpServletRequest req, Locale locale ) {
 		
 		logger.info("sending param{}", params);
-		String resStr = xmlManager.createBroadcast(params);
-
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		//@ insert broadcast_info  with flag which createBroadcast is successed or not
-		//@ update schedule broadcast id
-		//int ret = mapper.addScheduleWithInitContent(params);
+		
+		try{
+			params.put("transactionId", makeTransId());
+			//@ xmlMake & Send, recv
+			String resStr = xmlManager.createBroadcast(params);
+			
+			//@ check return XML success
+			if (!xmlManager.isSuccess(resStr))
+				return makeFailRet(resStr);
+			
+			//@ insert broadcast_info  with flag which createBroadcast is successed or not
+			int ret = mapper.insertBroadcastInfo(params);
+			logger.info("insertBroadcastInfo ret{}", ret);
 
+			//@ update schedule broadcast id
+			ret = mapper.updateSchedule(params);
+			logger.info("updateSchedule ret{}", ret);
+
+			Map< String, Object > returnMap = new HashMap< String, Object >();
+	        returnMap.put( "resultCode", "1000" );
+	        returnMap.put( "resultMsg", resStr);
+	        Map< String, Object > resultMap = new HashMap< String, Object >();
+	        resultMap.put( "resultInfo", returnMap );
+	                
+			return (Map<String, Object>) resultMap;
+		}catch(Exception e){
+			return makeFailRet(e.getMessage());
+		}
+	
+	}
+
+	private String makeTransId() {
+		return System.currentTimeMillis() + "" + transID++;
+	}
+
+	private Map<String, Object> makeFailRet(String resStr) {
+		
 		Map< String, Object > returnMap = new HashMap< String, Object >();
-        returnMap.put( "resultCode", "1000" );
-        returnMap.put( "resultMsg", resStr);
-        Map< String, Object > resultMap = new HashMap< String, Object >();
-        resultMap.put( "resultInfo", returnMap );
-                
+	    returnMap.put( "resultCode", "9999" );
+	    returnMap.put( "resultMsg", resStr);
+	      
+	    Map< String, Object > resultMap = new HashMap< String, Object >();
+	    resultMap.put( "resultInfo", returnMap );
+	              
 		return (Map<String, Object>) resultMap;
+		
 	}
 	
 }

@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +13,6 @@
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
     <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
-    
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
 	<script src="../resourcesRenew/js/jquery.form.js"></script>
@@ -26,23 +26,28 @@
 	<!-- Custom and plugin javascript -->
 	<script src="../resourcesRenew/js/inspinia.js"></script>
 	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
-	<!-- Page-Level Scripts -->
+
 	
 	<!-- Page-Level Scripts -->
 	<script>
 	
 	$(document).ready(function() {
 		  
-		$("#broadcastType").on("change", function() {
+		$("#serviceType").on("change", function() {
 			if ( $(this).val() == "0" ) {
+				//filedownload
 				$("#bcType_fileDownload").show();
+				$("#bcType_nameLanguage").show();
 				$("#bcType_streaming").hide();
+				$("#bcType_streaming2").hide();
 			}else{
 				$("#bcType_fileDownload").hide();
+				$("#bcType_nameLanguage").hide();
 				$("#bcType_streaming").show();
+				$("#bcType_streaming2").show();
+				
 			}
 		});
-		
 		
 		$("#frmScheduleReg").ajaxForm({
 			dataType : "json",
@@ -62,9 +67,9 @@
 
 				if (resultCode == 1000) {
 					alert(resultMsg);
-					document.location = "schdMgmtDetail.do";
+					//document.location = "schdMgmtDetail.do";
 				} else {
-					alert("["+resultCode+"]\n"+resultMsg);
+					alert("errorcode="+resultCode+",\n msg="+resultMsg);
 					
 				}
 			},
@@ -208,6 +213,8 @@
         </div><!-- content header end -->
         <!-- content body -->
         <div class="wrapper wrapper-content">
+        <form class=" form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
+        <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
             <!-- Contents -->
             <div class="row">
                 <div class="col-lg-12">
@@ -222,9 +229,9 @@
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
-                                    <select class="input-sm form-control input-s-sm" id="broadcastType">
-                                        <option value="0">File Download</option>
-                                        <option value="1">Streaming</option>
+                                    <select class="input-sm form-control input-s-sm" id="serviceType" name="serviceType">
+                                        <option value="FileDownload">File Download</option>
+                                        <option value="Streaming">Streaming</option>
                                         <!-- 
                                         <option value="2">Carousel MultiMedia Files</option>
                                         <option value="3">Carousel Single File</option>
@@ -235,14 +242,16 @@
                             <div class="hr-line-dashed"></div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form class=" form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
+                                    
+                                        <div id="bcType_nameLanguage">
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Service Name</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control" id="service_name" name="service_name" required="required" alt='service name'></div>
+                                            <div class="col-sm-9"><input type="text" class="form-control" id="name" name="name" alt='service name'></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Language</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control" id="language" name="language" required="required"></div>
+                                            <div class="col-sm-9"><input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="en"></div>
+                                        </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
@@ -253,12 +262,12 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">GBR</label>
                                                         <div class="col-sm-9">
-                                                        	<input type="text" class="form-control input-sm" id="GBR" name="GBR"></div>
+                                                        	<input type="text" class="form-control input-sm" id="GBR" name="GBR" required="required"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">QCI</label>
                                                         <div class="col-sm-9">
-                                                        	<input type="text" class="form-control input-sm" id="QCI" name="QCI"></div>
+                                                        	<input type="text" class="form-control input-sm" id="QCI" name="QCI" required="required"></div>
                                                     </div>
                                                    
                                                     <div class="form-group">
@@ -268,15 +277,15 @@
                                                                 <div class="form-group">
                                                                     <label class="col-sm-6 col-md-4 control-label">ARP Level</label>
                                                                     <div class="col-sm-6 col-md-8">
-                                                                    	<input type="text" class="form-control input-sm"  id="level" name="level"></div>
+                                                                    	<input type="text" class="form-control input-sm"  id="level" name="level" required="required"></div>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-sm-6 col-md-4 control-label">PreEmptionCapabiity</label>
                                                                     <div class="col-sm-6 col-md-8">
                                                                         <div class="swich">
                                                                             <div class="onoffswitch">
-                                                                                <input type="checkbox" checked class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity">
-                                                                                <label class="onoffswitch-label" for="example1">
+                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" checked>
+                                                                                <label class="onoffswitch-label" for="preEmptionCapabiity">
                                                                                     <span class="onoffswitch-inner"></span>
                                                                                     <span class="onoffswitch-switch"></span>
                                                                                 </label>
@@ -289,8 +298,8 @@
                                                                     <div class="col-sm-6 col-md-8">
                                                                         <div class="swich">
                                                                             <div class="onoffswitch">
-                                                                                <input type="checkbox" checked class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability">
-                                                                                <label class="onoffswitch-label" for="example2">
+                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability" checked>
+                                                                                <label class="onoffswitch-label" for="preEmptionVulnerability">
                                                                                     <span class="onoffswitch-inner"></span>
                                                                                     <span class="onoffswitch-switch"></span>
                                                                                 </label>
@@ -307,22 +316,22 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Type</label>
                                                         <div class="col-sm-9">
-                                                            <select class="input form-control"  id="" name="">
-                                                                <option value="0">NoFec</option>
-                                                                <option value="1">Streaming</option>
-                                                                <option value="2">Carousel MultiMedia Files</option>
-                                                                <option value="3">Carousel Single File</option>
+                                                            <select class="input form-control"  id="fecType" name="fecType">
+                                                                <option value="NoFec">NoFec</option>
+                                                                <option value="Streaming">Streaming</option>
+                                                                <option value="Carousel MultiMedia Files">Carousel MultiMedia Files</option>
+                                                                <option value="Carousel Single File">Carousel Single File</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Ratio</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="" name=""></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="fecRatio" name="fecRatio"></div>
                                                     </div>
                                                     
-                                                    <div class="form-group" id="bcType_streaming">
+                                                    <div class="form-group" id="bcType_streaming" style="display:none">
                                                         <label class="col-sm-3 control-label">SegmentationAvailableOffset</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="" name=""></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="SegmentAvailableOffset" name="SegmentAvailableOffset"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -331,7 +340,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Service Area</label>
                                             <div class="col-sm-3 m-b-sm"><button type="button" class="btn btn-success">Add Service Area</button></div>
-                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs"></div>
+                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs" id="said" name="said"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
@@ -345,9 +354,9 @@
                                                         <div class="well">
                                                             <div class="form-group">
                                                                 <label class="col-sm-3 control-label">Start</label>
-                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs" id="" name=""></div>
+                                                                <div class="col-sm-3"><input type="text" class="form-control input-sm m-b-xs" id="schedule_start" name="schedule_start" value="${mapSchedule.start_hour} : ${mapSchedule.start_mins} : ${mapSchedule.start_second} "></div>
                                                                 <label class="col-sm-3 control-label">Stop</label>
-                                                                <div class="col-sm-3"><input type="time" class="form-control input-sm m-b-xs" id="" name=""></div>
+                                                                <div class="col-sm-3"><input type="text" class="form-control input-sm m-b-xs" id="schedule_stop" name="schedule_stop" value="${mapSchedule.end_hour} : ${mapSchedule.end_mins} : ${mapSchedule.end_second}"></div>
                                                             </div>
                                                             <div id="bcType_fileDownload">
                                                                 <div class="form-group">
@@ -361,11 +370,11 @@
 	                                                                            <div class="well">
 	                                                                                <div class="form-group">
 	                                                                                    <label class="col-md-3 control-label">File URI</label>
-	                                                                                    <div class="col-md-9"><input type="text" class="form-control input-sm m-b-xs" id="" name=""></div>
+	                                                                                    <div class="col-md-9"><input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI"></div>
 	                                                                                    <label class="col-md-3 control-label">Start</label>
-	                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm" id="" name=""></div>
+	                                                                                    <div class="col-md-3"><input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start"></div>
 	                                                                                    <label class="col-md-3 control-label">Stop</label>
-	                                                                                    <div class="col-md-3"><input type="time" class="form-control input-sm m-b-sm" id="" name=""></div>
+	                                                                                    <div class="col-md-3"><input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end"></div>
 	                                                                                    <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
 	                                                                                </div>
 	                                                                            </div>
@@ -382,7 +391,7 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div id="bcType_streaming" style="display:none">
+                                        <div id="bcType_streaming2" style="display:none">
 	                                       <div class="form-group">
                                             <label class="col-sm-3 control-label">ContentSet</label>
                                             <div class="col-sm-9">
@@ -390,8 +399,8 @@
                                                 <div class="well">
                                                   
                                                     <div class="form-group">
-                                                        <label class="col-sm-3 control-label">mpt</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
+                                                        <label class="col-sm-3 control-label">mpd</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="mpdURI" name="mpdURI"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -401,23 +410,14 @@
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Associated Delivery</label>
                                             <div class="col-sm-9">
-                                                <div class="swich m-b-sm">
-                                                    <div class="onoffswitch">
-                                                        <input type="checkbox" checked class="onoffswitch-checkbox" id="" name="">
-                                                        <label class="onoffswitch-label" for="example3">
-                                                            <span class="onoffswitch-inner"></span>
-                                                            <span class="onoffswitch-switch"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
                                                 <div class="well">
                                                     <div class="form-group">
                                                         <label class="col-md-3 control-label">Post File Pepair</label>
                                                         <div class="col-md-9">
                                                             <div class="swich m-b-n">
                                                                 <div class="onoffswitch">
-                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="" name="">
-                                                                    <label class="onoffswitch-label" for="example4">
+                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="postFileRepair" name="postFileRepair">
+                                                                    <label class="onoffswitch-label" for="postFileRepair">
                                                                         <span class="onoffswitch-inner"></span>
                                                                         <span class="onoffswitch-switch"></span>
                                                                     </label>
@@ -430,8 +430,8 @@
                                                         <div class="col-md-9">
                                                             <div class="swich m-b-n">
                                                                 <div class="onoffswitch">
-                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="" name="">
-                                                                    <label class="onoffswitch-label" for="example5">
+                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="receptionReport" name="receptionReport">
+                                                                    <label class="onoffswitch-label" for="receptionReport">
                                                                         <span class="onoffswitch-inner"></span>
                                                                         <span class="onoffswitch-switch"></span>
                                                                     </label>
@@ -442,23 +442,23 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Report Type</label>
                                                         <div class="col-sm-9">
-                                                            <select class="input input-sm form-control">
-                                                                <option value="0">Rack</option>
-                                                                <option value="1">StaR-all</option>
+                                                            <select class="input input-sm form-control" id="reportType" name="reportType">
+                                                                <option value="Rack">Rack</option>
+                                                                <option value="StaR-all">StaR-all</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Sample Percentage</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="samplePercentage" name="samplePercentage"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Offset Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="offsetTime" name="offsetTime"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Random Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="" name=""></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -470,7 +470,7 @@
 					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>&nbsp;&nbsp;
 				                        	</div>
 									    </div>
-                                    </form>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -478,7 +478,7 @@
                     </div>
                 </div>
             </div>
-
+		</form>
         </div><!-- content body end -->
     </div><!-- content end -->
 

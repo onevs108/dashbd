@@ -184,7 +184,7 @@
 		for ( var i = 0; i < contents.length; i++) {
 			var id = contents[i].ID;
 			var name = contents[i].NAME;
-			var broadcast_info_id = contents[i].broadcast_info_id;
+			var broadcast_info_id = contents[i].BCID;
 			
 			var start_date = contents[i].start_date;
 			var end_date = contents[i].end_date;
