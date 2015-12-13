@@ -34,7 +34,7 @@
 	$(document).ready(function() {
 		  
 		$("#serviceType").on("change", function() {
-			if ( $(this).val() == "0" ) {
+			if ( $(this).val() == "FileDownload" ) {
 				//filedownload
 				$("#bcType_fileDownload").show();
 				$("#bcType_nameLanguage").show();

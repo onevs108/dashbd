@@ -145,7 +145,10 @@
 		
 		// list 초기화
 		$list.empty();
-		console.log('here');
+		if (data.length < 1){
+			alert("No data.");
+		}
+			
 		for ( var i=0; i<data.length; i++) {
 			var $tr = $("<tr/>");
 			var $td_title = $("<td/>");
