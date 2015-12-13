@@ -339,13 +339,17 @@
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Service Area</label>
+                                            <!-- 
                                             <div class="col-sm-3 m-b-sm"><button type="button" class="btn btn-success">Add Service Area</button></div>
+                                             -->
                                             <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs" id="said" name="said"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Schedule</label>
+                                            <!-- 
                                             <div class="col-sm-3"><button type="button" class="btn btn-success">Add Schedule</button></div>
+                                             -->
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-9 col-sm-offset-3">
@@ -361,7 +365,9 @@
                                                             <div id="bcType_fileDownload">
                                                                 <div class="form-group">
 	                                                                <label class="col-sm-3 control-label">Content</label>
+	                                                                <!-- 
 	                                                                <div class="col-sm-9"><button type="button" class="btn btn-success btn-sm">Add Content Schedule</button></div>
+	                                                                 -->
 	                                                            </div>
 	                                                            <div class="form-group">
 	                                                                <div class="col-sm-9 col-sm-offset-3">
@@ -375,13 +381,17 @@
 	                                                                                    <div class="col-md-3"><input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start"></div>
 	                                                                                    <label class="col-md-3 control-label">Stop</label>
 	                                                                                    <div class="col-md-3"><input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end"></div>
+	                                                                                    <!-- 
 	                                                                                    <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
+	                                                                                     -->
 	                                                                                </div>
 	                                                                            </div>
 	                                                                        </li>
 	                                                                    </ul>
 	                                                                </div>
+	                                                                <!-- 
 	                                                                <div class="col-sm-12 text-right"><button type="button" class="btn btn-danger">Schedule Delete</button></div>
+	                                                                 -->
 	                                                            </div>
                                                             </div>
                                                             
