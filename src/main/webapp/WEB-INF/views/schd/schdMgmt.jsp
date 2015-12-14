@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,9 +12,9 @@
     <link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
     <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
-    <link href="../resourcesRenew/css/timetable/demo.css" rel="stylesheet" >
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
+    
     
 	<!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
@@ -32,9 +33,17 @@
 	<!-- Page-Level Scripts -->
 <script>
 	$(function() {
+		tmpServiceAreaId = '3048' 
+		callTimetable(tmpServiceAreaId);
 		
-			var param = {
-				serviceAreaId : '3048'
+		$("#btnScheduleDetail").click(function() {
+			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId;
+		});
+	});
+	
+	function callTimetable(serviceAreaId_val){
+		var param = {
+				serviceAreaId : serviceAreaId_val
 			};
 			
 			$.ajax({
@@ -43,77 +52,57 @@
 				data : param,
 				dataType : "json",
 				success : function( data ) {
-					//alert('receive data');
 					setTimeTable(data);
-					/*
-					var resultCode = data.resultInfo.resultCode
-					var resultMsg = data.resultInfo.resultMsg
-
-					if (resultCode == system_success_code) {
-						//render.setData( $obj, data.data );
-					} else {
-						alert("["+resultCode+"]\n"+resultMsg);
-						$.unblockUI();
-					}
-					*/
+			
 				},
 				error : function(request, status, error) {
 					alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
-			$("#btnScheduleDetail").click(function() {
-				//var url = "/prod/farmProdPlanReqListByItemAll.do";
-				//var year = $(this).parent().find("td").eq(3).text();
-				//var param = {};
-				//param["prodYear"] = year;
-				//submitValues("/prod/createProdPlan.do", {});
-				location.href = "schdMgmtDetail.do";
-			});
-			
-			
-		});
+	}
 	
-		function setTimeTable(data ){
-			var contents = data.contents;
-			var viewStartHour = data.viewStartHour;
-			var timetable = new Timetable();
-			//현재시점에서 2시전, 끝까지.
-			timetable.setScope(viewStartHour,0);
-            timetable.addLocations(['depth1', 'depth2']);
+	function setTimeTable(data ){
+		var contents = data.contents;
+		var viewStartHour = data.viewStartHour;
+		var timetable = new Timetable();
+		//현재시점에서 2시전, 끝까지.
+		timetable.setScope(viewStartHour,0);
+        timetable.addLocations(['depth1', 'depth2']);
+		
+		for ( var i=0; i<contents.length; i++) {
+			var name = contents[i].name;
+			var start_year = contents[i].start_year;
+			var start_month = contents[i].start_month;
+			var start_day = contents[i].start_day;
+			var start_hour = contents[i].start_hour;
+			var start_mins = contents[i].start_mins;
 			
-			for ( var i=0; i<contents.length; i++) {
-				var name = contents[i].name;
-				var start_year = contents[i].start_year;
-				var start_month = contents[i].start_month;
-				var start_day = contents[i].start_day;
-				var start_hour = contents[i].start_hour;
-				var start_mins = contents[i].start_mins;
-				
-				var end_year = contents[i].end_year;
-				var end_month = contents[i].end_month;
-				var end_day = contents[i].end_day;
-				var end_hour = contents[i].end_hour;
-				var end_mins = contents[i].end_mins;
-				
-				
-				timetable.addEvent(contents[i].NAME, 'depth1', new Date(start_year,start_month, start_day,start_hour,start_mins ),
-						 							new Date(end_year,end_month, end_day,end_hour,end_mins ),
-						 							'#');
-				if ( i == 3 )
-					break;
-			}
-			var renderer = new Timetable.Renderer(timetable);
-            renderer.draw('.timetable');
-            
-             /*
-             timetable.addEvent('Sightseeing', 'depth1', new Date(2015,7,17,10,45), new Date(2015,7,17,12,30), '#');
-             timetable.addEvent('Zumba', 'depth2', new Date(2015,7,17,12), new Date(2015,7,17,13), '#');
-             timetable.addEvent('Zumbu', 'depth2', new Date(2015,7,17,13,30), new Date(2015,7,17,15), '#');
-             timetable.addEvent('Lasergaming', 'depth3', new Date(2015,7,17,17,45), new Date(2015,7,17,19,30), '#');
-             timetable.addEvent('All-you-can-eat grill', 'depth4', new Date(2015,7,17,21), new Date(2015,7,18,1,30), '#');
-             */
-             
+			var end_year = contents[i].end_year;
+			var end_month = contents[i].end_month;
+			var end_day = contents[i].end_day;
+			var end_hour = contents[i].end_hour;
+			var end_mins = contents[i].end_mins;
+			
+			timetable.addEvent(contents[i].NAME, 'depth1', 
+										new Date(start_year,start_month, start_day,start_hour,start_mins ),
+					 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
+					 					'#');
+			if ( i == 3 )
+				break;
 		}
+		
+		var renderer = new Timetable.Renderer(timetable);
+           renderer.draw('.timetable');
+           
+            /*
+            timetable.addEvent('Sightseeing', 'depth1', new Date(2015,7,17,10,45), new Date(2015,7,17,12,30), '#');
+            timetable.addEvent('Zumba', 'depth2', new Date(2015,7,17,12), new Date(2015,7,17,13), '#');
+            timetable.addEvent('Zumbu', 'depth2', new Date(2015,7,17,13,30), new Date(2015,7,17,15), '#');
+            timetable.addEvent('Lasergaming', 'depth3', new Date(2015,7,17,17,45), new Date(2015,7,17,19,30), '#');
+            timetable.addEvent('All-you-can-eat grill', 'depth4', new Date(2015,7,17,21), new Date(2015,7,18,1,30), '#');
+            */
+            
+	}
 	</script>
 </head>
 <body>
@@ -265,7 +254,6 @@
                             </div>
                             <div class="eepg_timeline">
                                 <div class="timetable"></div>
-                                eEPG Here
                             </div>
                             <div class="">
 	                            <button type="button" class="btn btn-success btn-sm" id="btnScheduleDetail">eEPG management</button>

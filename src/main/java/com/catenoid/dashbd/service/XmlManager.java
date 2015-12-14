@@ -26,9 +26,10 @@ public class XmlManager {
 	
 	private static final Logger logger = LoggerFactory.getLogger(XmlManager.class);
 	
-	public final int BMSC_XML_CREATE = 1; 
-	public final int BMSC_XML_UPDATE = 2;
-	public final int BMSC_XML_DELETE = 3;
+	public final int BMSC_XML_RETRIEVE = 1;
+	public final int BMSC_XML_CREATE = 2; 
+	public final int BMSC_XML_UPDATE = 3;
+	public final int BMSC_XML_DELETE = 4;
 	public final String SERVICE_TYPE_FILE_DOWNLOAD = "FileDownload";
 	
 	
@@ -36,27 +37,27 @@ public class XmlManager {
 	private String b2InterfefaceURL;
 	
 	public String sendBroadcast(Map params, int mode){
-		String retBody = "SUCCESS";
+		String respBody = "SUCCESS";
 		String reqBody = "";
 		try {
 			//@set param to XML
-			if (BMSC_XML_CREATE == mode)
-				reqBody= makeCreateTransXml(params);
-			else if (BMSC_XML_DELETE== mode)
-				reqBody= makeCreateTransXml(params);
+			if (BMSC_XML_RETRIEVE == mode)
+				reqBody= makeXmlRetrieve(params);
+			else if (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)
+				reqBody= makeXmlCreate(params, mode);
 			else
-				reqBody= makeCreateTransXml(params);
+				reqBody= makeXmlDelete(params);
 			
 			//@ xml send 
-			retBody = new HttpNetAgent().execute(b2InterfefaceURL, "", reqBody, false);
-			//@ parsing
+			respBody = new HttpNetAgent().execute(b2InterfefaceURL, "", reqBody, false);
+		
 			
 		} catch (Exception e) {
 			logger.error("", e);
-			retBody = e.getMessage();
+			respBody = e.getMessage();
 		}
 		
-		return retBody;
+		return respBody;
 	}
 	
 	public boolean isSuccess(String retStr) throws JDOMException, IOException{
@@ -71,8 +72,68 @@ public class XmlManager {
 		return false;
 	}
 	
-	public String makeCreateTransXml(Map<String, String> params){
+	public String makeXmlRetrieve(Map<String, String> params){
 		Element message = new Element("message");
+		message.setAttribute(new Attribute("name", "SERVICE.RETRIEVE"));
+		message.setAttribute(new Attribute("type", "REQUEST"));
+		Document doc = new Document(message);
+		doc.setRootElement(message);
+		
+		Element transaction = new Element("transaction");
+		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
+		transaction.addContent(new Element("agentKey").setText("dGVzdA=="));		//key ??
+		
+		doc.getRootElement().addContent(transaction);
+		return outString(doc);
+	}
+	
+	public String makeXmlDelete(Map<String, String> params){
+		Element message = new Element("message");
+		message.setAttribute(new Attribute("name", "SERVICE.DELETE"));
+		message.setAttribute(new Attribute("type", "REQUEST"));
+		Document doc = new Document(message);
+		doc.setRootElement(message);
+		
+		Element transaction = new Element("transaction");
+		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
+		transaction.addContent(new Element("agentKey").setText("dGVzdA=="));		
+		doc.getRootElement().addContent(transaction);
+		
+		
+		Element parameters = new Element("parameters");
+		Element services = new Element("serviceQuery");
+		Element service = new Element("condition");
+		service.addContent(new Element("serviceId").setText(params.get("serviceId")));		
+		services.addContent(service);
+		parameters.addContent(services);
+		doc.getRootElement().addContent(parameters);
+		return outString(doc);
+	}
+	
+	public String makeXmlUpdate(Map<String, String> params){
+		Element message = new Element("message");
+		message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));
+		message.setAttribute(new Attribute("type", "REQUEST"));
+		Document doc = new Document(message);
+		doc.setRootElement(message);
+		
+		Element transaction = new Element("transaction");
+		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
+		transaction.addContent(new Element("agentKey").setText("dGVzdA=="));		//key ??
+		
+		doc.getRootElement().addContent(transaction);
+		return outString(doc);
+	}
+	
+	
+	public String makeXmlCreate(Map<String, String> params, int mode){
+		Element message = new Element("message");
+		if (BMSC_XML_CREATE == mode)
+			message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
+		else
+			message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));
+		
+		message.setAttribute(new Attribute("type", "REQUEST"));
 		Document doc = new Document(message);
 		doc.setRootElement(message);
 
@@ -203,6 +264,7 @@ public class XmlManager {
 		doc.getRootElement().addContent(parameters);
 		return outString(doc);
 	}
+	
 	public String testMaking(){
 
 			Element message = new Element("message");

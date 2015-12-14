@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,7 +47,7 @@
 	
 	
 /* popup */
-.popupbox { position:absolute; left:10%; top:0;width:28%; z-index:99999; }
+.popupbox { position:absolute; left:10%; top:0;width:150px; z-index:99999; }
 .l_popup_bg { position:fixed; left:0; top:0; width:100%; height:100%; z-index:999999; background:#000; opacity:0.7; filter:alpha(opacity=70); -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=70)"; }
 .popupbox .pbox { position:relative; text-align:left; z-index:9999999; width:300%; padding:0 0 15px 0; box-shadow:0 5px 10px #000; }
 .popupbox .titbox { position:relative; z-index:9; height:60px; }
@@ -121,21 +122,21 @@
 	var ctrl = {
 		initialize : function() {
 			var param = {
-					serviceAreaId : '3048'
+					serviceAreaId : $('#serviceAreaId').val()
 				};
 				
-				$.ajax({
-					type : "POST",
-					url : "getSchedule.do",
-					data : param,
-					dataType : "json",
-					success : function( data ) {
-						setTimeTable(data);
-					},
-					error : function(request, status, error) {
-						alert("request=" +request +",status=" + status + ",error=" + error);
-					}
-				});
+			$.ajax({
+				type : "POST",
+				url : "getSchedule.do",
+				data : param,
+				dataType : "json",
+				success : function( data ) {
+					setTimeTable(data);
+				},
+				error : function(request, status, error) {
+					alert("request=" +request +",status=" + status + ",error=" + error);
+				}
+			});
 		}
 	};
 	
@@ -170,7 +171,6 @@
 		$(".pagging").empty();
 		/*
 		$("#content-table tbody").quickPager( {
-			pageSize: 3,
 			naviSize: 3,
 			currentPage: 1,
 			holder: ".pagging"
@@ -234,9 +234,12 @@
 	function popupShow(id, name){
 		content_id = id;
 		g_name = name;
-		console.log(id +','+ g_name);
-		$(".pbox").css("top", $(window).scrollTop() + 100 + "px");
-		$("#popupTitle").html(id);
+		console.log(id +','+ g_name + ',' + ($(window).width() - 550));
+		$(".pbox").css("top", $(window).scrollTop() + 250 + "px");
+		$(".pbox").css("left", ($(window).width() - 630) + "px");
+		//$(".pbox").css("left", 300 $(window).scrollLeft() + 100 + "px");
+		
+		$("#popupTitle").html(name);
 		$("#addSchedule").show();
 	}
 </script>
@@ -358,7 +361,7 @@
 
             <!-- Contents -->
             <div class="row">
-            <input type="hidden" id="serviceAreaId" value="3048"/>
+            <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${serviceAreaId}"/>
             <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
@@ -453,11 +456,11 @@
 					<center><h3 id="popupTitle"></h3></center></br>
 					<div class="form-group">
                         <label class="col-md-4 control-label">Start Time</label>
-                        <div class="col-md-8"><input type="text" id="startTime" class="form-control input-sm"></div>
+                        <div class="col-md-5"><input type="text" id="startTime" class="form-control input-sm"></div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label">End Time</label>
-                        <div class="col-md-8"><input type="text" id="endTime" class="form-control input-sm"></div>
+                        <div class="col-md-5"><input type="text" id="endTime" class="form-control input-sm"></div>
                     </div>
 				</form>
 				

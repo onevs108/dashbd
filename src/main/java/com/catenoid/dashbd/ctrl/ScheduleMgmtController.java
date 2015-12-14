@@ -56,19 +56,26 @@ public class ScheduleMgmtController {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "/view/schdMgmt.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public ModelAndView schdMgmt(Locale locale, Model model) throws UnsupportedEncodingException {
+	@RequestMapping(value = "/view/schdMgmt.do")
+	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest req) throws UnsupportedEncodingException {
 		//bmcm 와 serviceArea  값으로  스케줄 정보를 가져온다.
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
-		logger.info("schdMgmt load");
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
-		System.out.println(formattedDate);
+		try
+		{
+			String transId = makeTransId();
+			params.put("transactionId", transId);
+				
+			//@ xmlMake & Send, recv
+			String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_RETRIEVE);
+			//@ check return XML success
+			if (!xmlManager.isSuccess(resStr))
+				throw new Exception(resStr);
+			
+			logger.info("schdMgmt load");
+		}catch(Exception e){
+			logger.error("", e);
+			mv.addObject( "error", e.getMessage() );
+		}
 				
 		return mv;
 	}
@@ -83,7 +90,7 @@ public class ScheduleMgmtController {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	@RequestMapping( value = "/view/getSchedule.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@RequestMapping( value = "/view/getSchedule.do")
 	@ResponseBody
 	public Map< String, Object > getSchedule( @RequestParam Map< String, Object > params,
 	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
@@ -92,9 +99,15 @@ public class ScheduleMgmtController {
 		//params.put("serviceId", "3048");
 		List<Map> list = mapper.selectSchdule(params);
 		
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) - 2;
-        if (hour < 0)
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour < 4)
         	hour = 0;
+        else if (hour < 12)
+        	hour = hour -2;
+        else if (hour < 18)
+        	hour = 12;
+        else
+        	hour = 14;
         
         Map< String, Object > returnMap = new HashMap< String, Object >();
         returnMap.put( "resultCode", "1000" );
@@ -118,22 +131,17 @@ public class ScheduleMgmtController {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	@RequestMapping(value = "view/addScheduleWithInitContent.do", produces="text/plain;charset=UTF-8")
+	@RequestMapping(value = "view/addScheduleWithInitContent.do")
 	@ResponseBody
 	public Map< String, Object > addScheduleWithInitContent( @RequestParam Map< String, Object > params,
-            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+            HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		
 		int ret = mapper.addScheduleWithInitContent(params);
 		logger.info("addScheduleWithInitContent [ret={}]", ret);
-		Map< String, Object > returnMap = new HashMap< String, Object >();
-        returnMap.put( "resultCode", "1000" );
-        returnMap.put( "resultMsg", "SUCCESS");
-        Map< String, Object > resultMap = new HashMap< String, Object >();
-        resultMap.put( "resultInfo", returnMap );
-                
-		return (Map<String, Object>) resultMap;
+
+		return makeRetMsg("1000", "SUCCESS");
 	}
 	
 	/**
@@ -144,16 +152,17 @@ public class ScheduleMgmtController {
 	 * @throws UnsupportedEncodingException
 	 */
 	@RequestMapping(value = "view/schdMgmtDetail.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String schdMgmtDetail(Locale locale, Model model) throws UnsupportedEncodingException {
-
+	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
+		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
+		mv.addObject( "serviceAreaId", params.get("serviceAreaId")); 
 			
-		return "schd/schdMgmtDetail";
+		return mv;
 	}
 	
 	/**
 	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지
 	 */
-	@RequestMapping(value = "view/schedule.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value = "view/schedule.do")
 	public ModelAndView schedule( @RequestParam Map< String, Object > params) throws UnsupportedEncodingException {
 		
 		ModelAndView mv = new ModelAndView( "schd/schedule" );
@@ -172,7 +181,7 @@ public class ScheduleMgmtController {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
-	@RequestMapping(value = "view/scheduleReg.do", method = RequestMethod.POST)
+	@RequestMapping(value = "view/scheduleReg.do")
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, Object > params,
             HttpServletRequest req, Locale locale ) {
@@ -190,7 +199,7 @@ public class ScheduleMgmtController {
 			
 			//@ check return XML success
 			if (!xmlManager.isSuccess(resStr))
-				return makeFailRet(resStr);
+				return makeRetMsg("9000", resStr);
 			
 			//@ insert broadcast_info  with flag which createBroadcast is successed or not
 			int ret = mapper.insertBroadcastInfo(params);
@@ -199,16 +208,11 @@ public class ScheduleMgmtController {
 			//@ update schedule broadcast id
 			ret = mapper.updateSchedule(params);
 			logger.info("updateSchedule ret{}", ret);
-
-			Map< String, Object > returnMap = new HashMap< String, Object >();
-	        returnMap.put( "resultCode", "1000" );
-	        returnMap.put( "resultMsg", resStr);
-	        Map< String, Object > resultMap = new HashMap< String, Object >();
-	        resultMap.put( "resultInfo", returnMap );
-	                
-			return (Map<String, Object>) resultMap;
+                
+	        return makeRetMsg("1000", "SUCCESS");
 		}catch(Exception e){
-			return makeFailRet(e.getMessage());
+			logger.error("", e);
+			return makeRetMsg("9999", e.getMessage());
 		}
 	
 	}
@@ -221,7 +225,7 @@ public class ScheduleMgmtController {
 	 * @param locale
 	 * @return
 	 */
-	@RequestMapping(value = "view/delSchedule.do", method = RequestMethod.POST)
+	@RequestMapping(value = "view/delSchedule.do")
 	@ResponseBody
 	public Map< String, Object > delSchedule( @RequestParam Map< String, Object > params,
             HttpServletRequest req, Locale locale ) {
@@ -257,7 +261,8 @@ public class ScheduleMgmtController {
 			*/
 			return null;
 		}catch(Exception e){
-			return makeFailRet(e.getMessage());
+			logger.error("", e);
+			return makeRetMsg("9999", e.getMessage());
 		}
 	
 	}
@@ -267,17 +272,16 @@ public class ScheduleMgmtController {
 		return System.currentTimeMillis() + "" + transID++;
 	}
 
-	private Map<String, Object> makeFailRet(String resStr) {
+	private Map<String, Object> makeRetMsg(String code, String resStr) {
 		
 		Map< String, Object > returnMap = new HashMap< String, Object >();
-	    returnMap.put( "resultCode", "9999" );
+	    returnMap.put( "resultCode", code );
 	    returnMap.put( "resultMsg", resStr);
 	      
 	    Map< String, Object > resultMap = new HashMap< String, Object >();
 	    resultMap.put( "resultInfo", returnMap );
 	              
 		return (Map<String, Object>) resultMap;
-		
 	}
 	
 }
