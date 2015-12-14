@@ -25,16 +25,28 @@ import com.catenoid.dashbd.util.HttpNetAgentException;
 public class XmlManager {
 	
 	private static final Logger logger = LoggerFactory.getLogger(XmlManager.class);
-	private static final String SERVICE_TYPE_FILE_DOWNLOAD = "FileDownload";
+	
+	public final int BMSC_XML_CREATE = 1; 
+	public final int BMSC_XML_UPDATE = 2;
+	public final int BMSC_XML_DELETE = 3;
+	public final String SERVICE_TYPE_FILE_DOWNLOAD = "FileDownload";
+	
+	
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
 	
-	public String createBroadcast(Map params){
+	public String sendBroadcast(Map params, int mode){
 		String retBody = "SUCCESS";
-		
+		String reqBody = "";
 		try {
 			//@set param to XML
-			String reqBody = makeCreateTransXml(params);
+			if (BMSC_XML_CREATE == mode)
+				reqBody= makeCreateTransXml(params);
+			else if (BMSC_XML_DELETE== mode)
+				reqBody= makeCreateTransXml(params);
+			else
+				reqBody= makeCreateTransXml(params);
+			
 			//@ xml send 
 			retBody = new HttpNetAgent().execute(b2InterfefaceURL, "", reqBody, false);
 			//@ parsing
@@ -113,7 +125,7 @@ public class XmlManager {
 		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
 			service.setAttribute(new Attribute("serviceType", "fileDownload"));
 			Element fileDownload = new Element("fileDownload");
-			fileDownload.setAttribute(new Attribute("serviceId", "urn:3gpp:filedownload-0410172238-1")); //??
+			fileDownload.setAttribute(new Attribute("serviceId", params.get("serviceId"))); 
 			Element name = new Element("name");
 			name.setAttribute(new Attribute("id", "1"));										//??
 			name.setText(params.get(""));
@@ -156,7 +168,7 @@ public class XmlManager {
 		else{
 			service.setAttribute(new Attribute("serviceType", "streaming"));
 			Element streaming = new Element("streaming");
-			streaming.setAttribute(new Attribute("serviceId", "urn:3gpp:filedownload-0410172238-1")); 
+			streaming.setAttribute(new Attribute("serviceId", params.get("serviceId"))); 
 			streaming.setAttribute(new Attribute("serviceClass", "urn:3gpp:mbms:ds"));				
 			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));

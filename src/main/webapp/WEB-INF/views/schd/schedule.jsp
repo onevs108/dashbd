@@ -49,6 +49,29 @@
 			}
 		});
 		
+		$("#btnCancel").click(function() {
+			location.href = "schdMgmtDetail.do";
+		});
+		
+		$("#btnDelete").click(function() {
+			var param = {
+					id : $("#id").val(),
+					BCID : $("#BCID").val()
+				};
+			$.ajax({
+				type : "POST",
+				url : "delSchedule.do",
+				data : param,
+				dataType : "json",
+				success : function( data ) {
+					outMsgForAjax(data);
+				},
+				error : function(request, status, error) {
+					alert("request=" +request +",status=" + status + ",error=" + error);
+				}
+			});
+		});
+		
 		$("#frmScheduleReg").ajaxForm({
 			dataType : "json",
 			beforeSubmit : function(data, frm, opt) {
@@ -57,27 +80,29 @@
 					return false;
 				}
 				*/
-				
-
 			},
 			success : function(result) {
 				console.log("success in");
-				var resultCode = result.resultInfo.resultCode
-				var resultMsg = result.resultInfo.resultMsg
-
-				if (resultCode == 1000) {
-					alert(resultMsg);
-					//document.location = "schdMgmtDetail.do";
-				} else {
-					alert("errorcode="+resultCode+",\n msg="+resultMsg);
-					
-				}
+				outMsgForAjax(result);
+				document.location = "schdMgmtDetail.do";
 			},
 			error : function(request, status, error) {
 				alert("request=" +request +",status=" + status + ",error=" + error);
 			}
 		});
 	});
+	
+	function outMsgForAjax(result){
+		var resultCode = result.resultInfo.resultCode
+		var resultMsg = result.resultInfo.resultMsg
+
+		if (resultCode == 1000) {
+			alert(resultMsg);
+		} else {
+			alert("errorcode="+resultCode+",\n msg="+resultMsg);
+			
+		}
+	}
 	
 	
 	function validation( from ) {
@@ -215,6 +240,9 @@
         <div class="wrapper wrapper-content">
         <form class=" form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
         <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
+        <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
+        
+        
             <!-- Contents -->
             <div class="row">
                 <div class="col-lg-12">
@@ -246,11 +274,11 @@
                                         <div id="bcType_nameLanguage">
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Service Name</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control" id="name" name="name" alt='service name'></div>
+                                            <div class="col-sm-9"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Language</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="en"></div>
+                                            <div class="col-sm-9"><input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}" placeholder="en"></div>
                                         </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
@@ -262,12 +290,12 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">GBR</label>
                                                         <div class="col-sm-9">
-                                                        	<input type="text" class="form-control input-sm" id="GBR" name="GBR" required="required"></div>
+                                                        	<input type="text" class="form-control input-sm" id="GBR" name="GBR" required="required" value="${mapSchedule.GBR}"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">QCI</label>
                                                         <div class="col-sm-9">
-                                                        	<input type="text" class="form-control input-sm" id="QCI" name="QCI" required="required"></div>
+                                                        	<input type="text" class="form-control input-sm" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}"></div>
                                                     </div>
                                                    
                                                     <div class="form-group">
@@ -476,8 +504,18 @@
                                         <div class="form-group">
 				                        	<div class="col-sm-5"></div>
 				                        	<div class="col-sm-">
-					                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnOK" style="margin-left:10px;margin-top:10px">OK</button>
-					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>&nbsp;&nbsp;
+					                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnOK" style="margin-left:10px;margin-top:10px">
+					                        	<c:if test="${empty mapSchedule.BCID}">
+					                        	OK
+					                        	</c:if>
+					                        	<c:if test="${not empty mapSchedule.BCID}">
+					                        	UPDATE            	
+					                        	</c:if>            	
+					                        	</button>
+					                        	
+					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnDelete" name="btnDelete" style="margin-left:10px;margin-top:10px">Delete</button>
+					                        	
+					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>
 				                        	</div>
 									    </div>
                                     

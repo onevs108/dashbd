@@ -24,7 +24,7 @@
 				, DATE_FORMAT(end_date , '%i') end_mins
 			FROM schedule s 
 			WHERE 1=1
-			AND service_area_id = #{serviceId} 
+			AND service_area_id = #{serviceAreaId} 
 		--	AND DATE_FORMAT(start_date , '%Y%m%d') = DATE_FORMAT(NOW() , '%Y%m%d');
 			order by start_date asc
 		]]>
@@ -34,7 +34,7 @@
 		<![CDATA[
 			SELECT id
 				, name
-				, BCID
+				, s.BCID
 				, DATE_FORMAT(start_date, '%Y/%m/%d %H:%i%s') start_date
 				, DATE_FORMAT(end_date, '%Y/%m/%d %H:%i:%s') end_date
 
@@ -46,11 +46,33 @@
 				, DATE_FORMAT(end_date , '%H') end_hour
 				, DATE_FORMAT(end_date , '%i') end_mins
 				, DATE_FORMAT(end_date , '%s') end_second
+				, b.transactionId
+				, b.serviceId
+				, b.service
+				, b.service_name
+				, b.language
+				, b.GBR
+				, b.QCI
+				, b.level
+				, b.preEmptionCapabiity
+				, b.preEmptionVulnerability
+				, b.fecType
+				, b.fecRatio
+				, b.said
+				, b.schedule_start
+				, b.schedule_stop
+				, b.reportType
+				, b.offsetTime
+				, b.randomTime
+				, b.fileURI
+				, b.deliveryInfo_start
+				, b.deliveryInfo_end
+				, b.mpdURI
+				, b.samplePercentage
 			FROM schedule s 
+			left join broadcast_info b on s.BCID = b.BCID
 			WHERE 1=1
 			AND id = #{id} 
-		--	AND DATE_FORMAT(start_date , '%Y%m%d') = DATE_FORMAT(NOW() , '%Y%m%d');
-			order by start_date asc
 		]]>
 	</select>
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
@@ -65,7 +87,8 @@
 	
 	<insert id = "insertBroadcastInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="BCID">
 		
-		INSERT INTO broadcast_info(transactionId 
+		INSERT INTO broadcast_info(transactionId
+			, serviceId 
 			, service
 			, service_name
 			, language
@@ -75,6 +98,7 @@
 			, preEmptionCapabiity
 			, preEmptionVulnerability
 		)values(#{transactionId}
+			, #{serviceId}
 			, #{serviceType}
 			, #{name}
 			, #{serviceLanguage}

@@ -57,9 +57,9 @@ public class ScheduleMgmtController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/view/schdMgmt.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String schdMgmt(Locale locale, Model model) throws UnsupportedEncodingException {
+	public ModelAndView schdMgmt(Locale locale, Model model) throws UnsupportedEncodingException {
 		//bmcm 와 serviceArea  값으로  스케줄 정보를 가져온다.
-		
+		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		logger.info("schdMgmt load");
 		
 		Date date = new Date();
@@ -70,7 +70,7 @@ public class ScheduleMgmtController {
 		model.addAttribute("serverTime", formattedDate );
 		System.out.println(formattedDate);
 				
-		return "schd/schdMgmt";
+		return mv;
 	}
 	
 	/**
@@ -166,7 +166,7 @@ public class ScheduleMgmtController {
 	}
 	
 	/**
-	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지 > 저장
+	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지 > 등록, 수정
 	 * @param locale
 	 * @param model
 	 * @return
@@ -181,9 +181,12 @@ public class ScheduleMgmtController {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		
 		try{
-			params.put("transactionId", makeTransId());
+			String transId = makeTransId();
+			params.put("transactionId", transId);
+			params.put("serviceId","urn:3gpp:" + params.get("serviceType") + ":" + transId);
+			
 			//@ xmlMake & Send, recv
-			String resStr = xmlManager.createBroadcast(params);
+			String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_CREATE);
 			
 			//@ check return XML success
 			if (!xmlManager.isSuccess(resStr))
@@ -209,6 +212,56 @@ public class ScheduleMgmtController {
 		}
 	
 	}
+	
+	/**
+	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지 > 삭제
+	 * bcid가 있으면  BMSC삭제 연동. 없으면 db만 삭제처리.
+	 * @param params
+	 * @param req
+	 * @param locale
+	 * @return
+	 */
+	@RequestMapping(value = "view/delSchedule.do", method = RequestMethod.POST)
+	@ResponseBody
+	public Map< String, Object > delSchedule( @RequestParam Map< String, Object > params,
+            HttpServletRequest req, Locale locale ) {
+		
+		logger.info("sending param{}", params);
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		try{
+			params.put("transactionId", makeTransId());
+			//@ xmlMake & Send, recv
+			String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_DELETE);
+
+			/*
+			//@ check return XML success
+			if (!xmlManager.isSuccess(resStr))
+				return makeFailRet(resStr);
+			
+			//@ update delete flag 
+			int ret = mapper.updateBroadcastInfo4Del(params);
+			logger.info("insertBroadcastInfo ret{}", ret);
+
+			//@ update delete flag 
+			ret = mapper.updateSchedule4Del(params);
+			logger.info("updateSchedule ret{}", ret);
+
+			Map< String, Object > returnMap = new HashMap< String, Object >();
+	        returnMap.put( "resultCode", "1000" );
+	        returnMap.put( "resultMsg", resStr);
+	        Map< String, Object > resultMap = new HashMap< String, Object >();
+	        resultMap.put( "resultInfo", returnMap );
+	                
+			return (Map<String, Object>) resultMap;
+			*/
+			return null;
+		}catch(Exception e){
+			return makeFailRet(e.getMessage());
+		}
+	
+	}
+	
 
 	private String makeTransId() {
 		return System.currentTimeMillis() + "" + transID++;

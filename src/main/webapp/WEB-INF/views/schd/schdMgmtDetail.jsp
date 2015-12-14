@@ -121,7 +121,7 @@
 	var ctrl = {
 		initialize : function() {
 			var param = {
-					serviceId : '3048'
+					serviceAreaId : '3048'
 				};
 				
 				$.ajax({
