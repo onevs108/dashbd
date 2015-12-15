@@ -30,6 +30,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
@@ -669,5 +670,11 @@ public class ServiceAreaController {
 		// TODO Auto-generated method stub
 		if(parameter == null || parameter.trim().equals("")) return false;
 		return true;
+	}
+	
+	@RequestMapping(value = "/service_area.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView getServiceAreaMain(HttpServletRequest request) {
+		
+		return null;
 	}
 }
