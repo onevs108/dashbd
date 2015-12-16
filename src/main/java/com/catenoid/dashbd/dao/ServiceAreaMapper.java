@@ -3,6 +3,7 @@ package com.catenoid.dashbd.dao;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
 import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.BmscServiceArea;
 import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.OperatorBmsc;
@@ -44,4 +45,6 @@ public interface ServiceAreaMapper {
     List<Operator> getServiceAreaOperator(OperatorSearchParam searchParam);
     
     List<BmscServiceArea> getSeviceAreaByBmSc(BmscServiceAreaSearchParam searchParm);
+    
+    List<Bmsc> getSeviceAreaBmSc(OperatorSearchParam searchParm);
 }

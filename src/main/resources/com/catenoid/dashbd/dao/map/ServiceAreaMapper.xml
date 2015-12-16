@@ -24,7 +24,7 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   
-	<resultMap id="BmscServiceArea" type="com.catenoid.dashbd.dao.model.BmscServiceArea" >
+	<resultMap id="ServiceAreaByBmSc" type="com.catenoid.dashbd.dao.model.BmscServiceArea" >
 		<result column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
 		<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
 		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
@@ -35,6 +35,14 @@
 		<result column="id" property="id" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<resultMap id="BmscServiceArea" type="com.catenoid.dashbd.dao.model.Bmsc" >
+		<result column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="cicle" property="circle" jdbcType="VARCHAR" />
 		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
 	</resultMap>
@@ -327,7 +335,7 @@
   </update>
   
 
-	<select id="getSeviceAreaByBmSc" resultMap="BmscServiceArea" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
+	<select id="getSeviceAreaByBmSc" resultMap="ServiceAreaByBmSc" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
 		select
 			bmsc_id, service_area_id, created_at, updated_at
 		from 
@@ -345,6 +353,18 @@
 			operator
 		where 1 = 1 
 		order by id
+		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
+	</select>
+	
+	<select id="getSeviceAreaBmSc" resultMap="BmscServiceArea" parameterType="com.catenoid.dashbd.dao.model.OperatorSearchParam" >
+		select
+			y.id, y.name, y.circle, y.created_at, y.updated_at
+		from 
+			operator_bmsc x, bmsc y
+		where 1 = 1 
+			and x.operator_id = #{operatorId,jdbcType=INTEGER}
+			and y.id = x.bmsc_id
+		order by y.id
 		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 

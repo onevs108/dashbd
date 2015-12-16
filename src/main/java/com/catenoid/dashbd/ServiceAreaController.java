@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
@@ -36,6 +37,7 @@ import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
 import com.catenoid.dashbd.dao.ServiceAreaScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
+import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.BmscServiceArea;
 import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.Operator;
@@ -694,6 +696,40 @@ public class ServiceAreaController {
 		return mv;
 	}
 	
+	@RequestMapping(value = "/api/serviceAreaBmScByOperator.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaBmScByOperator(HttpServletRequest request, HttpServletResponse response) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		
+		if(request.getParameter("operatorId") == null) return;
+		
+		OperatorSearchParam searchParam = new OperatorSearchParam();
+		searchParam.setPage(page);
+		searchParam.setPerPage(15);
+		searchParam.setOperatorId(Integer.valueOf(request.getParameter("operatorId")));
+		
+		List<Bmsc> datas = mapper.getSeviceAreaBmSc(searchParam);
+		
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			Bmsc data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("id", data.getId());
+			obj.put("name", data.getName());
+			obj.put("circle", data.getCircle());
+			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	@RequestMapping(value = "/resources/api/serviceAreaMainBmSc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public ModelAndView getServiceAreaMainBmSc(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("/service_area_mgmt");
@@ -711,4 +747,5 @@ public class ServiceAreaController {
 		
 		return mv;
 	}
+	
 }
