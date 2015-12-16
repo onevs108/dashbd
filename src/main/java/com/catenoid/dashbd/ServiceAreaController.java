@@ -36,11 +36,16 @@ import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
 import com.catenoid.dashbd.dao.ServiceAreaScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
+import com.catenoid.dashbd.dao.model.BmscServiceArea;
+import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
+import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaSchedule;
 import com.catenoid.dashbd.dao.model.ServiceAreaScheduleExample;
+import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
 
 /**
  * Handles requests for the application home page.
@@ -672,9 +677,38 @@ public class ServiceAreaController {
 		return true;
 	}
 	
-	@RequestMapping(value = "/service_area.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public ModelAndView getServiceAreaMain(HttpServletRequest request) {
+	@RequestMapping(value = "/resources/serviceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView getServiceAreaMainOperator(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("/service_area_mgmt");
 		
-		return null;
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		OperatorSearchParam searchParam = new OperatorSearchParam();
+		searchParam.setPage(1);
+		searchParam.setPerPage(15);
+		
+		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+		
+		mv.addObject("OperatorList", result);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/resources/api/serviceAreaMainBmSc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView getServiceAreaMainBmSc(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("/service_area_mgmt");
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
+		searchParam.setPage(1);
+		searchParam.setPerPage(15);
+		searchParam.setBmscId(2003);
+		
+		List<BmscServiceArea> result = mapper.getSeviceAreaByBmSc(searchParam);
+		
+		mv.addObject("BmcServiceAreaList", result);
+		
+		return mv;
 	}
 }

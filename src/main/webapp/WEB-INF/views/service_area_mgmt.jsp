@@ -1,12 +1,13 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Area Mgmt</title>
-
-	<script src="app-js/bower_components/requirejs/require.js"></script>
-	<script src="app-js/config.js"></script>
-	<script src="app-js/apps/svc_area_management.js"></script>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -19,6 +20,9 @@
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	
+	<script src="app-js/config.js"></script>
+	<script src="app-js/apps/svc_area_management.js"></script>
 </head>
 <body>
 <div id="wrapper">
@@ -149,7 +153,10 @@
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
                                     <select class="input-sm form-control input-s-sm" id="operator">
-                                        <option value="">Select one</option>
+                                        <option value="">Select Operator</option>
+                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
+										<option value="${operatorList.id }">${operatorList.name }</option>
+										</c:forEach>
                                     </select>
                                 </div>
                             </div>

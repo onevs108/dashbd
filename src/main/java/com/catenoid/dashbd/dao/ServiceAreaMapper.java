@@ -2,8 +2,15 @@ package com.catenoid.dashbd.dao;
 
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
+import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.BmscServiceArea;
+import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
+import com.catenoid.dashbd.dao.model.OperatorBmsc;
+import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
+import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
+
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,5 +41,7 @@ public interface ServiceAreaMapper {
 
     int updateByPrimaryKey(ServiceArea record);
     
-    List<ServiceArea> getSeviceAreaByBmSc(String bmsc);
+    List<Operator> getServiceAreaOperator(OperatorSearchParam searchParam);
+    
+    List<BmscServiceArea> getSeviceAreaByBmSc(BmscServiceAreaSearchParam searchParm);
 }
