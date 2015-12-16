@@ -97,6 +97,19 @@
 			, level
 			, preEmptionCapabiity
 			, preEmptionVulnerability
+			, fecType
+			, fecRatio
+			, said
+			, schedule_start
+			, schedule_stop
+			, reportType
+			, offsetTime
+			, randomTime
+			, fileURI
+			, deliveryInfo_start
+			, deliveryInfo_end
+			, mpdURI
+			, samplePercentage
 		)values(#{transactionId}
 			, #{serviceId}
 			, #{serviceType}
@@ -107,6 +120,19 @@
 			, #{level}
 			, #{preEmptionCapabiity}
 			, #{preEmptionVulnerability}
+			, #{fecType}
+			, #{fecRatio}
+			, #{said}
+			, #{schedule_start}
+			, #{schedule_stop}
+			, #{reportType}
+			, #{offsetTime}
+			, #{randomTime}
+			, #{fileURI}
+			, #{deliveryInfo_start}
+			, #{deliveryInfo_end}
+			, #{mpdURI}
+			, #{samplePercentage}
 		)
 	</insert>
 	

@@ -33,18 +33,18 @@
 	<script src="../resourcesRenew/js/popup/jquery.leanModal.min.js"></script>
 	<!-- Page-Level Scripts -->
 	<style>
-
+/*
 	.schedule, .schedule2{
-	    width: 400px;
+	    width: 300px;
 	    background-color: #c0392b;
-	    border: #ecf0f1 solid 1px;
+	    border: #7DC9BA solid 1px;
 	    padding: 3px;
 	    color: #ecf0f1;
 	}
+*/
 	.schedule:hover, .schedule2:hover{
 	    background-color: #e74c3c;
 	}
-	
 	
 /* popup */
 .popupbox { position:absolute; left:10%; top:0;width:150px; z-index:99999; }
@@ -196,14 +196,22 @@
 	 				end: end_date,
                     title: "<a href='schedule.do?id=" + id + "'>" + name +"</a>"
             };
+			/*
+			width: 300px;
+		    background-color: #c0392b;
+		    border: #7DC9BA solid 1px;
+		    padding: 3px;
+		    color: #ecf0f1;
+			*/
+			
 			if (broadcast_info_id == null || broadcast_info_id == "")
-				schedule['css'] = {backgroundColor:"#63BC09",height:"100px"};
+				schedule['css'] = {backgroundColor:"#eeeeee",width:"320px", color: "#787A7C", padding:"8px",border:"#7DC9BA solid 1px", marginTop:"100px"};
 			else
-				schedule['css'] = {backgroundColor:"#f39c12",height:"100px"};
+				schedule['css'] = {backgroundColor:"#8DD9CA",width:"320px", color: "#ecf0f1", padding:"8px",border:"#1AB394 solid 1px"};
 			
 			schedules.push( schedule );
 		}
-   
+   	
 	  	 $('#schedule').graspSchedule({
        	    schedules:schedules,
        	    //events:events,
@@ -215,16 +223,16 @@
        	        },
        	        css:{
        	            event:{
-       	                height:"50px"
+       	                height:"10px"
        	            },
        	            schedule:{
-       	                height:"70px"
+       	                height:"60px",
        	            },
        	            zIndexStart:0,
        	            marginTop:"0px",
        	            marginLeft:"0px",
        	        },
-       	        time:true,//show time on left side
+       	        time:false,//show time on left side
        	        insideTime:true,//show time inside
        	        timeFormat:'HH:mm',
        	        daysFormat:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']

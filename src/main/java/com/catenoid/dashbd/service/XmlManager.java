@@ -3,6 +3,7 @@ package com.catenoid.dashbd.service;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jdom.Attribute;
@@ -72,6 +73,50 @@ public class XmlManager {
 		return false;
 	}
 	
+	public Map<String, String> paringRetrieve(String strXmlBody) throws JDOMException, IOException{
+		Map< String, String > xmlMap = new HashMap< String, String >();
+		Document doc = null;
+		doc = new SAXBuilder().build(new StringReader(strXmlBody));
+		Element message = doc.getRootElement();
+		Element service = message.getChild("parameters").getChild("services").getChild("service");
+		String serviceTypeStr = service.getAttributeValue("serviceType");
+		
+		Element serviceType = null;
+		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(serviceTypeStr)){
+			serviceType = service.getChild("fileDownload");
+		}else{
+			serviceType = service.getChild("streaming");
+		}
+			
+
+		xmlMap.put("transactionId", message.getChild("transaction").getAttributeValue("id"));
+		xmlMap.put("serviceId", serviceType.getAttributeValue("id") );
+		xmlMap.put("serviceType", serviceTypeStr);
+
+		xmlMap.put("name", serviceType.getChildText("name"));
+		xmlMap.put("serviceLanguage", serviceType.getChildText("serviceLanguage"));
+		xmlMap.put("GBR", serviceType.getChild("QoS").getChildText("GBR"));
+		xmlMap.put("QCI", serviceType.getChild("QoS").getChildText("QCI"));
+//		xmlMap.put("level", serviceType);
+		xmlMap.put("preEmptionCapabiity", serviceType.getChild("QoS").getChild("ARP").getChildText("preEmptionCapability"));
+		xmlMap.put("preEmptionVulnerability", serviceType.getChild("QoS").getChild("ARP").getChildText("preEmptionVulnerability"));
+		xmlMap.put("fecType", serviceType.getChild("FEC").getChildText("fecType"));
+		xmlMap.put("fecRatio", serviceType.getChild("FEC").getChildText("fecRatio"));
+		xmlMap.put("said", serviceType.getChild("serviceArea").getChildText("said"));	//fileDown만??
+		xmlMap.put("schedule_start", serviceType.getChild("schedule").getAttributeValue("start"));
+		xmlMap.put("schedule_stop", serviceType.getChild("schedule").getAttributeValue("stop"));
+//		xmlMap.put("reportType", serviceType);
+//		xmlMap.put("offsetTime", serviceType);
+//		xmlMap.put("randomTime", serviceType);
+		xmlMap.put("fileURI", serviceType.getChild("schedule").getChild("content").getChildText("fileURI"));
+		xmlMap.put("deliveryInfo_start", xmlMap.put("fileURI", serviceType.getChild("schedule").getChild("content").getChild("deliveryInfo").getAttributeValue("start")));
+		xmlMap.put("deliveryInfo_end", xmlMap.put("fileURI", serviceType.getChild("schedule").getChild("content").getChild("deliveryInfo").getAttributeValue("end")));
+//		xmlMap.put("mpdURI", serviceType);
+//		xmlMap.put("samplePercentage", serviceType);
+
+		return xmlMap;
+	}
+	
 	public String makeXmlRetrieve(Map<String, String> params){
 		Element message = new Element("message");
 		message.setAttribute(new Attribute("name", "SERVICE.RETRIEVE"));
@@ -109,22 +154,6 @@ public class XmlManager {
 		doc.getRootElement().addContent(parameters);
 		return outString(doc);
 	}
-	
-	public String makeXmlUpdate(Map<String, String> params){
-		Element message = new Element("message");
-		message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));
-		message.setAttribute(new Attribute("type", "REQUEST"));
-		Document doc = new Document(message);
-		doc.setRootElement(message);
-		
-		Element transaction = new Element("transaction");
-		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText("dGVzdA=="));		//key ??
-		
-		doc.getRootElement().addContent(transaction);
-		return outString(doc);
-	}
-	
 	
 	public String makeXmlCreate(Map<String, String> params, int mode){
 		Element message = new Element("message");

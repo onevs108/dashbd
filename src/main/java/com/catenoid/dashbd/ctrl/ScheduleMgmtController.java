@@ -66,10 +66,14 @@ public class ScheduleMgmtController {
 			params.put("transactionId", transId);
 				
 			//@ xmlMake & Send, recv
-			String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_RETRIEVE);
+			//String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_RETRIEVE);
 			//@ check return XML success
-			if (!xmlManager.isSuccess(resStr))
-				throw new Exception(resStr);
+//			if (!xmlManager.isSuccess(resStr))
+//				throw new Exception(resStr);
+			//@ parsing
+//			Map<String, String> xmlParam = xmlManager.paringRetrieve(resStr);
+			
+			//@ db insert
 			
 			logger.info("schdMgmt load");
 		}catch(Exception e){
@@ -238,11 +242,11 @@ public class ScheduleMgmtController {
 			//@ xmlMake & Send, recv
 			String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_DELETE);
 
-			/*
+			
 			//@ check return XML success
 			if (!xmlManager.isSuccess(resStr))
-				return makeFailRet(resStr);
-			
+				return makeRetMsg("1000", resStr);
+			/*
 			//@ update delete flag 
 			int ret = mapper.updateBroadcastInfo4Del(params);
 			logger.info("insertBroadcastInfo ret{}", ret);

@@ -49,6 +49,7 @@
 			}
 		});
 		
+		
 		$("#btnCancel").click(function() {
 			location.href = "schdMgmtDetail.do";
 		});
