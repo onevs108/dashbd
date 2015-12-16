@@ -33,4 +33,6 @@ public interface ServiceAreaMapper {
     int updateByPrimaryKeySelective(ServiceArea record);
 
     int updateByPrimaryKey(ServiceArea record);
+    
+    List<ServiceArea> getSeviceAreaByBmSc(String bmsc);
 }
