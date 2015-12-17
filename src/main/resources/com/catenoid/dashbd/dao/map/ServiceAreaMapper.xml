@@ -29,6 +29,7 @@
 		<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
 		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
 
 	<resultMap id="OperatorServiceArea" type="com.catenoid.dashbd.dao.model.Operator" >
@@ -37,6 +38,7 @@
 		<result column="description" property="description" jdbcType="VARCHAR" />
 		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
 	
 	<resultMap id="BmscServiceArea" type="com.catenoid.dashbd.dao.model.Bmsc" >
@@ -45,6 +47,7 @@
 		<result column="cicle" property="circle" jdbcType="VARCHAR" />
 		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
 	
   <sql id="Example_Where_Clause" >
@@ -338,6 +341,7 @@
 	<select id="getSeviceAreaByBmSc" resultMap="ServiceAreaByBmSc" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
 		select
 			bmsc_id, service_area_id, created_at, updated_at
+			, (select count(*) from bmsc_service_area where 1 = 1 and bmsc_id = #{bmscId,jdbcType=INTEGER}) as totalCount
 		from 
 			bmsc_service_area
 		where 1 = 1 
@@ -349,6 +353,7 @@
 	<select id="getServiceAreaOperator" resultMap="OperatorServiceArea" parameterType="com.catenoid.dashbd.dao.model.OperatorSearchParam" >
 		select
 			id, name, description, created_at, updated_at
+			, (select count(*) from operator where 1 = 1) as totalCount
 		from 
 			operator
 		where 1 = 1 
@@ -359,6 +364,7 @@
 	<select id="getSeviceAreaBmSc" resultMap="BmscServiceArea" parameterType="com.catenoid.dashbd.dao.model.OperatorSearchParam" >
 		select
 			y.id, y.name, y.circle, y.created_at, y.updated_at
+			, (select count(*) from operator_bmsc x, bmsc y where 1 = 1 and x.operator_id = #{operatorId,jdbcType=INTEGER} and y.id = x.bmsc_id) as totalCount
 		from 
 			operator_bmsc x, bmsc y
 		where 1 = 1 

@@ -12,6 +12,8 @@ public class Bmsc {
     private Date createdAt;
 
     private Date updatedAt;
+    
+    private Integer totalCount;
 
     public Integer getId() {
         return id;
@@ -51,5 +53,13 @@ public class Bmsc {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
     }
 }

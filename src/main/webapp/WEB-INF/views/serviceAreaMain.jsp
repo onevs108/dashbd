@@ -143,35 +143,34 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Service Area Mgmt</h5>
-                            <div class="ibox-tools">
-                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a-->
+                        	<div class="row">
+                            	<div class="col-sm-4">
+                            		<h4>Service Area Mgmt</h4>
+                            		<ul class="service_area_box">
+                            			<li><button class="btn btn-success btn-block" id="btn-add-service-area">Add Service Area</button></li>
+                            		</ul>
+                            	</div>
                             </div>
                         </div>
                         <div class="ibox-content">
                             <div class="row">
-                                <div class="col-sm-3 m-b-sm">
-                                    <select class="input-sm form-control input-s-sm" id="operator">
-                                        <option value="">Select Operator</option>
-                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
-										<option value="${operatorList.id }">${operatorList.name }</option>
+                            	<div class="col-sm-4">
+                                    <h5>Select Operator</h5>
+                                    <ul class="service_area_box" id="operator">
+                                    	<c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
+										<li><a href="javascript:getServiceAreaBmSc(1, '${operatorList.id }');">${operatorList.name }</a></li>
 										</c:forEach>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h5>Select BM-SC</h5>
-                                    <ul class="service_area_box" id="bmsc">
-                                        <li><a href="#">Select operator</a></li>
                                     </ul>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
+                                    <h5>Select BM-SC</h5>
+                                    <ul class="service_area_box" id="bmsc">
+                                    </ul>
+                                </div>
+                                <div class="col-sm-4">
                                     <h5>Select Service Area</h5>
                                     <ul class="service_area_box" id="service_area">
-                                        <li><button class="btn btn-success btn-block" id="btn-add-service-area">Add Service Area</button></li>
-                                        <li><a href="#">Select bmsc</a></li>
+                                        
                                     </ul>
                                 </div>
                             </div>

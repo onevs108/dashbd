@@ -680,14 +680,16 @@ public class ServiceAreaController {
 	}
 	
 	@RequestMapping(value = "/resources/serviceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public ModelAndView getServiceAreaMainOperator(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView("/service_area_mgmt");
+	public ModelAndView getServiceAreaMain(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("serviceAreaMain");
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 15;
 		
 		OperatorSearchParam searchParam = new OperatorSearchParam();
-		searchParam.setPage(1);
-		searchParam.setPerPage(15);
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
 		
 		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
 		
@@ -701,12 +703,13 @@ public class ServiceAreaController {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 15;
 		
 		if(request.getParameter("operatorId") == null) return;
 		
 		OperatorSearchParam searchParam = new OperatorSearchParam();
-		searchParam.setPage(page);
-		searchParam.setPerPage(15);
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
 		searchParam.setOperatorId(Integer.valueOf(request.getParameter("operatorId")));
 		
 		List<Bmsc> datas = mapper.getSeviceAreaBmSc(searchParam);
@@ -730,22 +733,39 @@ public class ServiceAreaController {
 	    }
 	}
 	
-	@RequestMapping(value = "/resources/api/serviceAreaMainBmSc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public ModelAndView getServiceAreaMainBmSc(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView("/service_area_mgmt");
+	@RequestMapping(value = "/api/serviceAreaByBmSc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaMainBmSc(HttpServletRequest request, HttpServletResponse response) {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 15;
+		
+		if(request.getParameter("bmscId") == null) return;
 		
 		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
-		searchParam.setPage(1);
-		searchParam.setPerPage(15);
-		searchParam.setBmscId(2003);
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
+		searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
 		
-		List<BmscServiceArea> result = mapper.getSeviceAreaByBmSc(searchParam);
+		List<BmscServiceArea> datas = mapper.getSeviceAreaByBmSc(searchParam);
 		
-		mv.addObject("BmcServiceAreaList", result);
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			BmscServiceArea data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("bmscId", data.getBmscId());
+			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("totalCount", data.getTotalCount());
+			array.add(obj);
+		}
 		
-		return mv;
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 }

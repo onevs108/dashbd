@@ -20,6 +20,8 @@ public class BmscServiceArea {
     private Date createdAt;
 
     private Date updatedAt;
+    
+    private Integer totalCount;
 
     public Integer getBmscId() {
         return bmscId;
@@ -91,5 +93,13 @@ public class BmscServiceArea {
 
 	public void setServiceAreaBandwidth(Integer serviceAreaBandwidth) {
 		this.serviceAreaBandwidth = serviceAreaBandwidth;
+	}
+	
+	public Integer getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(Integer totalCount) {
+		this.totalCount = totalCount;
 	}
 }
