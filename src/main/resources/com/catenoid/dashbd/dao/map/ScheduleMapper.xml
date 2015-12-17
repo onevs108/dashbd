@@ -9,8 +9,8 @@
 			SELECT ID
 				, NAME
 				, BCID
-				, DATE_FORMAT(start_date, '%Y/%m/%d %H:%i') start_date
-				, DATE_FORMAT(end_date, '%Y/%m/%d %H:%i') end_date
+				, DATE_FORMAT(start_date, '%Y-%m-%dT%H:%i:%s') start_date
+				, DATE_FORMAT(end_date, '%Y-%m-%dT%H:%i:%s') end_date
 				
 				, DATE_FORMAT(start_date , '%Y') start_year 
 				, DATE_FORMAT(start_date , '%m') start_month
@@ -80,8 +80,9 @@
 			(service_area_id, content_id, name, start_date, end_date)
 		VALUES
 			(#{serviceAreaId}, #{contentId}, #{titleName}
-				,  str_to_date(concat(DATE_FORMAT(now() , '%Y%m%d'), #{startTime}), '%Y%m%d%H%i')
-				,  str_to_date(concat(DATE_FORMAT(now() , '%Y%m%d'), #{endTime}), '%Y%m%d%H%i')
+						, str_to_date(#{startTime}, '%Y%m%d%H%i%s')
+						, str_to_date(#{endTime}, '%Y%m%d%H%i%s')
+				
 			)
 	</insert>
 	

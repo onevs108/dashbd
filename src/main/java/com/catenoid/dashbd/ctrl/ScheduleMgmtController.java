@@ -141,7 +141,8 @@ public class ScheduleMgmtController {
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		
+		params.put("startTime", convertMysqlDateFormat((String)params.get("startTime")));
+		params.put("endTime", convertMysqlDateFormat((String)params.get("endTime")));
 		int ret = mapper.addScheduleWithInitContent(params);
 		logger.info("addScheduleWithInitContent [ret={}]", ret);
 
@@ -270,7 +271,13 @@ public class ScheduleMgmtController {
 		}
 	
 	}
-	
+	private String convertMysqlDateFormat(String dateTime){
+		dateTime = dateTime.trim();
+		dateTime = dateTime.replaceAll("-", "");
+		dateTime = dateTime.replaceAll(":", "");
+		dateTime = dateTime.replaceAll("T", "");
+		return dateTime;
+	}
 
 	private String makeTransId() {
 		return System.currentTimeMillis() + "" + transID++;

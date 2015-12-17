@@ -11,10 +11,6 @@
     <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/plugins/fullcalendar/fullcalendar.print.css" rel="stylesheet" media='print' />
-    <link href="../resourcesRenew/css/plugins/fullcalendar/scheduler.css" rel="stylesheet" media='print' />
-    <link href="../resourcesRenew/css/plugins/timePicki/timepicki.css" rel="stylesheet" media='print' />
     <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/datapicker/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -22,8 +18,6 @@
     
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
-	<script src="../resourcesRenew/js/jquery-ui-1.10.4.min.js"></script>
-	
 	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
 	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -35,14 +29,22 @@
 	<!-- Custom and plugin javascript -->
 	<script src="../resourcesRenew/js/inspinia.js"></script>
 	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
-	<script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
-	<script src="../resourcesRenew/js/plugins/fullcalendar/fullcalendar.js"></script>
-	<script src="../resourcesRenew/js/plugins/fullcalendar/scheduler.js"></script>
-	<script src="../resourcesRenew/js/plugins/timePicki/timepicki.js"></script>
+	<script src="../resourcesRenew/js/graspSchedule/jquery.graspSchedule.js"></script>
 	<script src="../resourcesRenew/js/popup/jquery.leanModal.min.js"></script>
 	<!-- Page-Level Scripts -->
 	<style>
-
+/*
+	.schedule, .schedule2{
+	    width: 300px;
+	    background-color: #c0392b;
+	    border: #7DC9BA solid 1px;
+	    padding: 3px;
+	    color: #ecf0f1;
+	}
+*/
+	.schedule:hover, .schedule2:hover{
+	    background-color: #e74c3c;
+	}
 	
 /* popup */
 .popupbox { position:absolute; left:10%; top:0;width:150px; z-index:99999; }
@@ -83,60 +85,17 @@
 .popupbox span.rt { position:absolute; right:0; top:0; z-index:1; width:100%; height:60px; display:block; overflow:hidden; background:url(../resourcesRenew/img/common/bg_round1.png) right top no-repeat; }
 .popupbox span.lb { position:absolute; left:0; bottom:0; z-index:1; width:100%; height:92px; display:block; overflow:hidden; background:url(../resourcesRenew/img/common/bg_round2.png) left bottom no-repeat; }
 .popupbox span.rb { position:absolute; right:0; bottom:0; z-index:1; width:100%; height:92px; display:block; overflow:hidden; background:url(../resourcesRenew/img/common/bg_round2.png) right bottom no-repeat; }
-
-
-#external-events .fc-event {
-	margin: 10px 0;
-	cursor: pointer;
-}
-
-#external-events {
-	float: right;
-	width: 95%;
-	padding: 0 10px;
-	border: 1px solid #ccc;
-	background: #eee;
-	text-align: left;
-}
 	
-/*
-#wrap {
-		width: 1100px;
-		margin: 0 auto;
-	}
-		
-
-		
-	#external-events h4 {
-		font-size: 16px;
-		margin-top: 0;
-		padding-top: 1em;
-	}
-		
-
-		
-	#external-events p {
-		margin: 1.5em 0;
-		font-size: 11px;
-		color: #666;
-	}
-		
-	#external-events p input {
-		margin: 0;
-		vertical-align: middle;
-	}
-
-	#calendar {
-		float: right;
-		width: 900px;
-	}
-	*/	
 	</style>
 	
 <script>
 	var content_id = "";
 	var g_name = "";
 	$(document).ready(function() {
+		$('#datepickerDate').datepicker({
+            format: "yyyy.mm.dd",
+            autoclose : true
+        });  
 		
 		ctrl.initialize();
 		
@@ -157,13 +116,11 @@
 				}
 			});
 		});
-	
 	});
 
 	
 	var ctrl = {
 		initialize : function() {
-			
 			var param = {
 					serviceAreaId : $('#serviceAreaId').val()
 				};
@@ -173,7 +130,6 @@
 				url : "getSchedule.do",
 				data : param,
 				dataType : "json",
-				async: false,
 				success : function( data ) {
 					setTimeTable(data);
 				},
@@ -184,27 +140,9 @@
 		}
 	};
 	
-	function setDragEventFunction(){
-		$('#external-events .fc-event').each(function() {
-			// store data so the calendar knows to render an event upon drop
-			$(this).data('event', {
-				title: $.trim($(this).text()), // use the element's text as the event title
-				stick: true // maintain when user navigates (see docs on the renderEvent method)
-			});
-
-			// make the event draggable using jQuery UI
-			$(this).draggable({
-				zIndex: 999,
-				revert: true,      // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
-			});
-
-		});
-	}
-	
 	function getContents(data){
 
-		var $list = $("#external-events");
+		var $list = $("#result_list");
 		
 		// list 초기화
 		$list.empty();
@@ -213,13 +151,20 @@
 		}
 			
 		for ( var i=0; i<data.length; i++) {
-			var $div = $("<div/>");
+			var $tr = $("<tr/>");
+			var $td_title = $("<td/>");
+			
+			var $a = $("<a/>");
+			var title = data[i].title;
 			var id = data[i].id;
 			var title = data[i].title;
-			$div.append(title);
-			$div.attr("class","fc-event");
-			$div.attr("data-id", id);
-			$list.append( $div );
+			$a.append(title);
+			$a.attr("href","javascript:popupShow('" + id +  "','" + title + "')");
+			$td_title.append( $a);
+			
+			
+			$tr.append( $td_title );
+			$list.append( $tr );
 		}
 		
 		// pagging 초기화
@@ -231,15 +176,16 @@
 			holder: ".pagging"
 		});
 		*/
-		setDragEventFunction();
+		
 		$(".search-list").show();
 	}
 	
-	
 	function setTimeTable(data ){
+		
 		var contents = data.contents;
-		var events = [];
-		var schedule;
+		var schedules = [];
+		var gap = 0;
+		
 		for ( var i = 0; i < contents.length; i++) {
 			var id = contents[i].ID;
 			var name = contents[i].NAME;
@@ -247,113 +193,63 @@
 			
 			var start_date = contents[i].start_date;
 			var end_date = contents[i].end_date;
-			var url = "schedule.do?id=" + id;
 			
-			if (broadcast_info_id == null || broadcast_info_id == "")
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#dddddd", textColor: "#787A7C", borderColor:"#bbbbbb"};
-			else
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#23C6C8", textColor: "#ecf0f1", borderColor:"#1AB394"};
 			
-			//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#eeeeee"};
-			events.push( schedule );
-		}
-   		
-		$('#calendar').fullCalendar({
-			schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-			defaultView: 'agendaDay',
-			editable: true, 			// enable draggable events
-			droppable: true, 			// this allows things to be dropped onto the calendar
-			header: {
-				left: 'prev,next',
-				center: 'title'
-				,right: 'agendaDay'
-			},
-			defaultDate: '2015-12-10',
-			selectable: true,
-			selectHelper: true,
-			select: function(start, end) {
-				var title = prompt('Event Title:');
-				var eventData;
-				if (title) {
-					eventData = {
-						title: title,
-						start: start,
-						end: end
-					};
-					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-				}
-				console.log('select');
-				$('#calendar').fullCalendar('unselect');
-			},
-			editable: true,
-			eventLimit: true, // allow "more" link when too many events
-			events: events,
-			drop: function(event, dayDelta,minuteDelta,allDay,revertFunc) {
-				//console.log('event_Drop', event,',', dayDelta,',',minuteDelta,',',allDay,',',revertFunc);
-				content_id = $(this).attr("data-id");
-								
-				// is the "remove after drop" checkbox checked?
-				//if ($('#drop-remove').is(':checked')) {
-					// if so, remove the element from the "Draggable Events" list
-					
-					$(this).remove();
-				//}
-				
-			},
-			eventReceive: function(event) { // called when a proper external event is dropped
-				// console.log('eventReceive', event, ',' , event.start.format(), ',' , content_id);
-				g_name = event.title;
-				var startTime = event.start.format();
-				var endTime = moment(startTime).add(2, 'hours');
-				endTime = endTime.format('YYYY-MM-DD[T]HH:mm:ss');
-				
-				//console.log('endTime', endTime);
-				console.log(content_id ,',', g_name, ',', startTime, ',', endTime );
-				addSchedule(content_id, g_name, startTime, endTime);
-				//ctrl.initialize();
-				location.reload();
-			},
-			eventDrop: function(event) { // called when an event (already on the calendar) is moved
-				console.log('eventDrop..', event, ',',event.start.format(), ',' , event.end.format() , event.url); 
-			}
-			,eventResizeStop: function(event){		//Triggered when event resizing stops.
-				console.log('event eventResizeStop', event, ',',event.start.format(), ',' , event.end.format() , event.url);
-			}
+			if (i % 2 == 0 && i != 0)
+				gap =+ 30;
 			
+			console.log('gap:' + gap)
+			var schedule =    {
+             	   	start: start_date,                  
+	 				end: end_date,
+                    title: "<a href='schedule.do?id=" + id + "'>" + name +"</a>",
+                    range: gap
+            };
 			/*
-			, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
-				console.log('eventAfterRender..', event);
-			}
+			width: 300px;
+		    background-color: #c0392b;
+		    border: #7DC9BA solid 1px;
+		    padding: 3px;
+		    color: #ecf0f1;
 			
-			, eventRender: function(event, element) {
-				console.log('eventRender', event, element);
-		    }
+			
 			*/
-		});
-	}
-	
-	function addSchedule(content_id, g_name, startTime, endTime){
-		var param = {
-				serviceAreaId : $("#serviceAreaId").val(),
-				contentId : content_id,
-				titleName : g_name,
-				startTime : startTime,
-				endTime: endTime
-			};
+			if (broadcast_info_id == null || broadcast_info_id == "")
+				schedule['css'] = {backgroundColor:"#eeeeee",width:"320px", color: "#787A7C", padding:"8px",border:"#bbbbbb solid 1px", paddingTop:"10px"};
+			else
+				schedule['css'] = {backgroundColor:"#8DD9CA",width:"320px", color: "#ecf0f1", padding:"8px",border:"#1AB394 solid 1px", paddingTop:"10px"};
 			
-		$.ajax({
-			type : "POST",
-			url : "addScheduleWithInitContent.do",
-			data : param,
-			dataType : "json",
-			success : function( data ) {
-				alert('Success to add schedule');
-			},
-			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
-			}
-		});
-	
+			schedules.push( schedule );
+		}
+   	
+		
+		$('#schedule').graspSchedule({
+       	    schedules:schedules,
+       	    //events:events,
+       	    options:{ // You can change default setting. Not require.
+       	        classnames: { //If you use this plugin many time in a page, you have to change these.
+       	            schedule: "schedule",
+       	            event: "event",
+       	            time: "time"
+       	        },
+       	        css:{
+       	            event:{
+       	                height:"10px"
+       	            },
+       	            schedule:{
+       	                height:"70px",
+       	            },
+       	            zIndexStart:0,
+       	            marginTop:"0px",
+       	            marginLeft:"0px",
+       	        },
+       	        time:false,//show time on left side
+       	        insideTime:true,//show time inside
+       	        timeFormat:'HH:mm',
+       	        daysFormat:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+       	    }
+       	});
+		
 	}
 	function popupShow(id, name){
 		content_id = id;
@@ -500,7 +396,10 @@
                         <form method="get" class="form-horizontal">
                             <div class="row">
                                 <div class="col-sm-8" id="epg-table">
-									<div style = "width:90%;"id="calendar"></div>
+                                	<div class="date_time">
+                                		<input type="text" class="col-md-4 form-control" id="datepickerDate">
+                                	</div>
+									<div id="schedule"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     
@@ -523,36 +422,14 @@
                                             	<button class="btn btn-success btn-sm btn-block" type="button" id="go-search">Search</button>
                                            	</div>
                                         </div>
-                                        <!-- 
-<div id='external-events'>
-			<h4>Draggable Events</h4>
-			<div class='fc-event'>My Event 1</div>
-			<div class='fc-event'>My Event 2</div>
-			<div class='fc-event'>My Event 3</div>
-			<div class='fc-event'>My Event 4</div>
-			<div class='fc-event'>My Event 5</div>
-			<p>
-				<input type='checkbox' id='drop-remove' />
-				<label for='drop-remove'>remove after drop</label>
-			</p>
-		</div>
-                                         -->
-		
-                                        
                                         <div class="hr-line-dashed"></div>
                                         <div class="search-list" style="display:none">
-                                        	
+                                        
                                             <h5>Search Result</h5>
-                                            <div id='external-events'>
-                                            
-                                            </div>
-                                             <!-- 
                                             <table class="footable table table-bordered" data-page-size="10" id="content-table">
 			                                    <tbody id="result_list">
-			                                   
-			                                    
 			                                    </tbody>
-			                                   
+			                                    <!-- 
 			                                    <tfoot>
 			                                    <tr>
 			                                        <td colspan="9">
@@ -603,7 +480,7 @@
                     </div>
                     <div class="form-group">
                         <label class="col-md-4 control-label">End Time</label>
-                        <div class="col-md-5"><input type="text" id="timepicker" class="form-control input-sm"></div>
+                        <div class="col-md-5"><input type="text" id="endTime" class="form-control input-sm"></div>
                     </div>
 				</form>
 				
@@ -619,8 +496,6 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		
-		$('#timepicker').timepicki(); 
 		
 		$(".pbox span.btn_close").on("click", function() {
 			$(".popupbox").hide();

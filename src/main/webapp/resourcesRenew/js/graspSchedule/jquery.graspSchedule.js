@@ -178,8 +178,8 @@
             timeLastHeight: null,
             timeLast: null,
             set: function () {
-                this.marginTop = extractNum(paramData.options.css.marginTop);
-                this.marginLeft = extractNum(paramData.options.css.marginLeft);
+            	this.marginTop = extractNum(paramData.options.css.marginTop);
+            	this.marginLeft = extractNum(paramData.options.css.marginLeft);
                 this.zIndex = extractNum(paramData.options.css.zIndexStart);
                 if (paramData.options.time) {
                     var nowdate = new Date();
@@ -220,10 +220,17 @@
                     css = $.extend(true, {}, paramData.options.css.schedule);
                 }
                 css.height = paramData.schedules[id].height + "px";
-                css.marginTop = this.marginTop;
+                //if (id %2 == 0)
+                	css.marginTop = this.marginTop + paramData.schedules[id].range;
+//                else
+//                	css.marginTop = this.marginTop + 15;
                 css.marginLeft = this.marginLeft;
                 css.zIndex = this.zIndex;
                 css.position = "absolute";
+                //inbo. adding code
+            	console.log('css.marginTop:' + css.marginTop+', range:' + paramData.schedules[id].range);
+            	
+            	
                 if(paramData.options.insideTime){
                     jqueryThis.append("<div class='" + paramData.options.classnames.schedule + "' id='" + id2 + "'>" + paramData.schedules[id].title + "<br>" + comDateFormat(paramData.schedules[id].start) + " - " + comDateFormat(paramData.schedules[id].end) + "</div>");
                 }else{
@@ -269,7 +276,7 @@
                         this.marginTop = this.marginTop + this.drawEvent(timeList[i5].id) + 20;
                     } else if (kind === 'start') {
                         this.drawSchedule(timeList[i5].id);
-                        this.marginTop = this.marginTop + getScheduleHight(timeList[i5].id);
+                        this.marginTop = this.marginTop + getScheduleHight(timeList[i5].id);		//timebox 간격
                         this.overSchedule.push({id: timeList[i5].id, left: this.marginLeft + 10});
                         this.mostFrontSchedule = timeList[i5].id;
                         this.marginLeft = this.marginLeft + 10;
