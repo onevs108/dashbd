@@ -6,6 +6,7 @@
 
 	<select id="selectSchdule" parameterType="java.util.Map" resultType="java.util.Map">
 		<![CDATA[
+		]]>
 			SELECT ID
 				, NAME
 				, BCID
@@ -24,17 +25,22 @@
 				, DATE_FORMAT(end_date , '%i') end_mins
 			FROM schedule s 
 			WHERE 1=1
-			AND service_area_id = #{serviceAreaId} 
-		--	AND DATE_FORMAT(start_date , '%Y%m%d') = DATE_FORMAT(NOW() , '%Y%m%d');
+			AND service_area_id = #{serviceAreaId}
+			AND del_yn = 'N'
+			<if test="searchDate != null and searchDate !=''" >
+				AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
+			</if> 
+ 
+
 			order by start_date asc
-		]]>
 	</select>
 	
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
-		<![CDATA[
 			SELECT id
+				, service_area_id as serviceAreaId
 				, name
 				, s.BCID
+				, DATE_FORMAT(start_date, '%Y-%m-%d') searchDate
 				, DATE_FORMAT(start_date, '%Y/%m/%d %H:%i%s') start_date
 				, DATE_FORMAT(end_date, '%Y/%m/%d %H:%i:%s') end_date
 
@@ -72,8 +78,7 @@
 			FROM schedule s 
 			left join broadcast_info b on s.BCID = b.BCID
 			WHERE 1=1
-			AND id = #{id} 
-		]]>
+			AND id = #{id}
 	</select>
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
@@ -111,7 +116,7 @@
 			, deliveryInfo_end
 			, mpdURI
 			, samplePercentage
-		)values(#{transactionId}
+		)VALUES(#{transactionId}
 			, #{serviceId}
 			, #{serviceType}
 			, #{name}
@@ -136,12 +141,28 @@
 			, #{samplePercentage}
 		)
 	</insert>
+	<select id="selectBroadcast" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			BCID
+			,serviceId
+		FROM broadcast_info 
+		WHERE 1=1
+		AND BCID = #{BCID}
+	</select>
 	
 	<update id = "updateSchedule" parameterType="java.util.Map">
-		update schedule
-		set BCID = #{BCID} 
-		where id = #{id}
+		UPDATE schedule	SET
+			BCID = #{BCID},
+			updated_at = now()
+		WHERE id = #{id}
 	</update>
+	<update id = "updateSchedule4Del" parameterType="java.util.Map">
+		UPDATE schedule	SET
+			del_yn = 'Y',
+			updated_at = now() 
+		WHERE id = #{id}
+	</update>
+	
 	
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >
     <id column="id" property="id" jdbcType="INTEGER" />

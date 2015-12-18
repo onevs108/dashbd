@@ -34,6 +34,7 @@ import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.service.XmlManager;
 import com.catenoid.dashbd.util.HttpNetAgent;
 import com.catenoid.dashbd.util.HttpNetAgentException;
+import com.catenoid.dashbd.util.Utils;
 
 
 @Controller
@@ -74,8 +75,9 @@ public class ScheduleMgmtController {
 //			Map<String, String> xmlParam = xmlManager.paringRetrieve(resStr);
 			
 			//@ db insert
+			String searchDate = Utils.getFileDate("YYYY-MM-dd");
+			mv.addObject("searchDate", searchDate); 
 			
-			logger.info("schdMgmt load");
 		}catch(Exception e){
 			logger.error("", e);
 			mv.addObject( "error", e.getMessage() );
@@ -160,7 +162,7 @@ public class ScheduleMgmtController {
 	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
 		mv.addObject( "serviceAreaId", params.get("serviceAreaId")); 
-			
+		mv.addObject("searchDate", params.get("searchDate"));
 		return mv;
 	}
 	
@@ -236,35 +238,40 @@ public class ScheduleMgmtController {
             HttpServletRequest req, Locale locale ) {
 		
 		logger.info("sending param{}", params);
-		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		
 		try{
-			params.put("transactionId", makeTransId());
-			//@ xmlMake & Send, recv
-			String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_DELETE);
-
+			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 			
-			//@ check return XML success
-			if (!xmlManager.isSuccess(resStr))
-				return makeRetMsg("1000", resStr);
+			if (params.get("BCID") != null && !"".equals(params.get("BCID"))){
+				Map mapBroadcast = mapper.selectBroadcast(params);
+				params.put("transactionId", makeTransId());
+				params.put("serviceId", mapBroadcast.get("serviceId"));
+				//@ xmlMake & Send, recv
+				String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_DELETE);
+
+				
+				//@ check return XML success
+				if (!xmlManager.isSuccess(resStr))
+					return makeRetMsg("1000", resStr);
+			}
+
 			/*
 			//@ update delete flag 
 			int ret = mapper.updateBroadcastInfo4Del(params);
 			logger.info("insertBroadcastInfo ret{}", ret);
 
+			 */
 			//@ update delete flag 
-			ret = mapper.updateSchedule4Del(params);
+			int ret = mapper.updateSchedule4Del(params);
 			logger.info("updateSchedule ret{}", ret);
 
 			Map< String, Object > returnMap = new HashMap< String, Object >();
 	        returnMap.put( "resultCode", "1000" );
-	        returnMap.put( "resultMsg", resStr);
+	        returnMap.put( "resultMsg", "SUCCESS");
 	        Map< String, Object > resultMap = new HashMap< String, Object >();
 	        resultMap.put( "resultInfo", returnMap );
 	                
 			return (Map<String, Object>) resultMap;
-			*/
-			return null;
+			
 		}catch(Exception e){
 			logger.error("", e);
 			return makeRetMsg("9999", e.getMessage());

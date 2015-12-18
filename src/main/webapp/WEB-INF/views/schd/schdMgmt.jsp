@@ -33,17 +33,19 @@
 	<!-- Page-Level Scripts -->
 <script>
 	$(function() {
-		tmpServiceAreaId = '3048' 
-		callTimetable(tmpServiceAreaId);
+		tmpServiceAreaId = '3048';
+		var searchDate = $("#searchDate").val();
+		callTimetable(tmpServiceAreaId, searchDate);
 		
 		$("#btnScheduleDetail").click(function() {
-			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId;
+			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 		});
 	});
 	
-	function callTimetable(serviceAreaId_val){
+	function callTimetable(serviceAreaId_val, searchDate){
 		var param = {
 				serviceAreaId : serviceAreaId_val
+				, dateStr	  : searchDate
 			};
 			
 			$.ajax({
@@ -218,7 +220,7 @@
 
         <!-- content body -->
         <div class="wrapper wrapper-content">
-
+		<input type="hidden" id="searchDate" name="searchDate" value="${searchDate}">
             <!-- Contents -->
             <div class="row">
                 <div class="col-lg-12">

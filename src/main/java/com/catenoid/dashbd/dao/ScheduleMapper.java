@@ -16,6 +16,8 @@ public interface ScheduleMapper {
 	int addScheduleWithInitContent(Map map);
 	int insertBroadcastInfo(Map map);
 	int updateSchedule(Map map);
+	int updateSchedule4Del(Map map);
+	Map selectBroadcast(Map map);
 	/* inbo coding END*/
     int countByExample(ScheduleExample example);
 

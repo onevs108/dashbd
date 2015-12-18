@@ -51,10 +51,15 @@
 		
 		
 		$("#btnCancel").click(function() {
-			location.href = "schdMgmtDetail.do";
+			var tmpServiceAreaId = $("#serviceAreaId").val();
+			var searchDate = $("#searchDate").val();
+			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 		});
 		
 		$("#btnDelete").click(function() {
+			var tmpServiceAreaId = $("#serviceAreaId").val();
+			var searchDate = $("#searchDate").val();
+			
 			var param = {
 					id : $("#id").val(),
 					BCID : $("#BCID").val()
@@ -66,6 +71,7 @@
 				dataType : "json",
 				success : function( data ) {
 					outMsgForAjax(data);
+					location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 				},
 				error : function(request, status, error) {
 					alert("request=" +request +",status=" + status + ",error=" + error);
@@ -83,9 +89,10 @@
 				*/
 			},
 			success : function(result) {
-				console.log("success in");
 				outMsgForAjax(result);
-				document.location = "schdMgmtDetail.do";
+				var tmpServiceAreaId = $("#serviceAreaId").val();
+				var searchDate = $("#searchDate").val();
+				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 			},
 			error : function(request, status, error) {
 				alert("request=" +request +",status=" + status + ",error=" + error);
@@ -104,7 +111,6 @@
 			
 		}
 	}
-	
 	
 	function validation( from ) {
 
@@ -239,9 +245,11 @@
         </div><!-- content header end -->
         <!-- content body -->
         <div class="wrapper wrapper-content">
-        <form class=" form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
+        <form class="form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
         <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
         <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
+        <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
+        <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
         
         
             <!-- Contents -->
@@ -377,8 +385,10 @@
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Schedule</label>
                                             <!-- 
-                                            <div class="col-sm-3"><button type="button" class="btn btn-success">Add Schedule</button></div>
                                              -->
+                                            <div class="col-sm-3">
+                                            	<button type="button" title="Create new cluster" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> <span class="bold"></span></button>
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-9 col-sm-offset-3">
@@ -395,8 +405,10 @@
                                                                 <div class="form-group">
 	                                                                <label class="col-sm-3 control-label">Content</label>
 	                                                                <!-- 
-	                                                                <div class="col-sm-9"><button type="button" class="btn btn-success btn-sm">Add Content Schedule</button></div>
 	                                                                 -->
+	                                                                <div class="col-sm-9">
+	                                                                	<button type="button"  title="Create new cluster" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> <span class="bold"></span></button>
+	                                                                </div>
 	                                                            </div>
 	                                                            <div class="form-group">
 	                                                                <div class="col-sm-9 col-sm-offset-3">

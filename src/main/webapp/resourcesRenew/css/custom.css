@@ -182,7 +182,7 @@ table.info-window-table td {
 
 /* eepg table */
 div#epg-table {
-	min-height: 400px;
+	height: 800px;
 }
 
 ul.left-hour-tag,

@@ -139,6 +139,11 @@
 	$(document).ready(function() {
 		
 		ctrl.initialize();
+		/*
+		$('.fc-prev-button span').click(function(){
+			alert('prev is clicked, do something');
+		});
+		*/
 		
 		$("#go-search").click(function() {
 			var param = {
@@ -166,6 +171,7 @@
 			
 			var param = {
 					serviceAreaId : $('#serviceAreaId').val()
+					/*, searchDate : $('#searchDate').val()*/
 				};
 				
 			$.ajax({
@@ -237,6 +243,7 @@
 	
 	
 	function setTimeTable(data ){
+		var searchDate = $("#searchDate").val();
 		var contents = data.contents;
 		var events = [];
 		var schedule;
@@ -268,7 +275,7 @@
 				center: 'title'
 				,right: 'agendaDay'
 			},
-			defaultDate: '2015-12-10',
+			defaultDate: searchDate,
 			selectable: true,
 			selectHelper: true,
 			select: function(start, end) {
@@ -289,30 +296,28 @@
 			eventLimit: true, // allow "more" link when too many events
 			events: events,
 			drop: function(event, dayDelta,minuteDelta,allDay,revertFunc) {
-				//console.log('event_Drop', event,',', dayDelta,',',minuteDelta,',',allDay,',',revertFunc);
 				content_id = $(this).attr("data-id");
-								
-				// is the "remove after drop" checkbox checked?
-				//if ($('#drop-remove').is(':checked')) {
-					// if so, remove the element from the "Draggable Events" list
-					
-					$(this).remove();
-				//}
-				
+				$(this).remove();
 			},
+			
 			eventReceive: function(event) { // called when a proper external event is dropped
 				// console.log('eventReceive', event, ',' , event.start.format(), ',' , content_id);
 				g_name = event.title;
 				var startTime = event.start.format();
 				var endTime = moment(startTime).add(2, 'hours');
 				endTime = endTime.format('YYYY-MM-DD[T]HH:mm:ss');
-				
 				//console.log('endTime', endTime);
 				console.log(content_id ,',', g_name, ',', startTime, ',', endTime );
 				addSchedule(content_id, g_name, startTime, endTime);
-				//ctrl.initialize();
-				location.reload();
+				//location.reload();
+				
+				var b = $('#calendar').fullCalendar('getDate');
+			 	var searchDate = b.format('YYYY-MM-DD');
+				var tmpServiceAreaId = $("#serviceAreaId").val();
+				
+				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 			},
+			
 			eventDrop: function(event) { // called when an event (already on the calendar) is moved
 				console.log('eventDrop..', event, ',',event.start.format(), ',' , event.end.format() , event.url); 
 			}
@@ -486,6 +491,7 @@
             <!-- Contents -->
             <div class="row">
             <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${serviceAreaId}"/>
+            <input type="hidden" id="searchDate" name="searchDate" value="${searchDate}"/>
             <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">

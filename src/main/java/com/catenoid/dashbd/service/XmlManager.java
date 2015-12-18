@@ -3,6 +3,8 @@ package com.catenoid.dashbd.service;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -395,7 +397,22 @@ public class XmlManager {
 		return xmlOutput.outputString(doc);
 	}
 	
+    public static String getFileDate(String format) {
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        cal.add(Calendar.DATE ,0);
+        return sdf.format(cal.getTime());
+    }
+    
 	public static void main( String[] args ) {
-		System.out.println(new XmlManager().testMaking());
+		//System.out.println(new XmlManager().testMaking());
+
+		System.out.println(getFileDate("YYYYMMdd"));
+
+		
+		
+	       
+	    
 	}
 }

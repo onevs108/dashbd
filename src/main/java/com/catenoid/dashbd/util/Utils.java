@@ -1,6 +1,7 @@
 package com.catenoid.dashbd.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Utils {
@@ -16,5 +17,11 @@ public class Utils {
 		return null;
 	}
 	
-	
+    public static String getFileDate(String format) {
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        cal.add(Calendar.DATE ,0);
+        return sdf.format(cal.getTime());
+    }
 }
