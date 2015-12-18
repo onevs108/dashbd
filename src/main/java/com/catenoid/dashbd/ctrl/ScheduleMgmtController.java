@@ -151,6 +151,22 @@ public class ScheduleMgmtController {
 		return makeRetMsg("1000", "SUCCESS");
 	}
 	
+	@RequestMapping(value = "view/modifyScheduleTime.do")
+	@ResponseBody
+	public Map< String, Object > modifyScheduleTime( @RequestParam Map< String, Object > params,
+            HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		params.put("startTime", convertMysqlDateFormat((String)params.get("startTime")));
+		params.put("endTime", convertMysqlDateFormat((String)params.get("endTime")));
+		//int ret = mapper.modifyScheduleTime(params);
+		//logger.info("addScheduleWithInitContent [ret={}]", ret);
+
+		return makeRetMsg("1000", "SUCCESS");
+	}
+	
+	
+	
 	/**
 	 * 스케줄 메인페이지 > 스케줄 상세페이지
 	 * @param locale

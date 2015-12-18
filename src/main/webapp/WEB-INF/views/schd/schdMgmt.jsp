@@ -45,7 +45,7 @@
 	function callTimetable(serviceAreaId_val, searchDate){
 		var param = {
 				serviceAreaId : serviceAreaId_val
-				, dateStr	  : searchDate
+				, searchDate	: searchDate
 			};
 			
 			$.ajax({
@@ -89,13 +89,12 @@
 										new Date(start_year,start_month, start_day,start_hour,start_mins ),
 					 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
 					 					'#');
-			if ( i == 3 )
-				break;
 		}
 		
 		var renderer = new Timetable.Renderer(timetable);
-           renderer.draw('.timetable');
-           
+        
+		renderer.draw('.timetable');
+        
             /*
             timetable.addEvent('Sightseeing', 'depth1', new Date(2015,7,17,10,45), new Date(2015,7,17,12,30), '#');
             timetable.addEvent('Zumba', 'depth2', new Date(2015,7,17,12), new Date(2015,7,17,13), '#');
@@ -103,7 +102,6 @@
             timetable.addEvent('Lasergaming', 'depth3', new Date(2015,7,17,17,45), new Date(2015,7,17,19,30), '#');
             timetable.addEvent('All-you-can-eat grill', 'depth4', new Date(2015,7,17,21), new Date(2015,7,18,1,30), '#');
             */
-            
 	}
 	</script>
 </head>

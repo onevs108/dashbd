@@ -30,9 +30,7 @@
 			<if test="searchDate != null and searchDate !=''" >
 				AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
 			</if> 
- 
-
-			order by start_date asc
+ 			order by start_date asc
 	</select>
 	
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
@@ -91,6 +89,13 @@
 			)
 	</insert>
 	
+	<update id = "modifyScheduleTime" parameterType="java.util.Map">
+		UPDATE schedule	SET
+			BCID = #{BCID},
+			updated_at = now()
+		WHERE id = #{id}
+	</update>
+		
 	<insert id = "insertBroadcastInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="BCID">
 		
 		INSERT INTO broadcast_info(transactionId

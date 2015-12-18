@@ -319,7 +319,9 @@
 			},
 			
 			eventDrop: function(event) { // called when an event (already on the calendar) is moved
-				console.log('eventDrop..', event, ',',event.start.format(), ',' , event.end.format() , event.url); 
+				console.log('eventDrop2', event, ',',event.start.format(), ',' , event.end.format() , event.url);
+				
+				modifySchedule(event.url, event.start.format(), event.end.format());
 			}
 			,eventResizeStop: function(event){		//Triggered when event resizing stops.
 				console.log('event eventResizeStop', event, ',',event.start.format(), ',' , event.end.format() , event.url);
@@ -337,6 +339,30 @@
 		});
 	}
 	
+	function modifySchedule(url, startTime, endTime){
+		
+		var id = url.substring(url.indexOf("=")+1);
+		console.log('eventDrop2:', id);
+		var param = {
+				scheduleId : id,
+				startTime : startTime,
+				endTime: endTime
+		};
+		
+		$.ajax({
+			type : "POST",
+			url : "modifyScheduleTime.do",
+			data : param,
+			dataType : "json",
+			success : function( data ) {
+				console.log('Success to modify schedule');
+			},
+			error : function(request, status, error) {
+				alert("error for update Time:request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+		
+	}
 	function addSchedule(content_id, g_name, startTime, endTime){
 		var param = {
 				serviceAreaId : $("#serviceAreaId").val(),
