@@ -69,23 +69,51 @@
 		var timetable = new Timetable();
 		//현재시점에서 2시전, 끝까지.
 		timetable.setScope(viewStartHour,0);
-        timetable.addLocations(['depth1', 'depth2']);
-		
-		for ( var i=0; i<contents.length; i++) {
+        timetable.addLocations(['depth1', 'depth2', 'depth3']);
+		var beforeEndHM1 = 0;
+		var beforeEndHM2 = 0;
+		var currStartHM = 0;
+		var start_hour = 0
+		var start_mins = 0;
+		var end_hour = 0;
+		var end_mins = 0;
+		var depth= 'init';
+		for ( var i=0; i < contents.length; i++) {
+			beforeEndHM2 = beforeEndHM1; 
+			beforeEndHM1 = end_hour + '' + end_mins;
+			
 			var name = contents[i].name;
 			var start_year = contents[i].start_year;
 			var start_month = contents[i].start_month;
 			var start_day = contents[i].start_day;
-			var start_hour = contents[i].start_hour;
-			var start_mins = contents[i].start_mins;
+			start_hour = contents[i].start_hour;
+			start_mins = contents[i].start_mins;
 			
 			var end_year = contents[i].end_year;
 			var end_month = contents[i].end_month;
 			var end_day = contents[i].end_day;
-			var end_hour = contents[i].end_hour;
-			var end_mins = contents[i].end_mins;
+			end_hour = contents[i].end_hour;
+			end_mins = contents[i].end_mins;
 			
-			timetable.addEvent(contents[i].NAME, 'depth1', 
+			//depth 계산
+			currStartHM = start_hour + '' + start_mins;
+			
+			if (i == 0){
+				depth= 'depth1';
+			}else{
+				if (currStartHM < beforeEndHM1){
+					depth= 'depth2';
+				
+					if (beforeEndHM2 != 0){
+						if (currStartHM < beforeEndHM2)
+							depth= 'depth3';
+					}
+				}else{
+					depth= 'depth1';
+				}
+			}
+			console.log('idx=', i ,'currStartHM=', currStartHM ,',bef1=',beforeEndHM1 ,',bef2=',beforeEndHM2,',depth level =' , depth);
+			timetable.addEvent(contents[i].NAME, depth, 
 										new Date(start_year,start_month, start_day,start_hour,start_mins ),
 					 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
 					 					'#');
@@ -121,13 +149,13 @@
                     </div>
                 </li>
                 <li>
-                    <a href="user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                    <a href="/dashbd/resources/user_mgmt.html#page/1"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
@@ -136,7 +164,7 @@
                     <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
                 </li>
                 <li class="landing_link">
                     <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>

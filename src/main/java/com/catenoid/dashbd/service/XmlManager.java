@@ -3,10 +3,14 @@ package com.catenoid.dashbd.service;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import org.jdom.Attribute;
 import org.jdom.Document;
@@ -21,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.catenoid.dashbd.ctrl.ScheduleMgmtController;
+import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.HttpNetAgent;
 import com.catenoid.dashbd.util.HttpNetAgentException;
 
@@ -34,14 +39,22 @@ public class XmlManager {
 	public final int BMSC_XML_UPDATE = 3;
 	public final int BMSC_XML_DELETE = 4;
 	public final String SERVICE_TYPE_FILE_DOWNLOAD = "FileDownload";
-	
+	public String agentKey = null;
 	
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
 	
-	public String sendBroadcast(Map params, int mode){
+	@Value("#{config['b2.server.ipaddress']}")
+	private String b2serverIpaddress;
+	
+	
+	public String sendBroadcast(Map<String, String> params, int mode){
 		String respBody = "SUCCESS";
 		String reqBody = "";
+		
+		if (agentKey == null)
+			agentKey = Base64Coder.encode(b2serverIpaddress);
+		
 		try {
 			//@set param to XML
 			if (BMSC_XML_RETRIEVE == mode)
@@ -54,6 +67,8 @@ public class XmlManager {
 			//@ xml send 
 			respBody = new HttpNetAgent().execute(b2InterfefaceURL, "", reqBody, false);
 		
+			if (BMSC_XML_RETRIEVE == mode)
+				respBody = tmpRespRETRIEVE_Body();
 			
 		} catch (Exception e) {
 			logger.error("", e);
@@ -128,7 +143,7 @@ public class XmlManager {
 		
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText("dGVzdA=="));		//key ??
+		transaction.addContent(new Element("agentKey").setText(agentKey));		//key ??
 		
 		doc.getRootElement().addContent(transaction);
 		return outString(doc);
@@ -136,14 +151,14 @@ public class XmlManager {
 	
 	public String makeXmlDelete(Map<String, String> params){
 		Element message = new Element("message");
-		message.setAttribute(new Attribute("name", "SERVICE.DELETE"));
+		message.setAttribute(new Attribute("name", "SERVICE.ABORT"));
 		message.setAttribute(new Attribute("type", "REQUEST"));
 		Document doc = new Document(message);
 		doc.setRootElement(message);
 		
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText("dGVzdA=="));		
+		transaction.addContent(new Element("agentKey").setText(agentKey));		
 		doc.getRootElement().addContent(transaction);
 		
 		
@@ -171,7 +186,7 @@ public class XmlManager {
 		//common- depth one
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText("dGVzdA=="));		//key ??
+		transaction.addContent(new Element("agentKey").setText(agentKey));		//key ??
 		
 		doc.getRootElement().addContent(transaction);
 
@@ -204,8 +219,8 @@ public class XmlManager {
 		schedule.setAttribute(new Attribute("index", "1"));
 		schedule.setAttribute(new Attribute("cancelled", "false"));
 		//time format ex) 2015-04-10T17:24:09.000+09:00
-		schedule.setAttribute(new Attribute("start", params.get("schedule_start")));
-		schedule.setAttribute(new Attribute("stop", params.get("schedule_stop")));
+		schedule.setAttribute(new Attribute("start", convertGMT(params.get("schedule_start"))));
+		schedule.setAttribute(new Attribute("stop", convertGMT(params.get("schedule_stop"))));
 		
 		Element associatedDelivery = new Element("associatedDelivery");
 		Element receptionReport = new Element("receptionReport");
@@ -220,7 +235,7 @@ public class XmlManager {
 			fileDownload.setAttribute(new Attribute("serviceId", params.get("serviceId"))); 
 			Element name = new Element("name");
 			name.setAttribute(new Attribute("id", "1"));										//??
-			name.setText(params.get(""));
+			name.setText(params.get("name"));
 			Element serviceLanguage = new Element("serviceLanguage");
 			serviceLanguage.setText(params.get("serviceLanguage"));
 			
@@ -235,8 +250,8 @@ public class XmlManager {
 			content.addContent( new Element("fileURI").setText(params.get("fileURI")));
 			Element deliveryInfo = new Element("deliveryInfo");
 			//time format ex) 2015-04-10T17:24:09.000+09:00
-			deliveryInfo.setAttribute(new Attribute("start", params.get("deliveryInfo_start")));
-			deliveryInfo.setAttribute(new Attribute("end", params.get("deliveryInfo_end")));
+			deliveryInfo.setAttribute(new Attribute("start", convertGMT(params.get("deliveryInfo_start"))));
+			deliveryInfo.setAttribute(new Attribute("end", convertGMT(params.get("deliveryInfo_end"))));
 			content.addContent(deliveryInfo);
 			schedule.addContent(content);
 			
@@ -261,7 +276,7 @@ public class XmlManager {
 			service.setAttribute(new Attribute("serviceType", "streaming"));
 			Element streaming = new Element("streaming");
 			streaming.setAttribute(new Attribute("serviceId", params.get("serviceId"))); 
-			streaming.setAttribute(new Attribute("serviceClass", "urn:3gpp:mbms:ds"));				
+			streaming.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));				
 			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));
 			
@@ -304,7 +319,7 @@ public class XmlManager {
 
 			Element transaction = new Element("transaction");
 			transaction.setAttribute(new Attribute("id", "1"));
-			transaction.addContent(new Element("agentKey").setText("dGVzdA=="));
+			transaction.addContent(new Element("agentKey").setText(agentKey));
 			
 			doc.getRootElement().addContent(transaction);
 
@@ -396,7 +411,30 @@ public class XmlManager {
 		xmlOutput.setFormat(Format.getPrettyFormat());
 		return xmlOutput.outputString(doc);
 	}
-	
+	private String convertGMT(String dateTime){
+		
+		if (dateTime == null)
+			return null;
+		
+		String retStr = "";
+		
+		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyyMMddHHmmss");
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		try {
+			sdfFrom.setTimeZone(TimeZone.getTimeZone("GMT"));
+			Date dateFrom = sdfFrom.parse(dateTime);
+		    Calendar calFrom = Calendar.getInstance();
+		    calFrom.setTime(dateFrom);
+		    //calFrom.add(Calendar.HOUR, -9);
+		    retStr = sdfTo.format(calFrom.getTime());
+		    
+		} catch (ParseException e) {
+			logger.error("", e);
+		}
+				
+		return retStr;
+		
+	}
     public static String getFileDate(String format) {
 
         Calendar cal = Calendar.getInstance();
@@ -405,14 +443,73 @@ public class XmlManager {
         return sdf.format(cal.getTime());
     }
     
+    public String tmpRespRETRIEVE_Body(){
+    	String retStr =
+			    "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+			    "	<message name=\"SERVICE.RETRIEVE\" type=\"RESPONSE\">\n" + 
+			    "	<transaction id=\"2\">\n" +
+			    "	<result>\n" +
+			    "		<code>100</code>\n" +
+			    "		<message>OK</message>\n" +
+			    "	</result>\n" +
+			    "	</transaction>\n" +
+			    "	<parameters>\n" +
+			    "    <services>\n" +
+			    "        <service serviceType=\"fileDownload\">\n" +
+			    "            <fileDownload serviceId=\"ricky_urn:3gpp:download_multi150\">\n" +
+			    "                <name lang=\"EN\">test</name>\n" +
+			    "                <serviceLanguage>EN</serviceLanguage>\n" +
+				"				<transferConfig>\n" +
+			    "                   <QoS>\n" +
+			    "                       <GBR>2048576</GBR>\n" +
+			    "                       <QCI>1</QCI>\n" +
+			    "                       <ARP>\n" +
+			    "                           <preEmptionCapability>1</preEmptionCapability>\n" +
+			    "                           <preEmptionVulnerability>1</preEmptionVulnerability>\n" +
+			    "                       </ARP>\n" +
+			    "                   </QoS>\n" +
+			    "                   <FEC>\n" +
+			    "                       <fecType>NoFEC</fecType>\n" +
+			    "                       <fecRatio>0</fecRatio>\n" +
+			    "                   </FEC>\n" +
+			    "               </transferConfig>\n" +
+			    "               <serviceArea>\n" +
+			    "                   <said>1005</said>\n" +
+			    "               </serviceArea>            \n" +      
+			    "               <schedule index=\"1\" cancelled=\"false\" start=\"2015-04-09T10:48:27.000+09:00\" stop=\"2015-04-09T12:08:27.000+09:00\">\n" +
+			    "                   <content contentId=\"1\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +                            
+			    "                    <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+			    "                       <deliveryInfo start=\"2015-04-09T10:48:27.000+09:00\" end=\"2015-04-09T11:08:27.000+09:00\"/>\n" +
+			    "                   </content> \n" +
+			    "                   <content contentId=\"2\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +
+			    "                       <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+			    "                       <deliveryInfo start=\"2015-04-09T11:58:27.000+09:00\" end=\2015-04-09T12:08:27.000+09:00\"/>\n" +
+			    "                   </content>\n" +
+			    "               </schedule>\n" +
+			    "               <schedule index=\"2\" cancelled=\"true\" start=\"2015-04-09T12:38:27.000+09:00\" stop=\"2015-04-09T12:58:27.000+09:00\">\n" +
+			    "                   <content contentId=\"1\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">                            \n" +
+			    "                   <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+			    "                       <deliveryInfo start=\"2015-04-09T12:38:27.000+09:00\" end=\"2015-04-09T12:48:27.000+09:00\"/>\n" +
+			    "                   </content> \n" +
+			    "                   <content contentId=\"2\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +
+			    "                       <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+			    "                       <deliveryInfo start=\"2015-04-09T12:48:27.000+09:00\" end=\"2015-04-09T12:58:27.000+09:00\"/>\n" +
+			    "                   </content>\n" +
+			    "               </schedule>\n" +
+			    "           </fileDownload>\n" +
+			    "       </service>\n" +
+			    "   </services>\n" +
+			    "</parameters>\n" +
+			    "</message>";
+	
+    	return retStr;
+    }
 	public static void main( String[] args ) {
 		//System.out.println(new XmlManager().testMaking());
 
-		System.out.println(getFileDate("YYYYMMdd"));
-
+		//System.out.println(getFileDate("YYYYMMdd"));
+		System.out.println(new XmlManager().convertGMT("2015-12-20 00:33:55"));
 		
-		
-	       
 	    
 	}
 }

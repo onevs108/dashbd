@@ -30,22 +30,19 @@
 	
 	<!-- Page-Level Scripts -->
 	<script>
-	
 	$(document).ready(function() {
-		  
 		$("#serviceType").on("change", function() {
 			if ( $(this).val() == "FileDownload" ) {
 				//filedownload
 				$("#bcType_fileDownload").show();
-				$("#bcType_nameLanguage").show();
+				$("#bcType_serviceClass").hide();
 				$("#bcType_streaming").hide();
 				$("#bcType_streaming2").hide();
 			}else{
 				$("#bcType_fileDownload").hide();
-				$("#bcType_nameLanguage").hide();
+				$("#bcType_serviceClass").show();
 				$("#bcType_streaming").show();
 				$("#bcType_streaming2").show();
-				
 			}
 		});
 		
@@ -113,7 +110,6 @@
 	}
 	
 	function validation( from ) {
-
 		var $form = from;
 		var retFlag = true;
 		console.log('here0');
@@ -149,13 +145,13 @@
                     </div>
                 </li>
                 <li>
-                    <a href="user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                    <a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
@@ -164,7 +160,7 @@
                     <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
                 </li>
                 <li class="landing_link">
                     <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
@@ -250,6 +246,8 @@
         <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
         <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
         <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
+        <input type="hidden" id="serviceId" name="serviceId" value="${mapSchedule.serviceId}"/>
+        
         
         
             <!-- Contents -->
@@ -266,9 +264,15 @@
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
-                                    <select class="input-sm form-control input-s-sm" id="serviceType" name="serviceType">
-                                        <option value="FileDownload">File Download</option>
-                                        <option value="Streaming">Streaming</option>
+                                <c:if test="${empty mapSchedule.BCID}">
+					                <select class="input-sm form-control input-s-sm" id="serviceType" name="serviceType">
+		                    	</c:if>
+	                        	<c:if test="${not empty mapSchedule.BCID}">
+	                        		<input type="hidden" id=serviceType" name="serviceType" value="${mapSchedule.service}">
+	                        		<select class="input-sm form-control input-s-sm" disabled>            	
+	                        	</c:if>
+	                        	        <option value="FileDownload" <c:if test="${mapSchedule.service eq 'FileDownload'}"> selected</c:if>>File Download</option>
+                                        <option value="Streaming" <c:if test="${mapSchedule.service eq 'Streaming'}">selected</c:if>>Streaming</option>
                                         <!-- 
                                         <option value="2">Carousel MultiMedia Files</option>
                                         <option value="3">Carousel Single File</option>
@@ -280,7 +284,6 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     
-                                        <div id="bcType_nameLanguage">
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Service Name</label>
                                             <div class="col-sm-9"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
@@ -289,7 +292,15 @@
                                             <label class="col-sm-3 control-label">Language</label>
                                             <div class="col-sm-9"><input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}" placeholder="en"></div>
                                         </div>
+                                        
+                                        
+                                  <div id="bcType_serviceClass" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">
+                                  						style="display:none"</c:if>>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Service class</label>
+                                            <div class="col-sm-9"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
                                         </div>
+                                   </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">Transfer Config</label>
@@ -314,14 +325,14 @@
                                                                 <div class="form-group">
                                                                     <label class="col-sm-6 col-md-4 control-label">ARP Level</label>
                                                                     <div class="col-sm-6 col-md-8">
-                                                                    	<input type="text" class="form-control input-sm"  id="level" name="level" required="required"></div>
+                                                                    	<input type="text" class="form-control input-sm"  id="level" name="level" required="required" value="${mapSchedule.level}"></div>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label class="col-sm-6 col-md-4 control-label">PreEmptionCapabiity</label>
                                                                     <div class="col-sm-6 col-md-8">
                                                                         <div class="swich">
                                                                             <div class="onoffswitch">
-                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" checked>
+                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" <c:if test="${mapSchedule.preEmptionCapabiity == 'on'}">checked</c:if>>
                                                                                 <label class="onoffswitch-label" for="preEmptionCapabiity">
                                                                                     <span class="onoffswitch-inner"></span>
                                                                                     <span class="onoffswitch-switch"></span>
@@ -335,7 +346,7 @@
                                                                     <div class="col-sm-6 col-md-8">
                                                                         <div class="swich">
                                                                             <div class="onoffswitch">
-                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability" checked>
+                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability" <c:if test="${mapSchedule.preEmptionVulnerability == 'on'}">checked</c:if>>
                                                                                 <label class="onoffswitch-label" for="preEmptionVulnerability">
                                                                                     <span class="onoffswitch-inner"></span>
                                                                                     <span class="onoffswitch-switch"></span>
@@ -363,12 +374,12 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Ratio</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="fecRatio" name="fecRatio"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}"></div>
                                                     </div>
                                                     
-                                                    <div class="form-group" id="bcType_streaming" style="display:none">
+                                                    <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
                                                         <label class="col-sm-3 control-label">SegmentationAvailableOffset</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="SegmentAvailableOffset" name="SegmentAvailableOffset"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="SegmentAvailableOffset" name="SegmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -379,7 +390,7 @@
                                             <!-- 
                                             <div class="col-sm-3 m-b-sm"><button type="button" class="btn btn-success">Add Service Area</button></div>
                                              -->
-                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs" id="said" name="said"></div>
+                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs" id="said" name="said" value="${mapSchedule.said}"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
@@ -396,14 +407,19 @@
                                                     <li>
                                                         <div class="well">
                                                             <div class="form-group">
-                                                                <label class="col-sm-3 control-label">Start</label>
-                                                                <div class="col-sm-3"><input type="text" class="form-control input-sm m-b-xs" id="schedule_start" name="schedule_start" value="${mapSchedule.start_hour} : ${mapSchedule.start_mins} : ${mapSchedule.start_second} "></div>
-                                                                <label class="col-sm-3 control-label">Stop</label>
-                                                                <div class="col-sm-3"><input type="text" class="form-control input-sm m-b-xs" id="schedule_stop" name="schedule_stop" value="${mapSchedule.end_hour} : ${mapSchedule.end_mins} : ${mapSchedule.end_second}"></div>
+                                                                <label class="col-sm-2 control-label">Start</label>
+                                                                <div class="col-sm-4">
+                                                                	<input type="text" class="form-control input-sm m-b-xs" id="schedule_start" name="schedule_start" value="${mapSchedule.start_date}"></div>
+                                                                <label class="col-sm-2 control-label">Stop</label>
+                                                                <div class="col-sm-4">
+                                                                	<input type="text" class="form-control input-sm m-b-xs" id="schedule_stop" name="schedule_stop" value="${mapSchedule.end_date}"></div>
                                                             </div>
-                                                            <div id="bcType_fileDownload">
+                                                            
+                                                            
+                                                            
+                                                            <div id="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'Streaming'}"> style="display:none"</c:if>>
                                                                 <div class="form-group">
-	                                                                <label class="col-sm-3 control-label">Content</label>
+	                                                                <label class="col-sm-2 control-label">Content</label>
 	                                                                <!-- 
 	                                                                 -->
 	                                                                <div class="col-sm-9">
@@ -411,17 +427,30 @@
 	                                                                </div>
 	                                                            </div>
 	                                                            <div class="form-group">
-	                                                                <div class="col-sm-9 col-sm-offset-3">
+	                                                                <div class="col-sm-10 col-sm-offset-2">
 	                                                                    <ul class="schedule-list">
 	                                                                        <li>
 	                                                                            <div class="well">
 	                                                                                <div class="form-group">
-	                                                                                    <label class="col-md-3 control-label">File URI</label>
-	                                                                                    <div class="col-md-9"><input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI"></div>
-	                                                                                    <label class="col-md-3 control-label">Start</label>
-	                                                                                    <div class="col-md-3"><input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start"></div>
-	                                                                                    <label class="col-md-3 control-label">Stop</label>
-	                                                                                    <div class="col-md-3"><input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end"></div>
+	                                                                                    <label class="col-md-2 control-label">File URI</label>
+	                                                                                    <div class="col-md-10"><input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapSchedule.fileURI}"></div>
+	                                                                                    <label class="col-md-2 control-label">Start</label>
+	                                                                                    <div class="col-md-4">
+	                                                                                    <c:if test="${empty mapSchedule.BCID}">
+	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.start_date}"></div>
+	                                                                                    </c:if>
+	                                                                                    <c:if test="${not empty mapSchedule.BCID}">
+	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.deliveryInfo_start}"></div>
+	                                                                                    </c:if>
+	                                                                                    	
+	                                                                                    <label class="col-md-2 control-label">Stop</label>
+	                                                                                    <div class="col-md-4">
+	                                                                                    <c:if test="${empty mapSchedule.BCID}">
+	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.end_date}"></div>
+	                                                                                    </c:if>
+	                                                                                    <c:if test="${not empty mapSchedule.BCID}">
+	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.deliveryInfo_end}"></div>
+	                                                                                    </c:if>
 	                                                                                    <!-- 
 	                                                                                    <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
 	                                                                                     -->
@@ -442,7 +471,7 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div id="bcType_streaming2" style="display:none">
+                                        <div id="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
 	                                       <div class="form-group">
                                             <label class="col-sm-3 control-label">ContentSet</label>
                                             <div class="col-sm-9">
@@ -451,7 +480,7 @@
                                                   
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">mpd</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="mpdURI" name="mpdURI"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -501,15 +530,15 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Sample Percentage</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="samplePercentage" name="samplePercentage"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="samplePercentage" name="samplePercentage" value="${mapSchedule.samplePercentage}"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Offset Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="offsetTime" name="offsetTime"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="offsetTime" name="offsetTime" value="${mapSchedule.offsetTime}"></div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Random Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime"></div>
+                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime" value="${mapSchedule.randomTime}"></div>
                                                     </div>
                                                 </div>
                                             </div>

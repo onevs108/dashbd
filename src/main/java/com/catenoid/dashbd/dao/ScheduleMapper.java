@@ -14,10 +14,13 @@ public interface ScheduleMapper {
 	List<Map> selectSchdule(Map map);
 	Map selectSchduleTime(Map map);
 	int addScheduleWithInitContent(Map map);
+	int modifyScheduleTime(Map map);
 	int insertBroadcastInfo(Map map);
+	int updateBroadcastInfo(Map map);
 	int updateSchedule(Map map);
 	int updateSchedule4Del(Map map);
 	Map selectBroadcast(Map map);
+	Map selectGBRSum(Map map);
 	/* inbo coding END*/
     int countByExample(ScheduleExample example);
 

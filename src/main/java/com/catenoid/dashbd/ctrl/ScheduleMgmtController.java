@@ -63,6 +63,7 @@ public class ScheduleMgmtController {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		try
 		{
+			logger.info("GBRSum=", exampleGBRSum());
 			String transId = makeTransId();
 			params.put("transactionId", transId);
 				
@@ -143,8 +144,8 @@ public class ScheduleMgmtController {
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		params.put("startTime", convertMysqlDateFormat((String)params.get("startTime")));
-		params.put("endTime", convertMysqlDateFormat((String)params.get("endTime")));
+		params.put("startTime", convertMysqlDateFormat((String)params.get("startTime"), true));
+		params.put("endTime", convertMysqlDateFormat((String)params.get("endTime"),false));
 		int ret = mapper.addScheduleWithInitContent(params);
 		logger.info("addScheduleWithInitContent [ret={}]", ret);
 
@@ -153,20 +154,49 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/modifyScheduleTime.do")
 	@ResponseBody
-	public Map< String, Object > modifyScheduleTime( @RequestParam Map< String, Object > params,
+	public Map< String, Object > modifyScheduleTime( @RequestParam Map< String, String > params,
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		
-		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		params.put("startTime", convertMysqlDateFormat((String)params.get("startTime")));
-		params.put("endTime", convertMysqlDateFormat((String)params.get("endTime")));
-		//int ret = mapper.modifyScheduleTime(params);
-		//logger.info("addScheduleWithInitContent [ret={}]", ret);
+		logger.info("modifyScheduleTime param{}", params);
 
+		try{
+			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+			String startTime = convertMysqlDateFormat(params.get("startTime"), true);
+			String endTime = convertMysqlDateFormat(params.get("endTime"), false);
+			params.put("startTime", startTime);
+			params.put("endTime", 	endTime);
+			
+			int ret = mapper.modifyScheduleTime(params);
+			logger.info("modifyScheduleTime ret{}", ret);
+			
+			if (params.get("BCID") != null && !"".equals(params.get("BCID"))){
+				//@ update broadcast_info
+				params.put("transactionId", makeTransId());
+				params.put("schedule_start", startTime);
+				params.put("schedule_stop", endTime);
+				params.put("deliveryInfo_start", startTime);
+				params.put("deliveryInfo_end", endTime);
+				ret = mapper.updateBroadcastInfo(params);
+				logger.info("updateSchedule ret{}", ret);
+
+				//@ xml update 연동
+				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
+				
+				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
+	
+				//@ check return XML success
+				if (!xmlManager.isSuccess(resStr))
+					return makeRetMsg("9000", resStr);
+		}
+		}catch(Exception e){
+			logger.error("", e);
+			return makeRetMsg("9999", e.getMessage());
+		}
+		
 		return makeRetMsg("1000", "SUCCESS");
 	}
 	
-	
-	
+
 	/**
 	 * 스케줄 메인페이지 > 스케줄 상세페이지
 	 * @param locale
@@ -192,7 +222,7 @@ public class ScheduleMgmtController {
 		logger.info("schedule ");
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		Map mapSchedule = mapper.selectSchduleTime(params);
+		Map<String, String> mapSchedule = mapper.selectSchduleTime(params);
 		mv.addObject( "mapSchedule", mapSchedule );
 		return mv;
 	}
@@ -206,38 +236,68 @@ public class ScheduleMgmtController {
 	 */
 	@RequestMapping(value = "view/scheduleReg.do")
 	@ResponseBody
-	public Map< String, Object > scheduleReg( @RequestParam Map< String, Object > params,
+	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
             HttpServletRequest req, Locale locale ) {
 		
+		int ret;
 		logger.info("sending param{}", params);
-		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		String tmp = params.get("preEmptionCapabiity");
+		
+		if (tmp == null){
+			tmp="off";
+			params.put("preEmptionCapabiity", tmp);
+		}
+		
+		tmp = params.get("preEmptionVulnerability");
+		
+		if (tmp == null){
+			tmp="off";
+			params.put("preEmptionVulnerability", tmp);
+		}
 		
 		try{
 			String transId = makeTransId();
-			params.put("transactionId", transId);
-			params.put("serviceId","urn:3gpp:" + params.get("serviceType") + ":" + transId);
+			String bcid = params.get("BCID");
 			
 			//@ xmlMake & Send, recv
-			String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_CREATE);
+			int xmlMode = xmlManager.BMSC_XML_UPDATE;
+			if (bcid == null || "".equals(bcid)){
+				xmlMode = xmlManager.BMSC_XML_CREATE;
+				params.put("serviceId","urn:3gpp:" + params.get("serviceType") + ":" + transId);
+			}
+			
+			params.put("transactionId", transId);
+			params.put("schedule_start", convertMysqlDateFormat(params.get("schedule_start"), false));
+			params.put("schedule_stop", convertMysqlDateFormat(params.get("schedule_stop"),false));
+			params.put("deliveryInfo_start", convertMysqlDateFormat(params.get("deliveryInfo_start"), false));
+			params.put("deliveryInfo_end", convertMysqlDateFormat(params.get("deliveryInfo_end"),false));
+			
+			String resStr = xmlManager.sendBroadcast(params, xmlMode);
 			
 			//@ check return XML success
 			if (!xmlManager.isSuccess(resStr))
 				return makeRetMsg("9000", resStr);
 			
-			//@ insert broadcast_info  with flag which createBroadcast is successed or not
-			int ret = mapper.insertBroadcastInfo(params);
-			logger.info("insertBroadcastInfo ret{}", ret);
-
-			//@ update schedule broadcast id
-			ret = mapper.updateSchedule(params);
-			logger.info("updateSchedule ret{}", ret);
+			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+			
+			if (bcid == null || "".equals(bcid)){
+				//@ insert broadcast_info  with flag which createBroadcast is successed or not
+				ret = mapper.insertBroadcastInfo(params);
+				logger.info("insertBroadcastInfo ret{}", ret);
+				//@ update schedule broadcast id
+				ret = mapper.updateSchedule(params);
+				logger.info("updateSchedule ret{}", ret);
+			}else{
+				ret = mapper.updateBroadcastInfo(params);
+				logger.info("updateSchedule ret{}", ret);
+			}
                 
 	        return makeRetMsg("1000", "SUCCESS");
 		}catch(Exception e){
 			logger.error("", e);
 			return makeRetMsg("9999", e.getMessage());
 		}
-	
 	}
 	
 	/**
@@ -250,24 +310,23 @@ public class ScheduleMgmtController {
 	 */
 	@RequestMapping(value = "view/delSchedule.do")
 	@ResponseBody
-	public Map< String, Object > delSchedule( @RequestParam Map< String, Object > params,
+	public Map< String, Object > delSchedule( @RequestParam Map< String, String > params,
             HttpServletRequest req, Locale locale ) {
 		
-		logger.info("sending param{}", params);
+		logger.info("delSchedule param{}", params);
 		try{
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 			
 			if (params.get("BCID") != null && !"".equals(params.get("BCID"))){
-				Map mapBroadcast = mapper.selectBroadcast(params);
+				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
 				params.put("transactionId", makeTransId());
-				params.put("serviceId", mapBroadcast.get("serviceId"));
+				
 				//@ xmlMake & Send, recv
 				String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_DELETE);
-
 				
 				//@ check return XML success
 				if (!xmlManager.isSuccess(resStr))
-					return makeRetMsg("1000", resStr);
+					return makeRetMsg("9000", resStr);
 			}
 
 			/*
@@ -292,13 +351,20 @@ public class ScheduleMgmtController {
 			logger.error("", e);
 			return makeRetMsg("9999", e.getMessage());
 		}
-	
 	}
-	private String convertMysqlDateFormat(String dateTime){
+	
+	private String convertMysqlDateFormat(String dateTime, boolean add30Secons){
+		if (dateTime == null)
+			return null;
+		
 		dateTime = dateTime.trim();
 		dateTime = dateTime.replaceAll("-", "");
 		dateTime = dateTime.replaceAll(":", "");
 		dateTime = dateTime.replaceAll("T", "");
+		
+		if (add30Secons)
+			dateTime = dateTime.substring(0,12) + "30";
+		
 		return dateTime;
 	}
 
@@ -316,6 +382,15 @@ public class ScheduleMgmtController {
 	    resultMap.put( "resultInfo", returnMap );
 	              
 		return (Map<String, Object>) resultMap;
+	}
+	
+	private String exampleGBRSum(){
+		Map< String, String > params = new HashMap<String, String>();
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		params.put("serviceAreaId", "3048");
+		Map <String, String> retmap = mapper.selectGBRSum(params);
+		return String.valueOf(retmap.get("GBRSum"));
 	}
 	
 }

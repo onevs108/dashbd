@@ -254,8 +254,8 @@
 			
 			var start_date = contents[i].start_date;
 			var end_date = contents[i].end_date;
-			var url = "schedule.do?id=" + id;
-			
+			var url = "schedule.do?id=" + id + "&BCID=" + broadcast_info_id;
+	
 			if (broadcast_info_id == null || broadcast_info_id == "")
 				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#dddddd", textColor: "#787A7C", borderColor:"#bbbbbb"};
 			else
@@ -271,9 +271,9 @@
 			editable: true, 			// enable draggable events
 			droppable: true, 			// this allows things to be dropped onto the calendar
 			header: {
-				left: 'prev,next',
-				center: 'title'
-				,right: 'agendaDay'
+				left: 'prev,next'
+				, center: 'title'
+				, right: 'month, agendaWeek, agendaDay'
 			},
 			defaultDate: searchDate,
 			selectable: true,
@@ -320,11 +320,12 @@
 			
 			eventDrop: function(event) { // called when an event (already on the calendar) is moved
 				console.log('eventDrop2', event, ',',event.start.format(), ',' , event.end.format() , event.url);
-				
 				modifySchedule(event.url, event.start.format(), event.end.format());
 			}
 			,eventResizeStop: function(event){		//Triggered when event resizing stops.
 				console.log('event eventResizeStop', event, ',',event.start.format(), ',' , event.end.format() , event.url);
+				console.log('event.end._d' , event.end._d, moment(event.end._d).format('YYYY-MM-DD[T]HH:mm:ss'), event.end._i); 
+				modifySchedule(event.url, event.start.format(), event.end.format());
 			}
 			
 			/*
@@ -341,10 +342,17 @@
 	
 	function modifySchedule(url, startTime, endTime){
 		
-		var id = url.substring(url.indexOf("=")+1);
-		console.log('eventDrop2:', id);
+		var id = url.substring(url.indexOf("=")  + 1, url.indexOf("&BCID"));
+		var BCID = url.substring(url.indexOf("&BCID=") + 6);
+		
+		if (BCID == 'undefined')
+			BCID = "";
+		
+		console.log('modifySchedule:', id,',' ,BCID);
+		
 		var param = {
 				scheduleId : id,
+				BCID : BCID,
 				startTime : startTime,
 				endTime: endTime
 		};
@@ -361,8 +369,8 @@
 				alert("error for update Time:request=" +request +",status=" + status + ",error=" + error);
 			}
 		});
-		
 	}
+	
 	function addSchedule(content_id, g_name, startTime, endTime){
 		var param = {
 				serviceAreaId : $("#serviceAreaId").val(),
@@ -415,13 +423,13 @@
                     </div>
                 </li>
                 <li>
-                    <a href="user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                    <a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
@@ -430,7 +438,7 @@
                     <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
                 </li>
                 <li class="landing_link">
                     <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>

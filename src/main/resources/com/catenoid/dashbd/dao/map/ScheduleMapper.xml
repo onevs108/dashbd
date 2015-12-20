@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.catenoid.dashbd.dao.ScheduleMapper" >
-
-
-
 	<select id="selectSchdule" parameterType="java.util.Map" resultType="java.util.Map">
 		<![CDATA[
 		]]>
@@ -39,8 +36,8 @@
 				, name
 				, s.BCID
 				, DATE_FORMAT(start_date, '%Y-%m-%d') searchDate
-				, DATE_FORMAT(start_date, '%Y/%m/%d %H:%i%s') start_date
-				, DATE_FORMAT(end_date, '%Y/%m/%d %H:%i:%s') end_date
+				, DATE_FORMAT(start_date, '%Y-%m-%d %H:%i:%s') start_date
+				, DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') end_date
 
 				, DATE_FORMAT(start_date , '%H') start_hour
 				, DATE_FORMAT(start_date , '%i') start_mins
@@ -54,6 +51,7 @@
 				, b.serviceId
 				, b.service
 				, b.service_name
+				, b.serviceClass
 				, b.language
 				, b.GBR
 				, b.QCI
@@ -63,14 +61,14 @@
 				, b.fecType
 				, b.fecRatio
 				, b.said
-				, b.schedule_start
-				, b.schedule_stop
+				, DATE_FORMAT(schedule_start, '%Y-%m-%d %H:%i:%s') schedule_start
+				, DATE_FORMAT(schedule_stop, '%Y-%m-%d %H:%i:%s') schedule_stop
 				, b.reportType
 				, b.offsetTime
 				, b.randomTime
 				, b.fileURI
-				, b.deliveryInfo_start
-				, b.deliveryInfo_end
+				, DATE_FORMAT(deliveryInfo_start, '%Y-%m-%d %H:%i:%s') deliveryInfo_start
+				, DATE_FORMAT(deliveryInfo_end, '%Y-%m-%d %H:%i:%s') deliveryInfo_end
 				, b.mpdURI
 				, b.samplePercentage
 			FROM schedule s 
@@ -91,17 +89,18 @@
 	
 	<update id = "modifyScheduleTime" parameterType="java.util.Map">
 		UPDATE schedule	SET
-			BCID = #{BCID},
-			updated_at = now()
-		WHERE id = #{id}
+			start_date = #{startTime} 
+			, end_date = #{endTime}
+			, updated_at = now()
+		WHERE id = #{scheduleId}
 	</update>
 		
 	<insert id = "insertBroadcastInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="BCID">
-		
 		INSERT INTO broadcast_info(transactionId
 			, serviceId 
 			, service
 			, service_name
+			, serviceClass
 			, language
 			, GBR
 			, QCI
@@ -110,6 +109,7 @@
 			, preEmptionVulnerability
 			, fecType
 			, fecRatio
+			, segmentAvailableOffset
 			, said
 			, schedule_start
 			, schedule_stop
@@ -125,6 +125,7 @@
 			, #{serviceId}
 			, #{serviceType}
 			, #{name}
+			, #{serviceClass}
 			, #{serviceLanguage}
 			, #{GBR}
 			, #{QCI}
@@ -133,23 +134,121 @@
 			, #{preEmptionVulnerability}
 			, #{fecType}
 			, #{fecRatio}
+			, #{segmentAvailableOffset}
 			, #{said}
-			, #{schedule_start}
-			, #{schedule_stop}
+			, str_to_date(#{schedule_start}, '%Y%m%d%H%i%s')
+			, str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s')
 			, #{reportType}
 			, #{offsetTime}
 			, #{randomTime}
 			, #{fileURI}
-			, #{deliveryInfo_start}
-			, #{deliveryInfo_end}
+			, str_to_date(#{deliveryInfo_start}, '%Y%m%d%H%i%s')
+			, str_to_date(#{deliveryInfo_end}, '%Y%m%d%H%i%s')
 			, #{mpdURI}
 			, #{samplePercentage}
 		)
 	</insert>
+	<update id="updateBroadcastInfo" parameterType="java.util.Map">
+		UPDATE broadcast_info SET
+			updated_at = now()
+			, transactionId		= #{transactionId}
+			<if test="name != null and name !=''" >
+				, service_name 		= #{name}
+			</if>
+			<if test="serviceClass != null and serviceClass !=''" >
+			, serviceClass 		= #{serviceClass}
+			</if>
+			<if test="serviceLanguage != null and serviceLanguage !=''" >
+			, language			= #{serviceLanguage}
+			</if>	 
+			<if test="GBR != null and GBR !=''" >
+				, GBR				= #{GBR}
+			</if> 
+			<if test="QCI != null and QCI !=''" >
+				, QCI				= #{QCI}
+			</if>
+			<if test="level != null and level !=''" >
+				, level				= #{level}
+			</if>
+			<if test="preEmptionCapabiity != null and preEmptionCapabiity !=''" >
+				, preEmptionCapabiity		=#{preEmptionCapabiity}
+			</if>
+			<if test="preEmptionVulnerability != null and preEmptionVulnerability !=''" >
+				, preEmptionVulnerability	=#{preEmptionVulnerability}
+			</if>
+			<if test="fecType != null and fecType !=''" >
+				, fecType			= #{fecType}
+			</if>
+			<if test="fecRatio != null and fecRatio !=''" >
+				, fecRatio			= #{fecRatio}
+			</if>
+			<if test="segmentAvailableOffset != null and segmentAvailableOffset !=''" >
+				, segmentAvailableOffset	=#{segmentAvailableOffset}
+			</if>
+			<if test="said != null and said !=''" >
+				, said				= #{said}
+			</if>
+			<if test="schedule_start != null and schedule_start !=''" >
+				, schedule_start	= str_to_date(#{schedule_start}, '%Y%m%d%H%i%s')
+			</if>
+			<if test="schedule_stop != null and schedule_stop !=''" >
+				, schedule_stop		= str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s')
+			</if>
+			<if test="reportType != null and reportType !=''" >
+				, reportType		= #{reportType}
+			</if>
+			<if test="offsetTime != null and offsetTime !=''" >
+				, offsetTime		= #{offsetTime}
+			</if>
+			<if test="randomTime != null and randomTime !=''" >
+				, randomTime		= #{randomTime}
+			</if>
+			<if test="fileURI != null and fileURI !=''" >
+				, fileURI			= #{fileURI}
+			</if>
+			<if test="deliveryInfo_start != null and deliveryInfo_start !=''" >
+				, deliveryInfo_start= str_to_date(#{deliveryInfo_start}, '%Y%m%d%H%i%s')
+			</if>
+			<if test="deliveryInfo_end != null and deliveryInfo_end !=''" >
+				, deliveryInfo_end	= str_to_date(#{deliveryInfo_end}, '%Y%m%d%H%i%s')
+			</if>
+			<if test="mpdURI != null and mpdURI !=''" >
+				, mpdURI			= #{mpdURI}
+			</if>
+			<if test="samplePercentage != null and samplePercentage !=''" >
+				, samplePercentage	= #{samplePercentage} 
+			</if>
+		WHERE 1=1
+		AND BCID = #{BCID}
+	</update>
+	
 	<select id="selectBroadcast" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT 
 			BCID
-			,serviceId
+			, serviceId
+			, service_name 		as name
+			, transactionId		
+			, serviceClass 			 
+			, language			as serviceLanguage 
+			, GBR	
+			, QCI	
+			, level	
+			, preEmptionCapabiity	
+			, preEmptionVulnerability
+			, fecType			
+			, fecRatio			
+			, segmentAvailableOffset
+			, said				
+			, DATE_FORMAT(schedule_start, '%Y%m%d%H%i%s') schedule_start
+			, DATE_FORMAT(schedule_stop,  '%Y%m%d%H%i%s') schedule_stop
+			, reportType		
+			, offsetTime	
+			, randomTime	
+			, fileURI	
+			, DATE_FORMAT(deliveryInfo_start, '%Y%m%d%H%i%s') deliveryInfo_start
+			, DATE_FORMAT(deliveryInfo_end,   '%Y%m%d%H%i%s') deliveryInfo_end	
+			, mpdURI			
+			, samplePercentage	 
 		FROM broadcast_info 
 		WHERE 1=1
 		AND BCID = #{BCID}
@@ -168,7 +267,28 @@
 		WHERE id = #{id}
 	</update>
 	
+	<select id="selectGBRSum" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT IFNULL(sum(GBR), '0') as GBRSum FROM 
+		schedule s inner join broadcast_info b
+		ON (s.BCID = b.BCID)
+		WHERE 1=1
+	<![CDATA[
+		AND DATE_FORMAT(now(), '%Y%m%d%H%i%s') > DATE_FORMAT(s.start_date, '%Y%m%d%H%i%s')
+		AND DATE_FORMAT(now(), '%Y%m%d%H%i%s') < DATE_FORMAT(s.end_date, '%Y%m%d%H%i%s')
+	]]>
+		AND service_area_id = #{serviceAreaId} 	
 	
+	</select>
+<!--  inbo 작성 쿼리 끝  -->
+
+
+
+
+
+
+
+
+
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
