@@ -3,7 +3,7 @@ package com.catenoid.dashbd.dao.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ServiceAreaEnbAp {
+public class ServiceAreaEnbSearchParam {
     private Integer serviceAreaId;
     
     private Integer serviceAreaBandwidth;
@@ -27,8 +27,6 @@ public class ServiceAreaEnbAp {
     private Date createdAt;
 
     private Date updatedAt;
-    
-    private Integer totalCount;
 
     public Integer getServiceAreaId() {
         return serviceAreaId;
@@ -124,13 +122,5 @@ public class ServiceAreaEnbAp {
 
 	public void setMbsfn(String mbsfn) {
 		this.mbsfn = mbsfn;
-	}
-	
-	public Integer getTotalCount() {
-		return totalCount;
-	}
-
-	public void setTotalCount(Integer totalCount) {
-		this.totalCount = totalCount;
 	}
 }

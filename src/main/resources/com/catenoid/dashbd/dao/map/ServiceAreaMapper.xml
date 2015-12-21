@@ -49,7 +49,23 @@
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
-	
+
+	<resultMap id="ServiceAreaEnbAp" type="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
+		<id column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
+		<result column="service_area_bandwidth" property="serviceAreaBandwidth" jdbcType="INTEGER" />
+		<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
+		<result column="service_area_city" property="serviceAreaCity" jdbcType="VARCHAR" />
+		<result column="enb_ap_id" property="enbApId" jdbcType="INTEGER" />
+		<result column="enb_ap_name" property="enbApName" jdbcType="VARCHAR" />
+		<result column="longitude" property="longitude" jdbcType="DECIMAL" />
+		<result column="latitude" property="latitude" jdbcType="DECIMAL" />
+		<result column="plmn" property="plmn" jdbcType="VARCHAR" />
+		<result column="mbsfn" property="mbsfn" jdbcType="VARCHAR" />
+		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
+	</resultMap>
+  	
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -374,4 +390,28 @@
 		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 
+	<select id="getServiceAreaEnbAp" resultMap="ServiceAreaEnbAp" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam" >
+		select 
+			t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
+			t3.name as service_area_name, 
+			t3.city as service_area_city,
+			enb_ap_id, t2.name as enb_ap_name, 
+			t2.longitude as longitude, 
+			t2.latitude as latitude, 
+			t2.plmn as plmn,
+			t2.mbsfn as mbsfn,
+			t1.created_at, t1.updated_at
+			, (select count(*) from service_area_enb_ap t1, enb_ap t2, service_area t3 
+			where 1 = 1 and t1.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
+			and t1.enb_ap_id = t2.id
+			and t1.service_area_id = t3.id) as totalCount
+	from 
+		service_area_enb_ap t1, enb_ap t2, service_area t3
+	where 1 = 1
+		and t1.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
+		and t1.enb_ap_id = t2.id
+		and t1.service_area_id = t3.id
+	order by t1.enb_ap_id
+	</select>
+	
 </mapper>

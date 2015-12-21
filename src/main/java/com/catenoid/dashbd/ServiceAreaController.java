@@ -45,6 +45,7 @@ import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
+import com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaSchedule;
 import com.catenoid.dashbd.dao.model.ServiceAreaScheduleExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
@@ -767,5 +768,48 @@ public class ServiceAreaController {
 	        e.printStackTrace();
 	    }
 	}
-	
+
+	@RequestMapping(value = "/resources/serviceAreaMgmt.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView getServiceAreaMgmt(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView mv = new ModelAndView("serviceAreaMgmt");
+		
+		if(request.getParameter("serviceAreaId") == null) return null;
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		ServiceAreaEnbSearchParam searchParam = new ServiceAreaEnbSearchParam();
+		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		
+		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
+		
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			ServiceAreaEnbAp data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("serviceAreaBandwidth", data.getServiceAreaBandwidth());
+			obj.put("serviceAreaName", data.getServiceAreaName());
+			obj.put("serviceAreaCity", data.getServiceAreaCity());
+			obj.put("enbApId", data.getEnbApId());
+			obj.put("enbApName", data.getEnbApName());
+			obj.put("longitude", data.getLongitude());
+			obj.put("latitude", data.getLatitude());
+			obj.put("plmn", data.getPlmn());
+			obj.put("mbsfn", data.getMbsfn());
+			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("totalCount", data.getTotalCount());
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+		
+		mv.addObject("EnbList", datas);
+		
+		return mv;
+	}
 }
