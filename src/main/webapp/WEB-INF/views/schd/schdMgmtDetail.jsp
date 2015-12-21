@@ -147,7 +147,8 @@
 		
 		$("#go-search").click(function() {
 			var param = {
-					title : $("#form-title").val()
+					title : $("#form-title").val(),
+					category : $("#form-category").val()
 				};
 			$.ajax({
 				type : "POST",
@@ -220,11 +221,29 @@
 			
 		for ( var i=0; i<data.length; i++) {
 			var $div = $("<div/>");
-			var id = data[i].id;
+			var $div1 = $("<div/>");
+			var $div2 = $("<div/>");
+			
+			var id = data[i].cid;
 			var title = data[i].title;
-			$div.append(title);
+			var category = data[i].category;
+			var duration = data[i].duration;
+			var path = data[i].path;
+			console.log((new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0]);
+			
+			duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
+			
+			$div1.attr("class","feed-element");
+			$div1.append("<a href='#' class='pull-left'><img alt='image' class='img-circle' src='"+ path + "'></a>");
+			
+			$div2.attr("class","media-body");
+			$div2.append("<strong>" + category +"</strong><br>" + title + "</br><small class='pull-right'>Running Time" + duration + " </small>" );
+			
+			$div1.append($div2);
 			$div.attr("class","fc-event");
 			$div.attr("data-id", id);
+			
+			$div.append($div1);
 			$list.append( $div );
 		}
 		

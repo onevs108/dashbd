@@ -82,7 +82,7 @@ public class UploadController {
     			String storePath = null, rootPath = null;
     			logger.info("OS: " + System.getProperty("os.name"));
     			if(System.getProperty("os.name").toUpperCase().startsWith("WINDOWS")) {
-    				rootPath = "E:\\jee\\workspace2\\dashbd\\src\\main\\webapp\\";
+    				rootPath = "";
                 	storePath = String.format("%s/%d/%s/", fileUploadPath, Integer.parseInt(dto.getContentid()), dto.getType());
     			}
     			else {

@@ -4,10 +4,16 @@
 
 
 	<select id="selectContents" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT id, title,category 
+		SELECT id cid, title, category, duration , 
+				(select path from contents_images where cid = content_id and type = 'thumbnail' order by id desc limit 1) path
 		FROM contents
 		WHERE 1=1
-		AND title like concat('%',#{title} , '%');
+		<if test="title != null and title !=''" >
+			AND title like concat('%',#{title} , '%')
+		</if>
+		<if test="category != null and category !=''" >
+			AND category like concat('%',#{category} , '%')
+		</if>
 	</select>
 	
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Contents" >
