@@ -99,7 +99,7 @@ public class XmlManager {
 		String serviceTypeStr = service.getAttributeValue("serviceType");
 		
 		Element serviceType = null;
-		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(serviceTypeStr)){
+		if (SERVICE_TYPE_FILE_DOWNLOAD.equalsIgnoreCase(serviceTypeStr)){
 			serviceType = service.getChild("fileDownload");
 		}else{
 			serviceType = service.getChild("streaming");
@@ -107,18 +107,18 @@ public class XmlManager {
 			
 
 		xmlMap.put("transactionId", message.getChild("transaction").getAttributeValue("id"));
-		xmlMap.put("serviceId", serviceType.getAttributeValue("id") );
+		xmlMap.put("serviceId", serviceType.getAttributeValue("serviceId") );
 		xmlMap.put("serviceType", serviceTypeStr);
 
 		xmlMap.put("name", serviceType.getChildText("name"));
 		xmlMap.put("serviceLanguage", serviceType.getChildText("serviceLanguage"));
-		xmlMap.put("GBR", serviceType.getChild("QoS").getChildText("GBR"));
-		xmlMap.put("QCI", serviceType.getChild("QoS").getChildText("QCI"));
+		xmlMap.put("GBR", serviceType.getChild("transferConfig").getChild("QoS").getChildText("GBR"));
+		xmlMap.put("QCI", serviceType.getChild("transferConfig").getChild("QoS").getChildText("QCI"));
 //		xmlMap.put("level", serviceType);
-		xmlMap.put("preEmptionCapabiity", serviceType.getChild("QoS").getChild("ARP").getChildText("preEmptionCapability"));
-		xmlMap.put("preEmptionVulnerability", serviceType.getChild("QoS").getChild("ARP").getChildText("preEmptionVulnerability"));
-		xmlMap.put("fecType", serviceType.getChild("FEC").getChildText("fecType"));
-		xmlMap.put("fecRatio", serviceType.getChild("FEC").getChildText("fecRatio"));
+		xmlMap.put("preEmptionCapabiity", serviceType.getChild("transferConfig").getChild("QoS").getChild("ARP").getChildText("preEmptionCapability"));
+		xmlMap.put("preEmptionVulnerability", serviceType.getChild("transferConfig").getChild("QoS").getChild("ARP").getChildText("preEmptionVulnerability"));
+		xmlMap.put("fecType", serviceType.getChild("transferConfig").getChild("FEC").getChildText("fecType"));
+		xmlMap.put("fecRatio", serviceType.getChild("transferConfig").getChild("FEC").getChildText("fecRatio"));
 		xmlMap.put("said", serviceType.getChild("serviceArea").getChildText("said"));	//fileDown만??
 		xmlMap.put("schedule_start", serviceType.getChild("schedule").getAttributeValue("start"));
 		xmlMap.put("schedule_stop", serviceType.getChild("schedule").getAttributeValue("stop"));
@@ -445,7 +445,7 @@ public class XmlManager {
     
     public String tmpRespRETRIEVE_Body(){
     	String retStr =
-			    "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+			  //  "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			    "	<message name=\"SERVICE.RETRIEVE\" type=\"RESPONSE\">\n" + 
 			    "	<transaction id=\"2\">\n" +
 			    "	<result>\n" +
@@ -483,7 +483,7 @@ public class XmlManager {
 			    "                   </content> \n" +
 			    "                   <content contentId=\"2\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +
 			    "                       <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
-			    "                       <deliveryInfo start=\"2015-04-09T11:58:27.000+09:00\" end=\2015-04-09T12:08:27.000+09:00\"/>\n" +
+			    "                       <deliveryInfo start=\"2015-04-09T11:58:27.000+09:00\" end=\"2015-04-09T12:08:27.000+09:00\"/>\n" +
 			    "                   </content>\n" +
 			    "               </schedule>\n" +
 			    "               <schedule index=\"2\" cancelled=\"true\" start=\"2015-04-09T12:38:27.000+09:00\" stop=\"2015-04-09T12:58:27.000+09:00\">\n" +
@@ -508,7 +508,21 @@ public class XmlManager {
 		//System.out.println(new XmlManager().testMaking());
 
 		//System.out.println(getFileDate("YYYYMMdd"));
-		System.out.println(new XmlManager().convertGMT("2015-12-20 00:33:55"));
+		//System.out.println(new XmlManager().convertGMT("2015-12-20 00:33:55"));
+		String tt = "";
+		try {
+			tt = new XmlManager().tmpRespRETRIEVE_Body();
+			Map<String, String> mapRet = new XmlManager().paringRetrieve(tt);
+			System.out.println(mapRet);
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(tt);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println(tt);
+		}
 		
 	    
 	}

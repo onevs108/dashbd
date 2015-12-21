@@ -271,8 +271,8 @@
 	                        		<input type="hidden" id=serviceType" name="serviceType" value="${mapSchedule.service}">
 	                        		<select class="input-sm form-control input-s-sm" disabled>            	
 	                        	</c:if>
-	                        	        <option value="FileDownload" <c:if test="${mapSchedule.service eq 'FileDownload'}"> selected</c:if>>File Download</option>
-                                        <option value="Streaming" <c:if test="${mapSchedule.service eq 'Streaming'}">selected</c:if>>Streaming</option>
+	                        	        <option value="fileDownload" <c:if test="${mapSchedule.service eq 'fileDownload'}"> selected</c:if>>File Download</option>
+                                        <option value="streaming" <c:if test="${mapSchedule.service eq 'streaming'}">selected</c:if>>Streaming</option>
                                         <!-- 
                                         <option value="2">Carousel MultiMedia Files</option>
                                         <option value="3">Carousel Single File</option>
