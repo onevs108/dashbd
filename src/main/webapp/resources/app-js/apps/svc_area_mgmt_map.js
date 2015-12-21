@@ -1,4 +1,3 @@
-
 var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -6,29 +5,40 @@ function initMap() {
     zoom: 8
   });
   
-var data = [{lat: 37.489052, lng: 127.066331}, {lat: 37.557046, lng: 126.946351 }, {lat: 37.589867, lng: 127.058592}, {lat: 37.583838, lng: 126.909788}, {lat: 37.564268, lng: 126.902408}];
-  var markers = [];
-  /*
-  for (var i = 0; i < 7; i++) {
-    var latLng = new google.maps.LatLng(data[i][lat],
-        data[i][lng]);
-    var marker = new google.maps.Marker({'position': latLng});
-    markers.push(marker);
-  }*/
   
-  var marker = new google.maps.Marker({'position': new google.maps.LatLng(37.489052, 127.066331)});
-  markers.push(marker);
-  
-  marker = new google.maps.Marker({'position': new google.maps.LatLng(37.557046, 126.946351)});
-  markers.push(marker);
-  
-  marker = new google.maps.Marker({'position': new google.maps.LatLng(37.589867, 127.058592)});
-  markers.push(marker);
-  
-  var markerCluster = new MarkerClusterer(map, markers);
-  
-  alert("zoom level="+map.getZoom());
-  
-  alert($(EnbList).serviceAreaId);
 }
+
+var enb_datas;
+
+$.ajax({
+        url : "/dashbd/api/getServiceAreaEnbAp.do",
+        type: "get",
+        data : { "serviceAreaId" : 2013 },
+        success : function(responseData){
+            $("#ajax").remove();
+            enb_datas = JSON.parse(responseData);
+            var dataLen = enb_datas.length;
+            var options = "";
+            for(var i=0; i<dataLen; i++){
+            	options += '<li><a href="javascript:moveToServiceAreaMgmt(' + enb_datas[i].enbApId + ');">' + enb_datas[i].enbApName + '</a></li>';
+            }
+
+            $("#enb_ap_in_service_area").empty();
+            $("#enb_ap_in_service_area").append(options);
+            
+            var markers = [];
+            
+            for (var i = 0; i < enb_datas.length; i++) {
+              var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
+              var marker = new google.maps.Marker({'position': latLng});
+              markers.push(marker);
+            }
+            
+            var mcOptions = {gridSize: 5000, averageCenter:false};
+            var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+            alert(markerCluster.getGridSize());
+        }
+    });
+
+
 

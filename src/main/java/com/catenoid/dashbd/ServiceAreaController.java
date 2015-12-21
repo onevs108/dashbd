@@ -782,6 +782,23 @@ public class ServiceAreaController {
 		
 		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
 		
+		mv.addObject("EnbList", datas);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/api/getServiceAreaEnbAp.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaEnbAp(HttpServletRequest request, HttpServletResponse response) {
+
+		if(request.getParameter("serviceAreaId") == null) return;
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		ServiceAreaEnbSearchParam searchParam = new ServiceAreaEnbSearchParam();
+		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		
+		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
+		
 		JSONArray array = new JSONArray();
 		for(int i = 0; i < datas.size(); i++) {
 			ServiceAreaEnbAp data = datas.get(i);
@@ -807,9 +824,5 @@ public class ServiceAreaController {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-		
-		mv.addObject("EnbList", datas);
-		
-		return mv;
 	}
 }
