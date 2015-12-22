@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -92,7 +94,7 @@
 
 #external-events {
 	float: right;
-	width: 95%;
+	width: 100%;
 	padding: 0 10px;
 	border: 1px solid #ccc;
 	background: #eee;
@@ -135,6 +137,7 @@
 	
 <script>
 	var content_id = "";
+	var gTitle = "";
 	var g_name = "";
 	$(document).ready(function() {
 		
@@ -144,24 +147,10 @@
 			alert('prev is clicked, do something');
 		});
 		*/
+		loadContentList();
 		
 		$("#go-search").click(function() {
-			var param = {
-					title : $("#form-title").val(),
-					category : $("#form-category").val()
-				};
-			$.ajax({
-				type : "POST",
-				url : "getContents.do",
-				data : param,
-				dataType : "json",
-				success : function( data ) {
-					getContents(data.contents);
-				},
-				error : function(request, status, error) {
-					alert("request=" +request +",status=" + status + ",error=" + error);
-				}
-			});
+			loadContentList();
 		});
 	
 	});
@@ -191,6 +180,24 @@
 		}
 	};
 	
+	function loadContentList(){
+		var param = {
+				title : $("#form-title").val(),
+				category : $("#form-category").val()
+			};
+		$.ajax({
+			type : "POST",
+			url : "getContents.do",
+			data : param,
+			dataType : "json",
+			success : function( data ) {
+				getContents(data.contents);
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	}
 	function setDragEventFunction(){
 		$('#external-events .fc-event').each(function() {
 			// store data so the calendar knows to render an event upon drop
@@ -243,15 +250,14 @@
 			$div1.append($div2);
 			$div.attr("class","fc-event");
 			$div.attr("data-id", id);
+			$div.attr("data-title", title);
 			
 			$div.append($div1);
 			$list.append( $div );
 		}
-		
-		// pagging 초기화
-		$(".pagging").empty();
 		/*
-		$("#content-table tbody").quickPager( {
+		$(".pagging").empty();
+		$("#external-events").quickPager( {
 			naviSize: 3,
 			currentPage: 1,
 			holder: ".pagging"
@@ -317,6 +323,8 @@
 			events: events,
 			drop: function(event, dayDelta,minuteDelta,allDay,revertFunc) {
 				content_id = $(this).attr("data-id");
+				gTitle = $(this).attr("data-title");
+				
 				$(this).remove();
 			},
 			
@@ -328,14 +336,16 @@
 				endTime = endTime.format('YYYY-MM-DD[T]HH:mm:ss');
 				//console.log('endTime', endTime);
 				console.log(content_id ,',', g_name, ',', startTime, ',', endTime );
-				addSchedule(content_id, g_name, startTime, endTime);
+				addSchedule(content_id, gTitle, startTime, endTime);
 				//location.reload();
 				
 				var b = $('#calendar').fullCalendar('getDate');
 			 	var searchDate = b.format('YYYY-MM-DD');
 				var tmpServiceAreaId = $("#serviceAreaId").val();
 				
-				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
+				var title = encodeURI($("#form-title").val());
+				var category =  encodeURI($("#form-category").val());
+				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 			},
 			eventDrop: function(event) { // called when an event (already on the calendar) is moved
 				console.log('eventDrop2', event, ',',event.start.format(), ',' , event.end.format() , event.url);
@@ -559,23 +569,23 @@
                         <form method="get" class="form-horizontal">
                             <div class="row">
                                 <div class="col-sm-8" id="epg-table">
-									<div style = "width:90%;"id="calendar"></div>
+									<div style = "width:100%;"id="calendar"></div>
                                 </div>
                                 <div class="col-sm-4">
                                     
-                                        <div class="form-group">
+                                        <div class="form-group" style="margin-bottom: 5px;">
                                             <label class="col-md-4 control-label">Category</label>
                                             <!--div class="col-md-8">
                                                 <select class="form-control input-sm">
                                                     <option value="">?</option>
                                                 </select>
                                             </div-->
-                                            <div class="col-md-8"><input type="text" id="form-category" class="form-control input-sm"></div>
+                                            <div class="col-md-8"><input type="text" id="form-category" class="form-control input-sm" value="${category}"></div>
                                         </div>
                                         
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">Title</label>
-                                            <div class="col-md-8"><input type="text" id="form-title" class="form-control input-sm"></div>
+                                            <div class="col-md-8"><input type="text" id="form-title" class="form-control input-sm" value="${title}"></div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-md-8 col-sm-offset-4">

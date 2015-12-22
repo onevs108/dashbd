@@ -1314,7 +1314,7 @@ button.dim:active:before {
 .fc-agenda .fc-event-time,
 .fc-event a {
   padding: 4px 6px;
-  background-color: #1ab394;
+  /*background-color: #1ab394;*/
   /* background color */
   border-color: #1ab394;
   /* border color */
