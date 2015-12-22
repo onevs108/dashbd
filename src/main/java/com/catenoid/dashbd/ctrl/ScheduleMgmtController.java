@@ -206,9 +206,13 @@ public class ScheduleMgmtController {
 	 */
 	@RequestMapping(value = "view/schdMgmtDetail.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
+		logger.info("schdMgmtDetail {}", params);
 		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
 		mv.addObject( "serviceAreaId", params.get("serviceAreaId")); 
 		mv.addObject("searchDate", params.get("searchDate"));
+		mv.addObject("title", params.get("title"));
+		mv.addObject("category", params.get("category"));
+		
 		return mv;
 	}
 	
