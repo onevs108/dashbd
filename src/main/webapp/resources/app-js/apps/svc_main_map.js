@@ -94,11 +94,11 @@ function drawServiceAreaByBmSc(bmscId) {
             var gyounggiCount = 0;
             for(var i=0; i<dataLen; i++){
           	  if( data[i].city == '02' ) {
-          		  seoulCount = seoulCount + 1;
+          		  seoulCount = data[i].count;
           	  }
           	  
           	  if( data[i].city == '031' ) {
-          		gyounggiCount = gyounggiCount + 1;
+          		gyounggiCount = data[i].count;
         	  }
             }
             
@@ -126,6 +126,8 @@ function drawServiceAreaByBmSc(bmscId) {
             marker.addListener('click', function() {
             	  getAerviceArea(gyounggi.lat, gyounggi.lng);
             });
+            
+            map.size(50,50);
         }
     });
 	
