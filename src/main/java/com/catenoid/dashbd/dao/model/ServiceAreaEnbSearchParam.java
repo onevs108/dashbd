@@ -27,6 +27,10 @@ public class ServiceAreaEnbSearchParam {
     private Date createdAt;
 
     private Date updatedAt;
+    
+    private Integer page;
+    
+    private Integer perPage;
 
     public Integer getServiceAreaId() {
         return serviceAreaId;
@@ -123,4 +127,20 @@ public class ServiceAreaEnbSearchParam {
 	public void setMbsfn(String mbsfn) {
 		this.mbsfn = mbsfn;
 	}
+	
+	public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+    
+    public Integer getPerPage() {
+        return perPage;
+    }
+
+    public void setPerPage(Integer perPage) {
+        this.perPage = perPage;
+    }
 }

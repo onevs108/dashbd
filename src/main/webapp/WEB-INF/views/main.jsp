@@ -8,10 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
 
-	<script src="app-js/bower_components/requirejs/require.js"></script>
-	<script src="app-js/conf.js"></script>
-	<script src="app-js/apps/main.js"></script>
-
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
@@ -24,6 +20,13 @@
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	
+	<script src="app-js/config.js"></script>
+	<script src="app-js/apps/svc_main.js"></script>
+	<script src="app-js/apps/svc_main_map.js"></script>
+	
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap"
+        async defer></script>
 </head>
 <body>
 <div id="wrapper">
@@ -157,16 +160,29 @@
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
                                     <select class="input-sm form-control input-s-sm" id="operator">
-                                        <option value="">Select one</option>
+                                        <option value="">Select Operator</option>
+                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
+										<option value="${operatorList.id }">${operatorList.name }</option>
+										</c:forEach>
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
                                     <select class="input-sm form-control input-s-sm" id="bmsc">
-                                        <option value="">Select one</option>
+                                        <option value="">Select BM-SC</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="google_map" id="map"></div>
+                            <div class="row">
+                            <div class="col-sm-9">
+                            <div class="google_map" id="map" style="height:500px;"></div>
+                            </div>
+                            <div class="col-sm-3">
+                                    <h5>Select Service Area</h5>
+                                    <ul class="service_area_box" id="service_area">
+                                        
+                                    </ul>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -316,48 +332,6 @@
     </div><!-- content end -->
 
 </div><!-- wrapper end -->
-
-<script>
-	$(document).ready(function() {
-		require([
-			'js/plugins/chartist/chartist.min.js'
-		], function(Chartist) {
-			new Chartist.Bar('#ct-chart3', {
-				labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-				series: [
-					[800000, 1200000, 1400000, 1300000],
-					[200000, 400000, 500000, 300000],
-					[100000, 200000, 400000, 600000]
-				]
-			}, {
-				stackBars: true,
-				axisY: {
-					labelInterpolationFnc: function(value) {
-						return (value / 1000) + 'k';
-					}
-				}
-			}).on('draw', function(data) {
-				if(data.type === 'bar') {
-					data.element.attr({
-						style: 'stroke-width: 30px'
-					});
-				}
-			});
-
-			var data = {
-					series: [5, 3, 4]
-				};
-
-			var sum = function(a, b) { return a + b };
-
-			new Chartist.Pie('#ct-chart5', data, {
-				labelInterpolationFnc: function(value) {
-					return Math.round(value / data.series.reduce(sum) * 100) + '%';
-				}
-			});
-		});
-	});
-</script>
 
 </body>
 </html>

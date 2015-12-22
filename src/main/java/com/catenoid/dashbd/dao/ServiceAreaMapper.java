@@ -10,6 +10,7 @@ import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.OperatorBmsc;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
+import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
 
@@ -50,4 +51,8 @@ public interface ServiceAreaMapper {
     List<Bmsc> getSeviceAreaBmSc(OperatorSearchParam searchParm);
     
     List<ServiceAreaEnbAp> getServiceAreaEnbAp(ServiceAreaEnbSearchParam example);
+    
+    List<ServiceAreaCount> getServiceAreaCountByBmSc(BmscServiceAreaSearchParam searchParm);
+    
+    List<BmscServiceArea> getServiceAreaByLatLng(ServiceAreaEnbSearchParam searchParm);
 }

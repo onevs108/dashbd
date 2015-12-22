@@ -65,6 +65,12 @@
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
+	
+	<resultMap id="ServiceAreaCount" type="com.catenoid.dashbd.dao.model.ServiceAreaCount" >
+		<result column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="count" property="count" jdbcType="INTEGER" />
+	</resultMap>
   	
   <sql id="Example_Where_Clause" >
     <where >
@@ -414,6 +420,19 @@
 		and t1.enb_ap_id = t2.id
 		and t1.service_area_id = t3.id
 	order by t1.enb_ap_id
+	</select>
+	
+	
+	<select id="getServiceAreaCountByBmSc" resultMap="ServiceAreaCount" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
+		select
+			a.bmsc_id, c.city, count(*) as count
+		from 
+			bmsc_service_area a, service_area_enb_ap b, enb_ap c
+		where 1 = 1 
+			and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
+			and b.service_area_id = a.service_area_id
+			and c.id = b.enb_ap_id
+		group by a.bmsc_id, c.city
 	</select>
 	
 </mapper>

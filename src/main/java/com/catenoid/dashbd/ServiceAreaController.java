@@ -43,6 +43,7 @@ import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
+import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam;
@@ -686,7 +687,7 @@ public class ServiceAreaController {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
-		Integer perPage = 15;
+		Integer perPage = 50;
 		
 		OperatorSearchParam searchParam = new OperatorSearchParam();
 		searchParam.setPage((page-1) * perPage);
@@ -739,7 +740,7 @@ public class ServiceAreaController {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
-		Integer perPage = 15;
+		Integer perPage = 50;
 		
 		if(request.getParameter("bmscId") == null) return;
 		
@@ -816,6 +817,86 @@ public class ServiceAreaController {
 			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("totalCount", data.getTotalCount());
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@RequestMapping(value = "/resources/main.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView getMain(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("main");
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 50;
+		
+		OperatorSearchParam searchParam = new OperatorSearchParam();
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
+		
+		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+		
+		mv.addObject("OperatorList", result);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/api/serviceAreaByLatLng.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaByLatLng(HttpServletRequest request, HttpServletResponse response) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 15;
+		
+		ServiceAreaEnbSearchParam searchParam = new ServiceAreaEnbSearchParam();
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
+		searchParam.setLatitude(BigDecimal.valueOf(Long.valueOf(request.getParameter("lat"))));
+		searchParam.setLongitude(BigDecimal.valueOf(Long.valueOf(request.getParameter("lng"))));
+		
+		List<BmscServiceArea> datas = mapper.getServiceAreaByLatLng(searchParam);
+		
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			BmscServiceArea data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("bmscId", data.getBmscId());
+			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("totalCount", data.getTotalCount());
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@RequestMapping(value = "/api/getServiceAreaCountByBmSc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaCountByBmSc(HttpServletRequest request, HttpServletResponse response) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
+		searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
+		
+		List<ServiceAreaCount> datas = mapper.getServiceAreaCountByBmSc(searchParam);
+		
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			ServiceAreaCount data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("bmscId", data.getBmscId());
+			obj.put("city", data.getCity());
+			obj.put("count", data.getCount());
 			array.add(obj);
 		}
 		
