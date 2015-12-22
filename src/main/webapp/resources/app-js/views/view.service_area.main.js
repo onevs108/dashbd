@@ -56,7 +56,7 @@ define([
 				collection: this.collection,
 				use_drag_selection: true,
 				use_click_selection: true,
-				use_marker_clusterer: true
+				use_marker_clusterer: false
 			});
 
 			if(this.view_service_area_enb_list !== null) {

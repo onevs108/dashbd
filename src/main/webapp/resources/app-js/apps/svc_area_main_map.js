@@ -1,5 +1,4 @@
 
-
 var perPage = 15;
 var listPageCount = 10;
 
@@ -16,7 +15,7 @@ function getServiceAreaByBmSc(page, bmscId)
             var dataLen = data.length;
             var options = "";
             for(var i=0; i<dataLen; i++){
-            	options += '<li><a href="javascript:moveToServiceAreaMgmt(' + data[i].serviceAreaId + ');">' + data[i].serviceAreaId + '</a></li>';
+            	options += '<li><a href="/dashbd/resources/serviceAreaMgmt.do?serviceAreaId=' + data[i].serviceAreaId + '">' + data[i].serviceAreaId + '</a></li>';
             }
 
             $("#service_area").empty();

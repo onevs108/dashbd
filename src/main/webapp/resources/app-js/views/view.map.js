@@ -32,7 +32,7 @@ define([
 		initialize: function(options) {
 			this.use_drag_selection = _.result(options, 'use_drag_selection', true);
 			this.use_click_selection = _.result(options, 'use_click_selection', true);
-			this.use_marker_clusterer = _.result(options, 'use_marker_clusterer', true);
+			this.use_marker_clusterer = _.result(options, 'use_marker_clusterer', false);
 			this.use_reload_on_map_change = _.result(options, 'use_reload_on_map_change', true);
 			this.service_areas = options.service_areas || [];
 			this.map_listeners = [];

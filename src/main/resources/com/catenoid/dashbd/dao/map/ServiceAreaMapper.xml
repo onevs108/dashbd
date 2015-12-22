@@ -408,7 +408,9 @@
 	from 
 		service_area_enb_ap t1, enb_ap t2, service_area t3
 	where 1 = 1
+		<if test="serviceAreaId != null" >
 		and t1.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
+		</if>
 		and t1.enb_ap_id = t2.id
 		and t1.service_area_id = t3.id
 	order by t1.enb_ap_id

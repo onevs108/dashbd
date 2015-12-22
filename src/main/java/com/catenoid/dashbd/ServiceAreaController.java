@@ -795,7 +795,7 @@ public class ServiceAreaController {
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
 		ServiceAreaEnbSearchParam searchParam = new ServiceAreaEnbSearchParam();
-		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		//searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
 		
 		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
 		
