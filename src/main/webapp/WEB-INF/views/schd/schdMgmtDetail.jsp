@@ -336,14 +336,13 @@
 				
 				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 			},
-			
 			eventDrop: function(event) { // called when an event (already on the calendar) is moved
 				console.log('eventDrop2', event, ',',event.start.format(), ',' , event.end.format() , event.url);
 				modifySchedule(event.url, event.start.format(), event.end.format());
 			}
-			,eventResizeStop: function(event){		//Triggered when event resizing stops.
-				console.log('event eventResizeStop', event, ',',event.start.format(), ',' , event.end.format() , event.url);
-				console.log('event.end._d' , event.end._d, moment(event.end._d).format('YYYY-MM-DD[T]HH:mm:ss'), event.end._i); 
+			,eventResize: function(event, delta, revertFunc){
+				console.log('event eventResize', event, ',',event.start.format(), ',' , event.end.format() , event.url);
+				console.log('delta', delta, 'revertFunc', revertFunc);
 				modifySchedule(event.url, event.start.format(), event.end.format());
 			}
 			
