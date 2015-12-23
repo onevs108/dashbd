@@ -9,6 +9,8 @@ import com.catenoid.dashbd.dao.model.BmscServiceArea;
 import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.OperatorBmsc;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
+import com.catenoid.dashbd.dao.model.ScheduleSummary;
+import com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
@@ -57,6 +59,8 @@ public interface ServiceAreaMapper {
     List<BmscServiceArea> getSeviceAreaByBmScCity(BmscServiceAreaSearchParam searchParm);
     
     List<BmscServiceArea> getServiceAreaByLatLng(ServiceAreaEnbSearchParam searchParm);
+    
+    List<ScheduleSummary> getScheduleSummaryByServiceArea(ScheduleSummarySearchParam searchParm);
     
     
 }

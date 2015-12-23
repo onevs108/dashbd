@@ -42,6 +42,8 @@ import com.catenoid.dashbd.dao.model.BmscServiceArea;
 import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
+import com.catenoid.dashbd.dao.model.ScheduleSummary;
+import com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
@@ -921,11 +923,8 @@ public class ServiceAreaController {
 		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
 		searchParam.setPage((page-1) * perPage);
 		searchParam.setPerPage(perPage);
-		System.out.println(page);
 		searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
-		System.out.println(request.getParameter("bmscId"));
 		searchParam.setServiceAreaCity(request.getParameter("city"));
-		System.out.println(request.getParameter("city"));
 		
 		List<BmscServiceArea> datas = mapper.getSeviceAreaByBmScCity(searchParam);
 		
@@ -945,4 +944,43 @@ public class ServiceAreaController {
 	        e.printStackTrace();
 	    }
 	}
+	
+	@RequestMapping(value = "/api/scheduleSummaryByServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getScheduleSummaryByServiceArea(HttpServletRequest request, HttpServletResponse response) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		//Integer perPage = 15;
+		
+		ScheduleSummarySearchParam searchParam = new ScheduleSummarySearchParam();
+		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		
+		List<ScheduleSummary> datas = mapper.getScheduleSummaryByServiceArea(searchParam);
+
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			ScheduleSummary data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("scheduleId", data.getScheduleId());
+			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("contentId", data.getContentId());
+			obj.put("bcId", data.getBcId());
+			obj.put("scheduleName", data.getScheduleName());
+			obj.put("startDate", getFormatDateTime(data.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("endDate", getFormatDateTime(data.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("createdAt", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updatedAt", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("delYn", data.getDelYn());
+			obj.put("thumbnail", data.getThumbnail());
+			obj.put("progressRate", data.getProgressRate());
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 }

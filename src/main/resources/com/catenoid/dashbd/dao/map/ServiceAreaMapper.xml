@@ -77,7 +77,23 @@
 		<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
-	
+
+	<resultMap id="ScheduleSummaryByServiceArea" type="com.catenoid.dashbd.dao.model.ScheduleSummary" >
+		<result column="id" property="scheduleId" jdbcType="INTEGER" />
+		<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
+		<result column="content_id" property="contentId" jdbcType="INTEGER" />
+		<result column="bcid" property="bcId" jdbcType="INTEGER" />
+		<result column="name" property="scheduleName" jdbcType="VARCHAR" />
+		<result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
+		<result column="del_yn" property="delYn" jdbcType="VARCHAR" />
+		<result column="thumbnail" property="thumbnail" jdbcType="VARCHAR" />
+		<result column="progress_rate" property="progressRate" jdbcType="DECIMAL" />
+	</resultMap>
+		
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -470,4 +486,19 @@
 	group by a.bmsc_id, a.service_area_id	
 	limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
+
+	<select id="getScheduleSummaryByServiceArea" resultMap="ScheduleSummaryByServiceArea" parameterType="com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam" >
+		select 
+			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
+			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
+			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
+		from schedule a
+			where 1 = 1
+			and a.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
+			and a.del_yn = 'N'
+			and now() between a.start_date and a.end_date
+		order by a.start_date
+		limit 0, 4
+	</select>
+		
 </mapper>

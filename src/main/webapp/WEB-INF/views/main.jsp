@@ -193,7 +193,7 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Information Of Service Area 100</h5>
+                            <h5>Information Of Service Area <span id="schedule_summary_service_area_id"></span></h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -204,67 +204,7 @@
                             </div>
                         </div>
                         <div class="ibox-content">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <div class="contents-box">
-                                        <div class="file">
-                                            <div class="image">
-                                                <img alt="image" class="img-responsive" src="img/p1.jpg">
-                                            </div>
-                                            <div class="file-name">
-                                                Italy street
-                                            </div>
-                                            <div class="progress">
-                                                <div class="now"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-3">
-                                    <div class="contents-box">
-                                        <div class="file">
-                                            <div class="image">
-                                                <img alt="image" class="img-responsive" src="img/p2.jpg">
-                                            </div>
-                                            <div class="file-name">
-                                                Italy street
-                                            </div>
-                                            <div class="progress">
-                                                <div class="now"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-3">
-                                    <div class="contents-box">
-                                        <div class="file">
-                                            <div class="image">
-                                                <img alt="image" class="img-responsive" src="img/p3.jpg">
-                                            </div>
-                                            <div class="file-name">
-                                                Italy street
-                                            </div>
-                                            <div class="progress">
-                                                <div class="now"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-3">
-                                    <div class="contents-box">
-                                        <div class="file">
-                                            <div class="image">
-                                                <img alt="image" class="img-responsive" src="img/p4.jpg">
-                                            </div>
-                                            <div class="file-name">
-                                                Italy street
-                                            </div>
-                                            <div class="progress">
-                                                <div class="now"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="row" id="schedule_summary">
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">

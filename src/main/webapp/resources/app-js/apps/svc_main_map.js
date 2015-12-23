@@ -21,34 +21,69 @@ function moveToEnb(bmscId, serviceAreaId)
 	var enb_datas;
 
 	$.ajax({
-	          url : "/dashbd/api/getServiceAreaEnbAp.do",
-	          type: "get",
-	          data : { "serviceAreaId" : serviceAreaId },
-	          success : function(responseData){
-	              $("#ajax").remove();
-	              enb_datas = JSON.parse(responseData);
-	              var dataLen = enb_datas.length;
-	              var options = "";
-              
-	              for (var i = 0; i < enb_datas.length; i++) {
-	                var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
-	                var marker;
-	                if( enb_datas[i].serviceAreaId == serviceAreaId ) {
-	                	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
-	                } else if( enb_datas[i].serviceAreaId == '' ) {
-	                	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
-	                } else {
-	                	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
-	                }
-	                markers.push(marker);
-	              }
-	              
-	              map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
-	        	  map.setZoom(12);
-	          }
-	  });
+		url : "/dashbd/api/getServiceAreaEnbAp.do",
+		type: "get",
+		data : { "serviceAreaId" : serviceAreaId },
+		success : function(responseData){
+			$("#ajax").remove();
+			enb_datas = JSON.parse(responseData);
+			var dataLen = enb_datas.length;
+			var options = "";
+			
+			for (var i = 0; i < enb_datas.length; i++) {
+				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
+				var marker;
+				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
+				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+				} else if( enb_datas[i].serviceAreaId == '' ) {
+				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+				} else {
+				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+				}
+				markers.push(marker);
+			}
+			
+			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
+			map.setZoom(12);
+		}
+	});
+	
+	$.ajax({
+		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
+		type: "get",
+		data : { "serviceAreaId" : serviceAreaId },
+		success : function(responseData){
+			$("#ajax").remove();
+			datas = JSON.parse(responseData);
+			var dataLen = datas.length;
+			var options = "";
+			var content = "";
+			for (var i = 0; i < datas.length; i++) {
+				content += '<div class="col-xs-3">';
+				content += '<div class="contents-box">';
+				content += '<div class="file">';
+				content += '<div class="image">';
+				content += '<img alt="image" class="img-responsive" src="img/p1.jpg">';
+				content += '</div>';
+				content += '<div class="file-name">';
+				content += datas[i].scheduleName;
+				content += '</div>';
+				content += '<div class="progress">';
+				content += '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: ' + datas[i].progressRate + '%"><span class="sr-only">' + datas[i].progressRate + '% Complete</span></div>';
+				content += '</div>';
+				content += '</div>';
+				content += '</div>';
+				content += '</div>';
+			}
 
-	  
+			$("#schedule_summary_service_area_id").empty();
+            $("#schedule_summary_service_area_id").append(serviceAreaId);
+            
+			$("#schedule_summary").empty();
+            $("#schedule_summary").append(content);
+		}
+	});
+
 }
 
 function getParameter(name) {
