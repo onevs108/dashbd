@@ -54,5 +54,9 @@ public interface ServiceAreaMapper {
     
     List<ServiceAreaCount> getServiceAreaCountByBmSc(BmscServiceAreaSearchParam searchParm);
     
+    List<BmscServiceArea> getSeviceAreaByBmScCity(BmscServiceAreaSearchParam searchParm);
+    
     List<BmscServiceArea> getServiceAreaByLatLng(ServiceAreaEnbSearchParam searchParm);
+    
+    
 }

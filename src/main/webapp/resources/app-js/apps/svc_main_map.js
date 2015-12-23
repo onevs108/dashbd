@@ -1,14 +1,54 @@
-
+var perPage = 15;
 var map;
+var markers = [];
+var default_lat = 36.869872;
+var default_lng = 127.838728;
+var default_zoom = 7;
+
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 36.869872, lng: 127.838728},
-    zoom: 7,
-    scrollwheel:  false
+    center: {lat: default_lat, lng: default_lng},
+    zoom: default_zoom
   });
  
 }
 
+function moveToEnb(bmscId, serviceAreaId)
+{
+	clearMarkers();
+	
+	var enb_datas;
+
+	$.ajax({
+	          url : "/dashbd/api/getServiceAreaEnbAp.do",
+	          type: "get",
+	          data : { "serviceAreaId" : serviceAreaId },
+	          success : function(responseData){
+	              $("#ajax").remove();
+	              enb_datas = JSON.parse(responseData);
+	              var dataLen = enb_datas.length;
+	              var options = "";
+              
+	              for (var i = 0; i < enb_datas.length; i++) {
+	                var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
+	                var marker;
+	                if( enb_datas[i].serviceAreaId == serviceAreaId ) {
+	                	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+	                } else if( enb_datas[i].serviceAreaId == '' ) {
+	                	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+	                } else {
+	                	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+	                }
+	                markers.push(marker);
+	              }
+	              
+	              map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
+	        	  map.setZoom(12);
+	          }
+	  });
+
+	  
+}
 
 function getParameter(name) {
 	var url = location.href;
@@ -20,67 +60,84 @@ function getParameter(name) {
 	return results == null ? null : results[1];
 }
 
-function getAerviceArea(lat, lng)
+function getServiceAreaByBmScCity(page, bmscId, city)
 {
 	$.ajax({
-        url : "/dashbd/api/getServiceAreaEnbAp.do",
+        url : "/dashbd/api/serviceAreaByBmScCity.do",
         type: "get",
-        data : { "serviceAreaId" : getParameter('serviceAreaId') },
+        data : { "page" : page, "bmscId" : bmscId, "city" : city },
         success : function(responseData){
             $("#ajax").remove();
-            enb_datas = JSON.parse(responseData);
-            var dataLen = enb_datas.length;
+            datas = JSON.parse(responseData);
+            var dataLen = datas.length;
             var options = "";
             var idx = 0;
             for(var i=0; i<dataLen; i++){
-          	  if( enb_datas[i].serviceAreaId == getParameter('serviceAreaId') ) {
-          		  //options += '<li><a href="/dashbd/resources/serviceAreaMgmt.do?serviceAreaId=' + enb_datas[i].enbApId + '">' + enb_datas[i].enbApName + '</a></li>';
-          		  options += '<li><a href="javascript:moveToEnb(' + enb_datas[i].latitude + ', ' + enb_datas[i].longitude + ');">' + enb_datas[i].enbApName + '</a></li>';
-          	  }
+          		  options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
             }
 
-            $("#enb_ap_in_service_area").empty();
-            $("#enb_ap_in_service_area").append(options);
+            $("#service_area").empty();
+            $("#service_area").append(options);
             
-            var markers = [];
-            
-            for (var i = 0; i < enb_datas.length; i++) {
-              var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
-              var marker;
-              if( enb_datas[i].serviceAreaId == getParameter('serviceAreaId') ) {
-              	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
-              } else if( enb_datas[i].serviceAreaId == '' ) {
-              	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
-              } else {
-              	marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
-              }
-              
-              google.maps.event.addListener(marker, 'click', function() {
-              	   if (!selecting) return;
-              	   var id = this.id;
-              	   var index = selectedMarkers.indexOf(id);
-              	   if (index>-1) {
-              	     this.setIcon('https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png');
-              	     selectedMarkers.splice(index, 1);
-              	   } else {
-              	     selectedMarkers.push(id);             
-              	     this.setIcon('https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png');
-              	   }
-              	});
-              
-              //markers.push(marker);
+            // Pagination
+            var totalCount = datas[0].totalCount;
+            if(totalCount > perPage) {
+            	var totalPageCount = Math.ceil(totalCount / perPage); // 마지막 페이지
+            	//alert(totalPageCount);
+            	
+            	var pageination = '';
+                pageination += '<div class="text-center">';
+                pageination += '<ul class="pagination">';
+                if( page == 1 )
+                {
+                	pageination += '<li class="disabled"><a href="javascript:getServiceAreaByBmScCity(' + (page-1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-left"></span></a></li>';
+                }
+                else {
+                	pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + (page-1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-left"></span></a></li>';
+                }
+                
+                if(totalPageCount > listPageCount) {
+                	for(var i = page, j = 0; i <= totalPageCount && j < listPageCount ; i++, j++) {
+                    	if( i == page ) {
+                    		pageination += '<li class="active"><a href="#">' + i + '</a></li>';
+                    	}
+                    	else {
+                    		pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + i + ',' + bmscId + ', \'' + city + '\');">' + i + '</a></li>';
+                    	}
+                    }
+                }
+                else {
+                	for(var i = 1; i <= totalPageCount && i <= listPageCount ; i++) {
+                    	if( i == page ) {
+                    		pageination += '<li class="active"><a href="#">' + i + '</a></li>';
+                    	}
+                    	else {
+                    		pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + i + ',' + bmscId + ', \'' + city + '\');">' + i + '</a></li>';
+                    	}
+                    }
+                }
+                
+                
+                if( page == totalPageCount ) {
+                	pageination += '<li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>';
+                }
+                else {
+                	pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + (page+1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-right"></span></a></li>';
+                }
+    			pageination += '</ul>';
+    			pageination += '</div>';
+    			
+    			$("#service_area").append(pageination);
             }
-            
-            
-            //var mcOptions = {gridSize: 0, averageCenter:false};
-            //var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-            //alert(markerCluster.getGridSize());
         }
     });
 }
 
 
 function drawServiceAreaByBmSc(bmscId) {
+	clearMarkers();
+	$("#service_area").empty();
+	
 	$.ajax({
         url : "/dashbd/api/getServiceAreaCountByBmSc.do",
         type: "get",
@@ -92,13 +149,17 @@ function drawServiceAreaByBmSc(bmscId) {
             var options = "";
             var seoulCount = 0;
             var gyounggiCount = 0;
+            var seoulCode = "";
+            var gyounggiCode = "";
             for(var i=0; i<dataLen; i++){
           	  if( data[i].city == '02' ) {
           		  seoulCount = data[i].count;
+          		  seoulCode = data[i].city;
           	  }
           	  
           	  if( data[i].city == '031' ) {
-          		gyounggiCount = data[i].count;
+          		  gyounggiCount = data[i].count;
+          		  gyounggiCode = data[i].city;
         	  }
             }
             
@@ -113,24 +174,35 @@ function drawServiceAreaByBmSc(bmscId) {
             });
 
             marker.addListener('click', function() {
-            	  getAerviceArea(seoul.lat, seoul.lng);
-            	  });
+            	getServiceAreaByBmScCity(1, data[0].bmscId, seoulCode);
+            });
+            
+            markers.push(marker);
 
             marker = new google.maps.Marker({
-            	    position: gyounggi,
-            	    map: map,
-            	    title: '경기도',
-            	    label: '' + gyounggiCount
+        	    position: gyounggi,
+        	    map: map,
+        	    title: '경기도',
+        	    label: '' + gyounggiCount
             });
 
             marker.addListener('click', function() {
-            	  getAerviceArea(gyounggi.lat, gyounggi.lng);
+            	getServiceAreaByBmScCity(1, data[0].bmscId, gyounggiCode);
             });
             
-            map.size(50,50);
+            markers.push(marker);
+            
+            map.setCenter(new google.maps.LatLng(default_lat, default_lng));
+            map.setZoom(default_zoom);
         }
     });
+}
+
+function clearMarkers() {
+
+	for (var i = 0; i < markers.length; i++) {
+	    markers[i].setMap(null);
+	}
 	
-
-
+	markers = [];
 }

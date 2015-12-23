@@ -791,12 +791,13 @@ public class ServiceAreaController {
 	@RequestMapping(value = "/api/getServiceAreaEnbAp.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getServiceAreaEnbAp(HttpServletRequest request, HttpServletResponse response) {
 
-		if(request.getParameter("serviceAreaId") == null) return;
-		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
 		ServiceAreaEnbSearchParam searchParam = new ServiceAreaEnbSearchParam();
-		//searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		if(request.getParameter("serviceAreaId") != null)
+		{
+			searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		}
 		
 		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
 		
@@ -897,6 +898,44 @@ public class ServiceAreaController {
 			obj.put("bmscId", data.getBmscId());
 			obj.put("city", data.getCity());
 			obj.put("count", data.getCount());
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	@RequestMapping(value = "/api/serviceAreaByBmScCity.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaByBmscCity(HttpServletRequest request, HttpServletResponse response) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 15;
+		
+		if(request.getParameter("bmscId") == null) return;
+
+		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
+		System.out.println(page);
+		searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
+		System.out.println(request.getParameter("bmscId"));
+		searchParam.setServiceAreaCity(request.getParameter("city"));
+		System.out.println(request.getParameter("city"));
+		
+		List<BmscServiceArea> datas = mapper.getSeviceAreaByBmScCity(searchParam);
+		
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			BmscServiceArea data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("bmscId", data.getBmscId());
+			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("totalCount", data.getTotalCount());
 			array.add(obj);
 		}
 		

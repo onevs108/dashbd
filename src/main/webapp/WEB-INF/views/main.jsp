@@ -174,7 +174,7 @@
                             </div>
                             <div class="row">
                             <div class="col-sm-9">
-                            <div class="google_map" id="map" style="height:500px;"></div>
+                            <div class="google_map" id="map" style="height:550px;"></div>
                             </div>
                             <div class="col-sm-3">
                                     <h5>Select Service Area</h5>
