@@ -983,4 +983,16 @@ public class ServiceAreaController {
 	    }
 	}
 	
+	/*
+	 * 	현재시간 기점으로 GBR 합산 한 값을 리턴하는 메소드 호출하는 샘플코드 
+		소스부분에 3048이라는 부분은 serviceAreaId 로 넣어주시면 됩니다.
+		private String exampleGBRSum(){
+			Map< String, String > params = new HashMap();
+			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+			params.put("serviceAreaId", "3048");
+			Map  retmap = mapper.selectGBRSum(params);
+			return String.valueOf(retmap.get("GBRSum"));
+		}
+
+	 */
 }

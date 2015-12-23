@@ -83,6 +83,8 @@ function moveToEnb(bmscId, serviceAreaId)
             $("#schedule_summary").append(content);
 		}
 	});
+	
+	drawPieGraph();
 
 }
 
@@ -243,3 +245,17 @@ function clearMarkers() {
 	markers = [];
 }
 
+function drawPieGraph()
+{
+	var data = {
+		series: [1, 1, 1]
+	};
+
+	var sum = function(a, b) { return a + b };
+
+	new Chartist.Pie('#ct-chart5', data, {
+		labelInterpolationFnc: function(value) {
+			return Math.round(value / data.series.reduce(sum) * 100) + '%';
+		}
+	});
+}
