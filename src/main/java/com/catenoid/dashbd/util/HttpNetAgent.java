@@ -129,7 +129,7 @@ public class HttpNetAgent {
 			reqLog += ", hscd[" + this.hashCode() + "], sslExcIgnore[" + sslExceptionIgnore + "], hs[" + this.hashCode() + "]";
 			
 			logger.info(reqLog);
-			logger.debug(getHttpInfoDumy(method));
+			logger.info(getHttpInfoDumy(method));
 			
 			HttpConnectionManager httpConnMgr = new SimpleHttpConnectionManager();
 			HttpConnectionManagerParams httpConnMgrParams = new HttpConnectionManagerParams();

@@ -243,6 +243,7 @@
         <div class="wrapper wrapper-content">
         <form class="form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
         <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
+        <input type="hidden" id="contentId" name="contentId" value="${mapSchedule.contentId}">
         <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
         <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
         <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
@@ -390,7 +391,7 @@
                                             <!-- 
                                             <div class="col-sm-3 m-b-sm"><button type="button" class="btn btn-success">Add Service Area</button></div>
                                              -->
-                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs" id="said" name="said" value="${mapSchedule.said}"></div>
+                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs" id="said" name="said" value="${mapSchedule.serviceAreaId}"></div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">

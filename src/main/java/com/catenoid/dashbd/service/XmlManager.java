@@ -243,7 +243,7 @@ public class XmlManager {
 			serviceArea.addContent( new Element("said").setText(params.get("said")));
 			
 			Element content = new Element("content");
-			content.setAttribute(new Attribute("contentId", "1"));						//??
+			content.setAttribute(new Attribute("contentId", params.get("contentId")));						//??
 			content.setAttribute(new Attribute("contentType", "text/plain"));			//??
 			content.setAttribute(new Attribute("cancelled", "false"));					//??
 			content.setAttribute(new Attribute("changed", "false"));				
@@ -281,7 +281,7 @@ public class XmlManager {
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));
 			
 			Element contentSet = new Element("contentSet");
-			contentSet.setAttribute(new Attribute("contentSetId", "1")); 					
+			contentSet.setAttribute(new Attribute("contentSetId", params.get("contentId"))); 					
 			contentSet.setAttribute(new Attribute("cancelled", "false"));				
 								
 			Element serviceArea = new Element("serviceArea");
@@ -421,7 +421,7 @@ public class XmlManager {
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		try {
-			sdfFrom.setTimeZone(TimeZone.getTimeZone("GMT"));
+			//sdfFrom.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date dateFrom = sdfFrom.parse(dateTime);
 		    Calendar calFrom = Calendar.getInstance();
 		    calFrom.setTime(dateFrom);
@@ -508,21 +508,25 @@ public class XmlManager {
 		//System.out.println(new XmlManager().testMaking());
 
 		//System.out.println(getFileDate("YYYYMMdd"));
-		//System.out.println(new XmlManager().convertGMT("2015-12-20 00:33:55"));
-		String tt = "";
-		try {
-			tt = new XmlManager().tmpRespRETRIEVE_Body();
-			Map<String, String> mapRet = new XmlManager().paringRetrieve(tt);
-			System.out.println(mapRet);
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(tt);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(tt);
-		}
+		System.out.println(new XmlManager().convertGMT("20151223201100"));
+		
+		
+		
+		
+//		String tt = "";
+//		try {
+//			tt = new XmlManager().tmpRespRETRIEVE_Body();
+//			Map<String, String> mapRet = new XmlManager().paringRetrieve(tt);
+//			System.out.println(mapRet);
+//		} catch (JDOMException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.println(tt);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.println(tt);
+//		}
 		
 	    
 	}

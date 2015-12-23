@@ -1,137 +1,35 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule Mgmt</title>
-    <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/style.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
-    <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <title>Main</title>
+
+    <link href="../resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resources/css/style.css" rel="stylesheet">
+    <link href="../resources/css/animate.css" rel="stylesheet">
+    <link href="../resources/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="../resources/css/custom.css" rel="stylesheet">
+    <link href="../resources/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="../resources/css/plugins/chartist/chartist.min.css" rel="stylesheet">
     <link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
-    
-    
-	<!-- Mainly scripts -->
-	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
-	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
-	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+	<script src="../resources/js/jquery-2.1.1.js"></script>
+	<script src="../resources/js/bootstrap.min.js"></script>
+	<script src="../resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="../resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 	
-	<!-- FooTable -->
-	<script src="../resourcesRenew/js/plugins/footable/footable.all.min.js"></script>
-	
-	<!-- Custom and plugin javascript -->
-	<script src="../resourcesRenew/js/inspinia.js"></script>
-	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
+	<script src="../resources/app-js/config.js"></script>
 	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
+	<script src="../resources/app-js/apps/svc_main.js"></script>
+	<script src="../resources/app-js/apps/svc_main_map_forSchd.js"></script>
 	
-	<!-- Page-Level Scripts -->
-<script>
-	$(function() {
-		tmpServiceAreaId = '3048';
-		var searchDate = $("#searchDate").val();
-		callTimetable(tmpServiceAreaId, searchDate);
-		
-		$("#btnScheduleDetail").click(function() {
-			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
-		});
-	});
 	
-	function callTimetable(serviceAreaId_val, searchDate){
-		var param = {
-				serviceAreaId : serviceAreaId_val
-				, searchDate	: searchDate
-			};
-			
-			$.ajax({
-				type : "POST",
-				url : "getSchedule.do",
-				data : param,
-				dataType : "json",
-				success : function( data ) {
-					setTimeTable(data);
-			
-				},
-				error : function(request, status, error) {
-					alert("request=" +request +",status=" + status + ",error=" + error);
-				}
-			});
-	}
-	
-	function setTimeTable(data ){
-		var contents = data.contents;
-		var viewStartHour = data.viewStartHour;
-		var timetable = new Timetable();
-		//현재시점에서 2시전, 끝까지.
-		timetable.setScope(viewStartHour,0);
-        timetable.addLocations(['depth1', 'depth2', 'depth3']);
-		var beforeEndHM1 = 0;
-		var beforeEndHM2 = 0;
-		var currStartHM = 0;
-		var start_hour = 0
-		var start_mins = 0;
-		var end_hour = 0;
-		var end_mins = 0;
-		var depth= 'init';
-		for ( var i=0; i < contents.length; i++) {
-			beforeEndHM2 = beforeEndHM1; 
-			beforeEndHM1 = end_hour + '' + end_mins;
-			
-			var name = contents[i].name;
-			var start_year = contents[i].start_year;
-			var start_month = contents[i].start_month;
-			var start_day = contents[i].start_day;
-			start_hour = contents[i].start_hour;
-			start_mins = contents[i].start_mins;
-			
-			var end_year = contents[i].end_year;
-			var end_month = contents[i].end_month;
-			var end_day = contents[i].end_day;
-			end_hour = contents[i].end_hour;
-			end_mins = contents[i].end_mins;
-			
-			//depth 계산
-			currStartHM = start_hour + '' + start_mins;
-			
-			if (i == 0){
-				depth= 'depth1';
-			}else{
-				if (currStartHM < beforeEndHM1){
-					depth= 'depth2';
-				
-					if (beforeEndHM2 != 0){
-						if (currStartHM < beforeEndHM2)
-							depth= 'depth3';
-					}
-				}else{
-					depth= 'depth1';
-				}
-			}
-			console.log('idx=', i ,'currStartHM=', currStartHM ,',bef1=',beforeEndHM1 ,',bef2=',beforeEndHM2,',depth level =' , depth);
-			timetable.addEvent(contents[i].NAME, depth, 
-										new Date(start_year,start_month, start_day,start_hour,start_mins ),
-					 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
-					 					'#');
-		}
-		
-		var renderer = new Timetable.Renderer(timetable);
-        
-		renderer.draw('.timetable');
-        
-            /*
-            timetable.addEvent('Sightseeing', 'depth1', new Date(2015,7,17,10,45), new Date(2015,7,17,12,30), '#');
-            timetable.addEvent('Zumba', 'depth2', new Date(2015,7,17,12), new Date(2015,7,17,13), '#');
-            timetable.addEvent('Zumbu', 'depth2', new Date(2015,7,17,13,30), new Date(2015,7,17,15), '#');
-            timetable.addEvent('Lasergaming', 'depth3', new Date(2015,7,17,17,45), new Date(2015,7,17,19,30), '#');
-            timetable.addEvent('All-you-can-eat grill', 'depth4', new Date(2015,7,17,21), new Date(2015,7,18,1,30), '#');
-            */
-	}
-	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap"
+        async defer></script>
 </head>
 <body>
 <div id="wrapper">
@@ -149,13 +47,13 @@
                     </div>
                 </li>
                 <li>
-                    <a href="/dashbd/resources/user_mgmt.html#page/1"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                    <a href="user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
@@ -164,10 +62,13 @@
                     <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                    <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
                 </li>
-                <li class="landing_link">
-                    <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                <li>
+                    <a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                    <!-- 
+                    <a href="schedule_mgmt_eepg.html"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                     -->
                 </li>
             </ul>
         </div>
@@ -247,55 +148,59 @@
         <!-- content body -->
         <div class="wrapper wrapper-content">
 		<input type="hidden" id="searchDate" name="searchDate" value="${searchDate}">
-            <!-- Contents -->
+            <!-- User Mgmt -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Schedule Mgmt : eEPG</h5>
+                            <h5>Service Area Mgmt</h5>
                             <div class="ibox-tools">
-                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a>
+                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a-->
                             </div>
                         </div>
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
-                                    <select class="input-sm form-control input-s-sm">
-                                        <option value="0">Option 1</option>
-                                        <option value="1">Option 2</option>
-                                        <option value="2">Option 3</option>
-                                        <option value="3">Option 4</option>
+                                    <select class="input-sm form-control input-s-sm" id="operator">
+                                        <option value="">Select Operator</option>
+                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
+										<option value="${operatorList.id }">${operatorList.name }</option>
+										</c:forEach>
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                    <select class="input-sm form-control input-s-sm">
-                                        <option value="0">Option 1</option>
-                                        <option value="1">Option 2</option>
-                                        <option value="2">Option 3</option>
-                                        <option value="3">Option 4</option>
+                                    <select class="input-sm form-control input-s-sm" id="bmsc">
+                                        <option value="">Select BM-SC</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="google_map">
-                                Map Here
-                            </div>
-                            <div class="eepg_timeline">
-                                <div class="timetable"></div>
-                            </div>
-                            <div class="">
-	                            <button type="button" class="btn btn-success btn-sm" id="btnScheduleDetail">eEPG management</button>
+                            <div class="row">
+	                            <div class="col-sm-9">
+	                            <div class="google_map" id="map" style="height:550px;"></div>
+	                            </div>
+	                            <div class="col-sm-3">
+	                                    <h5>Select Service Area</h5>
+	                                    <ul class="service_area_box" id="service_area">
+	                                        
+	                                    </ul>
+	                            </div>
+	                            <div class="eepg_timeline">
+	                                <div class="timetable"></div>
+	                            </div>
+	                            <div class="">
+		                            <button type="button" class="btn btn-success btn-sm" id="btnScheduleDetail">eEPG management</button>
+	                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-			
+
         </div><!-- content body end -->
     </div><!-- content end -->
 
 </div><!-- wrapper end -->
-
 
 </body>
 </html>

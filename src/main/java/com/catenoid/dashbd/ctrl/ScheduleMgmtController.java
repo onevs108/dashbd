@@ -30,6 +30,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
+import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.service.XmlManager;
 import com.catenoid.dashbd.util.HttpNetAgent;
@@ -58,14 +60,24 @@ public class ScheduleMgmtController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/view/schdMgmt.do")
-	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest req) throws UnsupportedEncodingException {
+	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request) throws UnsupportedEncodingException {
 		//bmcm 와 serviceArea  값으로  스케줄 정보를 가져온다.
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		try
 		{
-			logger.info("GBRSum=", exampleGBRSum());
-			String transId = makeTransId();
-			params.put("transactionId", transId);
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+			Integer perPage = 50;
+			
+			OperatorSearchParam searchParam = new OperatorSearchParam();
+			searchParam.setPage((page-1) * perPage);
+			searchParam.setPerPage(perPage);
+			List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+			mv.addObject("OperatorList", result);
+			
+			//logger.info("GBRSum=", exampleGBRSum());
+//			String transId = makeTransId();
+//			params.put("transactionId", transId);
 				
 			//@ xmlMake & Send, recv
 			//String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_RETRIEVE);
@@ -144,8 +156,8 @@ public class ScheduleMgmtController {
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		params.put("startTime", convertMysqlDateFormat((String)params.get("startTime"), true));
-		params.put("endTime", convertMysqlDateFormat((String)params.get("endTime"),false));
+		params.put("startTime", convertMysqlDateFormat((String)params.get("startTime"), false));
+		params.put("endTime", convertMysqlDateFormat((String)params.get("endTime"), true));
 		int ret = mapper.addScheduleWithInitContent(params);
 		logger.info("addScheduleWithInitContent [ret={}]", ret);
 
@@ -361,10 +373,11 @@ public class ScheduleMgmtController {
 		if (dateTime == null)
 			return null;
 		
-		dateTime = dateTime.trim();
+		
 		dateTime = dateTime.replaceAll("-", "");
 		dateTime = dateTime.replaceAll(":", "");
 		dateTime = dateTime.replaceAll("T", "");
+		dateTime = dateTime.replaceAll(" ", "");
 		
 		if (add30Secons)
 			dateTime = dateTime.substring(0,12) + "30";

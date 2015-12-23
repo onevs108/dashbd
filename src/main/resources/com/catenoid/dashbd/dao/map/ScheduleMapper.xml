@@ -33,6 +33,7 @@
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT id
 				, service_area_id as serviceAreaId
+				, content_id as contentId
 				, name
 				, s.BCID
 				, DATE_FORMAT(start_date, '%Y-%m-%d') searchDate
