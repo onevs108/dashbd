@@ -21,7 +21,25 @@
 	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 	
 	<script src="app-js/config.js"></script>
-	<script src="app-js/apps/svc_area_management.js"></script>
+	
+	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
+	<script src="js/markerwithlabel.js"></script>
+	<script src="app-js/apps/svc_area_main_map.js"></script>
+        
+	<style type="text/css">
+	.labels {
+		color: red;
+		background-color: white;
+		font-family: "Lucida Grande", "Arial", sans-serif;
+		font-size: 10px;
+		font-weight: bold;
+		text-align: center;
+		width: 40px;     
+		border: 1px solid black;
+		white-space: nowrap;
+	}
+	</style>
+	
 </head>
 <body>
 <div id="wrapper">
@@ -145,9 +163,6 @@
                         	<div class="row">
                             	<div class="col-sm-4">
                             		<h4>Service Area Mgmt</h4>
-                            		<ul class="service_area_box">
-                            			<li><button class="btn btn-success btn-block" id="btn-add-service-area">Add Service Area</button></li>
-                            		</ul>
                             	</div>
                             </div>
                         </div>
@@ -155,23 +170,32 @@
                             <div class="row">
                             	<div class="col-sm-4">
                                     <h5>Select Operator</h5>
-                                    <ul class="service_area_box" id="operator">
-                                    	<c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
-										<li><a href="javascript:getServiceAreaBmSc(1, '${operatorList.id }');">${operatorList.name }</a></li>
+                                    <select class="input-sm form-control input-s-sm" id="operator">
+                                    	<option value=""></option>
+                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
+										<option value="${operatorList.id }">${operatorList.name }</option>
 										</c:forEach>
-                                    </ul>
+                                    </select>
                                 </div>
                                 <div class="col-sm-4">
                                     <h5>Select BM-SC</h5>
-                                    <ul class="service_area_box" id="bmsc">
-                                    </ul>
+                                    <select class="input-sm form-control input-s-sm" id="bmsc">
+                                    </select>
                                 </div>
-                                <div class="col-sm-4">
-                                    <h5>Select Service Area</h5>
-                                    <ul class="service_area_box" id="service_area">
-                                        
-                                    </ul>
+                                <div class="col-sm-3 pull-right">
+                                	<ul class="service_area_box">
+                            			<li><button class="btn btn-success btn-block" id="btn-add-service-area">Add Service Area</button></li>
+                            		</ul>
                                 </div>
+                            </div>
+                            <div class="row">
+	                            <div class="col-sm-9">
+		                            <div class="google_map" id="map" style="height:550px;"></div>
+								</div>
+								<div class="col-sm-3">
+									<h5>Select Service Area</h5>
+									<ul class="service_area_box" id="service_area"></ul>
+								</div>
                             </div>
                         </div>
                     </div>
