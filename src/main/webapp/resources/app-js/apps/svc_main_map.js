@@ -250,6 +250,23 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 			});
             
             marker.addListener('click', function() {
+            	getServiceAreaByBmScCity(1, data[0].bmscId, seoulCode);
+            });
+            
+            markers.push(marker);
+            
+            marker = new MarkerWithLabel({
+				position: gyounggi,
+				draggable: false,
+				raiseOnDrag: true,
+				map: map,
+				labelContent: '' + gyounggiCount,
+				labelAnchor: new google.maps.Point(22, 0),
+				labelClass: "labels", // the CSS class for the label
+				labelStyle: {opacity: 0.75}
+			});
+            
+            marker.addListener('click', function() {
             	getServiceAreaByBmScCity(1, data[0].bmscId, gyounggiCode);
             });
             

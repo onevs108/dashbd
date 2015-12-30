@@ -170,12 +170,13 @@ function moveToEnb(bmscId, serviceAreaId)
 				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
 				var marker;
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
 				} else if( enb_datas[i].serviceAreaId == '' ) {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
 				} else {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
 				}
+				
 				markers.push(marker);
 			}
 			
@@ -268,41 +269,6 @@ function getServiceAreaByBmScCity(page, bmscId, city)
     });
 }
 
-var area_positions = [];
-area_positions["02"] = {lat: 37.549761, lng: 126.991185};
-area_positions["031"] = {lat: 37.420170, lng: 127.510520};
-area_positions["032"] = {lat: 37.453885, lng: 126.707021};
-area_positions["033"] = {lat: 37.826329, lng: 128.150706};
-area_positions["041"] = {lat: 36.716505, lng: 126.795210};
-area_positions["042"] = {lat: 36.335924, lng: 127.392935};
-area_positions["043"] = {lat: 37.003972, lng: 127.699962};
-area_positions["051"] = {lat: 35.164310, lng: 129.045659};
-area_positions["052"] = {lat: 35.545247, lng: 129.254700};
-area_positions["053"] = {lat: 35.829107, lng: 128.565520};
-area_positions["054"] = {lat: 36.299079, lng: 128.882347};
-area_positions["055"] = {lat: 35.462819, lng: 128.209498};
-area_positions["061"] = {lat: 34.875420, lng: 126.987919};
-area_positions["062"] = {lat: 35.153629, lng: 126.834405};
-area_positions["063"] = {lat: 35.723109, lng: 127.154498};
-area_positions["064"] = {lat: 33.421225, lng: 126.795606};
-
-var Seoul = {lat: 37.549761, lng: 126.991185};
-var Gyeonggi = {lat: 37.420170, lng: 127.510520};
-var Busan = {lat: 35.164310, lng: 129.045659};
-var Daejeon = {lat: 36.335924, lng: 127.392935};
-var Gwangju = {lat: 35.153629, lng: 126.834405};
-var Incheon = {lat: 37.453885, lng: 126.707021};
-var Ulsan = {lat: 35.545247, lng: 129.254700};
-var Daegu = {lat: 35.829107, lng: 128.565520};
-var Jeollanam = {lat: 34.875420, lng: 126.987919};
-var Jeollabuk = {lat: 35.723109, lng: 127.154498};
-var Gyeongsangnam = {lat: 35.462819, lng: 128.209498};
-var Gyeongsangbuk = {lat: 36.299079, lng: 128.882347};
-var Chungcheongnam = {lat: 36.716505, lng: 126.795210};
-var Chungcheongbuk = {lat: 37.003972, lng: 127.699962};
-var Gangwon = {lat: 37.826329, lng: 128.150706};
-var Jejudo = {lat: 33.421225, lng: 126.795606};
-
 function drawServiceAreaByBmSc(bmscId) {
 	clearMarkers();
 	$("#service_area").empty();
@@ -316,32 +282,26 @@ function drawServiceAreaByBmSc(bmscId) {
             var data = JSON.parse(responseData);
             var dataLen = data.length;
             var options = "";
-            var city = '';
-            for(var i=0; i<dataLen; i++) {
+
+            for(var i = 0; i < dataLen; i++) {
             	if(area_positions[data[i].city]) {
-            		city = data[i].city;
-            		//var marker = new MarkerWithLabel({
-            		var marker = new google.maps.Marker({
+            		var marker = new MarkerWithLabel({
 						position: area_positions[data[i].city],
 						draggable: false,
 						raiseOnDrag: true,
 						map: map,
-						//labelContent: '' + data[i].count,
-						//labelAnchor: new google.maps.Point(22, 0),
-						//labelClass: "labels", // the CSS class for the label
-						//labelStyle: {opacity: 0.75},
-						title: city,
+						labelContent: '' + data[i].count,
+						labelAnchor: new google.maps.Point(22, 0),
+						labelClass: "labels", // the CSS class for the label
+						labelStyle: {opacity: 0.75},
+						title: data[i].city,
 						label: '' + data[i].count
             		});
 	            
-            		//marker.addListener('click', function() {
-            		//google.maps.event.addListener(marker, 'click', function() {
-            		google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            			return function() {
-            				getServiceAreaByBmScCity(1, bmscId, city);
-            			}
-            		})(marker, i));
-	            
+            		marker.addListener('click', function() {
+            				getServiceAreaByBmScCity(1, bmscId, this.title);
+            		});
+
 		            markers.push(marker);
             	}
             }
