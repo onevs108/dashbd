@@ -18,10 +18,7 @@ public class Utils {
 	}
 	
     public static String getFileDate(String format) {
-
-        Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat(format);
-        cal.add(Calendar.DATE ,0);
-        return sdf.format(cal.getTime());
+        return sdf.format(System.currentTimeMillis());
     }
 }

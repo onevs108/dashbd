@@ -187,10 +187,12 @@ function getContents(data, page){
 	
 	
 function setTimeTable(data ){
+	
 	var searchDate = $("#searchDate").val();
 	var contents = data.contents;
 	var events = [];
 	var schedule;
+	var now = moment();
 	for ( var i = 0; i < contents.length; i++) {
 		var id = contents[i].ID;
 		var name = contents[i].NAME;
@@ -199,11 +201,23 @@ function setTimeTable(data ){
 		var start_date = contents[i].start_date;
 		var end_date = contents[i].end_date;
 		var url = "schedule.do?id=" + id + "&BCID=" + broadcast_info_id;
-
-		if (broadcast_info_id == null || broadcast_info_id == "")
+		var now4compare = replaceAll4Time(now.format());
+		var start4compare = replaceAll4Time(start_date);
+		var end4compare = replaceAll4Time(end_date);
+		console.log('current=', now4compare , ', start_date=', start4compare, ', end_date=', end4compare);
+		if (broadcast_info_id == null || broadcast_info_id == ""){
+			if (now4compare < start4compare ){
+				//미래
+			}else if (now4compare > end4compare ){
+				//과거
+			}else{
+				//현재
+			}
+				
 			schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#dddddd", textColor: "#787A7C", borderColor:"#bbbbbb"};
-		else
+		}else{
 			schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#23C6C8", textColor: "#ecf0f1", borderColor:"#1AB394"};
+		}
 		
 		//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#eeeeee"};
 		events.push( schedule );
@@ -221,6 +235,12 @@ function setTimeTable(data ){
 			, right: 'month, agendaWeek, agendaDay'
 		},
 		defaultDate: searchDate,
+		titleFormat: {
+			   month: 'YYYY MMMM',
+			   week:  "YYYY MMMM",
+			   day: 'YYYY-MM-DD dddd'
+			},
+			
 		selectable: true,
 		selectHelper: true,
 		select: function(start, end) {
@@ -295,64 +315,50 @@ function setTimeTable(data ){
 	    }
 		*/
 		, viewRender: function(view, element){
+			console.log(view, element);
+			var now4compare = replaceAll4Day(moment().format());
+			var viewDay4compare = replaceAll4Day(view.start.format());
+			// console.log(now4compare , viewDay4compare);
+			if (now4compare == viewDay4compare)
+				setTimeline(view);
 			
-			setInterval(function () {
-		        //$('.timeline').remove();
-		        setTimeline();
-		    }, 5000);
+//			setInterval(function () {
+//		        setTimeline(view);
+//			}, 5000);
 			
 		}
 	});
 	
     
 }
+function setTimeline(calView) {
+    console.log('calView.name =',calView.name )
+	
+   if(jQuery(".timeline").length == 0){
+      jQuery(".fc-time-grid-container").prepend("<div style='width:100%;overflow: visible;'><hr class='timeline'/></div>") 
+    }
+	
+    var timeline = jQuery(".timeline");  
 
-function setTimeline(view) {
-	//console.log('view=', view);
-	//I get the div where the line will be shown.
-       var parentDivAux = jQuery(".fc-time-area.fc-widget-content").children().children().children().children();
-       var parentDiv = jQuery();
-       for (var i = 0; i < parentDivAux.length; i++) {
-	//I need only (i think so) the fc-bg, cause fc-content is defined on multiple ocassions and line would be painted multiple times.
-           if (parentDivAux[i].className === "fc-bg") {
-               parentDiv.push(parentDivAux[i]);
-           }
-       }
+    var now = moment();
+    var day = parseInt(now.format("e"))
+    var width =  10000;
+    var height =  40;
+    var left = 50;
+    //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;;
+    var position = now.hours() + now.minutes() / 60 ;
+    
+    console.log('now.hours()=',now.hours(), ', width=',width,', height=',height,', left=',left,', position=',position);
+    
+    var top = height * position;
+    console.log('top=',top);
+    
+    timeline
+    .css('width',width+"px")
+    .css('left',left+"px")
+    .css('top',top+"px") 
 
-       var timeline = parentDiv.children(".timeline").children();
-       
-       console.log('timeline.length=', timeline.length);
-       if (timeline.length == 0) { //if timeline isn't there, add it
-         timeline = jQuery("<hr>").addClass("timeline");
-
-       //my calendar starts at 9 am and finishes at 9 pm, so I get the total amount of seconds from midnight to 9 am and from 9 am to 9 pm
-          var secondsHourMin = 9 * 3600;
-          var totalSeconds = 12 * 3600 ;
-
-	//I get the width of the div where the line will be painted
-          var widthAux = jQuery(".fc-time-area.fc-widget-content").children().children().children();
-          var width = widthAux.width();
-
-       //we obtain the current time/date to know where we should draw the vertical line
-          var curTime = new Date();
-          var curSeconds = (curTime.getHours() * 60 * 60) + (curTime.getMinutes() * 60) + curTime.getSeconds() - secondsHourMin;
-          var percentOfDay = curSeconds / totalSeconds; //totalSeconds = 12 hours
-
-	//I calculate the margin with a known width and the actual percentOfDay
-          var margin = (percentOfDay * width);
-          console.log('margin=', margin, ', width=', width,', percentOfDay=', percentOfDay);
-	//margin is applied and finally I prepend the timeline.
-          timeline.css({
-              top: '300px', 
-              left: margin + "px",
-              height: "100%",
-              width: 1 + "px"
-          });
-
-          parentDiv.prepend(timeline);
-       }
-
-   }
+}
 
 function modifySchedule(url, startTime, endTime){
 	
@@ -408,14 +414,18 @@ function addSchedule(content_id, g_name, startTime, endTime){
 	});
 
 }
-function popupShow(id, name){
-	content_id = id;
-	g_name = name;
-	console.log(id +','+ g_name + ',' + ($(window).width() - 550));
-	$(".pbox").css("top", $(window).scrollTop() + 250 + "px");
-	$(".pbox").css("left", ($(window).width() - 630) + "px");
-	//$(".pbox").css("left", 300 $(window).scrollLeft() + 100 + "px");
-	
-	$("#popupTitle").html(name);
-	$("#addSchedule").show();
+function replaceAll4Time(input){
+	var output;
+	output = input.replace(/-/gi,"");
+	output = output.replace(/T/gi,"");
+	output = output.replace(/:/gi,"");
+	output = output.substring(0,14);
+	return output;
+}
+
+function replaceAll4Day(input){
+	var output;
+	output = input.replace(/-/gi,"");
+	output = output.substring(0,8);
+	return output;
 }

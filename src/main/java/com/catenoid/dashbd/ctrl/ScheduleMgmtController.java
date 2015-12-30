@@ -88,7 +88,7 @@ public class ScheduleMgmtController {
 //			Map<String, String> xmlParam = xmlManager.paringRetrieve(resStr);
 			
 			//@ db insert
-			String searchDate = Utils.getFileDate("YYYY-MM-dd");
+			String searchDate = Utils.getFileDate("yyyy-MM-dd");
 			mv.addObject("searchDate", searchDate); 
 			
 		}catch(Exception e){
