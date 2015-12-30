@@ -24,12 +24,12 @@
 	
 	<script src="../resources/app-js/config.js"></script>
 	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
+	
 	<script src="../resources/app-js/apps/svc_main.js"></script>
 	<script src="../resources/app-js/apps/svc_main_map_forSchd.js"></script>
 	
 	
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap"
-        async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap" async defer></script>
 </head>
 <body>
 <div id="wrapper">

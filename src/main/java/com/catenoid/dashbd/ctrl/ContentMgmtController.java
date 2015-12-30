@@ -39,6 +39,15 @@ public class ContentMgmtController {
 		
 		ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
 		//params.put("serviceId", "3048");
+		String page = (String)params.get("page");
+		Integer perPage = 5; 
+		
+		if (page == null || "".equals(page))
+			page = "1";
+		
+		params.put("page", (Integer.parseInt(page) - 1) * perPage);
+		params.put("perPage", perPage);
+		
 		List<Map> list = mapper.selectContents(params);
 		
         

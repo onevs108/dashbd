@@ -54,6 +54,8 @@
 		});
 		
 		$("#btnDelete").click(function() {
+			if (!confirm("It will be deleted. do you want this??"))
+				return;
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
 			
@@ -79,11 +81,11 @@
 		$("#frmScheduleReg").ajaxForm({
 			dataType : "json",
 			beforeSubmit : function(data, frm, opt) {
-				/*
-				if (!validation($("#frmScheduleReg"))) {
+				
+				if (!confirm('are you sure?')) {
 					return false;
 				}
-				*/
+				
 			},
 			success : function(result) {
 				outMsgForAjax(result);
