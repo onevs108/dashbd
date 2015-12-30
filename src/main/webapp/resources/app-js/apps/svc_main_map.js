@@ -14,7 +14,7 @@ function initMap() {
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-function moveToEnb(bmscId, serviceAreaId)
+function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 {
 
 	clearMarkers();
@@ -77,8 +77,16 @@ function moveToEnb(bmscId, serviceAreaId)
 				content += '</div>';
 			}
 
+			if(datas.length == 0) {
+				content += '<div class="col-xs-12">';
+				content += '<div class="contents-box">';
+				content += '방송 중인 컨텐츠가 없습니다.';
+				content += '</div>';
+				content += '</div>';
+			}
+			
 			$("#schedule_summary_service_area_id").empty();
-            $("#schedule_summary_service_area_id").append(serviceAreaId);
+            $("#schedule_summary_service_area_id").append('(Service Area ' + serviceAreaId + ')');
             
 			$("#schedule_summary").empty();
             $("#schedule_summary").append(content);
@@ -112,7 +120,10 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             var options = "";
             var idx = 0;
             for(var i=0; i<dataLen; i++){
-          		  options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
+            	//options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
+            	//options += '<tbody><tr><td>' + datas[i].serviceAreaId + '</td><td>' + datas[i].serviceAreaName + '</td></tr></tbody>';
+            	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
+            	options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
             }
 
             $("#service_area").empty();
@@ -173,7 +184,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 }
 
 
-function drawServiceAreaByBmSc(bmscId) {
+function drawServiceAreaByBmSc(bmscId, bmscName) {
 	clearMarkers();
 	$("#service_area").empty();
 	
@@ -248,6 +259,50 @@ function drawServiceAreaByBmSc(bmscId) {
             map.setZoom(default_zoom);
         }
     });
+	
+	$.ajax({
+		url : "/dashbd/api/scheduleSummaryByBmsc.do",
+		type: "get",
+		data : { "bmscId" : bmscId },
+		success : function(responseData){
+			$("#ajax").remove();
+			datas = JSON.parse(responseData);
+			var dataLen = datas.length;
+			var options = "";
+			var content = "";
+			for (var i = 0; i < datas.length; i++) {
+				content += '<div class="col-xs-3">';
+				content += '<div class="contents-box">';
+				content += '<div class="file">';
+				content += '<div class="image">';
+				content += '<img alt="image" class="img-responsive" src="img/p1.jpg">';
+				content += '</div>';
+				content += '<div class="file-name">';
+				content += datas[i].scheduleName;
+				content += '</div>';
+				content += '<div class="progress">';
+				content += '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: ' + datas[i].progressRate + '%"><span class="sr-only">' + datas[i].progressRate + '% Complete</span></div>';
+				content += '</div>';
+				content += '</div>';
+				content += '</div>';
+				content += '</div>';
+			}
+			
+			if(datas.length == 0) {
+				content += '<div class="col-xs-12">';
+				content += '<div class="contents-box">';
+				content += '방송 중인 컨텐츠가 없습니다.';
+				content += '</div>';
+				content += '</div>';
+			}
+
+			$("#schedule_summary_service_area_id").empty();
+            $("#schedule_summary_service_area_id").append('(' + bmscName + ')');
+            
+			$("#schedule_summary").empty();
+            $("#schedule_summary").append(content);
+		}
+	});
 }
 
 function clearMarkers() {

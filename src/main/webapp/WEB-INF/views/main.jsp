@@ -194,10 +194,12 @@
                             <div class="google_map" id="map" style="height:550px;"></div>
                             </div>
                             <div class="col-sm-3">
-                                    <h5>Select Service Area</h5>
-                                    <ul class="service_area_box" id="service_area">
-                                        
-                                    </ul>
+								<h5>Select Service Area</h5>
+								<ul class="service_area_box list-inline">
+									<li>SA_ID</li><li>Description</li>
+								</ul>
+								<div id="service_area">
+								</div>
                             </div>
                             </div>
                         </div>
@@ -210,7 +212,7 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Information Of Service Area <span id="schedule_summary_service_area_id"></span></h5>
+                            <h5>Contents Being Serviced <span id="schedule_summary_service_area_id"></span></h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -221,8 +223,7 @@
                             </div>
                         </div>
                         <div class="ibox-content">
-                            <div class="row" id="schedule_summary">
-                            </div>
+                            <div class="row" id="schedule_summary"></div>
                             <div class="row">
                                 <div class="col-sm-6">
                                     <h5>View</h5>

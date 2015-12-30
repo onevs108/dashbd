@@ -983,6 +983,44 @@ public class ServiceAreaController {
 	    }
 	}
 	
+	@RequestMapping(value = "/api/scheduleSummaryByBmsc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getScheduleSummaryByBmsc(HttpServletRequest request, HttpServletResponse response) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		//Integer perPage = 15;
+		
+		HashMap<String, Object> searchParam = new HashMap();
+		searchParam.put("bmscId", Integer.valueOf(request.getParameter("bmscId")));
+		
+		List<ScheduleSummary> datas = mapper.getScheduleSummaryByBmsc(searchParam);
+
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			ScheduleSummary data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("scheduleId", data.getScheduleId());
+			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("contentId", data.getContentId());
+			obj.put("bcId", data.getBcId());
+			obj.put("scheduleName", data.getScheduleName());
+			obj.put("startDate", getFormatDateTime(data.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("endDate", getFormatDateTime(data.getEndDate(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("createdAt", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updatedAt", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("delYn", data.getDelYn());
+			obj.put("thumbnail", data.getThumbnail());
+			obj.put("progressRate", data.getProgressRate());
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	/*
 	 * 	현재시간 기점으로 GBR 합산 한 값을 리턴하는 메소드 호출하는 샘플코드 
 		소스부분에 3048이라는 부분은 serviceAreaId 로 넣어주시면 됩니다.

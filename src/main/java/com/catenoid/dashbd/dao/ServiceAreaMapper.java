@@ -16,6 +16,7 @@ import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
 
+import java.util.HashMap;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -61,6 +62,8 @@ public interface ServiceAreaMapper {
     List<BmscServiceArea> getServiceAreaByLatLng(ServiceAreaEnbSearchParam searchParm);
     
     List<ScheduleSummary> getScheduleSummaryByServiceArea(ScheduleSummarySearchParam searchParm);
+    
+    List<ScheduleSummary> getScheduleSummaryByBmsc(HashMap searchParm);
     
     
 }

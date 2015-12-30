@@ -75,6 +75,7 @@
 	<resultMap id="ServiceAreaByBmScCity" type="com.catenoid.dashbd.dao.model.BmscServiceArea" >
 		<result column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
 		<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
+		<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
 
@@ -458,32 +459,34 @@
 	</select>
 
 	<select id="getServiceAreaByLatLng" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
-	select a.bmsc_id, a.service_area_id, count(*) as totalCount
-	from bmsc_service_area a, service_area_enb_ap b, enb_ap c
+	select a.bmsc_id, a.service_area_id, d.name, count(*) as totalCount
+	from bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
 	where 1 = 1
 	and a.bmsc_id = 21
 	and b.service_area_id = a.service_area_id
 	and c.id = b.enb_ap_id
 	and c.city = #{city,jdbcType=VARCHAR}
+	and d.id = a.service_area_id
 	group by a.bmsc_id, a.service_area_id	
 	limit 0, 15
 	</select>
 	
 	<select id="getSeviceAreaByBmScCity" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
-	select a.bmsc_id, a.service_area_id
+	select a.bmsc_id, a.service_area_id, d.name as service_area_name
 	, (	select count(*) from ( select x.service_area_id
 		from bmsc_service_area x, service_area_enb_ap y, enb_ap z
 		where 1 = 1 and x.bmsc_id = #{bmscId,jdbcType=INTEGER} 
 			and y.service_area_id = x.service_area_id and z.id = y.enb_ap_id
 			and z.city = #{serviceAreaCity,jdbcType=VARCHAR}
 		group by x.bmsc_id, x.service_area_id) xx ) as totalCount
-	from bmsc_service_area a, service_area_enb_ap b, enb_ap c
+	from bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
 	where 1 = 1
 	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
 	and b.service_area_id = a.service_area_id
 	and c.id = b.enb_ap_id
 	and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
-	group by a.bmsc_id, a.service_area_id	
+	and d.id = a.service_area_id
+	group by a.bmsc_id, a.service_area_id, d.name	
 	limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 
@@ -499,6 +502,20 @@
 			and now() between a.start_date and a.end_date
 		order by a.start_date
 		limit 0, 4
+	</select>
+	
+	<select id="getScheduleSummaryByBmsc" resultMap="ScheduleSummaryByServiceArea" parameterType="java.util.HashMap" >
+		select 
+			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
+			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
+			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
+		from schedule a
+			where 1 = 1
+			and a.service_area_id in (select b.service_area_id from bmsc_service_area b where b.bmsc_id = #{bmscId,jdbcType=INTEGER})
+			and a.del_yn = 'N'
+			and now() between a.start_date and a.end_date
+		order by a.start_date
+		limit 0, 20
 	</select>
 		
 </mapper>
