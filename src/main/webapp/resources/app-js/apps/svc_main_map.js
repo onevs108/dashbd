@@ -8,7 +8,9 @@ var default_zoom = 7;
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: default_lat, lng: default_lng},
-		zoom: default_zoom
+		zoom: default_zoom,
+		// Style for Google Maps
+		//styles: [{"featureType":"water","stylers":[{"saturation":43},{"lightness":-11},{"hue":"#0088ff"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":99}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#808080"},{"lightness":54}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#ece2d9"}]},{"featureType":"poi.park","elementType":"geometry.fill","stylers":[{"color":"#ccdca1"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#767676"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#b8cb93"}]},{"featureType":"poi.park","stylers":[{"visibility":"on"}]},{"featureType":"poi.sports_complex","stylers":[{"visibility":"on"}]},{"featureType":"poi.medical","stylers":[{"visibility":"on"}]},{"featureType":"poi.business","stylers":[{"visibility":"simplified"}]}]
 	});
 }
 
@@ -35,11 +37,11 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
 				var marker;
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'});
 				} else if( enb_datas[i].serviceAreaId == '' ) {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'});
 				} else {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'});
 				}
 				markers.push(marker);
 			}
@@ -60,29 +62,28 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 			var options = "";
 			var content = "";
 			for (var i = 0; i < datas.length; i++) {
-				content += '<div class="col-xs-3">';
-				content += '<div class="contents-box">';
-				content += '<div class="file">';
-				content += '<div class="image">';
-				content += '<img alt="image" class="img-responsive" src="img/p1.jpg">';
+				content += "<div class=\"file-box\">";
+				content += "<span class=\"corner\"></span>";
+				content += "<div class=\"image\">";
+				content += "<img alt=\"image\" class=\"img-responsive\" src=\"img/p1.jpg\">";
 				content += '</div>';
-				content += '<div class="file-name">';
+				content += "<div class=\"progress progress-mini\">";
+				content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "</div>";
+				content += "<div class=\"file-name\">";
 				content += datas[i].scheduleName;
-				content += '</div>';
-				content += '<div class="progress">';
-				content += '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: ' + datas[i].progressRate + '%"><span class="sr-only">' + datas[i].progressRate + '% Complete</span></div>';
-				content += '</div>';
-				content += '</div>';
-				content += '</div>';
-				content += '</div>';
+				content += "</div>";
+				content += "</div>";
+				content += "</div>";
 			}
 
 			if(datas.length == 0) {
-				content += '<div class="col-xs-12">';
-				content += '<div class="contents-box">';
-				content += '방송 중인 컨텐츠가 없습니다.';
-				content += '</div>';
-				content += '</div>';
+				content += "<div class=\"nothumbnail\">";
+				content += "<p>";
+				content += "<i class=\"fa fa-search\"></i> No thumbnail<br/>";
+				content += "</p>";
+				content += "<small>현재 방송 중인 서비스가 없습니다.</small>";
+				content += "</div>";
 			}
 			
 			$("#schedule_summary_service_area_id").empty();
@@ -119,15 +120,40 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             var dataLen = datas.length;
             var options = "";
             var idx = 0;
-            for(var i=0; i<dataLen; i++){
+            
+			options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
+			options += "<div class=\"ibox-content\">";
+			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
+			options += "<thead><tr><th>SA_ID</th><th>Description</th></tr></thead>";
+			options += "<tbody>";
+
+            for(var i = 0; i < dataLen; i++ ) {
             	//options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
             	//options += '<tbody><tr><td>' + datas[i].serviceAreaId + '</td><td>' + datas[i].serviceAreaName + '</td></tr></tbody>';
             	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
-            	options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
+            	//options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
+            	options += "<tr><td>";
+            	options += datas[i].serviceAreaId;
+				options += "</td><td>";
+				options += datas[i].serviceAreaName;
+				options += "</td></tr>";
             }
 
+            options += "</tbody>";
+            
+            if(dataLen > 10) {
+            	alert(dataLen);
+            	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            }
+            
+            options += "</table></div>";
+        
+            alert(options);
             $("#service_area").empty();
             $("#service_area").append(options);
+            
+            $('.footable').footable();
+            $('.footable2').footable();
             
             // Pagination
             var totalCount = datas[0].totalCount;
@@ -177,7 +203,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
     			pageination += '</ul>';
     			pageination += '</div>';
     			
-    			$("#service_area").append(pageination);
+    			//$("#service_area").append(pageination);
             }
         }
     });
@@ -236,29 +262,28 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 			var options = "";
 			var content = "";
 			for (var i = 0; i < datas.length; i++) {
-				content += '<div class="col-xs-3">';
-				content += '<div class="contents-box">';
-				content += '<div class="file">';
-				content += '<div class="image">';
-				content += '<img alt="image" class="img-responsive" src="img/p1.jpg">';
+				content += "<div class=\"file-box\">";
+				content += "<span class=\"corner\"></span>";
+				content += "<div class=\"image\">";
+				content += "<img alt=\"image\" class=\"img-responsive\" src=\"img/p1.jpg\">";
 				content += '</div>';
-				content += '<div class="file-name">';
+				content += "<div class=\"progress progress-mini\">";
+				content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "</div>";
+				content += "<div class=\"file-name\">";
 				content += datas[i].scheduleName;
-				content += '</div>';
-				content += '<div class="progress">';
-				content += '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: ' + datas[i].progressRate + '%"><span class="sr-only">' + datas[i].progressRate + '% Complete</span></div>';
-				content += '</div>';
-				content += '</div>';
-				content += '</div>';
-				content += '</div>';
+				content += "</div>";
+				content += "</div>";
+				content += "</div>";
 			}
 			
 			if(datas.length == 0) {
-				content += '<div class="col-xs-12">';
-				content += '<div class="contents-box">';
-				content += '방송 중인 컨텐츠가 없습니다.';
-				content += '</div>';
-				content += '</div>';
+				content += "<div class=\"nothumbnail\">";
+				content += "<p>";
+				content += "<i class=\"fa fa-search\"></i> No thumbnail<br/>";
+				content += "</p>";
+				content += "<small>현재 방송 중인 서비스가 없습니다.</small>";
+				content += "</div>";
 			}
 
 			$("#schedule_summary_service_area_id").empty();

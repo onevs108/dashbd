@@ -170,11 +170,11 @@ function moveToEnb(bmscId, serviceAreaId)
 				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
 				var marker;
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'});
 				} else if( enb_datas[i].serviceAreaId == '' ) {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'});
 				} else {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/enb_red.png'});
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'});
 				}
 				
 				markers.push(marker);
