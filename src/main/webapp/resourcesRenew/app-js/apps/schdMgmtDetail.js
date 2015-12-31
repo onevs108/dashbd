@@ -193,6 +193,15 @@ function setTimeTable(data ){
 	var events = [];
 	var schedule;
 	var now = moment();
+	var clrBackPassSchd = '#dddddd'		,clrTxtPassSchd 	= '#787A7C'		,clrBrdPassSchd = '#bbbbbb';
+	var clrBackPassSchdBMSC='#888888'	,clrTxtPassSchdBMSC	= '#787A7C'	,clrBrdPassSchdBMSC	= '#bbbbbb'; 
+	
+	var clrBackCurrSchd = '#23C6C8'		,clrTxtCurrSchd 	= '#ecf0f1'		,clrBrdCurrSchd = '#bbbbbb';
+	var clrBackCurrSchdBMSC='#23C6ff'	,clrTxtCurrSchdBMSC	= '#ecf0f1'	,clrBrdCurrSchdBMSC	= '#bbbbbb';
+	
+	var clrBackNextSchd = '#FFEEB7'		,clrTxtNextSchd 	= '#787A7C'		,clrBrdNextSchd = '#bbbbbb';
+	var clrBackNextSchdBMSC='#FFD340'	,clrTxtNextSchdBMSC	= '#787A7C'	,clrBrdNextSchdBMSC	= '#bbbbbb';
+	
 	for ( var i = 0; i < contents.length; i++) {
 		var id = contents[i].ID;
 		var name = contents[i].NAME;
@@ -208,15 +217,29 @@ function setTimeTable(data ){
 		if (broadcast_info_id == null || broadcast_info_id == ""){
 			if (now4compare < start4compare ){
 				//미래
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackNextSchd, textColor: clrTxtNextSchd, borderColor:clrBrdNextSchd};
 			}else if (now4compare > end4compare ){
 				//과거
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackPassSchd, textColor: clrTxtPassSchd, borderColor:clrBrdPassSchd};
 			}else{
 				//현재
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchd, textColor: clrTxtCurrSchd, borderColor:clrBrdCurrSchd};
 			}
 				
-			schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#dddddd", textColor: "#787A7C", borderColor:"#bbbbbb"};
 		}else{
-			schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#23C6C8", textColor: "#ecf0f1", borderColor:"#1AB394"};
+			
+			if (now4compare < start4compare ){
+				//미래
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackNextSchdBMSC, textColor: clrTxtNextSchdBMSC, borderColor:clrBrdNextSchdBMSC};
+			}else if (now4compare > end4compare ){
+				//과거
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackPassSchdBMSC, textColor: clrTxtPassSchdBMSC, borderColor:clrBrdPassSchdBMSC};
+			}else{
+				//현재
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchdBMSC, textColor: clrTxtCurrSchdBMSC, borderColor:clrBrdCurrSchdBMSC};
+			}
+			
+			//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#23C6C8", textColor: "#ecf0f1", borderColor:"#1AB394"};
 		}
 		
 		//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#eeeeee"};
