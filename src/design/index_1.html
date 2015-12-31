@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>main</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- FooTable -->
+    <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+    
+</head>
+
+<body>
+<div id="wrapper">
+    
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element">
+                            <img src="img/logo_w_small.png">
+                        </div>
+                        <div class="logo-element">
+                            <img src="img/logo2_w.png">
+                        </div>
+                	</li>
+                    <li>
+                        <a href="#"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+
+<div id="page-wrapper" class="gray-bg">
+
+	<div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom" action="search_results.html">
+                <div class="form-group">
+                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                </div>
+            </form>
+        </div><!-- end navbar-header -->
+        
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a>
+                    <i class="fa fa-user"></i>User Name
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="mailbox.html">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="profile.html">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="grid_options.html">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center link-block">
+                                <a href="notifications.html">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html">
+                        <img src="img/samsung_small.png">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+	</div><!-- end border-bottom -->
+
+	<div class="wrapper wrapper-content">
+    	<!-- User Mgmt -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<div>
+                        	<h2>Service Area Mgmt</h2>
+                        </div>
+                        <br>
+                        <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="status">Operator</label>
+                                        <select name="status" id="status" class="form-control">
+                                        <option value="0" selected="">1</option>
+                                        <option value="1">2</option>
+                                        <option value="2">3</option>
+                                        <option value="3">4</option>
+                                        <option value="4">5</option>
+                                        <option value="5">6</option>
+                                        <option value="6">7</option>
+                                        <option value="7">8</option>
+                                        <option value="8">9</option>
+                                        <option value="9">10</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="status">BM-SC</label>
+                                        <select name="status" id="status" class="form-control">
+                                        <option value="0" selected="">1</option>
+                                        <option value="1">2</option>
+                                        <option value="2">3</option>
+                                        <option value="3">4</option>
+                                        <option value="4">5</option>
+                                        <option value="5">6</option>
+                                        <option value="6">7</option>
+                                        <option value="7">8</option>
+                                        <option value="8">9</option>
+                                        <option value="9">10</option>
+                                        </select>
+                                    </div>
+                    			</div>
+						</div>
+                        
+						<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQTpXj82d8UpCi97wzo_nKXL7nYrd4G70"></script>
+
+                        <div class="row">
+                        	<div class="col-sm-8">
+                            	<div class="google-map" id="map1"></div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <h5>Service Area for Seoul</h5>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
+                                            <thead>
+                                                <tr>
+                                                    <th>SA_ID</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>100</td>
+                                                    <td>Service Area for Subway#2 Line</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>101</td>
+                                                    <td>Olympic Stadium</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>102</td>
+                                                    <td>ICN Airport</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>103</td>
+                                                    <td>Gimpo Airport</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>104</td>
+                                                    <td>ICN Golf Resort</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>100</td>
+                                                    <td>Service Area for Subway#2 Line</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>101</td>
+                                                    <td>Olympic Stadium</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>102</td>
+                                                    <td>ICN Airport</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>103</td>
+                                                    <td>Gimpo Airport</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>104</td>
+                                                    <td>ICN Golf Resort</td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <ul class="pagination pull-right"></ul>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div><!-- end ibox-content -->
+                                </div><!-- end ibox float-e-margins -->
+                            </div>
+                        </div>
+                    </div><!-- end ibox-content -->
+				</div><!-- end ibox float-e-margins -->
+			</div>
+		</div>
+        <!-- end User Mgmt -->
+        
+        
+        <!-- Contents Being Serviced -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3>Contents Being Serviced (BM-SC11 or Service Area 100)</h3>
+                            <div class="ibox-tools">
+                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a-->
+                            </div>
+                        </div><!-- end ibox-title -->
+                        <div class="ibox-content">
+                            <div class="row">
+                            	<div class="col-lg-12">
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 60%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5 class="text-navy"><i class="fa fa-circle"></i> Streaming</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 100%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5><i class="fa fa-download"></i> File download</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 50%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5 class="text-navy"><i class="fa fa-circle"></i> Streaming</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 80%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5 class="text-navy"><i class="fa fa-circle"></i> Streaming</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 100%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5>Carousel</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 70%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5 class="text-navy"><i class="fa fa-circle"></i> Streaming</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 100%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5>Carousel Multi</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="file-box">
+                                            <div class="file">
+                                                <a href="#">
+                                                    <span class="corner"></span>
+                                                    <div class="image">
+                                                    	<img alt="image" class="img-responsive" src="img/p1.jpg">
+                                                    </div>
+                                                    <div class="progress progress-mini">
+                                                    	<div style="width: 50%;" class="progress-bar"></div>
+                                                    </div>
+                                                    <div class="file-name">
+                                                        <h5 class="text-navy"><i class="fa fa-circle"></i> Streaming</h5>
+                                                        <small>[Sports]</small> Korea-Japan Soccer
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                            	</div>
+                            </div>
+                        </div><!-- end ibox-content -->
+                        
+                        <div class="ibox-content">
+                            <div class="row">
+                            	<div class="col-lg-12">
+                                    <div class="nothumbnail">
+                                    	<p>
+                                        	<i class="fa fa-search"></i> No thumbnail<br/>
+                                        </p>
+                                        <small>현재 스트리밍되고 있는 서비스가 없습니다.</small>
+                                    </div>
+                            	</div>
+                            </div>
+                        </div><!-- end ibox-content -->                       
+                    </div>
+                </div>
+                <!-- Bandwidth -->
+                <div class="col-md-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3>Bandwidth</h3>
+                            <div class="ibox-tools">
+                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a-->
+                            </div>
+                        </div><!-- end ibox-title -->
+                        <div class="ibox-content">
+                            <div class="row">
+								<div class="col-xs-12">
+                                    <h2>65% is being used</h2>
+                                    <div class="progress progress-big">
+                                        <div style="width:65%;" class="progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- end ibox-content -->                       
+                    </div>
+                </div>
+                <!-- end Bandwidth -->
+                <!-- BM-SC Interface Status  -->
+                <div class="col-md-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3>BM-SC Interface Status</h3>
+                            <div class="ibox-tools">
+                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a-->
+                            </div>
+                        </div><!-- end ibox-title -->
+                        <div class="ibox-content">
+                            <div class="row">
+								<div class="col-md-12">
+                                
+                                    <div class="col-xs-1">
+                                        <h2 class="text-navy">
+                                            <i class="fa fa-circle"></i>
+                                        </h2>
+                                    	<h5 class="m-b-md">#1</h5>
+                                    </div>
+                                    
+                                    <div class="col-xs-1">
+                                        <h2 class="text-navy">
+                                            <i class="fa fa-circle"></i>
+                                        </h2>
+                                    	<h5 class="m-b-md">#2</h5>
+                                    </div>
+                                    
+                                    <div class="col-xs-1">
+                                        <h2 class="text-navy">
+                                            <i class="fa fa-circle"></i>
+                                        </h2>
+                                    	<h5 class="m-b-md">#3</h5>
+                                    </div>
+                                    
+                                    <div class="col-xs-1">
+                                        <h2 class="text-navy">
+                                            <i class="fa fa-circle"></i>
+                                        </h2>
+                                    	<h5 class="m-b-md">#4</h5>
+                                    </div>
+                                    
+                                    <div class="col-xs-1">
+                                        <h2 class="text-danger">
+                                            <i class="fa fa-circle"></i>
+                                        </h2>
+                                    	<h5 class="m-b-md">#5</h5>
+                                    </div>
+                                    
+                                    <div class="col-xs-1">
+                                        <h2 class="text-navy">
+                                            <i class="fa fa-circle"></i>
+                                        </h2>
+                                    	<h5 class="m-b-md">#6</h5>
+                                    </div>
+                                    
+                                    <div class="col-xs-1">
+                                        <h2 class="text-danger">
+                                            <i class="fa fa-circle"></i>
+                                        </h2>
+                                    	<h5 class="m-b-md">#7</h5>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div><!-- end ibox-content -->                        
+                    </div>
+                </div>
+                <!-- end BM-SC Interface Status  -->
+            </div> 
+        	<!-- end Contents Being Serviced -->
+        
+        
+        
+
+	</div><!-- end wrapper wrapper-content -->
+
+	</div><!-- end page-wrapper -->
+
+</div><!-- end wrapper -->
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- FooTable -->
+    <script src="js/plugins/footable/footable.all.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function() {
+
+            $('.footable').footable();
+            $('.footable2').footable();
+
+        });
+
+    </script>
+    
+    <script type="text/javascript">
+        // When the window has finished loading google map
+        google.maps.event.addDomListener(window, 'load', init);
+
+        function init() {
+            // Options for Google map
+            // More info see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
+            var mapOptions1 = {
+                zoom: 11,
+                center: new google.maps.LatLng(40.6700, -73.9400),
+                // Style for Google Maps
+                styles: [{"featureType":"water","stylers":[{"saturation":43},{"lightness":-11},{"hue":"#0088ff"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"hue":"#ff0000"},{"saturation":-100},{"lightness":99}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#808080"},{"lightness":54}]},{"featureType":"landscape.man_made","elementType":"geometry.fill","stylers":[{"color":"#ece2d9"}]},{"featureType":"poi.park","elementType":"geometry.fill","stylers":[{"color":"#ccdca1"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#767676"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"}]},{"featureType":"poi","stylers":[{"visibility":"off"}]},{"featureType":"landscape.natural","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#b8cb93"}]},{"featureType":"poi.park","stylers":[{"visibility":"on"}]},{"featureType":"poi.sports_complex","stylers":[{"visibility":"on"}]},{"featureType":"poi.medical","stylers":[{"visibility":"on"}]},{"featureType":"poi.business","stylers":[{"visibility":"simplified"}]}]
+            };
+
+            var mapOptions2 = {
+                zoom: 11,
+                center: new google.maps.LatLng(40.6700, -73.9400),
+                // Style for Google Maps
+                styles: [{"featureType":"all","elementType":"all","stylers":[{"invert_lightness":true},{"saturation":10},{"lightness":30},{"gamma":0.5},{"hue":"#435158"}]}]
+            };
+
+            var mapOptions3 = {
+                center: new google.maps.LatLng(36.964645, -122.01523),
+                zoom: 18,
+                mapTypeId: google.maps.MapTypeId.SATELLITE,
+                // Style for Google Maps
+                styles: [{"featureType":"road","elementType":"geometry","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#fffffa"}]},{"featureType":"water","stylers":[{"lightness":50}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"transit","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry","stylers":[{"lightness":40}]}]
+            };
+
+            var mapOptions4 = {
+                zoom: 11,
+                center: new google.maps.LatLng(40.6700, -73.9400),
+                // Style for Google Maps
+                styles: [{"stylers":[{"hue":"#18a689"},{"visibility":"on"},{"invert_lightness":true},{"saturation":40},{"lightness":10}]}]
+            };
+
+            var fenway = new google.maps.LatLng(42.345573, -71.098326);
+            var mapOptions5 = {
+                zoom: 14,
+                center: fenway,
+                // Style for Google Maps
+                styles: [{featureType:"landscape",stylers:[{saturation:-100},{lightness:65},{visibility:"on"}]},{featureType:"poi",stylers:[{saturation:-100},{lightness:51},{visibility:"simplified"}]},{featureType:"road.highway",stylers:[{saturation:-100},{visibility:"simplified"}]},{featureType:"road.arterial",stylers:[{saturation:-100},{lightness:30},{visibility:"on"}]},{featureType:"road.local",stylers:[{saturation:-100},{lightness:40},{visibility:"on"}]},{featureType:"transit",stylers:[{saturation:-100},{visibility:"simplified"}]},{featureType:"administrative.province",stylers:[{visibility:"off"}]/**/},{featureType:"administrative.locality",stylers:[{visibility:"off"}]},{featureType:"administrative.neighborhood",stylers:[{visibility:"on"}]/**/},{featureType:"water",elementType:"labels",stylers:[{visibility:"on"},{lightness:-25},{saturation:-100}]},{featureType:"water",elementType:"geometry",stylers:[{hue:"#ffff00"},{lightness:-25},{saturation:-97}]}]
+            };
+
+            var panoramaOptions = {
+                position: fenway,
+                pov: {
+                    heading: 10,
+                    pitch: 10
+                }
+            };
+            var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+
+            // Get all html elements for map
+            var mapElement1 = document.getElementById('map1');
+            var mapElement2 = document.getElementById('map2');
+            var mapElement3 = document.getElementById('map3');
+            var mapElement4 = document.getElementById('map4');
+
+            // Create the Google Map using elements
+            var map1 = new google.maps.Map(mapElement1, mapOptions1);
+            var map2 = new google.maps.Map(mapElement2, mapOptions2);
+            var map3 = new google.maps.Map(mapElement3, mapOptions3);
+            var map4 = new google.maps.Map(mapElement4, mapOptions4);
+        }
+    </script>
+
+</body>
+</html>

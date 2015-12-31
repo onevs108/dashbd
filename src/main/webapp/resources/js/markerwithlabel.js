@@ -578,5 +578,5 @@ MarkerWithLabel.prototype.setMap = function (theMap) {
   google.maps.Marker.prototype.setMap.apply(this, arguments);
 
   // ... then deal with the label:
-  this.label.setMap(theMap);
+  if(theMap) {this.label.setMap(theMap)};
 };

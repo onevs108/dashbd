@@ -269,6 +269,8 @@ function getServiceAreaByBmScCity(page, bmscId, city)
     });
 }
 
+
+
 function drawServiceAreaByBmSc(bmscId) {
 	clearMarkers();
 	$("#service_area").empty();
@@ -281,7 +283,6 @@ function drawServiceAreaByBmSc(bmscId) {
             $("#ajax").remove();
             var data = JSON.parse(responseData);
             var dataLen = data.length;
-            var options = "";
 
             for(var i = 0; i < dataLen; i++) {
             	if(area_positions[data[i].city]) {
@@ -297,7 +298,7 @@ function drawServiceAreaByBmSc(bmscId) {
 						title: data[i].city,
 						label: '' + data[i].count
             		});
-	            
+
             		marker.addListener('click', function() {
             				getServiceAreaByBmScCity(1, bmscId, this.title);
             		});
@@ -305,32 +306,6 @@ function drawServiceAreaByBmSc(bmscId) {
 		            markers.push(marker);
             	}
             }
-            
-
-
-            /*
-            var marker = new google.maps.Marker({
-              position: seoul,
-              map: map,
-              title: '서울',
-              label: '' + seoulCount
-            });
-
-            marker.addListener('click', function() {
-            	getServiceAreaByBmScCity(1, data[0].bmscId, seoulCode);
-            });
-            
-            markers.push(marker);
-
-            marker = new google.maps.Marker({
-        	    position: gyounggi,
-        	    map: map,
-        	    title: '경기도',
-        	    label: '' + gyounggiCount
-            });
-             */
-            
-			
             
             map.setCenter(new google.maps.LatLng(default_lat, default_lng));
             map.setZoom(default_zoom);
@@ -341,6 +316,7 @@ function drawServiceAreaByBmSc(bmscId) {
 function clearMarkers() {
 
 	for (var i = 0; i < markers.length; i++) {
+		markers[i].labelVisible = false;
 	    markers[i].setMap(null);
 	}
 	

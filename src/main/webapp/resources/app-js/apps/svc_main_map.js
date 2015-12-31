@@ -196,81 +196,29 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
             $("#ajax").remove();
             var data = JSON.parse(responseData);
             var dataLen = data.length;
-            var options = "";
-            var seoulCount = 0;
-            var gyounggiCount = 0;
-            var seoulCode = "";
-            var gyounggiCode = "";
-            for(var i=0; i<dataLen; i++){
-          	  if( data[i].city == '02' ) {
-          		  seoulCount = data[i].count;
-          		  seoulCode = data[i].city;
-          	  }
-          	  
-          	  if( data[i].city == '031' ) {
-          		  gyounggiCount = data[i].count;
-          		  gyounggiCode = data[i].city;
-        	  }
+
+            for(var i = 0; i < dataLen; i++) {
+            	if(area_positions[data[i].city]) {
+            		var marker = new MarkerWithLabel({
+						position: area_positions[data[i].city],
+						draggable: false,
+						raiseOnDrag: true,
+						map: map,
+						labelContent: '' + data[i].count,
+						labelAnchor: new google.maps.Point(22, 0),
+						labelClass: "labels", // the CSS class for the label
+						labelStyle: {opacity: 0.75},
+						title: data[i].city,
+						label: '' + data[i].count
+            		});
+
+            		marker.addListener('click', function() {
+            				getServiceAreaByBmScCity(1, bmscId, this.title);
+            		});
+
+		            markers.push(marker);
+            	}
             }
-            
-            var seoul = {lat: 37.565018, lng: 126.989166};
-            var gyounggi = {lat: 37.421893, lng: 127.508270};
-
-            /*
-            var marker = new google.maps.Marker({
-              position: seoul,
-              map: map,
-              title: '서울',
-              label: '' + seoulCount
-            });
-
-            marker.addListener('click', function() {
-            	getServiceAreaByBmScCity(1, data[0].bmscId, seoulCode);
-            });
-            
-            markers.push(marker);
-
-            marker = new google.maps.Marker({
-        	    position: gyounggi,
-        	    map: map,
-        	    title: '경기도',
-        	    label: '' + gyounggiCount
-            });
-             */
-            
-			var marker = new MarkerWithLabel({
-				position: seoul,
-				draggable: false,
-				raiseOnDrag: true,
-				map: map,
-				labelContent: '' + seoulCount,
-				labelAnchor: new google.maps.Point(22, 0),
-				labelClass: "labels", // the CSS class for the label
-				labelStyle: {opacity: 0.75}
-			});
-            
-            marker.addListener('click', function() {
-            	getServiceAreaByBmScCity(1, data[0].bmscId, seoulCode);
-            });
-            
-            markers.push(marker);
-            
-            marker = new MarkerWithLabel({
-				position: gyounggi,
-				draggable: false,
-				raiseOnDrag: true,
-				map: map,
-				labelContent: '' + gyounggiCount,
-				labelAnchor: new google.maps.Point(22, 0),
-				labelClass: "labels", // the CSS class for the label
-				labelStyle: {opacity: 0.75}
-			});
-            
-            marker.addListener('click', function() {
-            	getServiceAreaByBmScCity(1, data[0].bmscId, gyounggiCode);
-            });
-            
-            markers.push(marker);
             
             map.setCenter(new google.maps.LatLng(default_lat, default_lng));
             map.setZoom(default_zoom);
@@ -325,6 +273,7 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 function clearMarkers() {
 
 	for (var i = 0; i < markers.length; i++) {
+		markers[i].labelVisible = false;
 	    markers[i].setMap(null);
 	}
 	
