@@ -1,4 +1,13 @@
 
+var default_service_area = "";
+default_service_area += "<div class=\"ibox-title\"><h5>Service Area</h5></div>";
+default_service_area += "<div class=\"ibox-content\">";
+default_service_area += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
+default_service_area += "<thead><tr><th>SA_ID</th><th>Description</th></tr></thead>";
+default_service_area += "<tbody>";
+default_service_area += "</tbody>";
+default_service_area += "</table></div>";
+
 $(document).ready(function()
 {
     $('#operator').change(function(){
@@ -107,6 +116,7 @@ function getServiceAreaBmSc(page, operatorId)
             }
 
             $("#service_area").empty();
+            $("#service_area").append(default_service_area);
             $("#bmsc").empty();
             $("#bmsc").append(options);
         }

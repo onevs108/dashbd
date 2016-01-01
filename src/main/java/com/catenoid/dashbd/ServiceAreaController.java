@@ -990,7 +990,7 @@ public class ServiceAreaController {
 		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		//Integer perPage = 15;
 		
-		HashMap<String, Object> searchParam = new HashMap();
+		HashMap<String, Integer> searchParam = new HashMap();
 		searchParam.put("bmscId", Integer.valueOf(request.getParameter("bmscId")));
 		
 		List<ScheduleSummary> datas = mapper.getScheduleSummaryByBmsc(searchParam);
@@ -1021,16 +1021,23 @@ public class ServiceAreaController {
 	    }
 	}
 	
-	/*
-	 * 	현재시간 기점으로 GBR 합산 한 값을 리턴하는 메소드 호출하는 샘플코드 
-		소스부분에 3048이라는 부분은 serviceAreaId 로 넣어주시면 됩니다.
-		private String exampleGBRSum(){
-			Map< String, String > params = new HashMap();
-			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-			params.put("serviceAreaId", "3048");
-			Map  retmap = mapper.selectGBRSum(params);
-			return String.valueOf(retmap.get("GBRSum"));
-		}
+	@RequestMapping(value = "/api/bandwidthByServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getScheduleGBRSum(HttpServletRequest request, HttpServletResponse response) {
+		/*
+		 * 	현재시간 기점으로 GBR 합산 한 값을 리턴하는 메소드 호출하는 샘플코드 
+		 */
+		HashMap< String, Integer > searchParam = new HashMap();
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		searchParam.put("serviceAreaId", Integer.valueOf(request.getParameter("serviceAreaId")));
+		HashMap retmap = mapper.getGBRSum(searchParam);
 
-	 */
+		JSONObject obj = new JSONObject();
+		obj.put("scheduleId", retmap.get("GBRSum"));
+
+		try {
+	        response.getWriter().print(obj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 }

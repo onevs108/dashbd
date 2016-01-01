@@ -51,33 +51,34 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 		}
 	});
 	
+	var summary_datas = "";
 	$.ajax({
 		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
 		type: "get",
 		data : { "serviceAreaId" : serviceAreaId },
 		success : function(responseData){
 			$("#ajax").remove();
-			datas = JSON.parse(responseData);
-			var dataLen = datas.length;
+			summary_datas = JSON.parse(responseData);
+			var dataLen = summary_datas.length;
 			var options = "";
 			var content = "";
-			for (var i = 0; i < datas.length; i++) {
+			for (var i = 0; i < summary_datas.length; i++) {
 				content += "<div class=\"file-box\">";
 				content += "<span class=\"corner\"></span>";
 				content += "<div class=\"image\">";
 				content += "<img alt=\"image\" class=\"img-responsive\" src=\"img/p1.jpg\">";
 				content += '</div>';
 				content += "<div class=\"progress progress-mini\">";
-				content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "<div style=\"width: " + summary_datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
 				content += "<div class=\"file-name\">";
-				content += datas[i].scheduleName;
+				content += summary_datas[i].scheduleName;
 				content += "</div>";
 				content += "</div>";
 				content += "</div>";
 			}
 
-			if(datas.length == 0) {
+			if(summary_datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
 				content += "<i class=\"fa fa-search\"></i> No thumbnail<br/>";
@@ -94,8 +95,23 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 		}
 	});
 	
-	drawPieGraph();
-
+	var bandwidth_datas = "";
+	$.ajax({
+		url : "/dashbd/api/bandwidthByServiceArea.do",
+		type: "get",
+		data : { "serviceAreaId" : serviceAreaId },
+		success : function(responseData){
+			$("#ajax").remove();
+			bandwidth_data = JSON.parse(responseData);
+			var content = "<h2>" + bandwidth_data.GBRSum + "% is being used</h2>";
+			content += "<div class=\"progress progress-big\">";
+			content += "<div style=\"width:" + bandwidth_data.GBRSum + "%;\" class=\"progress-bar\"></div>";
+			content += "</div>";
+            
+			$("#bandwidth").empty();
+            $("#bandwidth").append(content);
+		}
+	});
 }
 
 function getParameter(name) {
@@ -132,29 +148,34 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             	//options += '<tbody><tr><td>' + datas[i].serviceAreaId + '</td><td>' + datas[i].serviceAreaName + '</td></tr></tbody>';
             	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
             	//options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
+            	
             	options += "<tr><td>";
+            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + datas[i].serviceAreaName + ");\">";
             	options += datas[i].serviceAreaId;
+            	options += "</a>";
 				options += "</td><td>";
 				options += datas[i].serviceAreaName;
 				options += "</td></tr>";
+				
             }
 
             options += "</tbody>";
             
             if(dataLen > 10) {
-            	alert(dataLen);
+            	//alert(dataLen);
             	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
             }
             
             options += "</table></div>";
         
-            alert(options);
+            //alert(options);
             $("#service_area").empty();
             $("#service_area").append(options);
             
             $('.footable').footable();
             $('.footable2').footable();
             
+            /*
             // Pagination
             var totalCount = datas[0].totalCount;
             if(totalCount > perPage) {
@@ -205,6 +226,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
     			
     			//$("#service_area").append(pageination);
             }
+            */
         }
     });
 }
@@ -213,6 +235,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 function drawServiceAreaByBmSc(bmscId, bmscName) {
 	clearMarkers();
 	$("#service_area").empty();
+	$("#service_area").append(default_service_area);
 	
 	$.ajax({
         url : "/dashbd/api/getServiceAreaCountByBmSc.do",
@@ -234,8 +257,7 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 						labelAnchor: new google.maps.Point(22, 0),
 						labelClass: "labels", // the CSS class for the label
 						labelStyle: {opacity: 0.75},
-						title: data[i].city,
-						label: '' + data[i].count
+						title: data[i].city
             		});
 
             		marker.addListener('click', function() {
@@ -305,18 +327,4 @@ function clearMarkers() {
 	markers = [];
 }
 
-function drawPieGraph()
-{
-	var data = {
-		series: [1, 1, 1]
-	};
-
-	var sum = function(a, b) { return a + b };
-
-	new Chartist.Pie('#ct-chart5', data, {
-		labelInterpolationFnc: function(value) {
-			return Math.round(value / data.series.reduce(sum) * 100) + '%';
-		}
-	});
-}
 

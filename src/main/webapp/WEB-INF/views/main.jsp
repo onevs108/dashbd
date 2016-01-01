@@ -75,13 +75,13 @@
 					</div>
 				</li>
 				<li>
-					<a href="#"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+					<a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
 				</li>
 				<li>
 					<a href="#"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
 				</li>
 				<li>
-					<a href="#"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
+					<a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
 				</li>
 				<li>
 					<a href="#"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
@@ -90,13 +90,13 @@
 					<a href="#"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
 				</li>
 				<li>
-					<a href="#"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
+					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
 				</li>
 				<li>
 					<a href="#"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
 				</li>
 				<li>
-					<a href="#"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+					<a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
 				</li>
 			</ul>
 		</div>
@@ -210,12 +210,12 @@
 	
 								<div class="row">
 									<div class="col-sm-8">
-										<div class="google-map" id="map"></div>
+										<div class="google-map" id="map" style="height:535px;"></div>
 									</div>
 									<div class="col-sm-4">
 										<div class="ibox float-e-margins" id="service_area">
 											<div class="ibox-title">
-												<h5>Service Area for Seoul</h5>
+												<h5>Service Area</h5>
 											</div>
 											<div class="ibox-content">
 												<table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
@@ -278,10 +278,10 @@
 							</div><!-- end ibox-title -->
 							<div class="ibox-content">
 								<div class="row">
-									<div class="col-xs-12">
-										<h2>65% is being used</h2>
+									<div class="col-xs-12" id="bandwidth">
+										<h2>0% is being used</h2>
 										<div class="progress progress-big">
-											<div style="width:65%;" class="progress-bar"></div>
+											<div style="width:0%;" class="progress-bar"></div>
 										</div>
 									</div>
 								</div>
@@ -290,7 +290,7 @@
 					</div>
 					<!-- end Bandwidth -->
 					<!-- BM-SC Interface Status  -->
-					<div class="col-md-4">
+					<div class="col-md-4 pull-right">
 						<div class="ibox float-e-margins">
 							<div class="ibox-title">
 								<h3>BM-SC Interface Status</h3>

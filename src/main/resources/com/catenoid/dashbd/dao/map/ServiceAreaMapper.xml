@@ -94,6 +94,7 @@
 		<result column="thumbnail" property="thumbnail" jdbcType="VARCHAR" />
 		<result column="progress_rate" property="progressRate" jdbcType="DECIMAL" />
 	</resultMap>
+	
 		
   <sql id="Example_Where_Clause" >
     <where >
@@ -516,6 +517,16 @@
 			and now() between a.start_date and a.end_date
 		order by a.start_date
 		limit 0, 20
+	</select>
+	
+	<select id="getGBRSum" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+		SELECT IFNULL(sum(GBR), '0') as GBRSum 
+		FROM 
+			schedule s inner join broadcast_info b
+			ON (s.BCID = b.BCID)
+		WHERE 1=1
+		AND now() between s.start_date and s.end_date
+		AND service_area_id = #{serviceAreaId,jdbcType=INTEGER}
 	</select>
 		
 </mapper>
