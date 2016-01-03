@@ -196,24 +196,27 @@ function setTimeTable(data ){
 	var clrBackPassSchd = '#dddddd'		,clrTxtPassSchd 	= '#787A7C'		,clrBrdPassSchd = '#bbbbbb';
 	var clrBackPassSchdBMSC='#888888'	,clrTxtPassSchdBMSC	= '#787A7C'	,clrBrdPassSchdBMSC	= '#bbbbbb'; 
 	
-	var clrBackCurrSchd = '#23C6C8'		,clrTxtCurrSchd 	= '#ecf0f1'		,clrBrdCurrSchd = '#bbbbbb';
-	var clrBackCurrSchdBMSC='#23C6ff'	,clrTxtCurrSchdBMSC	= '#ecf0f1'	,clrBrdCurrSchdBMSC	= '#bbbbbb';
+	var clrBackCurrSchd = '#23C6C8'		,clrTxtCurrSchd 	= '#ecf0f1'		,clrBrdCurrSchd = '#318E8F';
+	var clrBackCurrSchdBMSC='#22893E'	,clrTxtCurrSchdBMSC	= '#ecf0f1'	,clrBrdCurrSchdBMSC	= '#024B16';
 	
-	var clrBackNextSchd = '#FFEEB7'		,clrTxtNextSchd 	= '#787A7C'		,clrBrdNextSchd = '#bbbbbb';
-	var clrBackNextSchdBMSC='#FFD340'	,clrTxtNextSchdBMSC	= '#787A7C'	,clrBrdNextSchdBMSC	= '#bbbbbb';
+	var clrBackNextSchd = '#FFEEB7'		,clrTxtNextSchd 	= '#787A7C'		,clrBrdNextSchd = '#B5B317';
+	var clrBackNextSchdBMSC='#FFD340'	,clrTxtNextSchdBMSC	= '#787A7C'	,clrBrdNextSchdBMSC	= '#B5B317';
 	
 	for ( var i = 0; i < contents.length; i++) {
 		var id = contents[i].ID;
 		var name = contents[i].NAME;
 		var broadcast_info_id = contents[i].BCID;
-		
+		console.log(broadcast_info_id);
+		if (typeof broadcast_info_id == 'undefined')
+			broadcast_info_id = '';
+		console.log(broadcast_info_id,'------','\n');
 		var start_date = contents[i].start_date;
 		var end_date = contents[i].end_date;
 		var url = "schedule.do?id=" + id + "&BCID=" + broadcast_info_id;
 		var now4compare = replaceAll4Time(now.format());
 		var start4compare = replaceAll4Time(start_date);
 		var end4compare = replaceAll4Time(end_date);
-		console.log('current=', now4compare , ', start_date=', start4compare, ', end_date=', end4compare);
+		//console.log('current=', now4compare , ', start_date=', start4compare, ', end_date=', end4compare);
 		if (broadcast_info_id == null || broadcast_info_id == ""){
 			if (now4compare < start4compare ){
 				//미래
@@ -388,7 +391,7 @@ function modifySchedule(url, startTime, endTime){
 	var id = url.substring(url.indexOf("=")  + 1, url.indexOf("&BCID"));
 	var BCID = url.substring(url.indexOf("&BCID=") + 6);
 	
-	if (BCID == 'undefined')
+	if (typeof BCID == 'undefined')
 		BCID = "";
 	
 	console.log('modifySchedule:', id,',' ,BCID);

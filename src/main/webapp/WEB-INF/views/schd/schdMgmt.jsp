@@ -21,15 +21,29 @@
 	<script src="../resources/js/bootstrap.min.js"></script>
 	<script src="../resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="../resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
 	
 	<script src="../resources/app-js/config.js"></script>
 	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
 	
-	<script src="../resources/app-js/apps/svc_main.js"></script>
+	<script src="../resources/app-js/apps/svc_main_forSchd.js"></script>
 	<script src="../resources/app-js/apps/svc_main_map_forSchd.js"></script>
 	
 	
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap" async defer></script>
+	<style type="text/css">
+	
+	 .timeline {
+     position: absolute;    
+     border: 2px dotted blue;
+     width: 1px;
+     margin: 0;
+     padding: 0;
+     z-index: 9;
+     height: auto;
+ }
+ 
+	</style>
 </head>
 <body>
 <div id="wrapper">

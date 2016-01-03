@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Param;
 public interface ScheduleMapper {
 	
 	/* inbo coding START*/
+	int selectSchduleMaxPosition(Map map);
 	List<Map> selectSchdule(Map map);
 	Map selectSchduleTime(Map map);
 	int addScheduleWithInitContent(Map map);

@@ -116,6 +116,7 @@ public class ScheduleMgmtController {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		//params.put("serviceId", "3048");
+		int maxPosition = mapper.selectSchduleMaxPosition(params);
 		List<Map> list = mapper.selectSchdule(params);
 		
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -134,6 +135,7 @@ public class ScheduleMgmtController {
         
         Map< String, Object > resultMap = new HashMap< String, Object >();
         resultMap.put( "resultInfo", returnMap );
+        resultMap.put( "maxPosition", maxPosition );
         resultMap.put( "contents", list );
         resultMap.put( "viewStartHour", hour);
         

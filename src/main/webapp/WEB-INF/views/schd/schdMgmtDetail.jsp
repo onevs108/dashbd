@@ -54,7 +54,7 @@
 
 #external-events {
 	float: right;
-	width: 100%;
+	width: 2;
 	padding: 0 10px;
 	border: 1px solid #ccc;
 	background: #eee;

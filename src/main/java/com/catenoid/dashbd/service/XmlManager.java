@@ -281,7 +281,7 @@ public class XmlManager {
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));
 			
 			Element contentSet = new Element("contentSet");
-			contentSet.setAttribute(new Attribute("contentSetId", params.get("contentId"))); 					
+			contentSet.setAttribute(new Attribute("contentSetId", String.valueOf(params.get("BCID")))); 					
 			contentSet.setAttribute(new Attribute("cancelled", "false"));				
 								
 			Element serviceArea = new Element("serviceArea");

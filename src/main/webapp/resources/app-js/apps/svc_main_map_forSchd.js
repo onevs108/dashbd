@@ -4,7 +4,7 @@ var markers = [];
 var default_lat = 36.869872;
 var default_lng = 127.838728;
 var default_zoom = 7;
-var g_ServiceAreaId = '3048';
+var g_ServiceAreaId = '';
 var searchDate
 $(function() {
 
@@ -12,6 +12,10 @@ $(function() {
 	//callTimetable(g_ServiceAreaId, searchDate);
 	
 	$("#btnScheduleDetail").click(function() {
+		if (g_ServiceAreaId == ''){
+			alert('Please, choose ServiceArea.')
+			return;
+		}
 		location.href = "schdMgmtDetail.do?serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
 	});
 });
@@ -59,7 +63,7 @@ function moveToEnb(bmscId, serviceAreaId)
 	  });
 	
 	g_ServiceAreaId = serviceAreaId;
-	callTimetable(g_ServiceAreaId, searchDate);
+	callTimetable('', g_ServiceAreaId);
 
 	  
 }
@@ -222,9 +226,10 @@ function clearMarkers() {
 }
 
 
-function callTimetable(serviceAreaId_val, searchDate){
+function callTimetable(bmscId, serviceAreaId_val){
 	var param = {
-			serviceAreaId : serviceAreaId_val
+			bmscId : bmscId
+			, serviceAreaId : serviceAreaId_val
 			, searchDate	: searchDate
 		};
 		
@@ -245,23 +250,25 @@ function callTimetable(serviceAreaId_val, searchDate){
 
 function setTimeTable(data ){
 	var contents = data.contents;
+	var maxPosition = data.maxPosition;
 	var viewStartHour = data.viewStartHour;
 	var timetable = new Timetable();
 	//현재시점에서 2시전, 끝까지.
 	timetable.setScope(viewStartHour,0);
-    timetable.addLocations(['depth1', 'depth2', 'depth3']);
-	var beforeEndHM1 = 0;
-	var beforeEndHM2 = 0;
-	var currStartHM = 0;
+	var arrayPosition = [];
+	
+	for (var i = 0; i < maxPosition; i++){
+		arrayPosition[i] = 'position' + i;
+		console.log('idx=', i , ', ap=',arrayPosition[i]);
+	}
+	
+	timetable.addLocations(arrayPosition);
 	var start_hour = 0
 	var start_mins = 0;
 	var end_hour = 0;
 	var end_mins = 0;
-	var depth= 'init';
+	
 	for ( var i=0; i < contents.length; i++) {
-		beforeEndHM2 = beforeEndHM1; 
-		beforeEndHM1 = end_hour + '' + end_mins;
-		
 		var name = contents[i].name;
 		var start_year = contents[i].start_year;
 		var start_month = contents[i].start_month;
@@ -275,39 +282,45 @@ function setTimeTable(data ){
 		end_hour = contents[i].end_hour;
 		end_mins = contents[i].end_mins;
 		
-		//depth 계산
-		currStartHM = start_hour + '' + start_mins;
-		
-		if (i == 0){
-			depth= 'depth1';
-		}else{
-			if (currStartHM < beforeEndHM1){
-				depth= 'depth2';
-			
-				if (beforeEndHM2 != 0){
-					if (currStartHM < beforeEndHM2)
-						depth= 'depth3';
-				}
-			}else{
-				depth= 'depth1';
-			}
-		}
-		console.log('idx=', i ,'currStartHM=', currStartHM ,',bef1=',beforeEndHM1 ,',bef2=',beforeEndHM2,',depth level =' , depth);
-		timetable.addEvent(contents[i].NAME, depth, 
+		var position = 'position' + contents[i].depthPosition;
+		console.log('idx=', i ,', position =' , position);
+		timetable.addEvent(contents[i].NAME, position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
 				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
-				 					'#');
+				 					'');
 	}
 	
 	var renderer = new Timetable.Renderer(timetable);
-    
 	renderer.draw('.timetable');
+	setTimeline(maxPosition, viewStartHour);
+}
+
+
+function setTimeline(maxRow, viewStartHour) {
+   	
+   if(jQuery(".timeline").length == 0){
+      jQuery(".room-timeline").prepend("<div style='width:100%;overflow: visible;'><hr class='timeline'/></div>") 
+    }
+	
+    var timeline = jQuery(".timeline");  
+
+    var now = moment();
+    var day = parseInt(now.format("e"))
+    var width =   24;
+    var height =  46;
     
-        /*
-        timetable.addEvent('Sightseeing', 'depth1', new Date(2015,7,17,10,45), new Date(2015,7,17,12,30), '#');
-        timetable.addEvent('Zumba', 'depth2', new Date(2015,7,17,12), new Date(2015,7,17,13), '#');
-        timetable.addEvent('Zumbu', 'depth2', new Date(2015,7,17,13,30), new Date(2015,7,17,15), '#');
-        timetable.addEvent('Lasergaming', 'depth3', new Date(2015,7,17,17,45), new Date(2015,7,17,19,30), '#');
-        timetable.addEvent('All-you-can-eat grill', 'depth4', new Date(2015,7,17,21), new Date(2015,7,18,1,30), '#');
-        */
+    //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;;
+    var position = ((now.hours() - viewStartHour) + (now.minutes() / 60)) * 4 ;
+    
+    console.log('now.hours()=',now.hours(), ', height=',height,', left=',left,', position=',position);
+    
+    var rowsHeight= height * maxRow ;
+    var left = width * position;
+    console.log('top=',top);
+    
+    timeline
+    .css('left',left+"px")
+    .css('height',rowsHeight+"px")
+    //.css('top',top+"px") 
+
 }

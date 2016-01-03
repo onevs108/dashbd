@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.catenoid.dashbd.dao.ScheduleMapper" >
+	<select id="selectSchduleMaxPosition" parameterType="java.util.Map" resultType="Integer">
+	SELECT IFNULL(MAX(depthPosition), 0) + 1 FROM
+	(
+		SELECT 
+		 DATE_FORMAT(start_date, '%H%i%s') start_comp, 
+		 DATE_FORMAT(end_date, '%H%i%s') end_comp, 
+		(select count(*) FROM schedule
+			WHERE 
+			<include refid="schedule_where" />
+			<![CDATA[
+				AND start_comp > DATE_FORMAT(start_date, '%H%i%s') 
+				AND start_comp < DATE_FORMAT(end_date, '%H%i%s') 
+			]]> 
+		) depthPosition
+		
+		FROM schedule
+		WHERE 
+		<include refid="schedule_where" />
+	) a
+	</select>
+	
 	<select id="selectSchdule" parameterType="java.util.Map" resultType="java.util.Map">
-		<![CDATA[
-		]]>
+		
 			SELECT ID
 				, NAME
 				, BCID
+				, DATE_FORMAT(start_date, '%H%i%s') start_comp 
+ 				, DATE_FORMAT(end_date, '%H%i%s') end_comp
+ 				, (SELECT count(*) FROM schedule WHERE
+ 					<include refid="schedule_where" />
+<![CDATA[
+ 					AND start_comp > DATE_FORMAT(start_date, '%H%i%s') 
+					AND start_comp < DATE_FORMAT(end_date, '%H%i%s')  
+]]>
+ 				  ) depthPosition
 				, DATE_FORMAT(start_date, '%Y-%m-%dT%H:%i:%s') start_date
 				, DATE_FORMAT(end_date, '%Y-%m-%dT%H:%i:%s') end_date
 				
@@ -20,15 +49,24 @@
 				, DATE_FORMAT(end_date , '%d') end_day
 				, DATE_FORMAT(end_date , '%H') end_hour
 				, DATE_FORMAT(end_date , '%i') end_mins
-			FROM schedule s 
-			WHERE 1=1
-			AND service_area_id = #{serviceAreaId}
-			AND del_yn = 'N'
-			<if test="searchDate != null and searchDate !=''" >
-				AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
-			</if> 
+			FROM schedule
+	 		WHERE
+			<include refid="schedule_where" />		
  			order by start_date asc
 	</select>
+	
+	<sql id="schedule_where" >
+	 	del_yn = 'N'
+    	<if test="serviceAreaId != null and serviceAreaId !=''" >
+			AND service_area_id = #{serviceAreaId}
+		</if>
+		<if test="bmscId != null and bmscId !=''" >
+			AND service_area_id in (SELECT service_area_id FROM bmsc_service_area WHERE bmsc_id = #{bmscId})
+		</if>
+		<if test="searchDate != null and searchDate !=''" >
+			AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
+		</if> 
+  	</sql>
 	
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT id
