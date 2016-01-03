@@ -420,7 +420,7 @@
 		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 
-	<select id="getServiceAreaEnbAp" resultMap="ServiceAreaEnbAp" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam" >
+	<select id="getServiceAreaEnbAp" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
 		select 
 			t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
 			t3.name as service_area_name, 
@@ -444,6 +444,34 @@
 		and t1.enb_ap_id = t2.id
 		and t1.service_area_id = t3.id
 	order by t1.enb_ap_id
+	</select>
+	
+	<select id="getServiceAreaEnbApOther" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
+		select 
+			t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
+			t3.name as service_area_name, 
+			t3.city as service_area_city,
+			enb_ap_id, t2.name as enb_ap_name, 
+			t2.longitude as longitude, 
+			t2.latitude as latitude, 
+			t2.plmn as plmn,
+			t2.mbsfn as mbsfn,
+			t1.created_at, t1.updated_at
+			, (select count(*) from service_area_enb_ap t1, enb_ap t2, service_area t3 
+			where 1 = 1 and t1.service_area_id != #{serviceAreaId,jdbcType=INTEGER}
+			and t1.enb_ap_id = t2.id
+			and t1.service_area_id = t3.id
+			and t2.latitude between #{swLat} and #{neLat}
+			and t2.longitude between #{swLng} and #{neLng}) as totalCount
+	from 
+		service_area_enb_ap t1, enb_ap t2, service_area t3
+	where 1 = 1
+		and t1.service_area_id != #{serviceAreaId,jdbcType=INTEGER}
+		and t1.enb_ap_id = t2.id
+		and t1.service_area_id = t3.id
+		and t2.latitude between #{swLat} and #{neLat}
+		and t2.longitude between #{swLng} and #{neLng}
+	order by t1.enb_ap_id 
 	</select>
 	
 	

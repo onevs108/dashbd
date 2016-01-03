@@ -780,8 +780,8 @@ public class ServiceAreaController {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
-		ServiceAreaEnbSearchParam searchParam = new ServiceAreaEnbSearchParam();
-		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		HashMap<String, Object> searchParam = new HashMap();
+		searchParam.put("serviceAreaId", Integer.valueOf(request.getParameter("serviceAreaId")));
 		
 		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
 		
@@ -795,13 +795,54 @@ public class ServiceAreaController {
 
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
-		ServiceAreaEnbSearchParam searchParam = new ServiceAreaEnbSearchParam();
+		HashMap<String, Object> searchParam = new HashMap();
 		if(request.getParameter("serviceAreaId") != null)
 		{
-			searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+			searchParam.put("serviceAreaId", Integer.valueOf(request.getParameter("serviceAreaId")));
 		}
 		
 		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
+		
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < datas.size(); i++) {
+			ServiceAreaEnbAp data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("serviceAreaBandwidth", data.getServiceAreaBandwidth());
+			obj.put("serviceAreaName", data.getServiceAreaName());
+			obj.put("serviceAreaCity", data.getServiceAreaCity());
+			obj.put("enbApId", data.getEnbApId());
+			obj.put("enbApName", data.getEnbApName());
+			obj.put("longitude", data.getLongitude());
+			obj.put("latitude", data.getLatitude());
+			obj.put("plmn", data.getPlmn());
+			obj.put("mbsfn", data.getMbsfn());
+			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("totalCount", data.getTotalCount());
+			array.add(obj);
+		}
+		
+		try {
+	        response.getWriter().print(array.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@RequestMapping(value = "/api/getServiceAreaEnbApOther.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaEnbApOther(HttpServletRequest request, HttpServletResponse response) {
+
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		HashMap<String, Object> searchParam = new HashMap();
+		searchParam.put("serviceAreaId", Integer.valueOf(request.getParameter("serviceAreaId")));
+		searchParam.put("swLat", request.getParameter("swLat"));
+		searchParam.put("swLng", request.getParameter("swLng"));
+		searchParam.put("neLat", request.getParameter("neLat"));
+		searchParam.put("neLng", request.getParameter("neLng"));
+		
+		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbApOther(searchParam);
 		
 		JSONArray array = new JSONArray();
 		for(int i = 0; i < datas.size(); i++) {

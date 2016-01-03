@@ -184,6 +184,37 @@ function moveToEnb(bmscId, serviceAreaId)
 			map.setZoom(12);
 		}
 	});
+	
+	var bounds = map.getBounds();
+
+    var ne = bounds.getNorthEast();
+    var sw = bounds.getSouthWest();
+    
+    $.ajax({
+		url : "/dashbd/api/getServiceAreaEnbApOther.do",
+		type: "get",
+		data : { "serviceAreaId" : serviceAreaId, "swLat" : sw.lat(), "swLng" : sw.lng(), "neLat" : ne.lat(), "neLng" : ne.lng() },
+		success : function(responseData){
+			$("#ajax").remove();
+			var datas = JSON.parse(responseData);
+			var dataLen = datas.length;
+			var options = "";
+			
+			for (var i = 0; i < datas.length; i++) {
+				var latLng = new google.maps.LatLng(datas[i].latitude, datas[i].longitude);
+				var marker;
+				if( datas[i].serviceAreaId == serviceAreaId ) {
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'});
+				} else if( datas[i].serviceAreaId == '' ) {
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'});
+				} else {
+					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'});
+				}
+				
+				markers.push(marker);
+			}
+		}
+	});
 }
 
 function getParameter(name) {
