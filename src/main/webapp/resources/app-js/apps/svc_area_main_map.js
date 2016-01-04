@@ -136,9 +136,11 @@ function getServiceAreaOperator(page)
 
 var map;
 var markers = [];
+var enb_markers = [];
 var default_lat = 36.869872;
 var default_lng = 127.838728;
 var default_zoom = 7;
+var activeInfoWindow;
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -169,15 +171,93 @@ function moveToEnb(bmscId, serviceAreaId)
 			for (var i = 0; i < enb_datas.length; i++) {
 				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
 				var marker;
+				var contentString = "<ul>" +
+				'<li><a href="#" onclick="return false;" class="more_info">More info</span></a></li>' +
+				'<li><a href="#" onclick="return false;" class="add_to_service_area">Add To Service Area</a></li>' +
+				'<li><a href="#" onclick="return false;" class="delete_from_service_area">Delete From Service Area</a></li>' +
+				"</ul>";
+				var enbInfoWindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+				
+				var menuInfoWindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+				
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'
+					});
 				} else if( enb_datas[i].serviceAreaId == '' ) {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'
+					});
 				} else {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'});
+					marker = new google.maps.Marker({
+						'position': latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'
+					});
 				}
 				
-				markers.push(marker);
+				enbInfoWindow.setContent('<div class="scrollFix">' + 'Welcome to menu. <br/>This Infowindow appears when you click on marker</div>');
+				
+				// add listener on InfoWindow for mouseover event
+				google.maps.event.addListener(marker, 'mouseover', function() {
+					
+					// Close active window if exists - [one might expect this to be default behaviour no?]				
+					if(activeInfoWindow != null) activeInfoWindow.close();
+
+					// Close info Window on mouseclick if already opened
+					menuInfoWindow.close();
+				
+					// Open new InfoWindow for mouseover event
+					enbInfoWindow.open(map, this);
+					
+					// Store new open InfoWindow in global variable
+					activeInfoWindow = enbInfoWindow;				
+				}); 							
+				
+				// on mouseout (moved mouse off marker) make infoWindow disappear
+				google.maps.event.addListener(marker, 'mouseout', function() {
+					enbInfoWindow.close();	
+				});
+				
+				/*
+				google.maps.event.addListener(marker, 'click', function() {
+					closeInfoWindow();
+					this.infowindow.open(map, this);
+				});
+				*/
+				
+				// --------------------------------
+				// ON MARKER CLICK - (Mouse click)
+				// --------------------------------
+				
+				// add content to InfoWindow for click event 
+				menuInfoWindow.setContent(contentString);
+				
+				// add listener on InfoWindow for click event
+				google.maps.event.addListener(marker, 'click', function() {
+					
+					//Close active window if exists - [one might expect this to be default behaviour no?]				
+					if(activeInfoWindow != null) activeInfoWindow.close();
+
+					// Open InfoWindow - on click 
+					menuInfoWindow.open(map, this);
+					
+					// Close "mouseover" infoWindow
+					enbInfoWindow.close();
+					
+					// Store new open InfoWindow in global variable
+					activeInfoWindow = menuInfoWindow;
+				});
+				
+				enb_markers.push(marker);
 			}
 			
 			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
@@ -211,7 +291,7 @@ function moveToEnb(bmscId, serviceAreaId)
 					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'});
 				}
 				
-				markers.push(marker);
+				enb_markers.push(marker);
 			}
 		}
 	});
@@ -352,4 +432,13 @@ function clearMarkers() {
 	}
 	
 	markers = [];
+}
+
+function closeInfoWindow() {
+
+	for (var i = 0; i < enb_markers.length; i++) {
+		if(enb_markers[i].infowindow !== undefined) {
+			enb_markers[i].infowindow.close();
+		}
+	}
 }
