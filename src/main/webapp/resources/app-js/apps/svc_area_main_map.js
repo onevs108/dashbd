@@ -171,19 +171,7 @@ function moveToEnb(bmscId, serviceAreaId)
 			for (var i = 0; i < enb_datas.length; i++) {
 				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
 				var marker;
-				var contentString = "<ul>" +
-				'<li><a href="#" onclick="return false;" class="more_info">More info</span></a></li>' +
-				'<li><a href="#" onclick="return false;" class="add_to_service_area">Add To Service Area</a></li>' +
-				'<li><a href="#" onclick="return false;" class="delete_from_service_area">Delete From Service Area</a></li>' +
-				"</ul>";
-				var enbInfoWindow = new google.maps.InfoWindow({
-					content: contentString
-				});
-				
-				var menuInfoWindow = new google.maps.InfoWindow({
-					content: contentString
-				});
-				
+								
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
 					marker = new google.maps.Marker({
 						position: latLng, 
@@ -204,7 +192,23 @@ function moveToEnb(bmscId, serviceAreaId)
 					});
 				}
 				
-				enbInfoWindow.setContent('<div class="scrollFix">' + 'Welcome to menu. <br/>This Infowindow appears when you click on marker</div>');
+				var enbContent = "enb info";
+				
+				var menuContent = "<ul>" +
+				'<li><a href="#" onclick="return false;" class="more_info">More info</span></a></li>' +
+				'<li><a href="#" onclick="return false;" class="add_to_service_area">Add To Service Area</a></li>' +
+				'<li><a href="#" onclick="return false;" class="delete_from_service_area">Delete From Service Area</a></li>' +
+				"</ul>";
+				
+				var enbInfoWindow = new google.maps.InfoWindow({
+					content: enbContent
+				});
+				
+				var menuInfoWindow = new google.maps.InfoWindow({
+					content: menuContent
+				});
+				
+				enbInfoWindow.setContent(enbContent);
 				
 				// add listener on InfoWindow for mouseover event
 				google.maps.event.addListener(marker, 'mouseover', function() {
@@ -219,7 +223,7 @@ function moveToEnb(bmscId, serviceAreaId)
 					enbInfoWindow.open(map, this);
 					
 					// Store new open InfoWindow in global variable
-					activeInfoWindow = enbInfoWindow;				
+					activeInfoWindow = enbInfoWindow;
 				}); 							
 				
 				// on mouseout (moved mouse off marker) make infoWindow disappear
@@ -239,7 +243,7 @@ function moveToEnb(bmscId, serviceAreaId)
 				// --------------------------------
 				
 				// add content to InfoWindow for click event 
-				menuInfoWindow.setContent(contentString);
+				menuInfoWindow.setContent(menuContent);
 				
 				// add listener on InfoWindow for click event
 				google.maps.event.addListener(marker, 'click', function() {
@@ -255,6 +259,11 @@ function moveToEnb(bmscId, serviceAreaId)
 					
 					// Store new open InfoWindow in global variable
 					activeInfoWindow = menuInfoWindow;
+					
+					if(this.getAnimation() === null || this.getAnimation() === undefined) {
+						stopBounce();
+						this.setAnimation(google.maps.Animation.BOUNCE);
+					}
 				});
 				
 				enb_markers.push(marker);
@@ -434,11 +443,11 @@ function clearMarkers() {
 	markers = [];
 }
 
-function closeInfoWindow() {
+function stopBounce() {
 
 	for (var i = 0; i < enb_markers.length; i++) {
-		if(enb_markers[i].infowindow !== undefined) {
-			enb_markers[i].infowindow.close();
+		if(enb_markers[i].getAnimation() !== null) {
+			enb_markers[i].setAnimation(null);
 		}
 	}
 }
