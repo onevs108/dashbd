@@ -60,7 +60,7 @@ define([
 			this.$el.find('input#search-keyword').val(value);
 		},
 		clickAddContentButton: function() {
-			window.location.href = 'contents_mgmt_form.html#mode/create';
+			window.location.href = '/dashbd/view/addContent.do';
 		},
 		modelDestroyed: function() {
 			var router = Utility.Context.get('router');

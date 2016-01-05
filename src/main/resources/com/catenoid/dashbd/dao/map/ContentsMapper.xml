@@ -305,6 +305,35 @@
          SELECT LAST_INSERT_ID()
     </selectKey>
   </insert>
+  
+  <insert id = "insertContent" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO contents(
+			type
+			, title
+			, category
+			, director
+			, actors
+			, content_provider
+			, file_format
+			, age_restriction
+			, description
+			, url
+			, duration
+			, bitrate
+		)VALUES(#{type}
+			, #{title}
+			, #{category}
+			, #{director}
+			, #{actors}
+			, #{content_provider}
+			, #{file_format}
+			, #{age_restriction}
+			, #{description}
+			, #{url}
+			, #{duration}
+			, #{bitrate}
+		)
+	</insert>
   <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.ContentsExample" resultType="java.lang.Integer" >
     select count(*) from contents
     <if test="_parameter != null" >

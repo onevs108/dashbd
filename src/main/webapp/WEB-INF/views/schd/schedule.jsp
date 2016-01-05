@@ -24,8 +24,9 @@
 	<script src="../resourcesRenew/js/plugins/footable/footable.all.min.js"></script>
 	
 	<!-- Custom and plugin javascript -->
-	<script src="../resourcesRenew/js/inspinia.js"></script>
 	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
+	<script src="../resourcesRenew/js/inspinia.js"></script>
+	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 
 	
 	<!-- Page-Level Scripts -->
@@ -99,17 +100,7 @@
 		});
 	});
 	
-	function outMsgForAjax(result){
-		var resultCode = result.resultInfo.resultCode
-		var resultMsg = result.resultInfo.resultMsg
 
-		if (resultCode == 1000) {
-			alert(resultMsg);
-		} else {
-			alert("errorcode="+resultCode+",\n msg="+resultMsg);
-			
-		}
-	}
 	
 	function validation( from ) {
 		var $form = from;

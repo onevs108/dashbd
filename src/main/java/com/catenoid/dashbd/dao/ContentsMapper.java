@@ -23,6 +23,8 @@ public interface ContentsMapper {
     int insert(Contents record);
 
     int insertSelective(Contents record);
+    
+    int insertContent(Map map);
 
     List<Contents> selectByExampleWithBLOBs(ContentsExample example);
 
