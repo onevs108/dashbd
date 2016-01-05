@@ -137,6 +137,8 @@ function getServiceAreaOperator(page)
 var map;
 var markers = [];
 var enb_markers = [];
+var enbInfoWindows = {};
+var menuInfoWindows = {};
 var default_lat = 36.869872;
 var default_lng = 127.838728;
 var default_zoom = 7;
@@ -155,6 +157,7 @@ function moveToEnb(bmscId, serviceAreaId)
 {
 
 	clearMarkers();
+	clearEnbMarkers();
 	
 	var enb_datas;
 
@@ -162,6 +165,7 @@ function moveToEnb(bmscId, serviceAreaId)
 		url : "/dashbd/api/getServiceAreaEnbAp.do",
 		type: "get",
 		data : { "serviceAreaId" : serviceAreaId },
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 		success : function(responseData){
 			$("#ajax").remove();
 			enb_datas = JSON.parse(responseData);
@@ -176,29 +180,39 @@ function moveToEnb(bmscId, serviceAreaId)
 					marker = new google.maps.Marker({
 						position: latLng, 
 						map: map, 
-						icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'
+						icon : '/dashbd/resources/img/icon/enb_red.png',
+						infoWindowIndex : enb_datas[i].enbApId
 					});
 				} else if( enb_datas[i].serviceAreaId == '' ) {
 					marker = new google.maps.Marker({
 						position: latLng, 
 						map: map, 
-						icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'
+						icon : '/dashbd/resources/img/icon/enb_gray.png',
+						infoWindowIndex : enb_datas[i].enbApId
 					});
 				} else {
 					marker = new google.maps.Marker({
 						'position': latLng, 
 						map: map, 
-						icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'
+						icon : '/dashbd/resources/img/icon/enb_blue.png',
+						infoWindowIndex : enb_datas[i].enbApId
 					});
 				}
 				
-				var enbContent = "enb info";
+				//alert(enb_datas[i].enbApName);
+				var enbContent = '<ul>' 
+				+ '<li>SA_ID : ' + enb_datas[i].serviceAreaId + '</li>'
+				+ '<li>eNB ID : ' + enb_datas[i].enbApId + '</li>'
+				+ '<li>eNB Name : '	+ enb_datas[i].enbApName + '</li>'
+				+ '<li>PLMN : ' + enb_datas[i].plmn + '</li>'
+				+ '<li>MBSFN : ' + enb_datas[i].mbsfn + '</li>'
+				+ '</ul>';
 				
-				var menuContent = "<ul>" +
+				var menuContent = '<ul>' +
 				'<li><a href="#" onclick="return false;" class="more_info">More info</span></a></li>' +
 				'<li><a href="#" onclick="return false;" class="add_to_service_area">Add To Service Area</a></li>' +
 				'<li><a href="#" onclick="return false;" class="delete_from_service_area">Delete From Service Area</a></li>' +
-				"</ul>";
+				'</ul>';
 				
 				var enbInfoWindow = new google.maps.InfoWindow({
 					content: enbContent
@@ -208,7 +222,10 @@ function moveToEnb(bmscId, serviceAreaId)
 					content: menuContent
 				});
 				
-				enbInfoWindow.setContent(enbContent);
+				enbInfoWindows[enb_datas[i].enbApId] = enbInfoWindow;
+				menuInfoWindows[enb_datas[i].enbApId] = menuInfoWindow;
+				
+				//this.enbInfoWindow.setContent(enbContent);
 				
 				// add listener on InfoWindow for mouseover event
 				google.maps.event.addListener(marker, 'mouseover', function() {
@@ -217,18 +234,18 @@ function moveToEnb(bmscId, serviceAreaId)
 					if(activeInfoWindow != null) activeInfoWindow.close();
 
 					// Close info Window on mouseclick if already opened
-					menuInfoWindow.close();
-				
+					menuInfoWindows[this.infoWindowIndex].close();
+					
 					// Open new InfoWindow for mouseover event
-					enbInfoWindow.open(map, this);
+					enbInfoWindows[this.infoWindowIndex].open(map, this);
 					
 					// Store new open InfoWindow in global variable
-					activeInfoWindow = enbInfoWindow;
+					activeInfoWindow = enbInfoWindows[this.infoWindowIndex];
 				}); 							
 				
 				// on mouseout (moved mouse off marker) make infoWindow disappear
 				google.maps.event.addListener(marker, 'mouseout', function() {
-					enbInfoWindow.close();	
+					enbInfoWindows[this.infoWindowIndex].close();	
 				});
 				
 				/*
@@ -243,7 +260,7 @@ function moveToEnb(bmscId, serviceAreaId)
 				// --------------------------------
 				
 				// add content to InfoWindow for click event 
-				menuInfoWindow.setContent(menuContent);
+				//this.menuInfoWindow.setContent(menuContent);
 				
 				// add listener on InfoWindow for click event
 				google.maps.event.addListener(marker, 'click', function() {
@@ -251,14 +268,14 @@ function moveToEnb(bmscId, serviceAreaId)
 					//Close active window if exists - [one might expect this to be default behaviour no?]				
 					if(activeInfoWindow != null) activeInfoWindow.close();
 
-					// Open InfoWindow - on click 
-					menuInfoWindow.open(map, this);
-					
 					// Close "mouseover" infoWindow
-					enbInfoWindow.close();
+					enbInfoWindows[this.infoWindowIndex].close();
+					
+					// Open InfoWindow - on click 
+					menuInfoWindows[this.infoWindowIndex].open(map, this);
 					
 					// Store new open InfoWindow in global variable
-					activeInfoWindow = menuInfoWindow;
+					activeInfoWindow = menuInfoWindows[this.infoWindowIndex];
 					
 					if(this.getAnimation() === null || this.getAnimation() === undefined) {
 						stopBounce();
@@ -293,11 +310,23 @@ function moveToEnb(bmscId, serviceAreaId)
 				var latLng = new google.maps.LatLng(datas[i].latitude, datas[i].longitude);
 				var marker;
 				if( datas[i].serviceAreaId == serviceAreaId ) {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/enb_red.png'
+					});
 				} else if( datas[i].serviceAreaId == '' ) {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/enb_gray.png'
+					});
 				} else {
-					marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/enb_blue.png'
+					});
 				}
 				
 				enb_markers.push(marker);
@@ -441,6 +470,15 @@ function clearMarkers() {
 	}
 	
 	markers = [];
+}
+
+function clearEnbMarkers() {
+
+	for (var i = 0; i < markers.length; i++) {
+	    enb_markers[i].setMap(null);
+	}
+	
+	enb_markers = [];
 }
 
 function stopBounce() {

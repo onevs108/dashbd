@@ -821,11 +821,15 @@ public class ServiceAreaController {
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("totalCount", data.getTotalCount());
 			array.add(obj);
+			
+			//System.out.println("data.getEnbApName()=[" + data.getEnbApName() + "]");
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
+	    	System.out.println("Exception=[" + e.toString() + "]");
 	        e.printStackTrace();
 	    }
 	}
