@@ -118,7 +118,7 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 		success : function(responseData){
 			$("#ajax").remove();
 			bandwidth_data = JSON.parse(responseData);
-			var content = "<h2>" + bandwidth_data.GBRSum + "% is being used</h2>";
+			var content = "<h2>" + bandwidth_data.GBRSum + " % is being used</h2>";
 			content += "<div class=\"progress progress-big\">";
 			content += "<div style=\"width:" + bandwidth_data.GBRSum + "%;\" class=\"progress-bar\"></div>";
 			content += "</div>";

@@ -1076,9 +1076,9 @@ public class ServiceAreaController {
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		searchParam.put("serviceAreaId", Integer.valueOf(request.getParameter("serviceAreaId")));
 		HashMap retmap = mapper.getGBRSum(searchParam);
-
+//System.out.println("==================================>>>>>" + retmap.get("GBRSum"));
 		JSONObject obj = new JSONObject();
-		obj.put("scheduleId", retmap.get("GBRSum"));
+		obj.put("GBRSum", retmap.get("GBRSum"));
 
 		try {
 	        response.getWriter().print(obj.toJSONString());

@@ -551,7 +551,7 @@
 	
 	<select id="getGBRSum" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
 		SELECT 
-			()IFNULL(sum(GBR), '0') / e.bandwidth) * 100 as GBRSum
+			round(((IFNULL(sum(GBR), '0') / e.bandwidth) * 100), 2) as GBRSum
 		FROM 
 			schedule s, broadcast_info b, enb_ap e, 
 			(select enb_ap_id, service_area_id from service_area_enb_ap s where s.service_area_id = #{serviceAreaId,jdbcType=INTEGER} limit 0,1) sa
