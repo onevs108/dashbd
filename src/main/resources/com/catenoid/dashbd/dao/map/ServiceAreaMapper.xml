@@ -93,6 +93,8 @@
 		<result column="del_yn" property="delYn" jdbcType="VARCHAR" />
 		<result column="thumbnail" property="thumbnail" jdbcType="VARCHAR" />
 		<result column="progress_rate" property="progressRate" jdbcType="DECIMAL" />
+		<result column="service_type" property="serviceType" jdbcType="VARCHAR" />
+		<result column="category" property="category" jdbcType="VARCHAR" />
 	</resultMap>
 	
 		
@@ -526,11 +528,15 @@
 			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
 			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
 			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
-		from schedule a
+			, b.service as service_type
+			, c.category
+		from schedule a, broadcast_info b, contents c
 			where 1 = 1
 			and a.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
 			and a.del_yn = 'N'
 			and now() between a.start_date and a.end_date
+			and b.bcid = a.bcid
+			and c.id = a.content_id
 		order by a.start_date
 		limit 0, 4
 	</select>
@@ -540,11 +546,15 @@
 			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
 			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
 			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
-		from schedule a
+			, b.service as service_type
+			, c.category
+		from schedule a, broadcast_info b, contents c
 			where 1 = 1
 			and a.service_area_id in (select b.service_area_id from bmsc_service_area b where b.bmsc_id = #{bmscId,jdbcType=INTEGER})
 			and a.del_yn = 'N'
 			and now() between a.start_date and a.end_date
+			and b.bcid = a.bcid
+			and c.id = a.content_id
 		order by a.start_date
 		limit 0, 20
 	</select>

@@ -1019,6 +1019,8 @@ public class ServiceAreaController {
 			obj.put("delYn", data.getDelYn());
 			obj.put("thumbnail", data.getThumbnail());
 			obj.put("progressRate", data.getProgressRate());
+			obj.put("serviceType", data.getServiceType());
+			obj.put("category", data.getCategory());
 			array.add(obj);
 		}
 		
@@ -1057,6 +1059,8 @@ public class ServiceAreaController {
 			obj.put("delYn", data.getDelYn());
 			obj.put("thumbnail", data.getThumbnail());
 			obj.put("progressRate", data.getProgressRate());
+			obj.put("serviceType", data.getServiceType());
+			obj.put("category", data.getCategory());
 			array.add(obj);
 		}
 		
@@ -1078,7 +1082,11 @@ public class ServiceAreaController {
 		HashMap retmap = mapper.getGBRSum(searchParam);
 //System.out.println("==================================>>>>>" + retmap.get("GBRSum"));
 		JSONObject obj = new JSONObject();
-		obj.put("GBRSum", retmap.get("GBRSum"));
+		if(retmap != null) {
+			obj.put("GBRSum", retmap.get("GBRSum"));
+		} else {
+			obj.put("GBRSum", 0);
+		}
 
 		try {
 	        response.getWriter().print(obj.toJSONString());
