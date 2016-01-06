@@ -869,6 +869,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -1084,5 +1085,48 @@ public class ServiceAreaController {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
+	}
+	
+	@RequestMapping(value = "/api/addToServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void addToServiceArea(HttpServletRequest request, HttpServletResponse response) {
+		
+		HashMap< String, Integer > searchParam;
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
+		int addCount = 0;
+		System.out.println(serviceAreaId);
+		
+		String[] enbIds = request.getParameterValues("enbIds[]");
+		for( int i = 0; enbIds != null && i < enbIds.length; i++) {
+			searchParam = new HashMap();
+			searchParam.put("serviceAreaId", serviceAreaId );
+			searchParam.put("enbApId", Integer.valueOf(enbIds[i]));
+			System.out.println(Integer.valueOf(enbIds[i]));
+			addCount = mapper.addToServiceArea(searchParam);
+		}
+		
+		return;
+	}
+	
+	@RequestMapping(value = "/api/deleteFromServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void deleteFromServiceArea(HttpServletRequest request, HttpServletResponse response) {
+		
+		HashMap< String, Object > searchParam;
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
+		int delCount = 0;
+		System.out.println(serviceAreaId);
+		
+		String[] enbIds = request.getParameterValues("enbIds[]");
+		Integer[] enbApIds = new Integer[enbIds.length];
+		for(int i = 0; i < enbIds.length; i++) {
+			enbApIds[i] = Integer.valueOf(enbIds[i]);
+		}
+		searchParam = new HashMap();
+		searchParam.put("serviceAreaId", serviceAreaId );
+		searchParam.put("enbApIds", enbApIds);
+		delCount = mapper.deleteFromServiceArea(searchParam);
+		
+		return;
 	}
 }

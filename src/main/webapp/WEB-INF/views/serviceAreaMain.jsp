@@ -30,11 +30,11 @@
 		color: red;
 		background-color: white;
 		font-family: "Lucida Grande", "Arial", sans-serif;
-		font-size: 10px;
+		font-size: 12px;
 		font-weight: bold;
 		text-align: center;
 		width: 40px;     
-		border: 1px solid black;
+		border: 0px solid black;
 		white-space: nowrap;
 	}
 	</style>

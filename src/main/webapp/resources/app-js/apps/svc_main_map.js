@@ -37,11 +37,23 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
 				var marker;
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_r_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/enb_red.png'
+					});
 				} else if( enb_datas[i].serviceAreaId == '' ) {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_g_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/enb_gray.png'
+					});
 				} else {
-				marker = new google.maps.Marker({'position': latLng, map: map, icon : '/dashbd/resources/img/icon/bs_ico_b_mini.png'});
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : '/dashbd/resources/img/icon/enb_blue.png'
+					});
 				}
 				markers.push(marker);
 			}
@@ -140,7 +152,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 			options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
 			options += "<div class=\"ibox-content\">";
 			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-			options += "<thead><tr><th>SA_ID</th><th>Description</th></tr></thead>";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
 			options += "<tbody>";
 
             for(var i = 0; i < dataLen; i++ ) {
@@ -149,7 +161,12 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
             	//options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
             	
-            	options += "<tr><td>";
+            	if(i%2 == 0) {
+            		options += "<tr class=\"footable-even\" style=\"display: table-row;\"><td>";
+            	} else {
+            		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
+            	}
+            	options += "<span class=\"footable-toggle\"></span>";
             	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + datas[i].serviceAreaName + ");\">";
             	options += datas[i].serviceAreaId;
             	options += "</a>";
@@ -257,7 +274,8 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 						labelAnchor: new google.maps.Point(22, 0),
 						labelClass: "labels", // the CSS class for the label
 						labelStyle: {opacity: 0.75},
-						title: data[i].city
+						title: data[i].city,
+						icon: '/dashbd/resources/img/icon/enb_red_on.png'
             		});
 
             		marker.addListener('click', function() {
@@ -285,6 +303,7 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 			var content = "";
 			for (var i = 0; i < datas.length; i++) {
 				content += "<div class=\"file-box\">";
+				content += "<div class=\"file\">";
 				content += "<span class=\"corner\"></span>";
 				content += "<div class=\"image\">";
 				content += "<img alt=\"image\" class=\"img-responsive\" src=\"img/p1.jpg\">";
@@ -293,6 +312,8 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 				content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
 				content += "<div class=\"file-name\">";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> Streaming</h5>";
+				content += "<small>[Sports]</small> ";
 				content += datas[i].scheduleName;
 				content += "</div>";
 				content += "</div>";
@@ -302,9 +323,9 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No thumbnail<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
 				content += "</p>";
-				content += "<small>현재 방송 중인 서비스가 없습니다.</small>";
+				content += "<small></small>";
 				content += "</div>";
 			}
 

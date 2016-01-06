@@ -462,7 +462,8 @@
 			and t1.enb_ap_id = t2.id
 			and t1.service_area_id = t3.id
 			and t2.latitude between #{swLat} and #{neLat}
-			and t2.longitude between #{swLng} and #{neLng}) as totalCount
+			and t2.longitude between #{swLng} and #{neLng}
+			and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = t1.enb_ap_id)) as totalCount
 	from 
 		service_area_enb_ap t1, enb_ap t2, service_area t3
 	where 1 = 1
@@ -471,6 +472,7 @@
 		and t1.service_area_id = t3.id
 		and t2.latitude between #{swLat} and #{neLat}
 		and t2.longitude between #{swLng} and #{neLng}
+		and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = t1.enb_ap_id)
 	order by t1.enb_ap_id 
 	</select>
 	
@@ -557,18 +559,21 @@
 		AND service_area_id = #{serviceAreaId,jdbcType=INTEGER}
 	</select>
 	
-	<insert id="addToServiceArea" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
+	<insert id="addToServiceArea" parameterType="java.util.HashMap" >
 	insert into service_area_enb_ap 
 	(service_area_id, enb_ap_id, created_at, updated_at)
 	values 
 	(#{serviceAreaId,jdbcType=INTEGER}, #{enbApId,jdbcType=INTEGER}, now(), now())
 	</insert>
 	
-	<delete id="deleteFromServiceArea" parameterType="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
+	<delete id="deleteFromServiceArea" parameterType="java.util.HashMap" >
 	delete from service_area_enb_ap
 	where 1= 1
 		and service_area_id = #{serviceAreaId,jdbcType=INTEGER}
-		and enb_ap_id = #{enbApId,jdbcType=INTEGER}
+		and enb_ap_id in 
+			<foreach collection="enbApIds" item="enbApId" open="(" close=")" separator="," >
+				#{enbApId}
+			</foreach>
 	</delete>
 
 	<insert id="createServiceArea" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >

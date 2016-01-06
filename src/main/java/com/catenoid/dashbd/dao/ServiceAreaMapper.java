@@ -68,5 +68,9 @@ public interface ServiceAreaMapper {
     List<ScheduleSummary> getScheduleSummaryByBmsc(HashMap<String, Integer> searchParm);
     
     HashMap<String, Integer> getGBRSum(HashMap<String, Integer> searchParm);
+    
+    int addToServiceArea(HashMap< String, Integer > searchParm);
+    
+    int deleteFromServiceArea(HashMap< String, Object > searchParm);
 
 }

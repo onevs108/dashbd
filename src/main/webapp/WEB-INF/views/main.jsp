@@ -51,11 +51,11 @@
 		color: red;
 		background-color: white;
 		font-family: "Lucida Grande", "Arial", sans-serif;
-		font-size: 10px;
+		font-size: 12px;
 		font-weight: bold;
 		text-align: center;
 		width: 40px;     
-		border: 1px solid black;
+		border: 1px solid red;
 		white-space: nowrap;
 	}
 	</style>
@@ -68,10 +68,10 @@
 			<ul class="nav metismenu" id="side-menu">
 				<li class="nav-header">
 					<div class="dropdown profile-element">
-						<img src="img/logo_w_small.png">
+						<img src="img/logo_small.png">
 					</div>
 					<div class="logo-element">
-						<img src="img/logo2_w.png">
+						<img src="img/logo2.png">
 					</div>
 				</li>
 				<li>
@@ -257,9 +257,9 @@
 	                            	<div class="col-lg-12" id="schedule_summary">
 	                            		<div class="nothumbnail">
 	                                    	<p>
-	                                        	<i class="fa fa-search"></i> No thumbnail<br/>
+	                                        	<i class="fa fa-search"></i> No Service is available<br/>
 	                                        </p>
-	                                        <small>현재 방송 중인 서비스가 없습니다.</small>
+	                                        <small></small>
 	                                    </div>
 	                            	</div>
 	                            </div>
@@ -290,73 +290,72 @@
 					</div>
 					<!-- end Bandwidth -->
 					<!-- BM-SC Interface Status  -->
-					<div class="col-md-4 pull-right">
-						<div class="ibox float-e-margins">
-							<div class="ibox-title">
-								<h3>BM-SC Interface Status</h3>
-								<div class="ibox-tools">
-									<!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-									<a class="close-link"><i class="fa fa-times"></i></a-->
-								</div>
-							</div><!-- end ibox-title -->
-							<div class="ibox-content">
-								<div class="row">
-									<div class="col-md-12">
-										<div class="col-xs-1">
-											<h2 class="text-navy">
-												<i class="fa fa-circle"></i>
-											</h2>
-											<h5 class="m-b-md">#1</h5>
-										</div>
-	                                    
-										<div class="col-xs-1">
-											<h2 class="text-navy">
-												<i class="fa fa-circle"></i>
-											</h2>
-											<h5 class="m-b-md">#2</h5>
-										</div>
-	                                    
-										<div class="col-xs-1">
-											<h2 class="text-navy">
-												<i class="fa fa-circle"></i>
-											</h2>
-											<h5 class="m-b-md">#3</h5>
-										</div>
-	                                    
-										<div class="col-xs-1">
-											<h2 class="text-navy">
-												<i class="fa fa-circle"></i>
-											</h2>
-											<h5 class="m-b-md">#4</h5>
-										</div>
-	                                    
-										<div class="col-xs-1">
-											<h2 class="text-danger">
-												<i class="fa fa-circle"></i>
-											</h2>
-											<h5 class="m-b-md">#5</h5>
-										</div>
-	                                    
-										<div class="col-xs-1">
-											<h2 class="text-navy">
-												<i class="fa fa-circle"></i>
-											</h2>
-											<h5 class="m-b-md">#6</h5>
-										</div>
-	                                    
-										<div class="col-xs-1">
-											<h2 class="text-danger">
-												<i class="fa fa-circle"></i>
-											</h2>
-											<h5 class="m-b-md">#7</h5>
-										</div>
-	                                    
-									</div>
-								</div>
-							</div><!-- end ibox-content -->                        
+                <div class="col-md-4">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h3>BM-SC Interface Status</h3>
+                            <div class="ibox-tools">
+                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a-->
+                            </div>
+                        </div><!-- end ibox-title -->
+                        <div class="ibox-content">
+                            <div class="row">
+						<div class="col-md-12">	
+							<table class="table2">
+							<tbody>
+								<tr>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#1</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-danger" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#2</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#3</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#4</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#5</h4>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#6</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-danger" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#7</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#8</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#9</h4>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+										<h4 class="text-center">#10</h4>
+									</td>
+								</tr>
+							<tbody>
+							</table>
 						</div>
-					</div>
-					<!-- end BM-SC Interface Status  -->
+                            </div>
+                        </div><!-- end ibox-content -->                        
+                    </div>
+                </div>
+                <!-- end BM-SC Interface Status  -->
 				</div> 
 				<!-- end Contents Being Serviced -->
 		</div><!-- end wrapper wrapper-content -->
