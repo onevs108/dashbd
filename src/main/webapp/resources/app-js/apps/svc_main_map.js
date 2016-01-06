@@ -76,6 +76,7 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 			var content = "";
 			for (var i = 0; i < summary_datas.length; i++) {
 				content += "<div class=\"file-box\">";
+				content += "<div class=\"file\">";
 				content += "<span class=\"corner\"></span>";
 				content += "<div class=\"image\">";
 				content += "<img alt=\"image\" class=\"img-responsive\" src=\"img/p1.jpg\">";
@@ -84,6 +85,8 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 				content += "<div style=\"width: " + summary_datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
 				content += "<div class=\"file-name\">";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> Streaming</h5>";
+				content += "<small>[Sports]</small> ";
 				content += summary_datas[i].scheduleName;
 				content += "</div>";
 				content += "</div>";
@@ -93,9 +96,9 @@ function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 			if(summary_datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No thumbnail<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
 				content += "</p>";
-				content += "<small>현재 방송 중인 서비스가 없습니다.</small>";
+				content += "<small></small>";
 				content += "</div>";
 			}
 			

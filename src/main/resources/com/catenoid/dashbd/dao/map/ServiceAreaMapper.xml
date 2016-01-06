@@ -550,13 +550,17 @@
 	</select>
 	
 	<select id="getGBRSum" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-		SELECT IFNULL(sum(GBR), '0') as GBRSum 
+		SELECT 
+			()IFNULL(sum(GBR), '0') / e.bandwidth) * 100 as GBRSum
 		FROM 
-			schedule s inner join broadcast_info b
-			ON (s.BCID = b.BCID)
+			schedule s, broadcast_info b, enb_ap e, 
+			(select enb_ap_id, service_area_id from service_area_enb_ap s where s.service_area_id = #{serviceAreaId,jdbcType=INTEGER} limit 0,1) sa
 		WHERE 1=1
-		AND now() between s.start_date and s.end_date
-		AND service_area_id = #{serviceAreaId,jdbcType=INTEGER}
+			AND now() between s.start_date and s.end_date
+			AND s.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
+			and s.BCID = b.BCID
+			and sa.service_area_id = s.service_area_id
+			and e.id = sa.enb_ap_id
 	</select>
 	
 	<insert id="addToServiceArea" parameterType="java.util.HashMap" >
