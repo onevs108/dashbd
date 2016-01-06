@@ -9,6 +9,17 @@ $(document).ready(function()
         //alert( $('#bmsc option:selected').val() );
         drawServiceAreaByBmSc($('#bmsc option:selected').val());
     });
+    
+    $('.demo1').click(function(){
+        swal({
+            title: "Sorry !",
+            text: "Please Select BMSC first."
+        });
+    });
+    
+    // Page-Level Scripts
+    //$('.footable').footable();
+    //$('.footable2').footable();
 });
 
 var perPage = 15;
@@ -277,13 +288,12 @@ google.maps.event.addDomListener(window, 'load', initMap);
 
 function moveToEnb(bmscId, serviceAreaId)
 {
-
 	clearMarkers();
 	clearEnbMarkers();
 	clearDatas();
-
 	
-    
+	$("#enb_table").empty();
+
 	$.ajax({
 		url : "/dashbd/api/getServiceAreaEnbAp.do",
 		type: "get",
@@ -293,7 +303,18 @@ function moveToEnb(bmscId, serviceAreaId)
 			$("#ajax").remove();
 			var enb_datas = JSON.parse(responseData);
 			var dataLen = enb_datas.length;
-			var options = "";
+			var options = "<table class=\"footable table table-stripped\" data-page-size=\"10\">";
+			options += "<thead>";
+			options += "<tr>";
+			options += "<th class=\"col-sm-1\">eNB ID</th>";
+			options += "<th class=\"col-sm-3\">eNB Name</th>";
+			options += "<th class=\"col-sm-1\">eNB ID</th>";
+			options += "<th class=\"col-sm-3\">eNB Name</th>";
+			options += "<th class=\"col-sm-1\">eNB ID</th>";
+			options += "<th class=\"col-sm-3\">eNB Name</th>";
+			options += "</tr>";
+			options += "</thead>";
+			options += "<tbody>";
 			
 			for(var i = 0; i < enb_datas.length; i++) {
 				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
@@ -440,10 +461,48 @@ function moveToEnb(bmscId, serviceAreaId)
 				});
 				
 				enb_markers.push(marker);
+				
+				if( i == 0 ) {
+					options += "<tr>";
+				}
+				else if( i % 3 == 0 ) {
+					options += "</tr><tr>";
+				}
+				options += "<td>";
+				options += enb_datas[i].enbApId;
+				options += "</td>";
+				options += "<td>";
+				options += enb_datas[i].enbApName;
+				options += "</td>";
 			}
 			
+			//alert(dataLen);
+			if( dataLen % 3 == 0 ) {
+				options += "</tr>";
+			} else if( dataLen % 3 == 1 ) {
+				options += "<td></td></tr>";
+			} else if( dataLen % 3 == 2 ) {
+				options += "<td></td><td></td></tr>";
+			}
+			options += "</tbody>";
+			if( dataLen > 10 ) {
+				options += "<tfoot><tr>";
+				options += "<td colspan=\"6\">";
+				options += "<ul class=\"pagination pull-right\"></ul>";
+				options += "</td>";
+				options += "</tr></tfoot>";
+			}
+			options += "</table>";
+
 			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
 			map.setZoom(12);
+			
+			console.debug(options);
+			$("#enb_table").empty();
+            $("#enb_table").append(options);
+            
+            $('.footable').footable();
+
 		}
 	});
 	
@@ -633,14 +692,45 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             var dataLen = datas.length;
             var options = "";
             var idx = 0;
+            
+            options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
+			options += "<div class=\"ibox-content\">";
+			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+			options += "<tbody>";
+			
             for(var i=0; i<dataLen; i++){
-          		  options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
+          		//options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
+            	if( i % 2 == 0 ) {
+            		options += "<tr class=\"footable-even\" style=\"display: table-row;\"><td>";
+            	} else {
+            		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
+            	}
+            	options += "<span class=\"footable-toggle\"></span>";
+            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + datas[i].serviceAreaName + ");\">";
+            	options += datas[i].serviceAreaId;
+            	options += "</a>";
+				options += "</td><td>";
+				options += datas[i].serviceAreaName;
+				options += "</td></tr>";
             }
 
+            options += "</tbody>";
+            
+            if(dataLen > 10) {
+            	//alert(dataLen);
+            	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            }
+            
+            options += "</table></div>";
+            
             $("#service_area").empty();
             $("#service_area").append(options);
             
+            $('.footable').footable();
+            
             // Pagination
+            /*
             var totalCount = datas[0].totalCount;
             if(totalCount > perPage) {
             	var totalPageCount = Math.ceil(totalCount / perPage); // 마지막 페이지
@@ -690,6 +780,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
     			
     			$("#service_area").append(pageination);
             }
+            */
         }
     });
 }

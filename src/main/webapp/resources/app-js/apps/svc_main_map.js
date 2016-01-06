@@ -164,7 +164,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
             	//options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
             	
-            	if(i%2 == 0) {
+            	if( i % 2 == 0 ) {
             		options += "<tr class=\"footable-even\" style=\"display: table-row;\"><td>";
             	} else {
             		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
@@ -193,7 +193,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             $("#service_area").append(options);
             
             $('.footable').footable();
-            $('.footable2').footable();
+            //$('.footable2').footable();
             
             /*
             // Pagination
