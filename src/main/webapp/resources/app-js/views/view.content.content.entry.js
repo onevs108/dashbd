@@ -31,10 +31,10 @@ define([
 		},
 
 		clickInfoButton: function() {
-			window.location.href = 'contents_mgmt_form.html#mode/info/id/' + this.model.id;
+			window.location.href = '/dashbd/view/viewContent.do?id=' + this.model.id;
 		},
 		clickEditButton: function() {
-			window.location.href = 'contents_mgmt_form.html#mode/edit/id/' + this.model.id;
+			window.location.href = '/dashbd/view/editContent.do?id=' + this.model.id;
 		},
 		clickDeleteButton: function() {
 			if(confirm('Do you really want to delete this content?')) {

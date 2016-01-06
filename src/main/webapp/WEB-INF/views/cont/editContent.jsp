@@ -1,65 +1,96 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
-
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Mgmt</title>
+    <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/style.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
+    <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    <title>Create New Content</title>
+    
+    <!-- Mainly scripts -->
+	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
+	<script src="../resourcesRenew/js/jquery.form.js"></script>
+	<script src="../resourcesRenew/js/jquery-ui-1.10.4.min.js"></script>
+	
+	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+	
+	<!-- FooTable -->
+		
+	<!-- Custom and plugin javascript -->
+	<script src="../resourcesRenew/app-js/apps/common.js"></script>
+	
+	<!-- Page-Level Scripts -->
+	
+<script>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+$(document).ready(function() {
+	
+	$("#btnList").click(function(){
+		
+		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+	})
+	
+	
+	$("#btnCancel").click(function(){
+		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+	})
+	
+})
 
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-  
+
+</script>
 </head>
-
 <body>
 <div id="wrapper">
-    
-        <nav class="navbar-default navbar-static-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav metismenu" id="side-menu">
-                    <li class="nav-header">
-                        <div class="dropdown profile-element">
-                            <img src="img/logo_w_small.png">
-                        </div>
-                        <div class="logo-element">
-                            <img src="img/logo2_w.png">
-                        </div>
-                	</li>
-                    <li>
-                        <a href="#"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
-                    </li>
-                </ul>
 
-            </div>
-        </nav>
+    <!-- sidebar -->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        Logo
+                    </div>
+                    <div class="logo-element">
+                        logo
+                    </div>
+                </li>
+                <li>
+                    <a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+                </li>
+                <li class="landing_link">
+                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                </li>
+                <li>
+                    <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav><!-- sidebar end -->
 
-<div id="page-wrapper" class="gray-bg">
+    <!-- content -->
+    <div id="page-wrapper" class="gray-bg">
 
 	<div class="row border-bottom">
         <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -128,7 +159,7 @@
                 </li>
                 <li>
                     <a href="login.html">
-                        <img src="img/samsung_small.png">
+                        <img src="../resources/img/samsung_small.png">
                     </a>
                 </li>
             </ul>
@@ -152,32 +183,39 @@
             
             
 	<div class="wrapper wrapper-content">
+		<form class="form-horizontal" id="insertForm" name="insertForm" method="post" enctype="multipart/form-data" action="addContentOK.do" >
 		<div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
 					<div class="ibox-content">
 					    <div class="row">
 						   <div class="col-sm-8 b-r">
-						   <form method="get" class="form-horizontal">
-							   <div class="form-group"><label class="col-sm-3 control-label">ID</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control"></div>
+						   
+							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required" value="${mapContent.type}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Title</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control"></div>
-							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Director</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control"></div>
-							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Actors</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required" value="${mapContent.title}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Age restriction</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}"></div>
+							   </div>
+							   <div class="form-group"><label class="col-sm-3 control-label">duration</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required" value="${mapContent.duration}"></div>
+							   </div>
+							   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
+							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required" value="${mapContent.bitrate}"></div>
+							   </div>
+							   <div class="form-group"><label class="col-sm-3 control-label">Director</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="director" name="director" value="${mapContent.director}"></div>
+							   </div>
+							   <div class="form-group"><label class="col-sm-3 control-label">Actors</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="actors" name="actors" value="${mapContent.actors}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Description</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description" value="${mapContent.description}"></div>
 							   </div>
-						   </form>
+		
 						   </div>
 						   <div class="col-sm-4" style="padding:70px 0;">
 								<p class="text-center">
@@ -200,77 +238,51 @@
 					  <h4>Enter the URL where the contents located</h4>
                             <form method="get" class="form-horizontal">
                                 <div class="form-group">
-                                    <div class="col-sm-8"><input type="text" placeholder="https://www.naver.com/movie/abc.mp4" class="form-control"></div>
+                                    <div class="col-sm-8"><input type="text" id="url" name="url" placeholder="https://www.naver.com/movie/abc.mp4" class="form-control" value="${mapContent.url}"></div>
                                 </div>	
                             </form>
                         </div><!-- end centents ibox-content -->
 
-                        <div class="ibox-title">
+                        <br><br>
+				    <div class="ibox-title">
                             <h3>Thumbnails</h3>
                         </div>
-                        <div class="ibox-content"><br>
-					    <div class="row">
-						    <div class="col-md-3">
-							   <div class="product-imitation">
-								  <img src="img/p1.jpg">
-							   </div>
-							   <div class="product-desc">
-								  <span class="product-close">
-									 <i class="fa fa-close"></i>
-								  </span>
-							   </div>
-						    </div>
-						    
-						    <div class="col-md-3">
-							   <div class="product-imitation">
-								  <img src="img/p1.jpg">
-							   </div>
-							   <div class="product-desc">
-								  <span class="product-close">
-									 <i class="fa fa-close"></i>
-								  </span>
-							   </div>
-						    </div>
-						    
-						    <div class="col-md-3">
-							   <div class="product-imitation">
-								  <img src="img/p1.jpg">
-							   </div>
-							   <div class="product-desc">
-								  <span class="product-close">
-									 <i class="fa fa-close"></i>
-								  </span>
-							   </div>
-						    </div>
-						    
-						    <div class="col-md-3">
-							   <div class="product-imitation">
-								  <img src="img/p1.jpg">
-							   </div>
-							   <div class="product-desc">
-								  <span class="product-close">
-									 <i class="fa fa-close"></i>
-								  </span>
-							   </div>
-						    </div>
-						    
-						    <div class="col-md-12">
-						    		<div class="hr-line-dashed"></div>
-								<div class="input-group m-b">
-								    <div class="input-group-btn">
-									   <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">Select File</button>
-								    </div>
-									<input type="text" class="form-control">
+                        <div class="ibox-content">
+                        <br>
+					        <c:forEach items="${thumnails}" var="thumnail" varStatus="idx">
+					 	    
+					 	     	<c:if test="${idx.index mod 4 == 0 && idx.index != 0}"> 
+  					 	     		</div>
+  					 	     	</c:if>
+					 	     	<c:if test="${idx.index mod 4 == 0 }">
+									<div class="row">	    
+							    </c:if>
+							    <div class="col-md-3">
+								   <div class="product-imitation">
+									  <img src="${thumnail.path}">
+								   </div>
+								   
+								   <div class="product-desc">
+									  <span class="product-close">
+										 <i class="fa fa-close"></i>
+									  </span>
+								   </div>
+							    </div>
+							</c:forEach>
+							<c:if test="${fn:length(thumnails) > 0}">
 								</div>
-						    </div>
-					    </div>
+							</c:if>
+						<br>
 				    </div><!-- end thumbnail ibox-content -->
 
-                        <div class="ibox-title">
-                            <h3>Previews</h3>
+                        <br>
+                        
+                        <br>
+				    <div class="ibox-title">
+                        <h3>Previews</h3>
                         </div>
                         <div class="ibox-content"><br>
-					    <div class="row">
+					     <div class="row">
 						    <div class="col-md-3">
 							   <div class="product-imitation">
 								  <img src="img/p1.jpg">
@@ -284,7 +296,7 @@
 						    
 						    <div class="col-md-3">
 							   <div class="product-imitation">
-								  <img src="img/p1.jpg">
+								  <img src="/upload/img/p1.jpg">
 							   </div>
 							   <div class="product-desc">
 								  <span class="product-close">
@@ -306,33 +318,25 @@
 						    
 						  
 					    </div>
+							
 					    <br>
+					    
+					    
 				    </div><!-- end Previews ibox-content -->
                         </div><!-- end centents ibox-content -->
                     </div>
 					    <div class="row">
 					    		<div class="col-md-12 text-center" style="padding:10px 0 30px;">
-								<button type="button" class="btn btn-w-m btn-primary">OK</button>
-								<button type="button" class="btn btn-w-m btn-default">Cancle</button>
+								<button type="button" class="btn btn-w-m btn-primary" id="btnList">LIST</button>
+								<button type="button" class="btn btn-w-m btn-default" id="btnCancel">Cancel</button>
 							</div>
 					    </div>
 			 </div><!-- end Previews col-lg-12 -->
             </div><!-- row -->
+	</form>
 	</div><!-- end wrapper wrapper-content -->
 
 	</div><!-- end page-wrapper -->
-
-</div><!-- end wrapper -->
-
-    <!-- Mainly scripts -->
-    <script src="js/jquery-2.1.1.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-
+</div><!-- wrapper end -->
 </body>
 </html>

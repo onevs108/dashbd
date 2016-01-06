@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.catenoid.dashbd.dao.ContentsMapper" >
 
-
 	<select id="selectContents" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT id cid, title, category, duration , 
 				(select path from contents_images where cid = content_id and type = 'thumbnail' order by id desc limit 1) path
@@ -25,6 +24,52 @@
 		</if>
 		limit #{page}, #{perPage}
 	</select>
+	
+  <insert id = "insertContent" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO contents(
+			type
+			, title
+			, category
+			, director
+			, actors
+			, content_provider
+			, file_format
+			, age_restriction
+			, description
+			, url
+			, duration
+			, bitrate
+		)VALUES(#{type}
+			, #{title}
+			, #{category}
+			, #{director}
+			, #{actors}
+			, #{content_provider}
+			, #{file_format}
+			, #{age_restriction}
+			, #{description}
+			, #{url}
+			, #{duration}
+			, #{bitrate}
+		)
+	</insert>
+	
+	<select id="selectContent" parameterType="java.util.Map" resultType="java.util.Map">
+			SELECT *
+			FROM contents
+	 		WHERE
+			id = #{id}		
+	</select>
+	
+	<select id="selectContentImages" parameterType="java.util.Map" resultType="java.util.Map">
+			SELECT *
+			FROM contents_images
+	 		WHERE
+			content_id = #{id}
+			AND
+			type = #{type}
+	</select>
+
 	
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Contents" >
     <id column="id" property="id" jdbcType="INTEGER" />
@@ -306,34 +351,7 @@
     </selectKey>
   </insert>
   
-  <insert id = "insertContent" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO contents(
-			type
-			, title
-			, category
-			, director
-			, actors
-			, content_provider
-			, file_format
-			, age_restriction
-			, description
-			, url
-			, duration
-			, bitrate
-		)VALUES(#{type}
-			, #{title}
-			, #{category}
-			, #{director}
-			, #{actors}
-			, #{content_provider}
-			, #{file_format}
-			, #{age_restriction}
-			, #{description}
-			, #{url}
-			, #{duration}
-			, #{bitrate}
-		)
-	</insert>
+
   <select id="countByExample" parameterType="com.catenoid.dashbd.dao.model.ContentsExample" resultType="java.lang.Integer" >
     select count(*) from contents
     <if test="_parameter != null" >

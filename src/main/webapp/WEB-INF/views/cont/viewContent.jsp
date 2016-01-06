@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,35 +33,18 @@
 <script>
 
 $(document).ready(function() {
-	ctrl.initialize();
+	
+	$("#btnList").click(function(){
+		
+		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+	})
+	
+	
 	$("#btnCancel").click(function(){
 		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
 	})
+	
 })
-
-var ctrl = {
-	initialize : function() {
-		$("#insertForm").ajaxForm({
-			dataType : "json",
-			beforeSubmit : function(data, frm, opt) {
-				
-				/* if (!confirm(confirmMsg)) {
-					return false;
-				} */
-			},
-			success : function(result) {
-				if (outMsgForAjax(result))
-					document.location = "/dashbd/resources/contents_mgmt.html#page/1";
-				else
-					;
-			},
-			error : function(request, status, error) {
-				alert('err=' + error);
-			}
-		});
-		
-	}
-};
 
 
 </script>
@@ -209,28 +192,28 @@ var ctrl = {
 						   <div class="col-sm-8 b-r">
 						   
 							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required" value="${mapContent.type}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Title</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required" value="${mapContent.title}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Age restriction</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">duration</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required" value="${mapContent.duration}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
-							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required"></div>
+							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required" value="${mapContent.bitrate}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Director</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="director" name="director"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="director" name="director" value="${mapContent.director}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Actors</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="actors" name="actors"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="actors" name="actors" value="${mapContent.actors}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Description</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description" value="${mapContent.description}"></div>
 							   </div>
 		
 						   </div>
@@ -255,7 +238,7 @@ var ctrl = {
 					  <h4>Enter the URL where the contents located</h4>
                             <form method="get" class="form-horizontal">
                                 <div class="form-group">
-                                    <div class="col-sm-8"><input type="text" id="url" name="url" placeholder="https://www.naver.com/movie/abc.mp4" class="form-control"></div>
+                                    <div class="col-sm-8"><input type="text" id="url" name="url" placeholder="https://www.naver.com/movie/abc.mp4" class="form-control" value="${mapContent.url}"></div>
                                 </div>	
                             </form>
                         </div><!-- end centents ibox-content -->
@@ -264,31 +247,63 @@ var ctrl = {
 				    <div class="ibox-title">
                             <h3>Thumbnails</h3>
                         </div>
-                        <div class="ibox-content"><br>
-					    <div class="row">
-						    <div class="col-md-12">
-								<input type="file" name="ThumbnailsFiles" id="ThumbnailsFiles"/>
-						    </div>
-					    </div>
+                        <div class="ibox-content">
+                        <br>
+					        <c:forEach items="${thumnails}" var="thumnail" varStatus="idx">
+					 	    
+					 	     	<c:if test="${idx.index mod 4 == 0 && idx.index != 0}"> 
+  					 	     		</div>
+  					 	     	</c:if>
+					 	     	<c:if test="${idx.index mod 4 == 0 }">
+									<div class="row">	    
+							    </c:if>
+							    <div class="col-md-3">
+								   <div class="product-imitation">
+									  <img src="${thumnail.path}" width="100%">
+								   </div>
+							    </div>
+							</c:forEach>
+							<c:if test="${fn:length(thumnails) > 0}">
+								</div>
+							</c:if>
+						<br>
 				    </div><!-- end thumbnail ibox-content -->
 
-                        <br><br>
+                        <br>
+                        
+                        <br>
 				    <div class="ibox-title">
-                            <h3>Previews</h3>
+                        <h3>Previews</h3>
                         </div>
                         <div class="ibox-content"><br>
-					    <div class="row">
-						    <div class="col-md-12">
-				    		   <input type="file" name="preViewFiles" id="preViewFiles"/>
-						    </div>
-					    </div>
+					    
+					    	<c:forEach items="${previews}" var="preview" varStatus="idx">
+					 	    
+					 	     	<c:if test="${idx.index mod 4 == 0 && idx.index != 0}"> 
+  					 	     		</div>
+  					 	     	</c:if>
+					 	     	<c:if test="${idx.index mod 4 == 0 }">
+									<div class="row">	    
+							    </c:if>
+							    <div class="col-md-3">
+								   <div class="product-imitation">
+									  <img src="${preview.path}" width="100%">
+								   </div>
+							    </div>
+							</c:forEach>
+							<c:if test="${fn:length(previews) > 0}">
+								</div>
+							</c:if>
+							
 					    <br>
+					    
+					    
 				    </div><!-- end Previews ibox-content -->
                         </div><!-- end centents ibox-content -->
                     </div>
 					    <div class="row">
 					    		<div class="col-md-12 text-center" style="padding:10px 0 30px;">
-								<button type="submit" class="btn btn-w-m btn-primary">OK</button>
+								<button type="button" class="btn btn-w-m btn-primary" id="btnList">LIST</button>
 								<button type="button" class="btn btn-w-m btn-default" id="btnCancel">Cancel</button>
 							</div>
 					    </div>

@@ -12,6 +12,9 @@ public interface ContentsMapper {
 	
 	/* inbo coding START*/
 	List<Map> selectContents(Map map);
+	Map selectContent(Map map);
+	List<Map> selectContentImages(Map map);
+	
 	/* inbo coding END*/
 	
     int countByExample(ContentsExample example);

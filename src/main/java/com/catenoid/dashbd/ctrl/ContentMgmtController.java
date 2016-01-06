@@ -122,6 +122,56 @@ public class ContentMgmtController {
         return (Map<String, Object>) resultMap;
 	}
 	
+	@RequestMapping( value = "/view/viewContent.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	public ModelAndView viewContent ( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
+		logger.info("schdMgmtDetail {}", params);
+		ModelAndView mv = new ModelAndView( "cont/viewContent" );
+		
+		ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
+		
+		//@select db
+		Map<String, String> mapContent = mapper.selectContent(params);
+		mv.addObject( "mapContent", mapContent );
+		
+		//@select thumnail
+		params.put("type", "thumbnail");
+		List<Map> thumnails = mapper.selectContentImages(params);
+		mv.addObject( "thumnails", thumnails );
+		
+		//@select preview
+		params.put("type", "preview");
+		List<Map> previews = mapper.selectContentImages(params);
+		mv.addObject( "previews", previews );
+		
+		return mv;
+	}
+	
+	@RequestMapping( value = "/view/editContent.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	public ModelAndView editContent ( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
+		logger.info("schdMgmtDetail {}", params);
+		ModelAndView mv = new ModelAndView( "cont/editContent" );
+		
+		ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
+		
+		//@select db
+		Map<String, String> mapContent = mapper.selectContent(params);
+		mv.addObject( "mapContent", mapContent );
+		
+		//@select thumnail
+		params.put("type", "thumbnail");
+		List<Map> thumnails = mapper.selectContentImages(params);
+		mv.addObject( "thumnails", thumnails );
+		
+		//@select preview
+		params.put("type", "preview");
+		List<Map> previews = mapper.selectContentImages(params);
+		mv.addObject( "previews", previews );
+		
+		return mv;
+	}
+	
+	
+	
 	private void fileUpload(HttpServletRequest request, Map< String, Object > params,String fname, String typeName) throws Exception{
 		MultipartRequest mReq = ( MultipartHttpServletRequest ) request;
 		 // 홀로태그 이미지 업로드
