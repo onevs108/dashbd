@@ -148,7 +148,7 @@ public class ContentMgmtController {
 	
 	@RequestMapping( value = "/view/editContent.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	public ModelAndView editContent ( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
-		logger.info("schdMgmtDetail {}", params);
+		logger.info("editContent {}", params);
 		ModelAndView mv = new ModelAndView( "cont/editContent" );
 		
 		ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
@@ -166,10 +166,40 @@ public class ContentMgmtController {
 		params.put("type", "preview");
 		List<Map> previews = mapper.selectContentImages(params);
 		mv.addObject( "previews", previews );
+		mv.addObject( "params", params );
 		
 		return mv;
 	}
 	
+	
+	@RequestMapping( value = "/view/editContentOK.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public  Map< String, Object >  editContentOK( HttpServletRequest request, @RequestParam Map< String, Object > params)  {
+		Map< String, Object > returnMap = new HashMap< String, Object >();
+		int res = 0;
+		ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
+	
+		res = mapper.updateContent(params);
+		logger.info("UPDARE RESULT: " + res);
+		
+		try {
+			
+			fileUpload(request, params, "ThumbnailsFiles", "thumbnail");
+			fileUpload(request, params, "preViewFiles", "preview");
+			
+		    returnMap.put( "resultCode", "1000" );
+            returnMap.put( "resultMsg", "SUCCESS");
+             
+         } catch (Exception e) {
+         	logger.error("",e);
+         	returnMap.put( "resultCode", "2000" );
+            returnMap.put( "resultMsg", "error=" + e.getMessage());
+ 		}
+       
+        Map< String, Object > resultMap = new HashMap< String, Object >();
+        resultMap.put( "resultInfo", returnMap );
+        return (Map<String, Object>) resultMap;
+	}
 	
 	
 	private void fileUpload(HttpServletRequest request, Map< String, Object > params,String fname, String typeName) throws Exception{
@@ -184,12 +214,12 @@ public class ContentMgmtController {
 			logger.info("OS: " + System.getProperty("os.name"));
 			if(System.getProperty("os.name").toUpperCase().startsWith("WINDOWS")) {
 				rootPath = "";
-            	storePath = String.format("%s/%d/%s/", fileUploadPath, (Long)params.get("id"), params.get("type"));
+            	storePath = String.format("%s/%s/%s/", fileUploadPath, (String)params.get("id"), params.get("type"));
 			}
 			else {
 				HttpSession session  = request.getSession();
             	rootPath = session.getServletContext().getRealPath("/");	
-            	storePath = String.format("%s/%d/%s/", fileUploadPath, (Long)params.get("id"), params.get("type"));
+            	storePath = String.format("%s/%s/%s/", fileUploadPath, (String)params.get("id"), params.get("type"));
 			}
 			
         	logger.info("UploadDirectory : " + rootPath + storePath);
@@ -205,7 +235,7 @@ public class ContentMgmtController {
             /// contents_images 테이블에 insert
             ContentsImagesMapper ciMapper = sqlSession.getMapper(ContentsImagesMapper.class);
 			ContentsImages ciRecord = new ContentsImages();
-			long id = (Long)params.get("id");
+			long id = Long.parseLong((String)params.get("id"));
 			ciRecord.setContentId((int)id);					
 			ciRecord.setType(typeName);	
             ciRecord.setPath(storePath + fileName);
@@ -216,6 +246,8 @@ public class ContentMgmtController {
            
         } // if
 	}
+	
+	
 	private boolean valueCheck(String parameter) {
 		// TODO Auto-generated method stub
 		if(parameter == null || parameter.trim().equals("")) return false;

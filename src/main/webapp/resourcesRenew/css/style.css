@@ -1,5 +1,42 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&lang=en");
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700");
+
+/*time table*/
+.timetable {
+	width:100%;
+}
+.timetablein {
+	text-align:center;
+	margin-top:20px;
+	border:1px solid #ccc;
+	border-bottom:2px solid #ccc;
+}
+.timetablein thead {
+	border-top:2px solid #ccc;
+	border-bottom:1px solid #ccc;
+	font-weight:600;
+}
+.timetablein thead td{
+	padding:7px;
+}
+.timetablein td {
+	border-left:1px dotted #ccc;
+	border-bottom:1px solid #ccc;
+	padding:15px 7px;
+}
+.timetablein th {
+
+}
+.timeway {
+	padding:25px 10px 0;
+}
+
+
+
+
+
+
+
 /*
  *
  *   INSPINIA - Responsive Admin Theme
@@ -127,7 +164,7 @@ h5 {
 }
 .navbar-top-links .dropdown-messages,
 .navbar-top-links .dropdown-tasks,
-.navbar-top-links .dropdown-alerts {
+.navbar-top-links .dropdown-s {
   width: 310px;
   min-width: 0;
 }
@@ -137,7 +174,7 @@ h5 {
 .navbar-top-links .dropdown-tasks {
   margin-left: -59px;
 }
-.navbar-top-links .dropdown-alerts {
+.navbar-top-links .dropdown- -info -dismissables {
   margin-left: -123px;
 }
 .navbar-top-links .dropdown-user {
@@ -145,18 +182,18 @@ h5 {
   left: auto;
 }
 .dropdown-messages,
-.dropdown-alerts {
+.dropdown-s {
   padding: 10px 10px 10px 10px;
 }
 .dropdown-messages li a,
-.dropdown-alerts li a {
+.dropdown-s li a {
   font-size: 12px;
 }
 .dropdown-messages li em,
-.dropdown-alerts li em {
+.dropdown-s li em {
   font-size: 10px;
 }
-.nav.navbar-top-links .dropdown-alerts a {
+.nav.navbar-top-links .dropdown-s a {
   font-size: 12px;
 }
 .nav-header {
@@ -209,6 +246,7 @@ h5 {
   margin: 0;
   z-index: 2000;
 }
+
 .count-info .label {
   line-height: 12px;
   padding: 2px 5px;
@@ -1314,7 +1352,7 @@ button.dim:active:before {
 .fc-agenda .fc-event-time,
 .fc-event a {
   padding: 4px 6px;
-  /*background-color: #1ab394;*/
+  background-color: #1ab394;
   /* background color */
   border-color: #1ab394;
   /* border color */
@@ -1818,6 +1856,23 @@ a.DTTT_button:hover:not(.DTTT_disabled) {
   width: 100%;
   font-size: 14px;
 }
+
+
+.form-controlr{
+  background-color: #FFFFFF;
+  background-image: none;
+  border: 1px solid #e5e6e7;
+  border-radius: 1px;
+  color: inherit;
+  display: block;
+  padding: 6px 12px;
+  height:120px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+  width: 100%;
+  font-size: 14px;
+}
+
+
 .form-control:focus,
 .single-line:focus {
   border-color: #1ab394 !important;
@@ -1840,7 +1895,7 @@ a.DTTT_button:hover:not(.DTTT_disabled) {
 .has-error .control-label {
   color: #ed5565;
 }
-.input-group-addon {
+.thumb-addon {
   background-color: #fff;
   border: 1px solid #E5E6E7;
   border-radius: 1px;
@@ -1851,10 +1906,10 @@ a.DTTT_button:hover:not(.DTTT_disabled) {
   padding: 6px 12px;
   text-align: center;
 }
-.spinner-buttons.input-group-btn .btn-xs {
+.spinner-buttons.thumb-btn .btn-xs {
   line-height: 1.13;
 }
-.spinner-buttons.input-group-btn {
+.spinner-buttons.thumb-btn {
   width: 20%;
 }
 .noUi-connect {
@@ -2328,7 +2383,7 @@ a.DTTT_button:hover:not(.DTTT_disabled) {
 }
 /* Google Maps */
 .google-map {
-  height: 300px;
+  height: 500px;
 }
 /* Validation */
 label.error {
@@ -2339,6 +2394,8 @@ label.error {
 .form-control.error {
   border: 1px dotted #cc5965;
 }
+
+
 /* ngGrid */
 .gridStyle {
   border: 1px solid #d4d4d4;
@@ -2450,16 +2507,16 @@ label.error {
   margin-top: 30px;
   color: inherit;
 }
-.inspinia-notify.alert-warning {
+.inspinia-notify.-warning {
   border-left: 6px solid #f8ac59;
 }
-.inspinia-notify.alert-success {
+.inspinia-notify.-success {
   border-left: 6px solid #1c84c6;
 }
-.inspinia-notify.alert-danger {
+.inspinia-notify.-danger {
   border-left: 6px solid #ed5565;
 }
-.inspinia-notify.alert-info {
+.inspinia-notify.-info {
   border-left: 6px solid #1ab394;
 }
 /* Image cropper style */
@@ -2807,6 +2864,7 @@ a.forum-item-title:hover {
     visibility: hidden;
   }
 }
+
 /* Tabs */
 .tabs-container .panel-body {
   background: #fff;
@@ -3495,6 +3553,35 @@ body.body-small .footer.fixed {
   padding: 8px;
   vertical-align: top;
 }
+
+
+
+
+
+
+
+
+
+
+
+.table2 > thead > tr > th,
+.table2 > tbody > tr > th,
+.table2 > tfoot > tr > th,
+.table2 > thead > tr > td,
+.table2 > tbody > tr > td,
+.table2 > tfoot > tr > td {
+  line-height: 1.42857;
+  padding: 5px 7px;
+  vertical-align: middle;
+}
+
+
+
+
+
+
+
+
 /* PANELS */
 .panel.blank-panel {
   background: none;
@@ -3838,19 +3925,22 @@ table.table-mail tr td {
 .progress-bar {
   background-color: #1ab394;
 }
+
 .progress-small,
 .progress-small .progress-bar {
   height: 10px;
 }
 .progress-small,
 .progress-mini {
-  margin-top: 5px;
+  margin-top: 0px;
 }
 .progress-mini,
 .progress-mini .progress-bar {
   height: 5px;
   margin-bottom: 0px;
 }
+
+
 .progress-bar-navy-light {
   background-color: #3dc7ab;
 }
@@ -4557,10 +4647,23 @@ ul.notes li div {
   -o-transition: -o-transform 0.15s linear;
   -webkit-transition: -webkit-transform 0.15s linear;
 }
+
+/* No thumbnail */
+.nothumbnail {
+	text-align:center;
+	padding:100px 0;
+}
+
+.nothumbnail p {
+	text-align:center;
+	font-size:30px;
+}
+
+
 /* FILE MANAGER */
 .file-box {
   float: left;
-  width: 220px;
+  width: 33.33%;
 }
 .file-manager h5 {
   text-transform: uppercase;
@@ -4632,15 +4735,18 @@ ul.notes li div {
   padding: 0;
   background-color: #ffffff;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
   margin-right: 20px;
+}
+.file a {
+  color:#676a6c;
 }
 .file-manager .hr-line-dashed {
   margin: 15px 0;
 }
 .file .icon,
 .file .image {
-  height: 100px;
+  max-height: 100px;
   overflow: hidden;
 }
 .file .icon {
@@ -5138,6 +5244,20 @@ ins {
 del {
   background-color: #ffc6c6;
 }
+
+
+.product-close {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color:rgba(0,0,0,0.5);
+  padding: 2px 6px;
+  position: absolute;
+  top: -21px;
+  right: 0;
+}
+
+
 /* E-commerce */
 .product-box {
   padding: 0;
@@ -5151,17 +5271,24 @@ del {
   box-shadow: 0px 3px 7px 0px #a8a8a8;
 }
 .product-imitation {
+  width:100%;
   text-align: center;
-  padding: 90px 0;
-  background-color: #f8f8f9;
+  padding:0;
+  background-color:#f8f8f9;
   color: #bebec3;
   font-weight: 600;
 }
+
+.product-imitation img {
+  width:100%;
+
+}
+
 .product-imitation.xl {
   padding: 120px 0;
 }
 .product-desc {
-  padding: 20px;
+  padding: 0 20px;
   position: relative;
 }
 .ecommerce .tag-list {
@@ -7999,7 +8126,7 @@ body.md-skin {
   }
   .navbar-top-links .dropdown-messages,
   .navbar-top-links .dropdown-tasks,
-  .navbar-top-links .dropdown-alerts {
+  .navbar-top-links .dropdown-s {
     margin-left: auto;
   }
 }

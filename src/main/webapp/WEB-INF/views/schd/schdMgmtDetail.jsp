@@ -118,7 +118,7 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
-                        Logo
+                        <img src="../resources/img/logo_small.png">
                     </div>
                     <div class="logo-element">
                         logo
@@ -154,72 +154,96 @@
 
         <!-- content header -->
         <div class="row border-bottom">
-            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <a class="navbar-minimalize minimalize-styl-2 btn btn-success " href="#"><i class="fa fa-bars"></i> </a>
-                    <form role="search" class="navbar-form-custom" action="search_results.html">
-                        <div class="form-group">
-                            <input type="text" placeholder="Search" class="form-control" name="top-search" id="top-search">
-                        </div>
-                    </form>
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom" action="search_results.html">
+                <div class="form-group">
+                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
                 </div>
-                <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                        <a>
-                        <i class="fa fa-user"></i>User Name
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                            <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-alerts">
-                            <li>
-                                <a href="mailbox.html">
-                                    <div>
-                                        <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="profile.html">
-                                    <div>
-                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                        <span class="pull-right text-muted small">12 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="grid_options.html">
-                                    <div>
-                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <div class="text-center link-block">
-                                    <a href="notifications.html">
-                                        <strong>See All Alerts</strong>
-                                        <i class="fa fa-angle-right"></i>
-                                    </a>
+            </form>
+        </div><!-- end navbar-header -->
+        
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a>
+                    <i class="fa fa-user"></i>User Name
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="mailbox.html">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
                                 </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="login.html">
-                            <i class="fa fa-sign-out"></i> Log out
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div><!-- content header end -->
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="profile.html">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="grid_options.html">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center link-block">
+                                <a href="notifications.html">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
 
+                <li>
+                    <a href="login.html">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html">
+                        <img src="../resources/img/samsung_small.png">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+	</div><!-- end border-bottom -->
+
+
+		<div class="row wrapper border-bottom white-bg page-heading">
+		<div class="col-lg-12">
+			<h2>Service Area Mgmt</h2>
+			<ol class="breadcrumb">
+			    <li>
+				   <a href="index.html">Home</a>
+			    </li>
+			    <li>
+				   <a href="#">Schedule Management</a>
+			    </li>
+			    <li class="active">
+				   <strong>eEPG for ESPN</strong>
+			    </li>
+			</ol>
+		</div>
+		</div><!-- end row wrapper border-bottom white-bg page-heading -->
 
         <!-- content body -->
         <div class="wrapper wrapper-content">
@@ -231,7 +255,7 @@
             <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Schedule Mgmt : eEPG for ESPN</h5>
+                            <h5>Schedule Mgmt </h5>
                             <div class="ibox-tools">
                                 <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 <a class="close-link"><i class="fa fa-times"></i></a-->
@@ -262,7 +286,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-md-8 col-sm-offset-4">
-                                            	<button class="btn btn-success btn-sm btn-block" type="button" id="go-search">Search</button>
+                                            	<button class="btn btn-block btn-primary" type="button" id="go-search">Search</button>
                                            	</div>
                                         </div>
                                         

@@ -34,17 +34,37 @@
 
 $(document).ready(function() {
 	
-	$("#btnList").click(function(){
-		
-		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
-	})
+	ctrl.initialize();
 	
 	
 	$("#btnCancel").click(function(){
 		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
 	})
-	
 })
+
+var ctrl = {
+	initialize : function() {
+		$("#insertForm").ajaxForm({
+			dataType : "json",
+			beforeSubmit : function(data, frm, opt) {
+				
+				/* if (!confirm(confirmMsg)) {
+					return false;
+				} */
+			},
+			success : function(result) {
+				if (outMsgForAjax(result))
+					document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+				else
+					;
+			},
+			error : function(request, status, error) {
+				alert('err=' + error);
+			}
+		});
+		
+	}
+};
 
 
 </script>
@@ -183,7 +203,8 @@ $(document).ready(function() {
             
             
 	<div class="wrapper wrapper-content">
-		<form class="form-horizontal" id="insertForm" name="insertForm" method="post" enctype="multipart/form-data" action="addContentOK.do" >
+		<form class="form-horizontal" id="insertForm" name="insertForm" method="post" enctype="multipart/form-data" action="editContentOK.do" >
+		<input type="hidden" id="id" name="id" value="${params.id}" />
 		<div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
@@ -259,7 +280,7 @@ $(document).ready(function() {
 							    </c:if>
 							    <div class="col-md-3">
 								   <div class="product-imitation">
-									  <img src="${thumnail.path}">
+									  <img src="${thumnail.path}" width="80%">
 								   </div>
 								   
 								   <div class="product-desc">
@@ -272,6 +293,11 @@ $(document).ready(function() {
 							<c:if test="${fn:length(thumnails) > 0}">
 								</div>
 							</c:if>
+							<div class="row">
+						    <div class="col-md-12">
+								<input type="file" name="ThumbnailsFiles" id="ThumbnailsFiles"/>
+						    </div>
+					    </div>
 						<br>
 				    </div><!-- end thumbnail ibox-content -->
 
@@ -282,52 +308,40 @@ $(document).ready(function() {
                         <h3>Previews</h3>
                         </div>
                         <div class="ibox-content"><br>
-					     <div class="row">
-						    <div class="col-md-3">
-							   <div class="product-imitation">
-								  <img src="img/p1.jpg">
-							   </div>
-							   <div class="product-desc">
-								  <span class="product-close">
-									 <i class="fa fa-close"></i>
-								  </span>
-							   </div>
-						    </div>
-						    
-						    <div class="col-md-3">
-							   <div class="product-imitation">
-								  <img src="/upload/img/p1.jpg">
-							   </div>
-							   <div class="product-desc">
-								  <span class="product-close">
-									 <i class="fa fa-close"></i>
-								  </span>
-							   </div>
-						    </div>
-						    
-						    <div class="col-md-3">
-							   <div class="product-imitation">
-								  <img src="img/p1.jpg">
-							   </div>
-							   <div class="product-desc">
-								  <span class="product-close">
-									 <i class="fa fa-close"></i>
-								  </span>
-							   </div>
-						    </div>
-						    
-						  
-					    </div>
+					  		<c:forEach items="${previews}" var="preview" varStatus="idx">
+					 	    
+					 	     	<c:if test="${idx.index mod 4 == 0 && idx.index != 0}"> 
+  					 	     		</div>
+  					 	     	</c:if>
+					 	     	<c:if test="${idx.index mod 4 == 0 }">
+									<div class="row">	    
+							    </c:if>
+							    <div class="col-md-3">
+								   <div class="product-imitation">
+									  <img src="${preview.path}" width="80%">
+								   </div>
+							    </div>
+							</c:forEach>
+							<c:if test="${fn:length(previews) > 0}">
+								</div>
+							</c:if>
 							
 					    <br>
-					    
-					    
+						
+						
+						<div class="row">
+						    <div class="col-md-12">
+								<input type="file" name="ThumbnailsFiles" id="ThumbnailsFiles"/>
+						    </div>
+					    </div>
+					    	
+					    <br>
 				    </div><!-- end Previews ibox-content -->
                         </div><!-- end centents ibox-content -->
                     </div>
 					    <div class="row">
 					    		<div class="col-md-12 text-center" style="padding:10px 0 30px;">
-								<button type="button" class="btn btn-w-m btn-primary" id="btnList">LIST</button>
+								<button type="submit" class="btn btn-w-m btn-primary">EDIT</button>
 								<button type="button" class="btn btn-w-m btn-default" id="btnCancel">Cancel</button>
 							</div>
 					    </div>

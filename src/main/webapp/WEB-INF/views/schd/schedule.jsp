@@ -28,12 +28,12 @@
 	<script src="../resourcesRenew/js/inspinia.js"></script>
 	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 
-	
 	<!-- Page-Level Scripts -->
 	<script>
 	$(document).ready(function() {
 		$("#serviceType").on("change", function() {
-			if ( $(this).val() == "FileDownload" ) {
+			//alert($(this).val());
+			if ( $(this).val() == "fileDownload" ) {
 				//filedownload
 				$("#bcType_fileDownload").show();
 				$("#bcType_serviceClass").hide();
@@ -124,141 +124,158 @@
 </head>
 <body>
 <div id="wrapper">
-
-    <!-- sidebar -->
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-                <li class="nav-header">
-                    <div class="dropdown profile-element">
-                        Logo
-                    </div>
-                    <div class="logo-element">
-                        logo
-                    </div>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
-                </li>
-                <li class="landing_link">
-                    <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
-                </li>
-            </ul>
-        </div>
-    </nav><!-- sidebar end -->
-
-    <!-- content -->
-    <div id="page-wrapper" class="gray-bg">
-
-        <!-- content header -->
-        <div class="row border-bottom">
-            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <a class="navbar-minimalize minimalize-styl-2 btn btn-success " href="#"><i class="fa fa-bars"></i> </a>
-                    <form role="search" class="navbar-form-custom" action="search_results.html">
-                        <div class="form-group">
-                            <input type="text" placeholder="Search" class="form-control" name="top-search" id="top-search">
+    
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element">
+                            <img src="../resources/img/logo_small.png">
                         </div>
-                    </form>
-                </div>
-                <ul class="nav navbar-top-links navbar-right">
+                        <div class="logo-element">
+                            <img src="img/logo2.png">
+                        </div>
+                	</li>
                     <li>
-                        <a>
-                        <i class="fa fa-user"></i>User Name
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                            <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-alerts">
-                            <li>
-                                <a href="mailbox.html">
-                                    <div>
-                                        <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="profile.html">
-                                    <div>
-                                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                        <span class="pull-right text-muted small">12 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="grid_options.html">
-                                    <div>
-                                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <div class="text-center link-block">
-                                    <a href="notifications.html">
-                                        <strong>See All Alerts</strong>
-                                        <i class="fa fa-angle-right"></i>
-                                    </a>
-                                </div>
-                            </li>
-                        </ul>
+                        <a href="#"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
                     </li>
                     <li>
-                        <a href="login.html">
-                            <i class="fa fa-sign-out"></i> Log out
-                        </a>
+                        <a href="#"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
                     </li>
                 </ul>
-            </nav>
-        </div><!-- content header end -->
-        <!-- content body -->
-        <div class="wrapper wrapper-content">
-        <form class="form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
-        <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
-        <input type="hidden" id="contentId" name="contentId" value="${mapSchedule.contentId}">
-        <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
-        <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
-        <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
-        <input type="hidden" id="serviceId" name="serviceId" value="${mapSchedule.serviceId}"/>
+
+            </div>
+        </nav>
+
+<div id="page-wrapper" class="gray-bg">
+
+	<div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom" action="search_results.html">
+                <div class="form-group">
+                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                </div>
+            </form>
+        </div><!-- end navbar-header -->
         
-        
-        
-            <!-- Contents -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h5>Schedule Mgmt</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a>
+                    <i class="fa fa-user"></i>User Name
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="mailbox.html">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="profile.html">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="grid_options.html">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center link-block">
+                                <a href="notifications.html">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
                             </div>
-                        </div>
-                        <div class="ibox-content">
-                            <div class="row">
-                                <div class="col-sm-3 m-b-sm">
-                                <c:if test="${empty mapSchedule.BCID}">
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="login.html">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+                </li>
+                <li>
+                    <a href="login.html">
+                        <img src="../resources/img/samsung_small.png">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+	</div><!-- end border-bottom -->
+
+	<div class="row wrapper border-bottom white-bg page-heading">
+		<div class="col-lg-12">
+			<h2>Service Area Mgmt</h2>
+			<ol class="breadcrumb">
+			    <li>
+				   <a href="index.html">Home</a>
+			    </li>
+			    <li class="active">
+				   <strong>Schedule Management</strong>
+			    </li>
+			</ol>
+		</div>
+	</div><!-- end row wrapper border-bottom white-bg page-heading -->
+            
+	<div class="wrapper wrapper-content">
+	<form class="form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
+    <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
+    <input type="hidden" id="contentId" name="contentId" value="${mapSchedule.contentId}">
+    <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
+    <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
+    <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
+    <input type="hidden" id="serviceId" name="serviceId" value="${mapSchedule.serviceId}"/>
+	<div class="row">
+		<!-- eEPG for ESPN time-->
+		<div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3>Schedule for Service Area ${mapSchedule.serviceAreaId}</h3>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="form-group">
+                            <label class="col-sm-2 text-right"><h4 style="padding-top:5px"><i class="fa fa-circle text-success"></i> Select</h4></label>
+                            <div class="col-sm-4">
+                                 <c:if test="${empty mapSchedule.BCID}">
 					                <select class="input-sm form-control input-s-sm" id="serviceType" name="serviceType">
 		                    	</c:if>
 	                        	<c:if test="${not empty mapSchedule.BCID}">
@@ -272,146 +289,136 @@
                                         <option value="3">Carousel Single File</option>
                                          -->
                                     </select>
-                                </div>
                             </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Service Name</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Language</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}" placeholder="en"></div>
-                                        </div>
-                                        
-                                        
-                                  <div id="bcType_serviceClass" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">
-                                  						style="display:none"</c:if>>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Service class</label>
-                                            <div class="col-sm-9"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
-                                        </div>
-                                   </div>
-                                        <div class="hr-line-dashed"></div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Transfer Config</label>
-                                            <div class="col-sm-9">
-                                                <h5>QoS</h5>
-                                                <div class="well">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">GBR</label>
-                                                        <div class="col-sm-9">
-                                                        	<input type="text" class="form-control input-sm" id="GBR" name="GBR" required="required" value="${mapSchedule.GBR}"></div>
+                        </div><!-- end form-group -->
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <form method="get" class="form-horizontal">
+                            <div class="form-group">
+						  	<label class="col-sm-2 control-label">Service Name</label>
+                                    <div class="col-sm-4"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
+                                	<label class="col-sm-2 control-label">Language</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}" placeholder="en">
+                                    </div>
+                             </div>
+                             <div id="bcType_serviceClass" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">
+                              						style="display:none"</c:if>>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Service class</label>
+                                        <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
+                                    </div>
+                               </div>
+                                <div class="hr-line-dashed" style="margin-top:-10px; padding-bottom:15px;"></div>
+                                <div class="form-group"><label class="col-sm-2 control-label">Transfer Config</label>
+                                    <div class="col-sm-10">
+                                        <div class="col-md-6">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h3><i class="fa fa-check text-success"> Qos</i></h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="form-group"><label class="col-sm-2 control-label">GBR</label>
+                                                        <div class="col-sm-10"><input type="text" class="form-control" id="GBR" name="GBR" required="required" value="${mapSchedule.GBR}"></div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">QCI</label>
-                                                        <div class="col-sm-9">
-                                                        	<input type="text" class="form-control input-sm" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}"></div>
+                                                    <div class="form-group"><label class="col-sm-2 control-label">QCI</label>
+                                                        <div class="col-sm-10"><input type="text" class="form-control" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}"></div>
                                                     </div>
-                                                   
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">ARP</label>
-                                                        <div class="col-sm-9">
-                                                            <div class="well">
-                                                                <div class="form-group">
-                                                                    <label class="col-sm-6 col-md-4 control-label">ARP Level</label>
-                                                                    <div class="col-sm-6 col-md-8">
-                                                                    	<input type="text" class="form-control input-sm"  id="level" name="level" required="required" value="${mapSchedule.level}"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="col-sm-6 col-md-4 control-label">PreEmptionCapabiity</label>
-                                                                    <div class="col-sm-6 col-md-8">
-                                                                        <div class="swich">
-                                                                            <div class="onoffswitch">
-                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" <c:if test="${mapSchedule.preEmptionCapabiity == 'on'}">checked</c:if>>
-                                                                                <label class="onoffswitch-label" for="preEmptionCapabiity">
-                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="col-sm-6 col-md-4 control-label">PreEmptionVulnerability</label>
-                                                                    <div class="col-sm-6 col-md-8">
-                                                                        <div class="swich">
-                                                                            <div class="onoffswitch">
-                                                                                <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability" <c:if test="${mapSchedule.preEmptionVulnerability == 'on'}">checked</c:if>>
-                                                                                <label class="onoffswitch-label" for="preEmptionVulnerability">
-                                                                                    <span class="onoffswitch-inner"></span>
-                                                                                    <span class="onoffswitch-switch"></span>
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                    <div class="form-group"><label class="col-sm-2 control-label">ARP</label>
+                                                        <div class="col-sm-9" style="padding:10px; margin-left:12px; background:#eee">
+                                                            <div class="form-group"><label class="col-sm-2 control-label">Level</label>
+                                                                <div class="col-sm-10"><input type="text" class="form-control" id="level" name="level" required="required" value="${mapSchedule.level}"></div>
                                                             </div>
+                                                            <label>PreEmptionCapabiity</label>
+                                                     			<div class="swich">
+                                                                     <div class="onoffswitch">
+                                                                         <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" <c:if test="${mapSchedule.preEmptionCapabiity == 'on'}">checked</c:if>>
+                                                                         <label class="onoffswitch-label" for="preEmptionCapabiity">
+                                                                             <span class="onoffswitch-inner"></span>
+                                                                             <span class="onoffswitch-switch"></span>
+                                                                         </label>
+                                                                     </div>
+                                                                 </div>
+<br>
+                                                            <label>PreEmptionVulnerability</label>
+                                                            <div class="swich">
+                                                              <div class="onoffswitch">
+                                                                     <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability" <c:if test="${mapSchedule.preEmptionVulnerability == 'on'}">checked</c:if>>
+                                                                     <label class="onoffswitch-label" for="preEmptionVulnerability">
+                                                                         <span class="onoffswitch-inner"></span>
+                                                                         <span class="onoffswitch-switch"></span>
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <h5>FEC</h5>
-                                                <div class="well">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Type</label>
-                                                        <div class="col-sm-9">
-                                                            <select class="input form-control"  id="fecType" name="fecType">
+                                            </div>
+                                        </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h3><i class="fa fa-check text-success"> FEC</i></h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="form-group"><label class="col-sm-2 control-label">Type</label>
+                                                    <div class="col-sm-10">
+                                                      <select class="input form-control"  id="fecType" name="fecType">
                                                                 <option value="NoFec">NoFec</option>
                                                                 <option value="Streaming">Streaming</option>
                                                                 <option value="Carousel MultiMedia Files">Carousel MultiMedia Files</option>
                                                                 <option value="Carousel Single File">Carousel Single File</option>
                                                             </select>
-                                                        </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Ratio</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}"></div>
+                                                </div>
+                                                <div class="form-group"><label class="col-sm-2 control-label">Ratio</label>
+                                                    <div class="col-sm-10"><input type="text" class="form-control" id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}">
                                                     </div>
-                                                    
-                                                    <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
-                                                        <label class="col-sm-3 control-label">SegmentationAvailableOffset</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm"  id="SegmentAvailableOffset" name="SegmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
-                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
+                                                	<label class="col-sm-12" style="padding-bottom:6px">Segmentation Available Offset</label>
+                                                    <div class="col-sm-12"><input type="text" class="form-control" id="SegmentAvailableOffset" name="SegmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="hr-line-dashed"></div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Service Area</label>
-                                            <!-- 
-                                            <div class="col-sm-3 m-b-sm"><button type="button" class="btn btn-success">Add Service Area</button></div>
-                                             -->
-                                            <div class="col-sm-9 col-sm-offset-3"><input type="text" class="form-control m-b-xs" id="said" name="said" value="${mapSchedule.serviceAreaId}"></div>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div class="form-group"><label class="col-sm-2 control-label">Service Area</label>
+                                    <div class="col-sm-4"><input type="text" class="form-control" id="said" name="said" value="${mapSchedule.serviceAreaId}"></div>
+                                    <div class="col-sm-4">
+                                        <button type="button" class="btn btn-block btn-default">Add more Service Area</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div><!-- end ibox-content -->
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content" style="background:#eee">
+                            <div class="ibox-tools">
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                            <div class="row">
+                                
+                                    <div class="form-group"><label class="col-sm-2 control-label">Schedule</label>
+                                        <div class="col-sm-8">
+                                            <label class="col-sm-1 control-label">Start</label>
+                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.start_date}"></div>
+                                            <label class="col-sm-1 control-label">Stop</label>
+                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.end_date}"></div>
                                         </div>
-                                        <div class="hr-line-dashed"></div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Schedule</label>
-                                            <!-- 
-                                             -->
-                                            <div class="col-sm-3">
-                                            	<button type="button" title="Create new cluster" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> <span class="bold"></span></button>
+                                        <div class="col-sm-1">
+                                            <div class="form-group"><button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px"><i class="fa fa-plus"></i></button>
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-9 col-sm-offset-3">
-                                                <ul class="schedule-list">
-                                                    <li>
-                                                        <div class="well">
-                                                            <div class="form-group">
-                                                                <label class="col-sm-2 control-label">Start</label>
-                                                                <div class="col-sm-4">
-                                                                	<input type="text" class="form-control input-sm m-b-xs" id="schedule_start" name="schedule_start" value="${mapSchedule.start_date}"></div>
-                                                                <label class="col-sm-2 control-label">Stop</label>
-                                                                <div class="col-sm-4">
-                                                                	<input type="text" class="form-control input-sm m-b-xs" id="schedule_stop" name="schedule_stop" value="${mapSchedule.end_date}"></div>
-                                                            </div>
-                                                            
-                                                            
-                                                            
-                                                            <div id="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'Streaming'}"> style="display:none"</c:if>>
+                                    </div>
+                                    
+                                    <div id="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'Streaming'}"> style="display:none"</c:if>>
                                                                 <div class="form-group">
 	                                                                <label class="col-sm-2 control-label">Content</label>
 	                                                                <!-- 
@@ -458,33 +465,25 @@
 	                                                                 -->
 	                                                            </div>
                                                             </div>
-                                                            
-                                                            
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div id="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
-	                                       <div class="form-group">
-                                            <label class="col-sm-3 control-label">ContentSet</label>
-                                            <div class="col-sm-9">
-                                               
-                                                <div class="well">
-                                                  
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">mpd</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </div>
-                                        <div class="hr-line-dashed"></div>
-                                        <div class="form-group">
-                                            <label class="col-sm-3 control-label">Associated Delivery</label>
-                                            <div class="col-sm-9">
-                                                <div class="well">
+                                
+                            </div>
+                        </div><!-- end ibox-content -->
+                    </div>
+                    	<div class="hr-line-dashed"></div>
+                        <div id="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
+                            <div class="form-group"><label class="col-sm-2 control-label">ContentSet</label>
+                                <div class="col-sm-8">
+                                    <div class="form-group"><label class="pull-left" style="padding:7px 0 0 35px">mpd</label>
+                                        <div class="col-sm-6"><input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        
+                            <div class="form-group"><label class="col-sm-2 control-label">Associated Delivery</label>
+                                <div class="col-sm-8">
+                                    <div class="well">
                                                     <div class="form-group">
                                                         <label class="col-md-3 control-label">Post File Pepair</label>
                                                         <div class="col-md-9">
@@ -535,9 +534,9 @@
                                                         <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime" value="${mapSchedule.randomTime}"></div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
+                                </div>
+                            </div>
+                        <div class="form-group">
 				                        	<div class="col-sm-5"></div>
 				                        	<div class="col-sm-">
 					                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnOK" style="margin-left:10px;margin-top:10px">
@@ -554,19 +553,23 @@
 					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>
 				                        	</div>
 									    </div>
-                                    
-                                </div>
-                            </div>
+									    
+									    
+									    
                         </div>
-                        
-                    </div>
-                </div>
+                    </div><!-- end ibox-content -->
+                </div><!-- end ibox-content -->
             </div>
-		</form>
-        </div><!-- content body end -->
-    </div><!-- content end -->
+		</div>
+		<!-- end eEPG for ESPN time -->
 
-</div><!-- wrapper end -->
+	</div>	
+	</form>
+	</div><!-- end wrapper wrapper-content -->
+
+	</div><!-- end page-wrapper -->
+
+</div><!-- end wrapper -->
 
 
 </body>

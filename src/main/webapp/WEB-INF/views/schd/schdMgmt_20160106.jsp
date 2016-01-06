@@ -1,25 +1,49 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Area Mgmt</title>
+    <title>Main</title>
 
-	<script src="app-js/bower_components/requirejs/require.js"></script>
-	<script src="app-js/conf.js"></script>
-	<script src="app-js/apps/service_area.js"></script>
+    <link href="../resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resources/css/style.css" rel="stylesheet">
+    <link href="../resources/css/animate.css" rel="stylesheet">
+    <link href="../resources/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="../resources/css/custom.css" rel="stylesheet">
+    <link href="../resources/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="../resources/css/plugins/chartist/chartist.min.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-
-	<script src="js/jquery-2.1.1.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="../resources/js/jquery-2.1.1.js"></script>
+	<script src="../resources/js/bootstrap.min.js"></script>
+	<script src="../resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="../resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
+	
+	<script src="../resources/app-js/config.js"></script>
+	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
+	
+	<script src="../resources/app-js/apps/svc_main_forSchd.js"></script>
+	<script src="../resources/app-js/apps/svc_main_map_forSchd.js"></script>
+	
+	
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap" async defer></script>
+	<style type="text/css">
+	
+	 .timeline {
+     position: absolute;    
+     border: 2px dotted blue;
+     width: 1px;
+     margin: 0;
+     padding: 0;
+     z-index: 9;
+     height: auto;
+ }
+ 
+	</style>
 </head>
 <body>
 <div id="wrapper">
@@ -29,11 +53,11 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-                    <div class="profile-element">
-						<img src="../resources/img/logo_small.png">
+                    <div class="dropdown profile-element">
+                        Logo
                     </div>
                     <div class="logo-element">
-                        Logo
+                        logo
                     </div>
                 </li>
                 <li>
@@ -43,7 +67,7 @@
                     <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
+                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
                 </li>
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
@@ -51,11 +75,14 @@
                 <li>
                     <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
                 </li>
-                <li class="landing_link">
+                <li>
                     <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
                 </li>
                 <li>
+                    <a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                    <!-- 
                     <a href="schedule_mgmt_eepg.html"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+                     -->
                 </li>
             </ul>
         </div>
@@ -128,24 +155,19 @@
                             <i class="fa fa-sign-out"></i> Log out
                         </a>
                     </li>
-                    <li>
-                    <a href="login.html">
-                        <img src="../resources/img/samsung_small.png">
-                    </a>
-                </li>
                 </ul>
             </nav>
         </div><!-- content header end -->
 
         <!-- content body -->
         <div class="wrapper wrapper-content">
-
-            <!-- Contents -->
+		<input type="hidden" id="searchDate" name="searchDate" value="${searchDate}">
+            <!-- User Mgmt -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Service Area Management</h5>
+                            <h5>Service Area Mgmt</h5>
                             <div class="ibox-tools">
                                 <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 <a class="close-link"><i class="fa fa-times"></i></a-->
@@ -154,31 +176,35 @@
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
-                                    <select class="input-sm form-control input-s-sm" id="plmn">
-                                        <option value="">Select one</option>
+                                    <select class="input-sm form-control input-s-sm" id="operator">
+                                        <option value="">Select Operator</option>
+                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
+										<option value="${operatorList.id }">${operatorList.name }</option>
+										</c:forEach>
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                    <select class="input-sm form-control input-s-sm" id="mbsfn">
-                                        <option value="">Select one</option>
+                                    <select class="input-sm form-control input-s-sm" id="bmsc">
+                                        <option value="">Select BM-SC</option>
                                     </select>
                                 </div>
                             </div>
-                            <!-- google map -->
-                            <div class="google_map" id="map"></div>
-
-                            <form method="get" class="form-horizontal">
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label">eNB ID</label>
-                                    <div class="col-sm-10"><div class="input-group"><input type="text" id="enb_aps" name="enb_aps" class="form-control"> <span class="input-group-btn"> <button type="button" class="btn btn-success" id="btn-enb-aps">Add
-                                        </button> </span></div></div>
-                                </div>
-                            </form>
                             <div class="row">
-                                <div class="col-sm-12">
-                                    <ul class="service_area_box" id="enb_ap_in_service_area">
-                                    </ul>
-                                </div>
+	                            <div class="col-sm-9">
+	                            <div class="google_map" id="map" style="height:550px;"></div>
+	                            </div>
+	                            <div class="col-sm-3">
+	                                    <h5>Select Service Area</h5>
+	                                    <ul class="service_area_box" id="service_area">
+	                                        
+	                                    </ul>
+	                            </div>
+	                            <div class="eepg_timeline">
+	                                <div class="timetable"></div>
+	                            </div>
+	                            <div class="">
+		                            <button type="button" class="btn btn-success btn-sm" id="btnScheduleDetail">eEPG management</button>
+	                            </div>
                             </div>
                         </div>
                     </div>
@@ -189,45 +215,6 @@
     </div><!-- content end -->
 
 </div><!-- wrapper end -->
-
-<script type="text/template" id="tpl-more-info">
-	<table class="info-window-table">
-		<thead>
-			<tr>
-				<th>Item</th>
-				<th>Option</th>
-				<th>Remark</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>PLMN</td>
-				<td><%= plmn %></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Latitude, Longitude</td>
-				<td><%= latitude %>, <%= longitude %></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>eNB ID</td>
-				<td><%= enb_ap_id %></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>MBSFN</td>
-				<td><%= mbsfn %></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>MBMS Service Area ID</td>
-				<td></td>
-				<td></td>
-			</tr>
-		</tbody>
-	</table>
-</script>
 
 </body>
 </html>

@@ -1,5 +1,6 @@
 var content_id = "";
 var gTitle = "";
+var gDuration = "";
 var g_name = "";
 $(document).ready(function() {
 	
@@ -110,14 +111,14 @@ function getContents(data, page){
 		$div1.attr("class","feed-element");
 		$div1.attr("style","padding-bottom: 0px")
 		$div1.append("<a href='#' class='pull-left'><img alt='image' class='img-circle' src='"+ path + "'></a>");
-		
 		$div2.attr("class","media-body");
-		$div2.append("<strong>[" + category +"]</strong>" + title + "<small class='pull-right'>Running Time" + duration + " </small>" );
+		$div2.append("<strong>[" + category +"]</strong> " + title + "<small class='pull-right'><br/> Running Time " + duration + " </small>" );
 		
 		$div1.append($div2);
 		$div.attr("class","fc-event");
 		$div.attr("data-id", id);
 		$div.attr("data-title", title);
+		$div.attr("data-duration", duration);
 		
 		$div.append($div1);
 		$list.append( $div );
@@ -289,6 +290,7 @@ function setTimeTable(data ){
 		drop: function(event, dayDelta,minuteDelta,allDay,revertFunc) {
 			content_id = $(this).attr("data-id");
 			gTitle = $(this).attr("data-title");
+			gDuration = $(this).attr("data-duration");
 			
 			$(this).remove();
 		},
@@ -297,7 +299,15 @@ function setTimeTable(data ){
 			// console.log('eventReceive', event, ',' , event.start.format(), ',' , content_id);
 			g_name = event.title;
 			var startTime = event.start.format();
-			var endTime = moment(startTime).add(2, 'hours');
+			var hours = gDuration.substring(0,2);
+			var minutes = gDuration.substring(4,5);
+			var seconds = gDuration.substring(7,8);
+			console.log('hour=', hours, 'minutes=', minutes, 'second=', seconds);
+			
+			var endTime = moment(startTime).add(hours, 'hours');
+			endTime = moment(endTime).add(minutes, 'minutes');
+			endTime = moment(endTime).add(seconds, 'seconds');
+			
 			endTime = endTime.format('YYYY-MM-DD[T]HH:mm:ss');
 			//console.log('endTime', endTime);
 			console.log(content_id ,',', g_name, ',', startTime, ',', endTime );

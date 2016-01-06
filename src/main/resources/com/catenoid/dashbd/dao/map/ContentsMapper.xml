@@ -54,6 +54,43 @@
 		)
 	</insert>
 	
+	<update id = "updateContent" parameterType="java.util.Map">
+		UPDATE contents SET
+			type = #{type}
+			, title = #{title} 
+			<if test="category != null and category !=''" >
+				, category = #{category}
+			</if>
+			<if test="director != null and director !=''" >
+				, director = #{director}
+			</if>
+			<if test="actors != null and actors !=''" >
+				, actors = #{actors}
+			</if>
+			<if test="content_provider != null and content_provider !=''" >
+				, content_provider = #{content_provider}
+			</if>
+			<if test="file_format != null and file_format !=''" >
+				, file_format = #{file_format}
+			</if>
+			<if test="age_restriction != null and age_restriction !=''" >
+				, age_restriction = #{age_restriction}
+			</if>
+			<if test="description != null and description !=''" >
+				, description =#{description}
+			</if>
+			<if test="url != null and url !=''" >
+				, url = #{url}
+			</if>
+			<if test="duration != null and duration !=''" >
+				, duration =  #{duration}
+			</if>
+			<if test=" bitrate != null and bitrate !=''" >
+				, bitrate = #{bitrate} 
+			</if>
+		WHERE id = #{id}
+	</update>
+	
 	<select id="selectContent" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT *
 			FROM contents

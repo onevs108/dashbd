@@ -14,7 +14,8 @@ public interface ContentsMapper {
 	List<Map> selectContents(Map map);
 	Map selectContent(Map map);
 	List<Map> selectContentImages(Map map);
-	
+	int updateContent(Map map);
+	int insertContent(Map map);
 	/* inbo coding END*/
 	
     int countByExample(ContentsExample example);
@@ -27,7 +28,7 @@ public interface ContentsMapper {
 
     int insertSelective(Contents record);
     
-    int insertContent(Map map);
+    
 
     List<Contents> selectByExampleWithBLOBs(ContentsExample example);
 

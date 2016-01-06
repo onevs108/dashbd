@@ -244,9 +244,11 @@ $(document).ready(function() {
                         </div><!-- end centents ibox-content -->
 
                         <br><br>
-				    <div class="ibox-title">
+				    	<div class="ibox-title">
                             <h3>Thumbnails</h3>
                         </div>
+                        
+                        
                         <div class="ibox-content">
                         <br>
 					        <c:forEach items="${thumnails}" var="thumnail" varStatus="idx">
@@ -259,7 +261,7 @@ $(document).ready(function() {
 							    </c:if>
 							    <div class="col-md-3">
 								   <div class="product-imitation">
-									  <img src="${thumnail.path}" width="100%">
+									  <img src="${thumnail.path}" width="80%">
 								   </div>
 							    </div>
 							</c:forEach>
@@ -287,7 +289,7 @@ $(document).ready(function() {
 							    </c:if>
 							    <div class="col-md-3">
 								   <div class="product-imitation">
-									  <img src="${preview.path}" width="100%">
+									  <img src="${preview.path}" width="80%">
 								   </div>
 							    </div>
 							</c:forEach>
