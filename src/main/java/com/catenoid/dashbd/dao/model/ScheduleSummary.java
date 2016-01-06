@@ -16,6 +16,9 @@ public class ScheduleSummary {
     private String delYn;
     private String thumbnail;
     private BigDecimal progressRate;
+    private String serviceType;
+    private String category;
+    
     private Integer page;
     private Integer perPage;
     private Integer totalCount;
@@ -116,6 +119,22 @@ public class ScheduleSummary {
 		this.progressRate = progressRate;
 	}
 	
+	public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType == null ? null : serviceType.trim();
+    }
+    
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category == null ? null : category.trim();
+    }
+    
 	public Integer getPage() {
         return page;
     }
