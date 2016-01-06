@@ -106,13 +106,27 @@ function getContents(data, page){
 		var path = data[i].path;
 		// console.log((new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0]);
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
 		
 		$div1.attr("class","feed-element");
 		$div1.attr("style","padding-bottom: 0px")
 		$div1.append("<a href='#' class='pull-left'><img alt='image' class='img-circle' src='"+ path + "'></a>");
 		$div2.attr("class","media-body");
-		$div2.append("<strong>[" + category +"]</strong> " + title + "<small class='pull-right'><br/> Running Time " + duration + " </small>" );
+		$div2.append("<strong>[" + category +"]</strong> " + title + "<br/><small class='pull-right'><span class='text-danger'> Running Time </span>" + duration + "</small>" );
 		
 		$div1.append($div2);
 		$div.attr("class","fc-event");

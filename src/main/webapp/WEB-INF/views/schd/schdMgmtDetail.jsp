@@ -52,12 +52,16 @@
 	cursor: pointer;
 }
 
+
+
 #external-events {
-	float: right;
 	width: 2;
 	padding: 0 10px;
+	/*
+	float: right;
 	border: 1px solid #ccc;
 	background: #eee;
+	*/
 	text-align: left;
 }
 
