@@ -361,8 +361,8 @@ function moveToEnb(bmscId, serviceAreaId)
 				
 				var menuContent = '<ul>' +
 				//'<li><a href="#" class="more_info">More info</span></a></li>' +
-				'<li><a href="javascript:addToServiceArea(' + serviceAreaId + ');" class="add_to_service_area">Add To Service Area</a></li>' +
-				'<li><a href="javascript:deleteFromServiceArea(' + serviceAreaId + ');" class="delete_from_service_area">Delete From Service Area</a></li>' +
+				'<li><a href="javascript:addToServiceArea(' + bmscId + ', ' + serviceAreaId + ');" class="add_to_service_area">Add To Service Area</a></li>' +
+				'<li><a href="javascript:deleteFromServiceArea(' + bmscId + ', ' +  serviceAreaId + ');" class="delete_from_service_area">Delete From Service Area</a></li>' +
 				'</ul>';
 				
 				var enbInfoWindow = new google.maps.InfoWindow({
@@ -497,7 +497,7 @@ function moveToEnb(bmscId, serviceAreaId)
 			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
 			map.setZoom(12);
 			
-			console.debug(options);
+			//console.debug(options);
 			$("#enb_table").empty();
             $("#enb_table").append(options);
             
@@ -564,8 +564,8 @@ function moveToEnb(bmscId, serviceAreaId)
 				
 				var menuContent = '<ul>' +
 				//'<li><a href="#" onclick="return false;" class="more_info">More info</span></a></li>' +
-				'<li><a href="javascript:addToServiceArea(' + serviceAreaId + ');" class="add_to_service_area">Add To Service Area</a></li>' +
-				'<li><a href="javascript:deleteFromServiceArea(' + serviceAreaId + ');" class="delete_from_service_area">Delete From Service Area</a></li>' +
+				'<li><a href="javascript:addToServiceArea(' + bmscId + ', ' + serviceAreaId + ');" class="add_to_service_area">Add To Service Area</a></li>' +
+				'<li><a href="javascript:deleteFromServiceArea(' + bmscId + ', ' + serviceAreaId + ');" class="delete_from_service_area">Delete From Service Area</a></li>' +
 				'</ul>';
 				
 				var enbInfoWindow = new google.maps.InfoWindow({
@@ -843,9 +843,9 @@ function drawServiceAreaByBmSc(bmscId) {
     });
 }
 
-function addToServiceArea(serviceAreaId) {
+function addToServiceArea(bmscId, serviceAreaId) {
 	
-	alert('toAddEnbs length=[' + toAddEnbs.length + ']');
+	//alert('toAddEnbs length=[' + toAddEnbs.length + ']');
 	$.ajax({
         url : "/dashbd/api/addToServiceArea.do",
         type: "post",
@@ -853,15 +853,17 @@ function addToServiceArea(serviceAreaId) {
         dateType : 'json',
         success : function(responseData){
         	clearDatas();
+        	moveToEnb(bmscId, serviceAreaId);
         },
         error : function(xhr, status, error){
         	alert("error");
+        	moveToEnb(bmscId, serviceAreaId);
         }
     });
 }
 
-function deleteFromServiceArea(serviceAreaId) {
-	alert('toDeleteEnbs length=[' + toDeleteEnbs.length + ']');
+function deleteFromServiceArea(bmscId, serviceAreaId) {
+	//alert('toDeleteEnbs length=[' + toDeleteEnbs.length + ']');
 	$.ajax({
         url : "/dashbd/api/deleteFromServiceArea.do",
         type: "post",
@@ -872,9 +874,11 @@ function deleteFromServiceArea(serviceAreaId) {
             //var data = JSON.parse(responseData);
         	alert("success");
         	clearDatas();
+        	moveToEnb(bmscId, serviceAreaId);
         },
         error : function(xhr, status, error){
         	alert("error");
+        	moveToEnb(bmscId, serviceAreaId);
         }
     });
 }
