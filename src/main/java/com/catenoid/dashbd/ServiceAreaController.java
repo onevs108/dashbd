@@ -962,7 +962,7 @@ public class ServiceAreaController {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
-		Integer perPage = 15;
+		Integer perPage = 1000;
 		
 		if(request.getParameter("bmscId") == null) return;
 

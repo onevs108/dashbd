@@ -54,7 +54,7 @@
 		font-weight: bold;
 		text-align: center;
 		width: 40px;     
-		border: 0px solid black;
+		border: 1px solid red;
 		white-space: nowrap;
 	}
 	</style>

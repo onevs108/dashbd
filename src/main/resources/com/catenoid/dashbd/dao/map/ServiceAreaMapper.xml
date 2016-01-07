@@ -480,15 +480,18 @@
 	
 	
 	<select id="getServiceAreaCountByBmSc" resultMap="ServiceAreaCount" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
-		select
-			a.bmsc_id, c.city, count(*) as count
-		from 
-			bmsc_service_area a, service_area_enb_ap b, enb_ap c
-		where 1 = 1 
+	select x.bmsc_id, x.city, count(*) as count
+	from
+	(
+		select a.bmsc_id, a.service_area_id, c.city, count(*) as count		
+		from bmsc_service_area a, service_area_enb_ap b, enb_ap c		
+		where 1 = 1
 			and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
 			and b.service_area_id = a.service_area_id
-			and c.id = b.enb_ap_id
-		group by a.bmsc_id, c.city
+			and c.id = b.enb_ap_id		
+		group by a.bmsc_id, a.service_area_id, c.city
+	) x
+	group by  x.bmsc_id, x.city
 	</select>
 
 	<select id="getServiceAreaByLatLng" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
@@ -538,7 +541,7 @@
 			and b.bcid = a.bcid
 			and c.id = a.content_id
 		order by a.start_date
-		limit 0, 4
+		limit 0, 20
 	</select>
 	
 	<select id="getScheduleSummaryByBmsc" resultMap="ScheduleSummaryByServiceArea" parameterType="java.util.HashMap" >
