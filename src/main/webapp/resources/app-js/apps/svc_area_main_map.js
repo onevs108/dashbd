@@ -102,6 +102,11 @@ function getServiceAreaByBmSc(page, bmscId)
 // BmSc 조회 by operator id
 function getServiceAreaBmSc(page, operatorId)
 {
+    $("#service_area").empty();
+    $("#service_area").append(default_service_area);
+    $("#enb_table").empty();
+	$("#enb_table").append(default_enb_table);
+	
 	$.ajax({
         url : "/dashbd/api/serviceAreaBmScByOperator.do",
         type: "get",
@@ -115,8 +120,7 @@ function getServiceAreaBmSc(page, operatorId)
             for(var i=0; i<dataLen; i++){
             	options += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
             }
-
-            $("#service_area").empty();
+            
             $("#bmsc").empty();
             $("#bmsc").append(options);
         }
@@ -160,6 +164,55 @@ var ctlPressed = false;
 
 var toAddEnbs = [];
 var toDeleteEnbs = [];
+
+var default_service_area = "<div class=\"ibox-title\"><h5>Service Area  </h5></div>";
+default_service_area += "<div class=\"ibox-content\">";
+default_service_area += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
+default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+default_service_area += "<tbody>";
+default_service_area += "<tr>";
+default_service_area += "<td></td>";
+default_service_area += "<td></td>";
+default_service_area += "</tr>";
+default_service_area += "</tbody>";
+default_service_area += "<tfoot>";
+default_service_area += "<tr>";
+default_service_area += "<td colspan=\"2\">";
+default_service_area += "</td>";
+default_service_area += "</tr>";
+default_service_area += "</tfoot>";
+default_service_area += "</table>";
+default_service_area += "</div>";
+
+var default_enb_table = "<table class=\"footable table table-stripped\" data-page-size=\"10\">";
+default_enb_table += "<thead>";
+default_enb_table += "<tr>";
+default_enb_table += "<th class=\"col-sm-1\">eNB ID</th>";
+default_enb_table += "<th class=\"col-sm-3\">eNB Name</th>";
+default_enb_table += "<th class=\"col-sm-1\">eNB ID</th>";
+default_enb_table += "<th class=\"col-sm-3\">eNB Name</th>";
+default_enb_table += "<th class=\"col-sm-1\">eNB ID</th>";
+default_enb_table += "<th class=\"col-sm-3\">eNB Name</th>";
+default_enb_table += "</tr>";
+default_enb_table += "</thead>";
+default_enb_table += "<tbody>";
+default_enb_table += "<tr>";
+default_enb_table += "<td></td>";
+default_enb_table += "<td></td>";
+default_enb_table += "<td></td>";
+default_enb_table += "<td></td>";
+default_enb_table += "<td></td>";
+default_enb_table += "<td></td>";
+default_enb_table += "</tr>";
+default_enb_table += "</tbody>";
+default_enb_table += "<tfoot>";
+default_enb_table += "<tr>";
+default_enb_table += "<td colspan=\"6\">";
+default_enb_table += "</td>";
+default_enb_table += "</tr>";
+default_enb_table += "</tfoot>";
+default_enb_table += "</table>";
+
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -293,6 +346,7 @@ function moveToEnb(bmscId, serviceAreaId)
 	clearDatas();
 	
 	$("#enb_table").empty();
+	$("#enb_table").append(default_enb_table);
 
 	$.ajax({
 		url : "/dashbd/api/getServiceAreaEnbAp.do",
@@ -341,7 +395,7 @@ function moveToEnb(bmscId, serviceAreaId)
 					});
 				} else {
 					marker = new google.maps.Marker({
-						'position': latLng, 
+						position: latLng, 
 						map: map, 
 						icon : '/dashbd/resources/img/icon/enb_blue.png',
 						infoWindowIndex : enb_datas[i].enbApId,
@@ -469,7 +523,9 @@ function moveToEnb(bmscId, serviceAreaId)
 					options += "</tr><tr>";
 				}
 				options += "<td>";
+				options += "<a href=\"javascript:moveToSelectedEnb(" + enb_datas[i].latitude + ", " + enb_datas[i].longitude + ");\">";
 				options += enb_datas[i].enbApId;
+				options += "</a>";
 				options += "</td>";
 				options += "<td>";
 				options += enb_datas[i].enbApName;
@@ -502,10 +558,14 @@ function moveToEnb(bmscId, serviceAreaId)
             $("#enb_table").append(options);
             
             $('.footable').footable();
+            
+            drawEnbOthers(bmscId, serviceAreaId);
 
 		}
 	});
-	
+}
+
+function drawEnbOthers(bmscId, serviceAreaId) {
 	var bounds = map.getBounds();
 
     var ne = bounds.getNorthEast();
@@ -717,7 +777,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 
             options += "</tbody>";
             
-            if(dataLen > 10) {
+            if(dataLen > 30) {
             	//alert(dataLen);
             	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
             }
@@ -791,6 +851,9 @@ function drawServiceAreaByBmSc(bmscId) {
 	clearMarkers();
 	clearEnbMarkers();
 	$("#service_area").empty();
+	$("#service_area").append(default_service_area);
+	$("#enb_table").empty();
+	$("#enb_table").append(default_enb_table);
 	
 	$.ajax({
         url : "/dashbd/api/getServiceAreaCountByBmSc.do",
@@ -852,8 +915,16 @@ function addToServiceArea(bmscId, serviceAreaId) {
         data : { "serviceAreaId" : serviceAreaId, "enbIds" : toAddEnbs },
         dateType : 'json',
         success : function(responseData){
+        	swal({
+                title: "Success !",
+                text: "등록이 완료 되었습니다."
+            });
         	clearDatas();
+        	var centerLatLng = map.getCenter();
+        	alert('before=' + centerLatLng.lat());
         	moveToEnb(bmscId, serviceAreaId);
+        	map.setCenter(centerLatLng);
+        	alert('after=' + map.getCenter().lat());
         },
         error : function(xhr, status, error){
         	alert("error");
@@ -907,11 +978,7 @@ function clearDatas() {
 	toDeleteEnbs = [];
 }
 
-function stopBounce() {
+function moveToSelectedEnb(lat, lng) {
 
-	for (var i = 0; i < enb_markers.length; i++) {
-		if(enb_markers[i].getAnimation() !== null) {
-			enb_markers[i].setAnimation(null);
-		}
-	}
+	map.setCenter(new google.maps.LatLng(lat, lng));
 }
