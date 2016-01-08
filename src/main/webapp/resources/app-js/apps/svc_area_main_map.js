@@ -915,16 +915,19 @@ function addToServiceArea(bmscId, serviceAreaId) {
         data : { "serviceAreaId" : serviceAreaId, "enbIds" : toAddEnbs },
         dateType : 'json',
         success : function(responseData){
+        	
+        	clearDatas();
+        	
         	swal({
                 title: "Success !",
                 text: "등록이 완료 되었습니다."
             });
-        	clearDatas();
+        	
         	var centerLatLng = map.getCenter();
-        	alert('before=' + centerLatLng.lat());
+        	//alert('before=' + centerLatLng.lat());
         	moveToEnb(bmscId, serviceAreaId);
         	map.setCenter(centerLatLng);
-        	alert('after=' + map.getCenter().lat());
+        	//alert('after=' + map.getCenter().lat());
         },
         error : function(xhr, status, error){
         	alert("error");
@@ -941,11 +944,16 @@ function deleteFromServiceArea(bmscId, serviceAreaId) {
         data : { "serviceAreaId" : serviceAreaId, "enbIds" : toDeleteEnbs },
         dateType : 'json',
         success : function(responseData){
-            //$("#ajax").remove();
-            //var data = JSON.parse(responseData);
-        	alert("success");
         	clearDatas();
+        	
+        	swal({
+                title: "Success !",
+                text: "삭제가 완료 되었습니다."
+            });
+        	
+        	var centerLatLng = map.getCenter();
         	moveToEnb(bmscId, serviceAreaId);
+        	map.setCenter(centerLatLng);
         },
         error : function(xhr, status, error){
         	alert("error");
