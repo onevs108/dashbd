@@ -272,9 +272,11 @@
 							 	<form method="get" class="form-horizontal">
 								  <div class="form-group"><label class="pull-left" style="padding:7px 0 0 10px">eNB ID</label>
 									 <div class="col-sm-7">
-										<div class="input-group"><input type="text" class="form-control">
+										<div class="input-group"><input type="text" class="form-control" id="toAddENBs" name="toAddENBs">
+										<input type="hidden" class="form-control" id="toAddENBsBmscId" name="toAddENBsBmscId" value="">
+										<input type="hidden" class="form-control" id="toAddENBsServiceAreaId" name="toAddENBsServiceAreaId" value="">
 											<span class="input-group-btn">
-												<button type="button" class="btn btn-primary">ADD to Service Area</button>
+												<button type="button" class="btn btn-primary" onclick="javascript:addToServiceAreaManually();" id="toAddENBsBtn">ADD to Service Area</button>
 											</span>
 										</div>
 									 </div>

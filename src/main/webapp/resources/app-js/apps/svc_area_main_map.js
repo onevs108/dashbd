@@ -8,6 +8,7 @@ $(document).ready(function()
     $('#bmsc').change(function(){
         //alert( $('#bmsc option:selected').val() );
         drawServiceAreaByBmSc($('#bmsc option:selected').val());
+        $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
     });
     
     $('.demo1').click(function(){
@@ -16,7 +17,7 @@ $(document).ready(function()
             text: "Please Select BMSC first."
         });
     });
-    
+
     // Page-Level Scripts
     //$('.footable').footable();
     //$('.footable2').footable();
@@ -347,6 +348,8 @@ function moveToEnb(bmscId, serviceAreaId)
 	
 	$("#enb_table").empty();
 	$("#enb_table").append(default_enb_table);
+	
+	$('#toAddENBsServiceAreaId').val(serviceAreaId);
 
 	$.ajax({
 		url : "/dashbd/api/getServiceAreaEnbAp.do",
@@ -906,34 +909,51 @@ function drawServiceAreaByBmSc(bmscId) {
     });
 }
 
-function addToServiceArea(bmscId, serviceAreaId) {
-	
-	//alert('toAddEnbs length=[' + toAddEnbs.length + ']');
-	$.ajax({
-        url : "/dashbd/api/addToServiceArea.do",
-        type: "post",
-        data : { "serviceAreaId" : serviceAreaId, "enbIds" : toAddEnbs },
-        dateType : 'json',
-        success : function(responseData){
-        	
-        	clearDatas();
-        	
-        	swal({
-                title: "Success !",
-                text: "등록이 완료 되었습니다."
-            });
-        	
-        	var centerLatLng = map.getCenter();
-        	//alert('before=' + centerLatLng.lat());
-        	moveToEnb(bmscId, serviceAreaId);
-        	map.setCenter(centerLatLng);
-        	//alert('after=' + map.getCenter().lat());
-        },
-        error : function(xhr, status, error){
-        	alert("error");
-        	moveToEnb(bmscId, serviceAreaId);
-        }
-    });
+function addToServiceAreaManually() {
+
+	if( isEmpty($('#toAddENBsBmscId').val()) ) {
+		swal({
+            title: "Sorry !",
+            text: "Please Select BMSC first."
+        });
+	} else if( isEmpty($('#toAddENBsServiceAreaId').val()) ) {
+		swal({
+            title: "Sorry !",
+            text: "Please Select ServiceArea first."
+        });
+	} else if( isEmpty($('#toAddENBs').val()) ) {
+		swal({
+            title: "Sorry !",
+            text: "Please input eNB ID first."
+        });
+	} else {
+
+		$.ajax({
+	        url : "/dashbd/api/addToServiceAreaManually.do",
+	        type: "post",
+	        data : { "serviceAreaId" : $('#toAddENBsServiceAreaId').val(), "enbIds" : $('#toAddENBs').val() },
+	        dateType : 'json',
+	        success : function(responseData){
+	        	
+	        	clearDatas();
+	        	
+	        	swal({
+	                title: "Success !",
+	                text: "등록이 완료 되었습니다."
+	            });
+	        	
+	        	var centerLatLng = map.getCenter();
+	        	//alert('before=' + centerLatLng.lat());
+	        	moveToEnb(bmscId, serviceAreaId);
+	        	map.setCenter(centerLatLng);
+	        	//alert('after=' + map.getCenter().lat());
+	        },
+	        error : function(xhr, status, error){
+	        	alert("error");
+	        	moveToEnb(bmscId, serviceAreaId);
+	        }
+	    });
+	}
 }
 
 function deleteFromServiceArea(bmscId, serviceAreaId) {
@@ -989,4 +1009,8 @@ function clearDatas() {
 function moveToSelectedEnb(lat, lng) {
 
 	map.setCenter(new google.maps.LatLng(lat, lng));
+}
+
+function isEmpty(value) {
+    return (value === undefined || value == null || value.length <= 0) ? true : false;
 }

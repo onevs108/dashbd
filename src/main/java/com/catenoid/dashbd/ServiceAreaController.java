@@ -1116,6 +1116,53 @@ public class ServiceAreaController {
 		return;
 	}
 	
+	@RequestMapping(value = "/api/addToServiceAreaManually.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void addToServiceAreaManually(HttpServletRequest request, HttpServletResponse response) {
+		
+		HashMap< String, Integer > searchParam;
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
+		int addCount = 0;
+		System.out.println(serviceAreaId);
+		
+		String enbIds = request.getParameter("enbIds");
+		
+		String[] enbId = enbIds.split( "," );
+		
+		for( int i = 0; i < enbId.length; i++ ) {
+			if( enbId[i].contains( "-" ) || enbId[i].contains( "~" ) ) {
+				String[] fromToEnbId = null;
+				if( enbId[i].contains( "-" ) ) {
+					fromToEnbId = enbId[i].split( "-" );
+				} else if( enbId[i].contains( "~" ) ) {
+					fromToEnbId = enbId[i].split( "~" );
+				}
+				
+				if( fromToEnbId != null && fromToEnbId.length == 2 ) {
+					int fromIdx = Integer.valueOf(fromToEnbId[0].trim()).intValue();
+					int toIdx = Integer.valueOf(fromToEnbId[1].trim()).intValue();
+					for( int enb = fromIdx; enb <= toIdx; enb++ ) {
+						System.out.println( "enbApId=[" + enb + "]" );
+						//searchParam = new HashMap();
+						//searchParam.put("serviceAreaId", serviceAreaId );
+						//searchParam.put("enbApId", Integer.valueOf(enb));
+						//addCount += mapper.addToServiceArea(searchParam);
+					}
+				}
+			} else {
+				System.out.println( "enbApId=[" + enbId[i].trim() + "]" );
+				
+				//searchParam = new HashMap();
+				//searchParam.put("serviceAreaId", serviceAreaId );
+				//searchParam.put("enbApId", Integer.valueOf(enbId[i].trim()));
+				//addCount += mapper.addToServiceArea(searchParam);
+
+			}
+		}
+
+		return;
+	}
+	
 	@RequestMapping(value = "/api/deleteFromServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void deleteFromServiceArea(HttpServletRequest request, HttpServletResponse response) {
 		
