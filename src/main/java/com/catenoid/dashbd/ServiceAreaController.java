@@ -1123,7 +1123,7 @@ public class ServiceAreaController {
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
 		int addCount = 0;
-		System.out.println(serviceAreaId);
+		//System.out.println(serviceAreaId);
 		
 		String enbIds = request.getParameter("enbIds");
 		
@@ -1142,20 +1142,20 @@ public class ServiceAreaController {
 					int fromIdx = Integer.valueOf(fromToEnbId[0].trim()).intValue();
 					int toIdx = Integer.valueOf(fromToEnbId[1].trim()).intValue();
 					for( int enb = fromIdx; enb <= toIdx; enb++ ) {
-						System.out.println( "enbApId=[" + enb + "]" );
-						//searchParam = new HashMap();
-						//searchParam.put("serviceAreaId", serviceAreaId );
-						//searchParam.put("enbApId", Integer.valueOf(enb));
-						//addCount += mapper.addToServiceArea(searchParam);
+						//System.out.println( "enbApId=[" + enb + "]" );
+						searchParam = new HashMap();
+						searchParam.put("serviceAreaId", serviceAreaId );
+						searchParam.put("enbApId", Integer.valueOf(enb));
+						addCount += mapper.addToServiceArea(searchParam);
 					}
 				}
 			} else {
-				System.out.println( "enbApId=[" + enbId[i].trim() + "]" );
+				//System.out.println( "enbApId=[" + enbId[i].trim() + "]" );
 				
-				//searchParam = new HashMap();
-				//searchParam.put("serviceAreaId", serviceAreaId );
-				//searchParam.put("enbApId", Integer.valueOf(enbId[i].trim()));
-				//addCount += mapper.addToServiceArea(searchParam);
+				searchParam = new HashMap();
+				searchParam.put("serviceAreaId", serviceAreaId );
+				searchParam.put("enbApId", Integer.valueOf(enbId[i].trim()));
+				addCount += mapper.addToServiceArea(searchParam);
 
 			}
 		}

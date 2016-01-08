@@ -234,9 +234,15 @@
 						</div>
                         
                         <div class="row">
-                        	<div class="col-sm-8">
-                            	<div class="google-map" id="map"></div>
-                            </div>
+							<div class="col-sm-8">
+								<div class="ibox-title">
+									<h5><i class="fa fa-wifi"></i> <span id="selectedSvcArea"></span></h5>
+								</div>
+								<div class="google-map" id="map"></div><br>
+								<h3 style="position:absolute;bottom:35px;left:25px;padding:5px 10px;border-radius:15px; background-color:rgba(0,0,0,0.5);box-shadow:0 0 10px #ccc;color:#fff;">
+									<i class="fa fa-circle text-danger"></i> <span id="selectedENBs"></span>
+								</h3><br>
+							</div>
                             <div class="col-sm-4">
                                 <div class="ibox float-e-margins" id="service_area">
                                     <div class="ibox-title">
@@ -401,6 +407,39 @@
 	</div><!-- end page-wrapper -->
 
 </div><!-- end wrapper -->
-    
+
+
+<div class="modal fade" id="createServiceAreaLayer">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="modal-title">Create New Service Area</h5>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+				<div class="form-group"><label class="col-lg-4 control-label">Service Area ID</label>
+				<div class="col-lg-8"><input type="text" placeholder="Please enter the id" class="form-control"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label">Service Area Name</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr"></div>
+				</div>
+				<br>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary btn-sm btn-white">Create Service Area</button>
+				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 </body>
 </html>

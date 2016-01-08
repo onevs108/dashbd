@@ -1,21 +1,22 @@
 $(document).ready(function()
 {
     $('#operator').change(function(){
-        //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val());
     });
     
     $('#bmsc').change(function(){
-        //alert( $('#bmsc option:selected').val() );
         drawServiceAreaByBmSc($('#bmsc option:selected').val());
         $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
     });
     
     $('.demo1').click(function(){
+    	$("#createServiceAreaLayer").modal();
+    	/*
         swal({
             title: "Sorry !",
             text: "Please Select BMSC first."
         });
+        */
     });
 
     // Page-Level Scripts
@@ -49,7 +50,6 @@ function getServiceAreaByBmSc(page, bmscId)
             var totalCount = data[0].totalCount;
             if(totalCount > perPage) {
             	var totalPageCount = Math.ceil(totalCount / perPage); // 마지막 페이지
-            	//alert(totalPageCount);
             	
             	var pageination = '';
                 pageination += '<div class="text-center">';
@@ -107,6 +107,8 @@ function getServiceAreaBmSc(page, operatorId)
     $("#service_area").append(default_service_area);
     $("#enb_table").empty();
 	$("#enb_table").append(default_enb_table);
+	$("#selectedSvcArea").empty();
+    $("#selectedENBs").empty();
 	
 	$.ajax({
         url : "/dashbd/api/serviceAreaBmScByOperator.do",
@@ -214,6 +216,7 @@ default_enb_table += "</tr>";
 default_enb_table += "</tfoot>";
 default_enb_table += "</table>";
 
+var selectedENBsCount = 0;
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -245,18 +248,21 @@ function initMap() {
 	    if(e.which === 27) { // esc
 	    	for (var i = 0; i < enb_markers.length; i++) {
 				if(enb_markers[i].isSameServieArea === null && typeof variable === "object") {
-					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_gray.png") 
+					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_gray.png");
 				} else if(enb_markers[i].isSameServieArea) {
-					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_red.png")
+					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_red.png");
 				} else {
-					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_blue.png")
+					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_blue.png");
 				}
 				
 				enb_markers[i].selected = false;
             }
-	    	
+
 	    	toAddEnbs = [];
 	    	toDeleteEnbs = [];
+	    	
+	    	$("#selectedENBs").empty();
+			$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
 	    }
 	});
 
@@ -307,13 +313,20 @@ function initMap() {
 	                {
 	                	if(enb_markers[i].isSameServieArea === null && typeof variable === "object") {
 	                		enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
-	                		toAddEnbs.push(enb_markers[i].infoWindowIndex);
+	                		if( !enb_markers[i].selected ) {
+		                		toAddEnbs.push(enb_markers[i].infoWindowIndex);
+	                		}
 	                	} else if(enb_markers[i].isSameServieArea) {
 	                		enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_red_on.png");
-	                		toDeleteEnbs.push(enb_markers[i].infoWindowIndex);
+	                		if( !enb_markers[i].selected ) {
+	                			toDeleteEnbs.push(enb_markers[i].infoWindowIndex);
+	                		}
 	                	} else {
 	                		enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_blue_on.png");
-	                		toAddEnbs.push(enb_markers[i].infoWindowIndex);
+	                		
+	                		if( !enb_markers[i].selected ) {
+		                		toAddEnbs.push(enb_markers[i].infoWindowIndex);
+	                		}
 	                	}
 	                	
 	                	enb_markers[i].selected = true;
@@ -325,6 +338,9 @@ function initMap() {
 	            }
 
 	            gribBoundingBox.setMap(null); // remove the rectangle
+	            
+        		$("#selectedENBs").empty();
+				$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
 	        }
 	        gribBoundingBox = null;
 	    }
@@ -407,7 +423,6 @@ function moveToEnb(bmscId, serviceAreaId)
 					});
 				}
 				
-				//alert(enb_datas[i].enbApName);
 				var enbContent = '<ul>' 
 				+ '<li>SA_ID : ' + enb_datas[i].serviceAreaId + '</li>'
 				+ '<li>eNB ID : ' + enb_datas[i].enbApId + '</li>'
@@ -477,13 +492,25 @@ function moveToEnb(bmscId, serviceAreaId)
 							this.selected = false;
 							if(this.isSameServieArea === null && typeof variable === "object") {
 								this.setIcon("/dashbd/resources/img/icon/enb_gray.png");
-								toAddEnbs.remove(this.infoWindowIndex);
+								//toAddEnbs.remove(this.infoWindowIndex);
+								var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
 		                	} else if(this.isSameServieArea) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_red.png");
-		                		toDeleteEnbs.remove(this.infoWindowIndex);
+		                		//toDeleteEnbs.remove(this.infoWindowIndex);
+		                		var idx = toDeleteEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toDeleteEnbs.splice(idx, 1);
+								}
 		                	} else {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_blue.png");
-		                		toAddEnbs.remove(this.infoWindowIndex);
+		                		//toAddEnbs.remove(this.infoWindowIndex);
+		                		var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
 		                	}
 						}
 						else {
@@ -499,6 +526,9 @@ function moveToEnb(bmscId, serviceAreaId)
 		                		toAddEnbs.push(this.infoWindowIndex);
 		                	}
 						}
+						
+						$("#selectedENBs").empty();
+						$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
 					}
 					else {
 						if(this.selected) {
@@ -535,7 +565,6 @@ function moveToEnb(bmscId, serviceAreaId)
 				options += "</td>";
 			}
 			
-			//alert(dataLen);
 			if( dataLen % 3 == 0 ) {
 				options += "</tr>";
 			} else if( dataLen % 3 == 1 ) {
@@ -561,6 +590,13 @@ function moveToEnb(bmscId, serviceAreaId)
             $("#enb_table").append(options);
             
             $('.footable').footable();
+            
+            $("#selectedSvcArea").empty();
+            $("#selectedSvcArea").append("Service Area : " + serviceAreaId);
+            
+            $("#selectedENBs").empty();
+            selectedENBsCount = enb_datas.length;
+            $("#selectedENBs").append("Selected eNBs : " + selectedENBsCount);
             
             drawEnbOthers(bmscId, serviceAreaId);
 
@@ -616,7 +652,6 @@ function drawEnbOthers(bmscId, serviceAreaId) {
 					});
 				}
 				
-				//alert(enb_datas[i].enbApName);
 				var enbContent = '<ul>' 
 				+ '<li>SA_ID : ' + enb_datas[i].serviceAreaId + '</li>'
 				+ '<li>eNB ID : ' + enb_datas[i].enbApId + '</li>'
@@ -686,13 +721,25 @@ function drawEnbOthers(bmscId, serviceAreaId) {
 							this.selected = false;
 							if(this.isSameServieArea === null && typeof variable === "object") {
 								this.setIcon("/dashbd/resources/img/icon/enb_gray.png");
-								toAddEnbs.remove(this.infoWindowIndex);
+								//toAddEnbs.remove(this.infoWindowIndex);
+								var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
 		                	} else if(this.isSameServieArea) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_red.png");
-		                		toDeleteEnbs.remove(this.infoWindowIndex);
+		                		//toDeleteEnbs.remove(this.infoWindowIndex);
+		                		var idx = toDeleteEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toDeleteEnbs.splice(idx, 1);
+								}
 		                	} else {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_blue.png");
-		                		toAddEnbs.remove(this.infoWindowIndex);
+		                		//toAddEnbs.remove(this.infoWindowIndex);
+		                		var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
 		                	}
 						}
 						else {
@@ -708,6 +755,9 @@ function drawEnbOthers(bmscId, serviceAreaId) {
 		                		toAddEnbs.push(this.infoWindowIndex);
 		                	}
 						}
+						
+						$("#selectedENBs").empty();
+						$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
 					}
 					else {
 						if(this.selected) {
@@ -770,7 +820,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
             	}
             	options += "<span class=\"footable-toggle\"></span>";
-            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + datas[i].serviceAreaName + ");\">";
+            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ");\">";
             	options += datas[i].serviceAreaId;
             	options += "</a>";
 				options += "</td><td>";
@@ -781,7 +831,6 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             options += "</tbody>";
             
             if(dataLen > 30) {
-            	//alert(dataLen);
             	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
             }
             
@@ -797,7 +846,6 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             var totalCount = datas[0].totalCount;
             if(totalCount > perPage) {
             	var totalPageCount = Math.ceil(totalCount / perPage); // 마지막 페이지
-            	//alert(totalPageCount);
             	
             	var pageination = '';
                 pageination += '<div class="text-center">';
@@ -857,6 +905,8 @@ function drawServiceAreaByBmSc(bmscId) {
 	$("#service_area").append(default_service_area);
 	$("#enb_table").empty();
 	$("#enb_table").append(default_enb_table);
+	$("#selectedSvcArea").empty();
+    $("#selectedENBs").empty();
 	
 	$.ajax({
         url : "/dashbd/api/getServiceAreaCountByBmSc.do",
@@ -909,6 +959,36 @@ function drawServiceAreaByBmSc(bmscId) {
     });
 }
 
+function addToServiceArea( bmscId, serviceAreaId ) {
+
+	$.ajax({
+        url : "/dashbd/api/addToServiceArea.do",
+        type: "post",
+        data : { "serviceAreaId" : serviceAreaId, "enbIds" : toAddEnbs },
+        dateType : 'json',
+        success : function(responseData){
+        	
+        	clearDatas();
+        	
+        	swal({
+                title: "Success !",
+                text: "등록이 완료 되었습니다."
+            });
+        	
+        	var centerLatLng = map.getCenter();
+        	moveToEnb(bmscId, serviceAreaId);
+        	map.setCenter(centerLatLng);
+        },
+        error : function(xhr, status, error){
+        	swal({
+                title: "Error !",
+                text: "오류가 발생했습니다."
+            });
+        	moveToEnb(bmscId, serviceAreaId);
+        }
+    });
+}
+
 function addToServiceAreaManually() {
 
 	if( isEmpty($('#toAddENBsBmscId').val()) ) {
@@ -936,6 +1016,7 @@ function addToServiceAreaManually() {
 	        success : function(responseData){
 	        	
 	        	clearDatas();
+	        	$('#toAddENBs').val( '' );
 	        	
 	        	swal({
 	                title: "Success !",
@@ -943,21 +1024,21 @@ function addToServiceAreaManually() {
 	            });
 	        	
 	        	var centerLatLng = map.getCenter();
-	        	//alert('before=' + centerLatLng.lat());
-	        	moveToEnb(bmscId, serviceAreaId);
+	        	moveToEnb($('#toAddENBsBmscId').val(), $('#toAddENBsServiceAreaId').val());
 	        	map.setCenter(centerLatLng);
-	        	//alert('after=' + map.getCenter().lat());
 	        },
 	        error : function(xhr, status, error){
-	        	alert("error");
-	        	moveToEnb(bmscId, serviceAreaId);
+	        	swal({
+	                title: "Fail !",
+	                text: "등록이 실패 되었습니다."
+	            });
+	        	moveToEnb($('#toAddENBsBmscId').val(), $('#toAddENBsServiceAreaId').val());
 	        }
 	    });
 	}
 }
 
 function deleteFromServiceArea(bmscId, serviceAreaId) {
-	//alert('toDeleteEnbs length=[' + toDeleteEnbs.length + ']');
 	$.ajax({
         url : "/dashbd/api/deleteFromServiceArea.do",
         type: "post",
@@ -976,7 +1057,10 @@ function deleteFromServiceArea(bmscId, serviceAreaId) {
         	map.setCenter(centerLatLng);
         },
         error : function(xhr, status, error){
-        	alert("error");
+        	swal({
+                title: "Fail !",
+                text: "삭제를 실패하였습니다."
+            });
         	moveToEnb(bmscId, serviceAreaId);
         }
     });
