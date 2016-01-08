@@ -11,39 +11,39 @@
 
     <title>Create New Content</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dashbd/resources/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/animate.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/style.css" rel="stylesheet">
     
     <!-- FooTable -->
-    <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/plugins/footable/footable.core.css" rel="stylesheet">
     
     <!-- Sweet Alert -->
-    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 
     <!-- Mainly scripts -->
-    <script src="js/jquery-2.1.1.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="/dashbd/resources/js/jquery-2.1.1.js"></script>
+    <script src="/dashbd/resources/js/bootstrap.min.js"></script>
+    <script src="/dashbd/resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/dashbd/resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
     <!-- FooTable -->
-    <script src="js/plugins/footable/footable.all.min.js"></script>
+    <script src="/dashbd/resources/js/plugins/footable/footable.all.min.js"></script>
 
     <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
+    <script src="/dashbd/resources/js/inspinia.js"></script>
+    <script src="/dashbd/resources/js/plugins/pace/pace.min.js"></script>
 
     <!-- Sweet alert -->
-    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
     
-	<script src="app-js/config.js"></script>
+	<script src="/dashbd/resources/app-js/config.js"></script>
 	
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
-	<script src="js/markerwithlabel.js"></script>
-	<script src="app-js/apps/svc_area_main_map.js"></script>
+	<script src="/dashbd/resources/js/markerwithlabel.js"></script>
+	<script src="/dashbd/resources/app-js/apps/svc_area_main_map.js"></script>
         
 	<style type="text/css">
 	.labels {

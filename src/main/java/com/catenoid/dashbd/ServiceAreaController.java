@@ -1137,4 +1137,23 @@ public class ServiceAreaController {
 		
 		return;
 	}
+	
+	@RequestMapping(value = "/resources/eNBMgmt.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView eNBMgmtView(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("eNBMgmt");
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 50;
+		
+		OperatorSearchParam searchParam = new OperatorSearchParam();
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
+		
+		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+		
+		mv.addObject("OperatorList", result);
+		
+		return mv;
+	}
 }
