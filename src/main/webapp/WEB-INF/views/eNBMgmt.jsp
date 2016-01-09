@@ -56,7 +56,7 @@
 				<li>
 					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
 				</li>
-				<li>
+				<li class="landing_link">
 					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
 				</li>
 				<li>

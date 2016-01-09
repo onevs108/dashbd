@@ -76,35 +76,38 @@ var ctrl = {
     <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
-                <li class="nav-header">
-                    <div class="dropdown profile-element">
-                        Logo
-                    </div>
-                    <div class="logo-element">
-                        logo
-                    </div>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-                </li>
+                 <li class="nav-header">
+					<div class="dropdown profile-element">
+						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
+					</div>
+					<div class="logo-element">
+						<img src="/dashbd/resources/img/logo2.png">
+					</div>
+				</li>
+				<li>
+					<a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/PermissionMgmt.html"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+				</li>
                 <li class="landing_link">
                     <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
                 </li>
                 <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
-                </li>
+					<a href="/dashbd/resources/OperatorMgmt.html"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
+				</li>
             </ul>
         </div>
     </nav><!-- sidebar end -->
