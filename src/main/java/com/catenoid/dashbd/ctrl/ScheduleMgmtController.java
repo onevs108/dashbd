@@ -331,7 +331,7 @@ public class ScheduleMgmtController {
 	public Map< String, Object > delSchedule( @RequestParam Map< String, String > params,
             HttpServletRequest req, Locale locale ) {
 		
-		logger.info("delSchedule param{}", params);
+		logger.info("delSchedule params{}", params);
 		try{
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 			

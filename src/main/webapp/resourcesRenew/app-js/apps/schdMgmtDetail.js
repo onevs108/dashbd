@@ -2,6 +2,7 @@ var content_id = "";
 var gTitle = "";
 var gDuration = "";
 var g_name = "";
+var g_delRetrun;
 $(document).ready(function() {
 	
 	ctrl.initialize();
@@ -202,8 +203,10 @@ function getContents(data, page){
 	
 	
 function setTimeTable(data ){
-	
+	var tmpServiceAreaId = $("#serviceAreaId").val();
 	var searchDate = $("#searchDate").val();
+	var title = $("#form-title").val();
+	var category =  $("#form-category").val();
 	var contents = data.contents;
 	var events = [];
 	var schedule;
@@ -221,10 +224,10 @@ function setTimeTable(data ){
 		var id = contents[i].ID;
 		var name = contents[i].NAME;
 		var broadcast_info_id = contents[i].BCID;
-		console.log(broadcast_info_id);
+		//console.log(broadcast_info_id);
 		if (typeof broadcast_info_id == 'undefined')
 			broadcast_info_id = '';
-		console.log(broadcast_info_id,'------','\n');
+		//console.log(broadcast_info_id,'------','\n');
 		var start_date = contents[i].start_date;
 		var end_date = contents[i].end_date;
 		var url = "schedule.do?id=" + id + "&BCID=" + broadcast_info_id;
@@ -330,7 +333,7 @@ function setTimeTable(data ){
 			
 			var b = $('#calendar').fullCalendar('getDate');
 		 	var searchDate = b.format('YYYY-MM-DD');
-			var tmpServiceAreaId = $("#serviceAreaId").val();
+			
 			
 			var title = encodeURI($("#form-title").val());
 			var category =  encodeURI($("#form-category").val());
@@ -354,6 +357,33 @@ function setTimeTable(data ){
 			else
 				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 		}
+		, eventDragStop: function( event, jsEvent, ui, view ) { 
+			//console.log('fc-left=',event , jsEvent, ui, view);
+			console.log(event.url, ',', jsEvent.clientX, ',', jsEvent.clientY);
+			
+			var trashEl = jQuery('#calendarTrash');
+		    var ofs = trashEl.offset();
+
+		    var x1 = ofs.left;
+		    var x2 = ofs.left + trashEl.outerWidth(true);
+		    var y1 = ofs.top;
+		    var y2 = ofs.top + trashEl.outerHeight(true);
+
+		    if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
+		        jsEvent.pageY>= y1 && jsEvent.pageY <= y2) {
+		    	
+		        //alert('SIII');
+		    	deleteSchedule(event.url);
+		    	console.log('DragStop=', g_delRetrun)
+		    	//alert(Boolean(ret) + ',' + ret);
+		    	if ( g_delRetrun == 1)
+		    		$('#calendar').fullCalendar('removeEvents', event._id);
+		    	else
+		    		alert(nRet);
+		    	
+		    }
+	    }
+		
 		
 		/*
 		, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
@@ -377,9 +407,13 @@ function setTimeTable(data ){
 //			}, 5000);
 			
 		}
+		
 	});
 	
-    
+	
+	 var fbg = $('#calendar').find('.fc-button-group');
+	 //fbg.append('<div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"></span></div>');
+	 fbg.append('<div id="calendarTrash" style="float: right; padding-top: 2px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>');
 }
 function setTimeline(calView) {
     console.log('calView.name =',calView.name )
@@ -437,6 +471,44 @@ function modifySchedule(url, startTime, endTime){
 		},
 		error : function(request, status, error) {
 			alert("error for update Time:request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
+
+function deleteSchedule(url){
+	if (!confirm("It will be deleted. do you want this??")){
+		g_delRetrun = 0;
+		return;
+	}
+	
+	var id = url.substring(url.indexOf("=")  + 1, url.indexOf("&BCID"));
+	var BCID = url.substring(url.indexOf("&BCID=") + 6);
+	
+	if (typeof BCID == 'undefined')
+		BCID = "";
+	
+	console.log('del url=',url,', id=', id, ',BCID=',BCID);
+	
+	var param = {
+			id : id,
+			BCID : BCID
+	};
+	console.log('del param=', param);
+	$.ajax({
+		type : "POST",
+		url : "delSchedule.do",
+		data : param,
+		dataType : "json",
+		async: false,
+		success : function( data ) {
+			g_delRetrun = outMsgForAjax(data)
+			console.log('return=', g_delRetrun);
+			
+			//location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+			g_delRetrun = 0;
 		}
 	});
 }

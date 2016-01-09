@@ -14,7 +14,9 @@
 	
 	<link href="../resources/css/animate.css" rel="stylesheet">
 	<link href="../resources/css/style.css" rel="stylesheet">
+	<!-- 
 	<link href="../resources/css/custom.css" rel="stylesheet">
+	 -->
 	<link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
 	
 	<!-- FooTable -->
@@ -84,7 +86,7 @@
 			<ul class="nav metismenu" id="side-menu">
 				<li class="nav-header">
 					<div class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
+						<a href="/d	ashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
 					</div>
 					<div class="logo-element">
 						<img src="/dashbd/resources/img/logo2.png">
@@ -111,7 +113,7 @@
 				<li>
 					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
 				</li>
-				<li>
+				<li class="landing_link">
 					<a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
 				</li>
 			</ul>
@@ -271,7 +273,7 @@
 		                                <div class="timetable"></div>
 		                            </div>
 		                            <div class="">
-			                            <button type="button" class="btn btn-success btn-sm" id="btnScheduleDetail">eEPG management</button>
+			                            <button type="button" class="btn btn-primary btn-sm" id="btnScheduleDetail">eEPG management</button>
 		                            </div>
 	                            	</div>
 	                            </div>

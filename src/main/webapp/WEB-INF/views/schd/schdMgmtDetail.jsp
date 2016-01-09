@@ -18,7 +18,9 @@
     <link href="../resourcesRenew/css/plugins/fullcalendar/scheduler.css" rel="stylesheet" media='print' />
     <link href="../resourcesRenew/css/plugins/timePicki/timepicki.css" rel="stylesheet" media='print' />
     
-    <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
+    	<!-- 
+	<link href="../resources/css/custom.css" rel="stylesheet">
+	 -->
     <link href="../resourcesRenew/css/plugins/datapicker/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
 
@@ -44,7 +46,9 @@
 	<script src="../resourcesRenew/js/plugins/timePicki/timepicki.js"></script>
 	<script src="../resourcesRenew/js/popup/jquery.leanModal.min.js"></script>
 	
+	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 	<script src="../resourcesRenew/app-js/apps/schdMgmtDetail.js"></script>
+	
 	<!-- Page-Level Scripts -->
 	<style>
 #external-events .fc-event {
@@ -121,31 +125,34 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-                    <div class="dropdown profile-element">
-                        <img src="../resources/img/logo_small.png">
-                    </div>
-                    <div class="logo-element">
-                        logo
-                    </div>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="/dashbd/resources/service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
-                </li>
+					<div class="dropdown profile-element">
+						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
+					</div>
+					<div class="logo-element">
+						<img src="/dashbd/resources/img/logo2.png">
+					</div>
+				</li>
+				<li>
+					<a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/PermissionMgmt.html"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/OperatorMgmt.html"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
+				</li>
+				<li>
+					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
+				</li>
                 <li class="landing_link">
                     <a href="schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
                 </li>
@@ -243,7 +250,7 @@
 				   <a href="#">Schedule Management</a>
 			    </li>
 			    <li class="active">
-				   <strong>eEPG for ESPN</strong>
+				   <strong>Detail</strong>
 			    </li>
 			</ol>
 		</div>
@@ -256,10 +263,16 @@
             <div class="row">
             <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${serviceAreaId}"/>
             <input type="hidden" id="searchDate" name="searchDate" value="${searchDate}"/>
+            <input type="hidden" id="category" name="category" value="${category}"/>
+            <input type="hidden" id="title" name="title" value="${title}"/>
+            
             <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <h5>Schedule Mgmt </h5>
+                            <!-- 
+                            <div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>
+                             -->
                             <div class="ibox-tools">
                                 <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 <a class="close-link"><i class="fa fa-times"></i></a-->
