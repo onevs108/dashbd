@@ -445,19 +445,15 @@
 		</if>
 		and t1.enb_ap_id = t2.id
 		and t1.service_area_id = t3.id
-	order by t1.enb_ap_id
+	order by t1.created_at desc
 	</select>
 	
 	<select id="getServiceAreaEnbApOther" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
 		select 
-		enb_ap_id, service_area_bandwidth, enb_ap_name, longitude, latitude, plmn, mbsfn, totalCount
-	from
-	(
-		select 
 			t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
 			t3.name as service_area_name, 
 			t3.city as service_area_city,
-			enb_ap_id, t2.name as enb_ap_name, 
+			t1.enb_ap_id, t2.name as enb_ap_name, 
 			t2.longitude as longitude, 
 			t2.latitude as latitude, 
 			t2.plmn as plmn,
@@ -474,16 +470,21 @@
 			and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = t1.enb_ap_id)
 			group by t1.enb_ap_id) y) as totalCount
 		from 
-			service_area_enb_ap t1, enb_ap t2, service_area t3
+			service_area_enb_ap t1, enb_ap t2, service_area t3,
+			(select enb_ap_id, max(service_area_id) as service_area_id, count(*) 
+				from service_area_enb_ap
+			where
+				service_area_id != #{serviceAreaId,jdbcType=INTEGER}
+			group by enb_ap_id) t4
 		where 1 = 1
 			and t1.service_area_id != #{serviceAreaId,jdbcType=INTEGER}
+			and t4.service_area_id = t1.service_area_id
+			and t4.enb_ap_id = t1.enb_ap_id
 			and t1.enb_ap_id = t2.id
-			and t1.service_area_id = t3.id
 			and t2.latitude between #{swLat} and #{neLat}
 			and t2.longitude between #{swLng} and #{neLng}
+			and t1.service_area_id = t3.id
 			and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = t1.enb_ap_id)
-	) x
-	group by enb_ap_id, service_area_bandwidth, enb_ap_name, longitude, latitude, plmn, mbsfn, totalCount
 	</select>
 	
 	
