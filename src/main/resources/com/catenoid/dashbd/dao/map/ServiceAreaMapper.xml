@@ -626,9 +626,35 @@
 	<!-- Service Area 생성 -->
 	<insert id="createServiceArea" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >
 	insert into service_area 
-	(id, bandwidth, name, city, created_at, updated_at)
-	values 
-	(#{id,jdbcType=INTEGER}, #{bandwidth,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, now(), now())
+	(id, bandwidth, name, city, description, created_at, updated_at)
+	select  
+		#{id,jdbcType=INTEGER}, #{bandwidth,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, now(), now()
+	from dual
+	where not exists 
+		(select id 
+		from service_area 
+		where 
+			id = #{id,jdbcType=INTEGER} 
+		)
+	</insert>
+	
+	<!-- eNB 생성 -->
+	<insert id="createENBs" parameterType="java.util.HashMap" >
+	insert into enb_ap 
+	(
+		id, name, longitude, latitude, plmn, circle, circle_name, cluster_id, 
+		ipaddress, earfcn, mbsfn, mbms_service_area_id, created_at, updated_at, city, bandwidth
+	)
+	select  
+		#{id,jdbcType=INTEGER}, #{name}, #{longitude}, #{latitude}, #{plmn}, #{circle}, #{circleName}, #{clusterId,jdbcType=INTEGER}, 
+		#{ipAddress}, #{earfcn}, #{mbsfn}, #{mbmsServiceAreaId,jdbcType=INTEGER}, now(), now(), #{city}, #{bandwidth}
+	from dual
+	where not exists 
+		(select id 
+		from enb_ap 
+		where 
+			id = #{id,jdbcType=INTEGER} 
+		)
 	</insert>
   
 </mapper>

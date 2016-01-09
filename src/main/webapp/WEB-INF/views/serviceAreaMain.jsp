@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<% request.setCharacterEncoding("utf-8"); %>
+
 <html>
 
 <head>
@@ -90,7 +92,7 @@
 				<li>
 					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
 				</li>
-				<li>
+				<li class="landing_link">
 					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
 				</li>
 				<li>
@@ -421,19 +423,19 @@
 			<div class="modal-body">
 				<form class="form-horizontal">
 				<div class="form-group"><label class="col-lg-4 control-label">Service Area ID</label>
-				<div class="col-lg-8"><input type="text" placeholder="Please enter the id" class="form-control"></div>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaId"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label">Service Area Name</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control"></div>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaName"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr"></div>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr" id="serviceAreaDescription"></div>
 				</div>
 				<br>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary btn-sm btn-white">Create Service Area</button>
+				<button type="button" class="btn btn-primary btn-sm btn-white" id="createSvcAreaBtn">Create Service Area</button>
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
 			</div>
 		</div><!-- /.modal-content -->

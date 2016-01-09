@@ -9,7 +9,7 @@ $(document).ready(function()
         $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
     });
     
-    $('.demo1').click(function(){
+    $('#btn-add-service-area').click(function(){
     	$("#createServiceAreaLayer").modal();
     	/*
         swal({
@@ -18,11 +18,66 @@ $(document).ready(function()
         });
         */
     });
+    
+    $('#createSvcAreaBtn').click(function(){
+
+    	if( isEmpty($('#serviceAreaId').val()) ) {
+    		swal({
+                title: "Sorry !",
+                text: "Please input Service Area ID first."
+            });
+    	} else if( isEmpty($('#serviceAreaName').val()) ) {
+    		swal({
+                title: "Sorry !",
+                text: "Please input Service Area Name first."
+            });
+    	} else {
+    		$('#createServiceAreaLayer').modal('hide');
+    		
+    		createServiceArea();
+    	}
+    });
 
     // Page-Level Scripts
     //$('.footable').footable();
     //$('.footable2').footable();
 });
+
+function createServiceArea() {
+	$.ajax({
+	    url : "/dashbd/api/createServiceArea.do",
+	    type: "get",
+	    data : { "serviceAreaId" : $('#serviceAreaId').val(), "serviceAreaName" : $('#serviceAreaName').val(), "serviceAreaDescription" : $('#serviceAreaDescription').val() },
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    success : function(responseData) {
+	        $("#ajax").remove();
+	        var data = JSON.parse(responseData);
+
+	        if( data.count == 1 ) {
+	        	swal({
+	                title: "Success !",
+	                text: "Service Area 등록이 완료되엇습니다."
+	            });
+	    	} else if( data.count == 0 ) {
+	    		swal({
+	                title: "Info !",
+	                text: "이미 등록된 Service Area ID 입니다."
+	            });
+	        } else if( data.count < 0 ) {
+	        	swal({
+	                title: "Fail !",
+	                text: "Service Area 등록을 실패하였습니다."
+	            });
+	        }
+	    },
+        error : function(xhr, status, error) {
+        	swal({
+                title: "Fail !",
+                text: "Service Area 등록을 실패하였습니다."
+            });
+        }
+	});
+}
 
 var perPage = 15;
 var listPageCount = 10;

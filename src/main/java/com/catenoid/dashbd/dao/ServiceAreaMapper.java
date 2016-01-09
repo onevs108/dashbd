@@ -72,5 +72,9 @@ public interface ServiceAreaMapper {
     int addToServiceArea(HashMap< String, Integer > searchParm);
     
     int deleteFromServiceArea(HashMap< String, Object > searchParm);
+    
+    int createServiceArea(HashMap< String, Object > searchParm);
+    
+    int createENBs(HashMap< String, Object > searchParm);
 
 }

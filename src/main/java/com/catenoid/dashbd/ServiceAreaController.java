@@ -1,27 +1,40 @@
 package com.catenoid.dashbd;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DuplicateKeyException;
@@ -31,6 +44,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.util.ErrorCodes;
@@ -67,6 +82,10 @@ public class ServiceAreaController {
 		
 	@Autowired
 	private SqlSession sqlSession;
+	
+	@Value("#{config['file.upload.path']}")
+	private String fileUploadPath;
+	
 	
 	@RequestMapping(value = "api/service_area.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	@ResponseBody
@@ -1203,4 +1222,240 @@ public class ServiceAreaController {
 		
 		return mv;
 	}
+
+	@RequestMapping(value = "/api/createServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void createServiceArea(HttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
+			Integer bandwidth = request.getParameter("serviceAreaBandwidth") == null ? 0 : Integer.valueOf(request.getParameter("serviceAreaBandwidth"));
+			String name = URLDecoder.decode(request.getParameter("serviceAreaName"), "UTF-8");
+			String description = request.getParameter("serviceAreaDescription");
+			String city = request.getParameter("serviceAreaCity");
+			
+			HashMap< String, Object > searchParam = new HashMap();
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			searchParam.put("id", serviceAreaId);
+			searchParam.put("bandwidth", bandwidth);
+			searchParam.put("name", name);
+			searchParam.put("description", description);
+			searchParam.put("city", city);
+			
+			System.out.println( "name=" + name );
+			int rst = mapper.createServiceArea(searchParam);
+	
+			JSONObject obj = new JSONObject();
+			obj.put("count", rst);
+
+		
+	        response.getWriter().print(obj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@RequestMapping(value = "/api/uploadENBs.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void uploadENBs(MultipartHttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			Integer operator = Integer.valueOf( request.getParameter( "operator" ) );
+			Integer bmsc = Integer.valueOf( request.getParameter( "bmsc" ) );
+			
+			System.out.println( operator );
+			System.out.println( bmsc );
+			
+			List list = excelFileUpload( request );
+			int rst = 0;
+			
+			for( int i = 0; i < list.size(); i++ ) {
+				HashMap< String, Object > searchParam = (HashMap< String, Object >) list.get( i );
+				ServiceAreaMapper mapper = sqlSession.getMapper( ServiceAreaMapper.class );
+				searchParam.put( "operator", operator );
+				searchParam.put( "bmsc", bmsc );
+				
+				rst += mapper.createENBs( searchParam );
+			}
+			
+			JSONObject obj = new JSONObject();
+			obj.put( "count", rst );
+
+	        response.getWriter().print(obj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+    public List excelFileUpload( MultipartHttpServletRequest mReq ) {
+        String uploadPath = "";
+        String storePath = null, rootPath = null;
+        List<HashMap> list = null;
+        
+		logger.info( "OS: " + System.getProperty( "os.name" ) );
+		if( System.getProperty( "os.name" ).toUpperCase().startsWith( "WINDOWS" ) ) {
+			rootPath = "";
+        	storePath = String.format( "%s/%s/%d", fileUploadPath, "excel", System.currentTimeMillis() );
+		} else {
+			HttpSession session  = mReq.getSession();
+        	rootPath = session.getServletContext().getRealPath( "/" );	
+        	storePath = String.format( "%s/%s/%d", fileUploadPath, "excel", System.currentTimeMillis() );
+		}
+		
+    	logger.info( "UploadDirectory : " + rootPath + storePath );
+    	
+    	uploadPath = rootPath + storePath;
+
+        File dir = new File( uploadPath );
+        if( !dir.isDirectory() ) {
+            dir.mkdirs();
+        }
+         
+        Iterator<String> iter = mReq.getFileNames();
+         
+        while( iter.hasNext() ) {
+            String uploadFileName = iter.next();
+            MultipartFile mFile = mReq.getFile(uploadFileName);
+            String fileName = mFile.getOriginalFilename();
+
+            System.out.println(fileName);
+            if(fileName != null && !fileName.equals("")){
+                File file = null;
+                try {
+                    file = new File( uploadPath + fileName );
+                    mFile.transferTo( file );
+                     
+                    // Excel 파일 읽기!!
+                    list = readExcelFileXLSX( file );
+
+                } catch( Exception e ) {
+                    e.printStackTrace();
+                } finally {
+                    if( file != null && file.exists() ) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+        
+        return list;
+    }
+    
+    private List<HashMap> readExcelFileXLSX( File excelFile ) {
+    	List list = new ArrayList<HashMap>() ;
+    	HashMap params = new HashMap();
+    	XSSFWorkbook work;
+    	
+    	try {
+			work = new XSSFWorkbook( new FileInputStream( excelFile ) );
+		
+			int sheetNum = work.getNumberOfSheets();
+    	 
+			logger.error("\n# sheet num : " + sheetNum);
+
+			XSSFSheet sheet = work.getSheetAt(0);
+    	 
+			int rows = sheet.getPhysicalNumberOfRows();
+    	 
+			logger.error("\n# sheet rows num : " + rows);
+    	 
+			for( int rownum = 1; rownum < rows; rownum++ ) {
+				XSSFRow row = sheet.getRow( rownum );
+    	   
+				if( row != null ) {
+					int cells = row.getPhysicalNumberOfCells();
+    	     
+					logger.error("\n# row = " + row.getRowNum() + " / cells = " + cells);
+    	     
+					for( int cellnum = 0; cellnum < cells; cellnum++ ) {
+						XSSFCell cell = row.getCell( cellnum );
+    	       
+						if( cell != null ) {
+    	         
+							switch( cellnum ) {
+    	         
+								case 0:
+									params.put( "id", cell.getNumericCellValue() );
+									break;
+    	                
+								case 1:
+									params.put( "name", cell.getStringCellValue() );
+									break;
+    	                
+								case 2:
+									params.put( "latitude", cell.getNumericCellValue() );
+									
+									break;
+    	                
+								case 3:
+									params.put( "longitude", cell.getNumericCellValue() );
+									break;
+								
+								case 4:
+									params.put( "plmn", cell.getStringCellValue() );
+									break;
+								
+								case 5:
+									params.put( "circle", cell.getStringCellValue() );
+									break;
+								
+								case 6:
+									params.put( "circleName", cell.getStringCellValue() );
+									break;
+									
+								case 7:
+									params.put( "clusterId", cell.getNumericCellValue() );
+									break;
+									
+								case 8:
+									params.put( "idAddress", cell.getStringCellValue() );
+									break;
+									
+								case 9:
+									params.put( "earfcn", cell.getStringCellValue() );
+									break;
+									
+								case 10:
+									params.put( "mbsfn", cell.getStringCellValue() );
+									break;
+									
+								case 11:
+									params.put( "mbmsServiceAreaId", cell.getNumericCellValue() );
+									break;
+									
+								case 12:
+									params.put( "createAt", cell.getDateCellValue() );
+									break;
+									
+								case 13:
+									params.put( "updateAt", cell.getDateCellValue() );
+									break;
+									
+								case 14:
+									params.put( "city", cell.getStringCellValue() );
+									break;
+									
+								case 15:
+									params.put( "bandwidth", cell.getNumericCellValue() );
+									break;
+    	                 
+								default:
+									break;
+							}
+						}
+						//logger.error("\n CELL __ [params ] => " + params.toString());
+					}
+				}
+				
+				list.add( params );
+			}
+
+    	} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	} catch (IOException e) {
+			// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	
+    	return list;
+    }
 }

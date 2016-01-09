@@ -21,6 +21,26 @@
     <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
     
     <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+
+    <!-- Mainly scripts -->
+    <script src="/dashbd/resources/js/jquery-2.1.1.js"></script>
+    <script src="/dashbd/resources/js/bootstrap.min.js"></script>
+    <script src="/dashbd/resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/dashbd/resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- FooTable -->
+    <script src="/dashbd/resources/js/plugins/footable/footable.all.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/dashbd/resources/js/inspinia.js"></script>
+    <script src="/dashbd/resources/js/plugins/pace/pace.min.js"></script>
+
+    <!-- Sweet alert -->
+    <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
+    
+	<script src="/dashbd/resources/app-js/config.js"></script>
+	   
+    <script src="/dashbd/resources/app-js/apps/svc_enb_mgmt.js"></script>
     
 </head>
 
@@ -56,7 +76,7 @@
 				<li>
 					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
 				</li>
-				<li>
+				<li class="landing_link">
 					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
 				</li>
 				<li>
@@ -167,7 +187,7 @@
                         <h3>eNB Upload</h3>
                     </div>
                     <div class="ibox-content">
-                        <form method="get" class="form-horizontal">
+                        <form class="form-horizontal excelUpload" enctype="multipart/form-data" method="post" action="">
                             <div class="form-group"><label class="col-sm-3 control-label">Operator</label>
                                 <div class="col-sm-9">
 										<select name="operator" id="operator" class="form-control" >
@@ -186,17 +206,17 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-3">
-                                <label for="inputImage" class="btn btn-sm btn-default pull-right">
-                                    <input type="file" accept="image/*" name="file" id="inputImage" class="hide"><strong>Select File</strong>
+                                <label for="excelFile" class="btn btn-sm btn-default pull-right">
+                                    <input type="file" name="excelFile" id="excelFile" class="hide"><strong>Select File</strong>
                                 </label>
                                 </div>
-                                <div class="col-sm-9"><input type="text" class="form-control"></div>
+                                <div class="col-sm-9"><input type="text" class="form-control" readonly></div>
                         	</div>
                         </form>
                         <div class="hr-line-dashed"></div>
                         <div class="row">
 				    		<div class="col-sm-9 pull-right">
-						<button class="btn btn-block btn-sm btn-primary" type="submit"><strong>Upload</strong></button>
+						<button class="btn btn-block btn-sm btn-primary" id="uploadExcel"><strong>Upload</strong></button>
 						</div>
 				    </div>
                     </div><!-- end ibox-content -->
@@ -331,30 +351,6 @@
 	</div><!-- end page-wrapper -->
 
 </div><!-- end wrapper -->
-
-    <!-- Mainly scripts -->
-    <script src="js/jquery-2.1.1.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- FooTable -->
-    <script src="js/plugins/footable/footable.all.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-    
-    <!-- Page-Level Scripts -->
-    <script>
-        $(document).ready(function() {
-
-            $('.footable').footable();
-            $('.footable2').footable();
-
-        });
-
-    </script>
     
 </body>
 </html>
