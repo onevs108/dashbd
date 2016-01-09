@@ -11,7 +11,6 @@ $(document).ready(function()
     });
     
     $('#uploadExcel').click(function(event){
-    	alert('asdfasdfas');
     	var formData = new FormData();
     	formData.append('operator', $('#operator option:selected').val());
     	formData.append('bmsc', $('#bmsc option:selected').val());
