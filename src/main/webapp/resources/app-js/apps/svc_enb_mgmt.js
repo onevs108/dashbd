@@ -10,6 +10,10 @@ $(document).ready(function()
         getServiceAreaBmSc(1, $('#operator_down option:selected').val(), false);
     });
     
+    $('#bmsc_down').change(function(){
+    	getServiceAreaByBmScId($('#bmsc_down option:selected').val());
+    });
+    
     $('#excelFile').change(function(){
         $('#selectedExcelFile').val( $('#excelFile').val().substring( $('#excelFile').val().lastIndexOf("\\") + 1 ) );
     });
@@ -88,6 +92,65 @@ function getServiceAreaBmSc(page, operatorId, isUpload)
                 $("#bmsc_down").append(options);
             }
             
+        }
+    });
+}
+
+function getServiceAreaByBmScId(bmscId) {
+	
+	$.ajax({
+        url : "/dashbd/api/getSeviceAreaByBmScId.do",
+        type: "get",
+        data : { "bmscId" : bmscId },
+        success : function(responseData){
+            $("#ajax").remove();
+            var datas = JSON.parse(responseData);
+            var dataLen = datas.length;
+            var options = "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"5\">";
+            options += "<thead>";
+            options += "<tr>";
+			options += "<th></th>";
+			options += "<th>SA_ID</th>";
+			options += "<th>Description</th>";
+			options += "</tr>";
+			options += "</thead>";
+			options += "<tbody>";
+			
+            for( var i = 0; i < dataLen; i++ ) {
+            	options += "<tr>";
+				options += "<td><input type=\"checkbox\" id=\"serviceAreaIds\"></td>";
+				options += "<td>";
+				options += datas[i].serviceAreaId;
+				options += "</td>";
+				options += "<td>";
+				options += datas[i].serviceAreaName;
+				options += "</td>";
+				options += "</tr>";
+            }
+
+            options += "</tbody>";
+            
+            if( dataLen > 10 ) {
+            	options += "<tfoot><tr><td colspan=\"3\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            }
+            
+			options += "</table>";
+			options += "<div class=\"row \">";
+			options += "<div class=\"col-md-12\">";
+			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\"><strong>Download eNB for Selected SA</strong></button>";
+			options += "</div>";
+			options += "<div class=\"col-md-12\">";
+			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\"><strong>Download eNB for BMSC</strong></button>";
+			options += "</div>";
+			options += "</div>";
+            
+			$("#svcTotalCount").empty();
+            $("#svcTotalCount").append(dataLen);
+			
+            $("#service_area").empty();
+            $("#service_area").append(options);
+            
+            $('.footable').footable();
         }
     });
 }

@@ -1460,4 +1460,38 @@ public class ServiceAreaController {
     	
     	return list;
     }
+    
+    @RequestMapping(value = "/api/getSeviceAreaByBmScId.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getSeviceAreaByBmScId(HttpServletRequest request, HttpServletResponse response) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		//Integer perPage = 1000;
+		
+		if( request.getParameter( "bmscId" ) == null ) return;
+
+		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
+		//searchParam.setPage((page-1) * perPage);
+		//searchParam.setPerPage(perPage);
+		searchParam.setBmscId( Integer.valueOf( request.getParameter( "bmscId" ) ) );
+		
+		List<BmscServiceArea> datas = mapper.getSeviceAreaByBmScId( searchParam );
+		
+		JSONArray array = new JSONArray();
+		for( int i = 0; i < datas.size(); i++ ) {
+			BmscServiceArea data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put( "bmscId", data.getBmscId() );
+			obj.put( "serviceAreaId", data.getServiceAreaId() );
+			obj.put( "serviceAreaName", data.getServiceAreaName() );
+			obj.put( "totalCount", data.getTotalCount() );
+			array.add( obj );
+		}
+		
+		try {
+	        response.getWriter().print( array.toJSONString() );
+	    } catch( Exception e ) {
+	        e.printStackTrace();
+	    }
+	}
 }

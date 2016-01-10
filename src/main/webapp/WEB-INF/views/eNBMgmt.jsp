@@ -251,82 +251,26 @@
                         </form>
                         <div class="hr-line-dashed"></div>
                         <span style="font-weight:bold"><i class="fa fa-wifi"></i> Service Area</span>
-                        <span class="pull-right" style="padding-bottom:22px">all : <strong class="text-danger">00</strong></span>
-                        <div class="ibox-content">
+                        <span class="pull-right" style="padding-bottom:22px">all : <strong class="text-danger" id="svcTotalCount">0</strong></span>
+                        <div class="ibox-content" id="service_area">
                             <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="5">
                                 <thead>
                                     <tr>
                                         <th></th>
-								<th>SA_ID</th>
+										<th>SA_ID</th>
                                         <th>Description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-							 	<td><input type="checkbox" id="checkbox1"></td>
-                                        <td>100</td>
-                                        <td>Service Area for Subway#2 Line</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox2"></td>
-                                        <td>101</td>
-                                        <td>Olympic Stadium</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox3"></td>
-                                        <td>102</td>
-                                        <td>ICN Airport</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox4"></td>
-                                        <td>103</td>
-                                        <td>Gimpo Airport</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox5"></td>
-                                        <td>104</td>
-                                        <td>ICN Golf Resort</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox6"></td>
-                                        <td>100</td>
-                                        <td>Service Area for Subway#2 Line</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox7"></td>
-                                        <td>101</td>
-                                        <td>Olympic Stadium</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox8"></td>
-                                        <td>102</td>
-                                        <td>ICN Airport</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox9"></td>
-                                        <td>103</td>
-                                        <td>Gimpo Airport</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox10"></td>
-                                        <td>104</td>
-                                        <td>ICN Golf Resort</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox11"></td>
-                                        <td>103</td>
-                                        <td>Gimpo Airport</td>
-                                    </tr>
-                                    <tr>
-							 	<td><input type="checkbox" id="checkbox12"></td>
-                                        <td>104</td>
-                                        <td>ICN Golf Resort</td>
+							 			<td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td colspan="3">
-                                            <ul class="pagination pull-right"></ul>
                                         </td>
                                     </tr>
                                 </tfoot>

@@ -76,5 +76,7 @@ public interface ServiceAreaMapper {
     int createServiceArea(HashMap< String, Object > searchParm);
     
     int createENBs(HashMap< String, Object > searchParm);
+    
+    List<BmscServiceArea> getSeviceAreaByBmScId( BmscServiceAreaSearchParam searchParm );
 
 }
