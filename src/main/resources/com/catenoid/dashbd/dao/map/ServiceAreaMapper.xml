@@ -643,11 +643,13 @@
 	insert into enb_ap 
 	(
 		id, name, longitude, latitude, plmn, circle, circle_name, cluster_id, 
-		ipaddress, earfcn, mbsfn, mbms_service_area_id, created_at, updated_at, city, bandwidth
+		ipaddress, earfcn, mbsfn, mbms_service_area_id, created_at, updated_at, city, bandwidth,
+		operator_id, bmsc_id
 	)
 	select  
 		#{id,jdbcType=INTEGER}, #{name}, #{longitude}, #{latitude}, #{plmn}, #{circle}, #{circleName}, #{clusterId,jdbcType=INTEGER}, 
-		#{ipAddress}, #{earfcn}, #{mbsfn}, #{mbmsServiceAreaId,jdbcType=INTEGER}, now(), now(), #{city}, #{bandwidth}
+		#{ipAddress}, #{earfcn}, #{mbsfn}, #{mbmsServiceAreaId,jdbcType=INTEGER}, now(), now(), #{city}, #{bandwidth},
+		#{operator,jdbcType=INTEGER}, #{bmsc,jdbcType=INTEGER}
 	from dual
 	where not exists 
 		(select id 

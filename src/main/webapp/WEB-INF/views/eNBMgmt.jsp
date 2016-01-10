@@ -207,10 +207,10 @@
                             <div class="form-group">
                                 <div class="col-sm-3">
                                 <label for="excelFile" class="btn btn-sm btn-default pull-right">
-                                    <input type="file" name="excelFile" id="excelFile" class="hide"><strong>Select File</strong>
+                                    <input type="file" name="excelFile" id="excelFile" class="hide" onchange="javascript:displayFile();"><strong>Select File</strong>
                                 </label>
                                 </div>
-                                <div class="col-sm-9"><input type="text" class="form-control" readonly></div>
+                                <div class="col-sm-9"><input type="text" class="form-control" id="selectedExcelFile" value= "" readonly></div>
                         	</div>
                         </form>
                         <div class="hr-line-dashed"></div>

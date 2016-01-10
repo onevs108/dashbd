@@ -1273,6 +1273,7 @@ public class ServiceAreaController {
 				searchParam.put( "operator", operator );
 				searchParam.put( "bmsc", bmsc );
 				
+				//System.out.println("i=[" + i + "] [" + searchParam.get("id") + "]");
 				rst += mapper.createENBs( searchParam );
 			}
 			
@@ -1288,7 +1289,7 @@ public class ServiceAreaController {
     public List excelFileUpload( MultipartHttpServletRequest mReq ) {
         String uploadPath = "";
         String storePath = null, rootPath = null;
-        List<HashMap> list = null;
+        List<HashMap> list = new ArrayList<HashMap>();
         
 		logger.info( "OS: " + System.getProperty( "os.name" ) );
 		if( System.getProperty( "os.name" ).toUpperCase().startsWith( "WINDOWS" ) ) {
@@ -1349,23 +1350,24 @@ public class ServiceAreaController {
 		
 			int sheetNum = work.getNumberOfSheets();
     	 
-			logger.error("\n# sheet num : " + sheetNum);
+			logger.debug("\n# sheet num : " + sheetNum);
 
 			XSSFSheet sheet = work.getSheetAt(0);
     	 
 			int rows = sheet.getPhysicalNumberOfRows();
     	 
-			logger.error("\n# sheet rows num : " + rows);
+			logger.debug("\n# sheet rows num : " + rows);
     	 
 			for( int rownum = 1; rownum < rows; rownum++ ) {
+				params = new HashMap();
 				XSSFRow row = sheet.getRow( rownum );
     	   
 				if( row != null ) {
 					int cells = row.getPhysicalNumberOfCells();
     	     
-					logger.error("\n# row = " + row.getRowNum() + " / cells = " + cells);
+					//logger.debug("\n# row = " + row.getRowNum() + " / cells = " + cells);
     	     
-					for( int cellnum = 0; cellnum < cells; cellnum++ ) {
+					for( int cellnum = 0; cellnum < 16; cellnum++ ) {
 						XSSFCell cell = row.getCell( cellnum );
     	       
 						if( cell != null ) {
@@ -1373,7 +1375,7 @@ public class ServiceAreaController {
 							switch( cellnum ) {
     	         
 								case 0:
-									params.put( "id", cell.getNumericCellValue() );
+									params.put( "id", Integer.valueOf( (int) cell.getNumericCellValue() ));
 									break;
     	                
 								case 1:

@@ -10,25 +10,57 @@ $(document).ready(function()
         getServiceAreaBmSc(1, $('#operator_down option:selected').val(), false);
     });
     
+    $('#excelFile').change(function(){
+        $('#selectedExcelFile').val( $('#excelFile').val().substring( $('#excelFile').val().lastIndexOf("\\") + 1 ) );
+    });
+    
     $('#uploadExcel').click(function(event){
-    	var formData = new FormData();
-    	formData.append('operator', $('#operator option:selected').val());
-    	formData.append('bmsc', $('#bmsc option:selected').val());
-    	formData.append('excelFile', $('input[type=file]')[0].files[0]); 
+    	if( isEmpty( $('#operator option:selected').val() ) ) {
+    		//swal({
+                //title: "Sorry !",
+                //text: "Please Select Operator first."
+            //});
+    		alert( "Please Select Operator first." );
+    		return;
+    	} else if( isEmpty( $('#bmsc option:selected').val() ) ) {
+    		//swal({
+                //title: "Sorry !",
+                //text: "Please Select BMSC first."
+            //});
+    		alert( "Please Select BMSC first." );
+    		return;
+    	} else if( isEmpty( $('#excelFile').val() ) ) {
+    		//swal({
+                //title: "Sorry !",
+                //text: "Please Select Upload File first."
+            //});
+    		alert( "Please Select Upload File first." );
+    		return;
+    	} else {
+    		var formData = new FormData();
+        	formData.append('operator', $('#operator option:selected').val());
+        	formData.append('bmsc', $('#bmsc option:selected').val());
+        	formData.append('excelFile', $('input[type=file]')[0].files[0]); 
 
-        $.ajax({
-            url : '/dashbd/api/uploadENBs.do',
-            data : formData,
-            type : 'POST',
-            processData: false,
-            contentType: false,
-            success : function(responseData){
-            	swal({
-                    title: "Sorry !",
-                    text: "Please Select BMSC first."
-                });
-            }
-        });
+            $.ajax({
+                url : '/dashbd/api/uploadENBs.do',
+                data : formData,
+                type : 'POST',
+                processData: false,
+                contentType: false,
+                success : function(responseData){
+                	$("#ajax").remove();
+                    var data = JSON.parse(responseData);
+                    alert( data.count + "건 등록 완료");
+                    
+                	//swal({
+                        //title: "Sorry !",
+                        //text: "Please Select BMSC first."
+                    //});
+                }
+            });
+    	}
+    	
    });
 });
 
@@ -60,3 +92,6 @@ function getServiceAreaBmSc(page, operatorId, isUpload)
     });
 }
 
+function isEmpty(value) {
+    return (value === undefined || value == null || value.length <= 0) ? true : false;
+}
