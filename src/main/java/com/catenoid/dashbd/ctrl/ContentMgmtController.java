@@ -202,6 +202,35 @@ public class ContentMgmtController {
 	}
 	
 	
+	
+	
+	@RequestMapping(value = "view/delContentImage.do")
+	@ResponseBody
+	public Map< String, Object > delContentImage( @RequestParam Map< String, String > params,
+            HttpServletRequest req, Locale locale ) {
+		
+		logger.info("delContentImage params{}", params);
+		try{
+			ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
+
+			//@ delete  
+			int ret = mapper.deleteContentImage(params);
+			logger.info("deleteContentImage ret{}", ret);
+
+			Map< String, Object > returnMap = new HashMap< String, Object >();
+	        returnMap.put( "resultCode", "1000" );
+	        returnMap.put( "resultMsg", "SUCCESS");
+	        Map< String, Object > resultMap = new HashMap< String, Object >();
+	        resultMap.put( "resultInfo", returnMap );
+	                
+			return (Map<String, Object>) resultMap;
+			
+		}catch(Exception e){
+			logger.error("", e);
+			return makeRetMsg("9999", e.getMessage());
+		}
+	}
+	
 	private void fileUpload(HttpServletRequest request, Map< String, Object > params,String fname, String typeName) throws Exception{
 		MultipartRequest mReq = ( MultipartHttpServletRequest ) request;
 		 // 홀로태그 이미지 업로드
@@ -252,5 +281,17 @@ public class ContentMgmtController {
 		// TODO Auto-generated method stub
 		if(parameter == null || parameter.trim().equals("")) return false;
 		return true;
+	}
+	
+	private Map<String, Object> makeRetMsg(String code, String resStr) {
+		
+		Map< String, Object > returnMap = new HashMap< String, Object >();
+	    returnMap.put( "resultCode", code );
+	    returnMap.put( "resultMsg", resStr);
+	      
+	    Map< String, Object > resultMap = new HashMap< String, Object >();
+	    resultMap.put( "resultInfo", returnMap );
+	              
+		return (Map<String, Object>) resultMap;
 	}
 }

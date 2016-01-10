@@ -106,7 +106,12 @@
 			AND
 			type = #{type}
 	</select>
-
+	
+	<delete id="deleteContentImage" parameterType="java.util.Map" >
+			DELETE FROM contents_images
+	 		WHERE
+			id = #{id}
+	</delete>
 	
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Contents" >
     <id column="id" property="id" jdbcType="INTEGER" />

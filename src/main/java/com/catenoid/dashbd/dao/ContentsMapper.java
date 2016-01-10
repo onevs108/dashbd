@@ -16,6 +16,7 @@ public interface ContentsMapper {
 	List<Map> selectContentImages(Map map);
 	int updateContent(Map map);
 	int insertContent(Map map);
+	int deleteContentImage(Map map);
 	/* inbo coding END*/
 	
     int countByExample(ContentsExample example);

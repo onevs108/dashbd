@@ -66,6 +66,29 @@ var ctrl = {
 	}
 };
 
+function delContentImage(id, target){
+	
+	if (!confirm("The only " + target +" will be deleted. do you want this??"))
+		return;
+	
+	var param = {
+			id : id
+		};
+	
+	$.ajax({
+		type : "POST",
+		url : "delContentImage.do",
+		data : param,
+		dataType : "json",
+		success : function( data ) {
+			outMsgForAjax(data);
+			location.reload();
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
 
 </script>
 </head>
@@ -287,32 +310,28 @@ var ctrl = {
 								   </div>
 								   
 								   <div class="product-desc">
-									  <span class="product-close">
+									  <a href="javascript:delContentImage('${thumnail.id}', 'thumbnail')">
+									  	<span class="product-close">
 										 <i class="fa fa-close"></i>
-									  </span>
+									  	</span>
+									  </a>
 								   </div>
 							    </div>
 							</c:forEach>
 							<c:if test="${fn:length(thumnails) > 0}">
 								</div>
 							</c:if>
-							<div class="row">
-						    <div class="col-md-12">
-								<input type="file" name="ThumbnailsFiles" id="ThumbnailsFiles"/>
-						    </div>
+							<br>
+						<div class="row"><div class="col-md-12"><input type="file" name="ThumbnailsFiles" id="ThumbnailsFiles"/></div>
 					    </div>
 						<br>
 				    </div><!-- end thumbnail ibox-content -->
-
-                        <br>
-                        
-                        <br>
+                    <br>
 				    <div class="ibox-title">
                         <h3>Previews</h3>
                         </div>
                         <div class="ibox-content"><br>
 					  		<c:forEach items="${previews}" var="preview" varStatus="idx">
-					 	    
 					 	     	<c:if test="${idx.index mod 4 == 0 && idx.index != 0}"> 
   					 	     		</div>
   					 	     	</c:if>
@@ -323,18 +342,23 @@ var ctrl = {
 								   <div class="product-imitation">
 									  <img src="${preview.path}" width="80%">
 								   </div>
+								   
+								   <div class="product-desc">
+									  <a href="javascript:delContentImage('${thumnail.id}','preview')">
+									  	<span class="product-close">
+										 <i class="fa fa-close"></i>
+									  	</span>
+									  </a>
+								   </div>
 							    </div>
 							</c:forEach>
 							<c:if test="${fn:length(previews) > 0}">
 								</div>
 							</c:if>
-							
-					    <br>
-						
-						
+						<br>
 						<div class="row">
 						    <div class="col-md-12">
-								<input type="file" name="ThumbnailsFiles" id="ThumbnailsFiles"/>
+								<input type="file" name="preViewFiles" id="preViewFiles"/>
 						    </div>
 					    </div>
 					    	
