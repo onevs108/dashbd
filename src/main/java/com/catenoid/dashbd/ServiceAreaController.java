@@ -1000,6 +1000,7 @@ public class ServiceAreaController {
 			JSONObject obj = new JSONObject();
 			obj.put("bmscId", data.getBmscId());
 			obj.put("serviceAreaId", data.getServiceAreaId());
+			obj.put("serviceAreaName", data.getServiceAreaName());
 			obj.put("totalCount", data.getTotalCount());
 			array.add(obj);
 		}

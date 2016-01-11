@@ -16,7 +16,7 @@ function initMap() {
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
+function moveToEnb(bmscId, serviceAreaId)
 {
 
 	clearMarkers();
@@ -170,7 +170,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
             	}
             	options += "<span class=\"footable-toggle\"></span>";
-            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + datas[i].serviceAreaName + ");\">";
+            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ");\">";
             	options += datas[i].serviceAreaId;
             	options += "</a>";
 				options += "</td><td>";
