@@ -683,7 +683,7 @@
 	<select id="downloadENBs" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
 	SELECT 
 		id, name, longitude, latitude, plmn, circle, circle_name, cluster_id, 
-		ipaddress, earfcn, mbsfn, mbms_service_area_id, created_at, updated_at, city, bandwidth,
+		ipaddress, earfcn, mbsfn, mbms_service_area_id, created_at, updated_at, city, ifnull(bandwidth, 0) as bandwidth,
 		operator_id, bmsc_id,
 		( select count(*) from enb_ap where operator_id = #{operatorId,jdbcType=INTEGER} and bmsc_id = #{bmscId,jdbcType=INTEGER} ) as totalCount
 	FROM 
@@ -696,7 +696,7 @@
 	<select id="downloadENBsByServiceAreaId" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
 	select 
 		e.id, e.name, e.longitude, e.latitude, e.plmn, e.circle, e.circle_name, e.cluster_id, 
-		e.ipaddress, e.earfcn, e.mbsfn, e.mbms_service_area_id, e.created_at, e.updated_at, e.city, e.bandwidth,
+		e.ipaddress, e.earfcn, e.mbsfn, e.mbms_service_area_id, e.created_at, e.updated_at, e.city, ifnull(e.bandwidth, 0) as bandwidth,
 		e.operator_id, e.bmsc_id,
 		( 
 			select count(*) 
