@@ -317,7 +317,8 @@ function initMap() {
 	    	toDeleteEnbs = [];
 	    	
 	    	$("#selectedENBs").empty();
-			$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+			//$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+	    	$("#selectedENBs").append( "Selected eNBs : " + toAddEnbs.length );
 	    }
 	});
 
@@ -395,7 +396,8 @@ function initMap() {
 	            gribBoundingBox.setMap(null); // remove the rectangle
 	            
         		$("#selectedENBs").empty();
-				$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+				//$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+        		$("#selectedENBs").append( "Selected eNBs : " + toAddEnbs.length );
 	        }
 	        gribBoundingBox = null;
 	    }
@@ -583,7 +585,8 @@ function moveToEnb(bmscId, serviceAreaId)
 						}
 						
 						$("#selectedENBs").empty();
-						$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+						//$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+						$("#selectedENBs").append( "Selected eNBs : " + toAddEnbs.length );
 					}
 					else {
 						if(this.selected) {
@@ -651,7 +654,8 @@ function moveToEnb(bmscId, serviceAreaId)
             
             $("#selectedENBs").empty();
             selectedENBsCount = enb_datas.length;
-            $("#selectedENBs").append("Selected eNBs : " + selectedENBsCount);
+            //$("#selectedENBs").append("Selected eNBs : " + selectedENBsCount);
+            $("#selectedENBs").append( "Selected eNBs : " + 0 );
             
             drawEnbOthers(bmscId, serviceAreaId);
 
@@ -812,7 +816,8 @@ function drawEnbOthers(bmscId, serviceAreaId) {
 						}
 						
 						$("#selectedENBs").empty();
-						$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+						//$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+						$("#selectedENBs").append( "Selected eNBs : " + toAddEnbs.length );
 					}
 					else {
 						if(this.selected) {

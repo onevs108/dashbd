@@ -277,10 +277,10 @@
                             </table>
 						<div class="row ">
 							<div class="col-md-12">
-							<button class="btn btn-block btn-sm btn-default" type="submit"><strong>Download eNB for Selected SA</strong></button>
+							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadSA" onclick="javascript:downloadENBsByServiceAreaId();"><strong>Download eNB for Selected SA</strong></button>
 							</div>
 							<div class="col-md-12">
-							<button class="btn btn-block btn-sm btn-default" type="submit"><strong>Download eNB for BMSC</strong></button>
+							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadBmsc" onclick="javascript:downloadENBs();"><strong>Download eNB for BMSC</strong></button>
 							</div>
 						</div>
                     	</div><!-- end ibox-content -->

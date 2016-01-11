@@ -18,7 +18,7 @@ $(document).ready(function()
         $('#selectedExcelFile').val( $('#excelFile').val().substring( $('#excelFile').val().lastIndexOf("\\") + 1 ) );
     });
     
-    $('#uploadExcel').click(function(event){
+    $('#uploadExcel').click( function(event) {
     	if( isEmpty( $('#operator option:selected').val() ) ) {
     		//swal({
                 //title: "Sorry !",
@@ -66,6 +66,7 @@ $(document).ready(function()
     	}
     	
    });
+
 });
 
 //BmSc 조회 by operator id
@@ -118,7 +119,7 @@ function getServiceAreaByBmScId(bmscId) {
 			
             for( var i = 0; i < dataLen; i++ ) {
             	options += "<tr>";
-				options += "<td><input type=\"checkbox\" id=\"serviceAreaIds\"></td>";
+				options += "<td><input type=\"checkbox\" name=\"serviceAreaIds\" id=\"serviceAreaIds\" value=\"" + datas[i].serviceAreaId + "\"></td>";
 				options += "<td>";
 				options += datas[i].serviceAreaId;
 				options += "</td>";
@@ -137,10 +138,10 @@ function getServiceAreaByBmScId(bmscId) {
 			options += "</table>";
 			options += "<div class=\"row \">";
 			options += "<div class=\"col-md-12\">";
-			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\"><strong>Download eNB for Selected SA</strong></button>";
+			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadSA\" onclick=\"javascript:downloadENBsByServiceAreaId();\"><strong>Download eNB for Selected SA</strong></button>";
 			options += "</div>";
 			options += "<div class=\"col-md-12\">";
-			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\"><strong>Download eNB for BMSC</strong></button>";
+			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadBmsc\" onclick=\"javascript:downloadENBs();\"><strong>Download eNB for BMSC</strong></button>";
 			options += "</div>";
 			options += "</div>";
             
@@ -153,6 +154,86 @@ function getServiceAreaByBmScId(bmscId) {
             $('.footable').footable();
         }
     });
+}
+
+function downloadENBs() {
+
+	if( isEmpty( $('#operator_down option:selected').val() ) ) {
+		//swal({
+            //title: "Sorry !",
+            //text: "Please Select Operator first."
+        //});
+		alert( "Please Select Operator first." );
+		return;
+	} else if( isEmpty( $('#bmsc_down option:selected').val() ) ) {
+		//swal({
+            //title: "Sorry !",
+            //text: "Please Select BMSC first."
+        //});
+		alert( "Please Select BMSC first." );
+		return;
+	} else {
+		$.ajax({
+	        url : "/dashbd/api/downloadENBs.do",
+	        type: "post",
+	        data : { "operatorId" : $('#operator_down option:selected').val(), "bmscId" : $('#bmsc_down option:selected').val() },
+	        dateType : 'json',
+	        success : function(responseData){
+	        	
+	        },
+	        error : function(xhr, status, error){
+
+	        }
+	    });
+	}
+}
+
+function downloadENBsByServiceAreaId() {
+	
+	if( isEmpty( $('#operator_down option:selected').val() ) ) {
+		//swal({
+            //title: "Sorry !",
+            //text: "Please Select Operator first."
+        //});
+		alert( "Please Select Operator first." );
+		return;
+	} else if( isEmpty( $('#bmsc_down option:selected').val() ) ) {
+		//swal({
+            //title: "Sorry !",
+            //text: "Please Select BMSC first."
+        //});
+		alert( "Please Select BMSC first." );
+		return;
+	/*
+	} else if( isEmpty( $('#bmsc_down option:selected').val() ) ) {
+		//swal({
+            //title: "Sorry !",
+            //text: "Please Select BMSC first."
+        //});
+		alert( "Please Select BMSC first." );
+		return;
+	*/
+	} else {
+		
+		var checkboxValues = [];
+	    $("input[name='serviceAreaIds']:checked").each(function(i) {
+	        checkboxValues.push($(this).val());
+	    });
+	    
+		$.ajax({
+	        url : "/dashbd/api/downloadENBsByServiceAreaId.do",
+	        type: "post",
+	        data : { "operatorId" : $('#operator_down option:selected').val(), "bmscId" : $('#bmsc_down option:selected').val(), "serviceAreaIds" : checkboxValues },
+	        dateType : 'json',
+	        success : function(responseData){
+	        	
+	        },
+	        error : function(xhr, status, error){
+
+	        }
+	    });
+	}
+	
 }
 
 function isEmpty(value) {

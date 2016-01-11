@@ -1261,8 +1261,8 @@ public class ServiceAreaController {
 			Integer operator = Integer.valueOf( request.getParameter( "operator" ) );
 			Integer bmsc = Integer.valueOf( request.getParameter( "bmsc" ) );
 			
-			System.out.println( operator );
-			System.out.println( bmsc );
+			//System.out.println( operator );
+			//System.out.println( bmsc );
 			
 			List list = excelFileUpload( request );
 			int rst = 0;
@@ -1493,5 +1493,51 @@ public class ServiceAreaController {
 	    } catch( Exception e ) {
 	        e.printStackTrace();
 	    }
+	}
+    
+    @RequestMapping(value = "/api/downloadENBs.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void downloadENBs(HttpServletRequest request, HttpServletResponse response) {
+		
+		HashMap< String, Object > searchParam;
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		Integer operator = Integer.valueOf( request.getParameter( "operatorId" ) );
+		Integer bmsc = Integer.valueOf( request.getParameter( "bmscId" ) );
+
+		int rst = 0;
+	
+		searchParam = new HashMap();
+		searchParam.put( "operatorId", operator );
+		searchParam.put( "bmscId", bmsc );
+		
+		return;
+	}
+    
+    @RequestMapping(value = "/api/downloadENBsByServiceAreaId.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void downloadENBsByServiceAreaId(HttpServletRequest request, HttpServletResponse response) {
+		
+		HashMap< String, Object > searchParam;
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		Integer operator = Integer.valueOf( request.getParameter( "operatorId" ) );
+		Integer bmsc = Integer.valueOf( request.getParameter( "bmscId" ) );
+		
+		String[] arrServiceAreaId = request.getParameterValues("serviceAreaIds[]");
+
+		Integer[] serviceAreaIds = new Integer[arrServiceAreaId.length];
+		for(int i = 0; i < arrServiceAreaId.length; i++) {
+			serviceAreaIds[i] = Integer.valueOf( arrServiceAreaId[i] );
+		}
+		
+		int rst = 0;
+		
+		searchParam = new HashMap();
+		searchParam.put( "operatorId", operator );
+		searchParam.put( "bmscId", bmsc );
+		searchParam.put( "serviceAreaIds", serviceAreaIds );
+		
+		List<HashMap> datas = mapper.downloadENBsByServiceAreaId( searchParam );
+		
+		return;
 	}
 }

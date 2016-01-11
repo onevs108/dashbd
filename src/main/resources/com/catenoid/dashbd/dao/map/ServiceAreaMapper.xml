@@ -679,5 +679,46 @@
 	and d.id = a.service_area_id
 	group by a.bmsc_id, a.service_area_id, d.name	
 	</select>
-	 
+
+	<select id="downloadENBs" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+	SELECT 
+		id, name, longitude, latitude, plmn, circle, circle_name, cluster_id, 
+		ipaddress, earfcn, mbsfn, mbms_service_area_id, created_at, updated_at, city, bandwidth,
+		operator_id, bmsc_id,
+		( select count(*) from enb_ap where operator_id = #{operatorId,jdbcType=INTEGER} and bmsc_id = #{bmscId,jdbcType=INTEGER} ) as totalCount
+	FROM 
+		enb_ap e
+	WHERE 1=1
+		AND operator_id = #{operatorId,jdbcType=INTEGER} 
+		and bmsc_id = #{bmscId,jdbcType=INTEGER}
+	</select>
+	
+	<select id="downloadENBsByServiceAreaId" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+	select 
+		e.id, e.name, e.longitude, e.latitude, e.plmn, e.circle, e.circle_name, e.cluster_id, 
+		e.ipaddress, e.earfcn, e.mbsfn, e.mbms_service_area_id, e.created_at, e.updated_at, e.city, e.bandwidth,
+		e.operator_id, e.bmsc_id,
+		( 
+			select count(*) 
+			from enb_ap e, service_area_enb_ap s 
+			where 
+				e.operator_id = #{operatorId,jdbcType=INTEGER} 
+				and e.bmsc_id = #{bmscId,jdbcType=INTEGER} 
+				and s.service_area_id in <foreach collection="serviceAreaIds" item="serviceAreaId" index="index" separator="," open="(" close=")">
+            #{serviceAreaId}
+        </foreach>
+				and e.id = s.enb_ap_id
+		) as totalCount
+	from 
+		enb_ap e, service_area_enb_ap s
+	where 1=1
+		and e.operator_id = #{operatorId,jdbcType=INTEGER} 
+		and e.bmsc_id = #{bmscId,jdbcType=INTEGER}
+		and s.service_area_id in 
+			<foreach collection="serviceAreaIds" item="serviceAreaId" index="index" separator="," open="(" close=")">
+            #{serviceAreaId}
+        	</foreach>
+		and e.id = s.enb_ap_id
+	</select>
+		 
 </mapper>
