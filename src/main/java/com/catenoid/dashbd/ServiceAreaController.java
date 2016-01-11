@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
@@ -1501,14 +1502,68 @@ public class ServiceAreaController {
 		HashMap< String, Object > searchParam;
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
-		Integer operator = Integer.valueOf( request.getParameter( "operatorId" ) );
-		Integer bmsc = Integer.valueOf( request.getParameter( "bmscId" ) );
+		//Integer operator = Integer.valueOf( request.getParameter( "operatorId" ) );
+		//Integer bmsc = Integer.valueOf( request.getParameter( "bmscId" ) );
+		Integer operator = Integer.valueOf( request.getParameter( "operator_down" ) );
+		Integer bmsc = Integer.valueOf( request.getParameter( "bmsc_down" ) );
 
 		int rst = 0;
-	
+		
 		searchParam = new HashMap();
 		searchParam.put( "operatorId", operator );
 		searchParam.put( "bmscId", bmsc );
+		
+		List<HashMap> list = mapper.downloadENBs( searchParam );
+		
+		ArrayList<String> columnList = new ArrayList<String>();
+		columnList.add( "id" );
+		columnList.add( "name" );
+		columnList.add( "longitude" );
+		columnList.add( "latitude" );
+		columnList.add( "plmn" );
+		columnList.add( "circle" );
+		columnList.add( "circle_name" );
+		columnList.add( "cluster_id" );
+		columnList.add( "ipaddress" );
+		columnList.add( "earfcn" );
+		columnList.add( "mbsfn" );
+		columnList.add( "mbms_service_area_id" );
+		columnList.add( "created_at" );
+		columnList.add( "updated_at" );
+		columnList.add( "city" );
+		columnList.add( "bandwidth" );
+		columnList.add( "operator_id" );
+		columnList.add( "bmsc_id" );
+
+		/*
+		//MAP의 KEY값을 담기위함 
+		if( list != null && list.size() > 0 ) {
+		    //LIST의 첫번째 데이터의 KEY값만 알면 되므로 
+		    Map<String,Object>m = list.get( 0 );
+		    //MAP의 KEY값을 columnList객체에 ADD 
+		    for( String k : m.keySet() ) {
+		        columnList.add( k );
+		    }
+		}
+		*/
+		
+		java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat ("yyyyMMddHHmmss" );
+		String today = formatter.format( new java.util.Date() );
+		
+		String filename = "eNBs_" + today;
+		
+	    response.setContentType( "application/octet-stream" );
+	    response.setHeader ( "Content-Disposition", "attachment; filename=" + filename + ".xlsx;" );
+	    
+		XSSFWorkbook workbook = downloadExcel( list, columnList );
+		
+		try {
+			OutputStream xlsOut = response.getOutputStream(); //OutputStream으로 엑셀을 저장한다.
+			workbook.write( xlsOut );
+			xlsOut.close();
+	    } catch( Exception e ) {
+	        e.printStackTrace();
+	    }
 		
 		return;
 	}
@@ -1519,10 +1574,12 @@ public class ServiceAreaController {
 		HashMap< String, Object > searchParam;
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
-		Integer operator = Integer.valueOf( request.getParameter( "operatorId" ) );
-		Integer bmsc = Integer.valueOf( request.getParameter( "bmscId" ) );
+		//Integer operator = Integer.valueOf( request.getParameter( "operatorId" ) );
+		//Integer bmsc = Integer.valueOf( request.getParameter( "bmscId" ) );
+		Integer operator = Integer.valueOf( request.getParameter( "operator_down" ) );
+		Integer bmsc = Integer.valueOf( request.getParameter( "bmsc_down" ) );
 		
-		String[] arrServiceAreaId = request.getParameterValues("serviceAreaIds[]");
+		String[] arrServiceAreaId = request.getParameterValues("serviceAreaIds");
 
 		Integer[] serviceAreaIds = new Integer[arrServiceAreaId.length];
 		for(int i = 0; i < arrServiceAreaId.length; i++) {
@@ -1536,8 +1593,108 @@ public class ServiceAreaController {
 		searchParam.put( "bmscId", bmsc );
 		searchParam.put( "serviceAreaIds", serviceAreaIds );
 		
-		List<HashMap> datas = mapper.downloadENBsByServiceAreaId( searchParam );
+		List<HashMap> list = mapper.downloadENBsByServiceAreaId( searchParam );
+		
+		ArrayList<String> columnList = new ArrayList<String>();
+		columnList.add( "id" );
+		columnList.add( "name" );
+		columnList.add( "longitude" );
+		columnList.add( "latitude" );
+		columnList.add( "plmn" );
+		columnList.add( "circle" );
+		columnList.add( "circle_name" );
+		columnList.add( "cluster_id" );
+		columnList.add( "ipaddress" );
+		columnList.add( "earfcn" );
+		columnList.add( "mbsfn" );
+		columnList.add( "mbms_service_area_id" );
+		columnList.add( "created_at" );
+		columnList.add( "updated_at" );
+		columnList.add( "city" );
+		columnList.add( "bandwidth" );
+		columnList.add( "operator_id" );
+		columnList.add( "bmsc_id" );
+
+		/*
+		//MAP의 KEY값을 담기위함 
+		if( list != null && list.size() > 0 ) {
+		    //LIST의 첫번째 데이터의 KEY값만 알면 되므로 
+		    Map<String,Object>m = list.get( 0 );
+		    //MAP의 KEY값을 columnList객체에 ADD 
+		    for( String k : m.keySet() ) {
+		        columnList.add( k );
+		    }
+		}
+		*/
+		
+		java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat ("yyyyMMddHHmmss" );
+		String today = formatter.format( new java.util.Date() );
+		
+		String filename = "eNBs_" + today;
+		
+	    response.setContentType( "application/octet-stream" );
+	    response.setHeader ( "Content-Disposition", "attachment; filename=" + filename + ".xlsx;" );
+	    
+		XSSFWorkbook workbook = downloadExcel( list, columnList );
+		
+		try {
+			OutputStream xlsOut = response.getOutputStream(); //OutputStream으로 엑셀을 저장한다.
+			workbook.write( xlsOut );
+			xlsOut.close();
+	    } catch( Exception e ) {
+	        e.printStackTrace();
+	    }
 		
 		return;
 	}
+    
+    public XSSFWorkbook downloadExcel( List<HashMap> list, ArrayList<String> columnList )
+    {
+    	//1차로 workbook을 생성 
+    	XSSFWorkbook workbook = new XSSFWorkbook();
+    	//2차는 sheet생성 
+    	XSSFSheet sheet = workbook.createSheet( "eNBs" );
+    	//엑셀의 행 
+    	XSSFRow row = null;
+    	//엑셀의 셀 
+    	XSSFCell cell = null;
+    	
+    	row = sheet.createRow( (short)0 );
+        if( columnList != null && columnList.size() > 0 ) {
+            for( int j = 0; j < columnList.size(); j++ ) {
+                //생성된 row에 컬럼을 생성한다 
+                cell = row.createCell( j );
+                //map에 담긴 데이터를 가져와 cell에 add한다 
+                cell.setCellValue( String.valueOf( columnList.get( j ) ) );
+            }
+        }
+        
+    	//임의의 DB데이터 조회 
+    	if( list != null && list.size() > 0 ) {
+    	    int i = 1;
+    	    for( HashMap<String,Object>mapobject : list ) {
+    	        // 시트에 하나의 행을 생성한다(i 값이 0이면 첫번째 줄에 해당) 
+    	        row = sheet.createRow( (short)i );
+    	        i++;
+    	        if( columnList != null && columnList.size() > 0 ) {
+    	            for( int j = 0; j < columnList.size(); j++ ) {
+    	                //생성된 row에 컬럼을 생성한다 
+    	                cell = row.createCell( j );
+    	                //map에 담긴 데이터를 가져와 cell에 add한다 
+    	                if( mapobject.get( columnList.get( j ) ) != null ) {
+    	                	cell.setCellValue( String.valueOf( mapobject.get( columnList.get( j ) ) ) );
+    	                } else {
+    	                	cell.setCellValue( "" );
+    	                }
+    	            }
+    	        }
+    	    }
+    	}
+    	
+		for( int i = 0; i < columnList.size(); i++ ) {
+			sheet.autoSizeColumn(i); //cell 크기 자동 맞춤
+		}
+		
+    	return workbook;
+    }
 }

@@ -138,10 +138,10 @@ function getServiceAreaByBmScId(bmscId) {
 			options += "</table>";
 			options += "<div class=\"row \">";
 			options += "<div class=\"col-md-12\">";
-			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadSA\" onclick=\"javascript:downloadENBsByServiceAreaId();\"><strong>Download eNB for Selected SA</strong></button>";
+			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadSA\" onclick=\"javascript:downloadENBsByServiceAreaId( document.downloadForm );\"><strong>Download eNB for Selected SA</strong></button>";
 			options += "</div>";
 			options += "<div class=\"col-md-12\">";
-			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadBmsc\" onclick=\"javascript:downloadENBs();\"><strong>Download eNB for BMSC</strong></button>";
+			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadBmsc\" onclick=\"javascript:downloadENBs( document.downloadForm );\"><strong>Download eNB for BMSC</strong></button>";
 			options += "</div>";
 			options += "</div>";
             
@@ -156,7 +156,7 @@ function getServiceAreaByBmScId(bmscId) {
     });
 }
 
-function downloadENBs() {
+function downloadENBs( form ) {
 
 	if( isEmpty( $('#operator_down option:selected').val() ) ) {
 		//swal({
@@ -173,6 +173,10 @@ function downloadENBs() {
 		alert( "Please Select BMSC first." );
 		return;
 	} else {
+		form.action = "/dashbd/api/downloadENBs.do";
+		form.submit();
+		
+		/*
 		$.ajax({
 	        url : "/dashbd/api/downloadENBs.do",
 	        type: "post",
@@ -185,10 +189,11 @@ function downloadENBs() {
 
 	        }
 	    });
+	    */
 	}
 }
 
-function downloadENBsByServiceAreaId() {
+function downloadENBsByServiceAreaId(form) {
 	
 	if( isEmpty( $('#operator_down option:selected').val() ) ) {
 		//swal({
@@ -214,17 +219,25 @@ function downloadENBsByServiceAreaId() {
 		return;
 	*/
 	} else {
-		
+		form.action = "/dashbd/api/downloadENBsByServiceAreaId.do";
+		form.submit();
+		/*
 		var checkboxValues = [];
 	    $("input[name='serviceAreaIds']:checked").each(function(i) {
 	        checkboxValues.push($(this).val());
 	    });
 	    
+	    //$( '#downloadForm' ).attr( 'action', '/dashbd/api/downloadENBsByServiceAreaId.do' ).submit();
+	    
 		$.ajax({
 	        url : "/dashbd/api/downloadENBsByServiceAreaId.do",
 	        type: "post",
 	        data : { "operatorId" : $('#operator_down option:selected').val(), "bmscId" : $('#bmsc_down option:selected').val(), "serviceAreaIds" : checkboxValues },
-	        dateType : 'json',
+	        //dateType : 'json',
+	        async: true,
+            traditional: true,
+            cache: false,
+            contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 	        success : function(responseData){
 	        	
 	        },
@@ -232,6 +245,7 @@ function downloadENBsByServiceAreaId() {
 
 	        }
 	    });
+	    */
 	}
 	
 }

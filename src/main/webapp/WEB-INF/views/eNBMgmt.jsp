@@ -231,10 +231,10 @@
                         <h3>eNB Download</h3>
                     </div>
                     <div class="ibox-content">
-                        <form method="get" class="form-horizontal">
+                        <form method="post" class="form-horizontal" name="downloadForm">
                             <div class="form-group"><label class="col-sm-3 control-label">Operator</label>
                                 <div class="col-sm-9">
-										<select name="operator" id="operator_down" class="form-control" >
+										<select name="operator_down" id="operator_down" class="form-control" >
 											<option value=''></option>
 	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
 											<option value="${operatorList.id }">${operatorList.name }</option>
@@ -244,11 +244,11 @@
                             </div>
                             <div class="form-group"><label class="col-sm-3 control-label">BMSC</label>
                                 <div class="col-sm-9">
-											<select name="bmsc" id="bmsc_down" class="form-control">
+											<select name="bmsc_down" id="bmsc_down" class="form-control">
 											</select>
 						  </div>
                             </div>
-                        </form>
+                        
                         <div class="hr-line-dashed"></div>
                         <span style="font-weight:bold"><i class="fa fa-wifi"></i> Service Area</span>
                         <span class="pull-right" style="padding-bottom:22px">all : <strong class="text-danger" id="svcTotalCount">0</strong></span>
@@ -277,12 +277,13 @@
                             </table>
 						<div class="row ">
 							<div class="col-md-12">
-							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadSA" onclick="javascript:downloadENBsByServiceAreaId();"><strong>Download eNB for Selected SA</strong></button>
+							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadSA" onclick="javascript:downloadENBsByServiceAreaId( document.downloadForm );"><strong>Download eNB for Selected SA</strong></button>
 							</div>
 							<div class="col-md-12">
-							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadBmsc" onclick="javascript:downloadENBs();"><strong>Download eNB for BMSC</strong></button>
+							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadBmsc" onclick="javascript:downloadENBs( document.downloadForm );"><strong>Download eNB for BMSC</strong></button>
 							</div>
 						</div>
+						</form>
                     	</div><!-- end ibox-content -->
                     </div><!-- end ibox-content -->
                 </div>
