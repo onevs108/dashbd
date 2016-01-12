@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -1359,6 +1360,27 @@ public class ServiceAreaController {
 			int rows = sheet.getPhysicalNumberOfRows();
     	 
 			logger.debug("\n# sheet rows num : " + rows);
+			
+			ArrayList<String> columnList = new ArrayList<String>();
+			columnList.add( "id" ); //
+			columnList.add( "name" );
+			columnList.add( "longitude" ); //
+			columnList.add( "latitude" ); // 
+			columnList.add( "plmn" );
+			columnList.add( "circle" );
+			columnList.add( "circle_name" );
+			columnList.add( "cluster_id" ); //
+			columnList.add( "ipaddress" );
+			columnList.add( "earfcn" );
+			columnList.add( "mbsfn" );
+			columnList.add( "mbms_service_area_id" ); //
+			columnList.add( "created_at" );
+			columnList.add( "updated_at" );
+			columnList.add( "city" );
+			columnList.add( "bandwidth" ); // 
+			columnList.add( "operator_id" ); // 
+			columnList.add( "bmsc_id" ); // 
+			
     	 
 			for( int rownum = 1; rownum < rows; rownum++ ) {
 				params = new HashMap();
@@ -1369,81 +1391,27 @@ public class ServiceAreaController {
     	     
 					//logger.debug("\n# row = " + row.getRowNum() + " / cells = " + cells);
     	     
-					for( int cellnum = 0; cellnum < 16; cellnum++ ) {
+					for( int cellnum = 0; cellnum < columnList.size(); cellnum++ ) {
 						XSSFCell cell = row.getCell( cellnum );
     	       
 						if( cell != null ) {
     	         
-							switch( cellnum ) {
-    	         
-								case 0:
-									params.put( "id", Integer.valueOf( (int) cell.getNumericCellValue() ));
-									break;
-    	                
-								case 1:
-									params.put( "name", cell.getStringCellValue() );
-									break;
-    	                
-								case 2:
-									params.put( "latitude", cell.getNumericCellValue() );
-									
-									break;
-    	                
-								case 3:
-									params.put( "longitude", cell.getNumericCellValue() );
-									break;
-								
-								case 4:
-									params.put( "plmn", cell.getStringCellValue() );
-									break;
-								
-								case 5:
-									params.put( "circle", cell.getStringCellValue() );
-									break;
-								
-								case 6:
-									params.put( "circleName", cell.getStringCellValue() );
-									break;
-									
-								case 7:
-									params.put( "clusterId", cell.getNumericCellValue() );
-									break;
-									
-								case 8:
-									params.put( "idAddress", cell.getStringCellValue() );
-									break;
-									
-								case 9:
-									params.put( "earfcn", cell.getStringCellValue() );
-									break;
-									
-								case 10:
-									params.put( "mbsfn", cell.getStringCellValue() );
-									break;
-									
-								case 11:
-									params.put( "mbmsServiceAreaId", cell.getNumericCellValue() );
-									break;
-									
-								case 12:
-									params.put( "createAt", cell.getDateCellValue() );
-									break;
-									
-								case 13:
-									params.put( "updateAt", cell.getDateCellValue() );
-									break;
-									
-								case 14:
-									params.put( "city", cell.getStringCellValue() );
-									break;
-									
-								case 15:
-									params.put( "bandwidth", cell.getNumericCellValue() );
-									break;
-    	                 
-								default:
-									break;
+							if( cell.getCellType() == Cell.CELL_TYPE_NUMERIC ) {
+								params.put( columnList.get( cellnum ), cell.getNumericCellValue() );
+							} else if( cell.getCellType() == Cell.CELL_TYPE_STRING ) {
+								params.put( columnList.get( cellnum ), cell.getStringCellValue() );
+							} else if( cell.getCellType() == Cell.CELL_TYPE_BOOLEAN ) {
+								params.put( columnList.get( cellnum ), cell.getBooleanCellValue() );
+							} else if( cell.getCellType() == Cell.CELL_TYPE_BLANK ) {
+								params.put( columnList.get( cellnum ), "" );
+							} else {
+								if( cellnum == 12 || cellnum == 13 ) {
+									params.put( columnList.get( cellnum ), cell.getDateCellValue() );
+								} else {
+									params.put( columnList.get( cellnum ), cell.getStringCellValue() );
+								}
 							}
+							
 						}
 						//logger.error("\n CELL __ [params ] => " + params.toString());
 					}
