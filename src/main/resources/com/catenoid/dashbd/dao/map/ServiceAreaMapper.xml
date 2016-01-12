@@ -3,7 +3,7 @@
 <mapper namespace="com.catenoid.dashbd.dao.ServiceAreaMapper" >
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.ServiceArea" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="bandwidth" property="bandwidth" jdbcType="INTEGER" />
+    <result column="bandwidth" property="bandwidth" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="city" property="city" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
@@ -11,7 +11,7 @@
   </resultMap>
   <resultMap id="ServiceAreaEnbApMap" type="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
   	<id column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
-  	<result column="service_area_bandwidth" property="serviceAreaBandwidth" jdbcType="INTEGER" />
+  	<result column="service_area_bandwidth" property="serviceAreaBandwidth" jdbcType="BIGINT" />
   	<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
   	<result column="service_area_city" property="serviceAreaCity" jdbcType="VARCHAR" />
   	<result column="enb_ap_id" property="enbApId" jdbcType="INTEGER" />
@@ -52,7 +52,7 @@
 
 	<resultMap id="ServiceAreaEnbAp" type="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
 		<id column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
-		<result column="service_area_bandwidth" property="serviceAreaBandwidth" jdbcType="INTEGER" />
+		<result column="service_area_bandwidth" property="bandwidth" jdbcType="DECIMAL" />
 		<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
 		<result column="service_area_city" property="serviceAreaCity" jdbcType="VARCHAR" />
 		<result column="enb_ap_id" property="enbApId" jdbcType="INTEGER" />
@@ -429,20 +429,20 @@
 	</select>
 
 	<select id="getServiceAreaEnbAp" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
-		select 
-			t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
-			t3.name as service_area_name, 
-			t3.city as service_area_city,
-			enb_ap_id, t2.name as enb_ap_name, 
-			t2.longitude as longitude, 
-			t2.latitude as latitude, 
-			t2.plmn as plmn,
-			t2.mbsfn as mbsfn,
-			t1.created_at, t1.updated_at
-			, (select count(*) from service_area_enb_ap t1, enb_ap t2, service_area t3 
-			where 1 = 1 and t1.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
-			and t1.enb_ap_id = t2.id
-			and t1.service_area_id = t3.id) as totalCount
+	select 
+		t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
+		t3.name as service_area_name, 
+		t3.city as service_area_city,
+		enb_ap_id, t2.name as enb_ap_name, 
+		t2.longitude as longitude, 
+		t2.latitude as latitude, 
+		t2.plmn as plmn,
+		t2.mbsfn as mbsfn,
+		t1.created_at, t1.updated_at
+		, (select count(*) from service_area_enb_ap t1, enb_ap t2, service_area t3 
+		where 1 = 1 and t1.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
+		and t1.enb_ap_id = t2.id
+		and t1.service_area_id = t3.id) as totalCount
 	from 
 		service_area_enb_ap t1, enb_ap t2, service_area t3
 	where 1 = 1
@@ -454,6 +454,7 @@
 	order by t1.created_at desc
 	</select>
 	
+	<!-- 
 	<select id="getServiceAreaEnbApOther" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
 		select 
 			t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
@@ -492,7 +493,42 @@
 			and t1.service_area_id = t3.id
 			and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = t1.enb_ap_id)
 	</select>
+	-->
 	
+	<select id="getServiceAreaEnbApOther" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
+		select 
+			t1.service_area_id, 
+			t1.service_area_name, 
+			t2.bandwidth as service_area_bandwidth, 
+			t2.city as service_area_city,
+			t2.id as enb_ap_id, 
+			t2.name as enb_ap_name, 
+			t2.longitude as longitude, 
+			t2.latitude as latitude, 
+			t2.plmn as plmn,
+			t2.mbsfn as mbsfn,
+			t2.created_at, 
+			t2.updated_at
+			, 0 as totalCount
+		from 
+			enb_ap t2 left join
+			( 
+				select t3.id as service_area_id, t3.name as service_area_name, t1.enb_ap_id
+				from 
+					service_area_enb_ap t1, 
+					service_area t3, 
+					(select enb_ap_id, max(service_area_id) as service_area_id, count(*) from service_area_enb_ap where service_area_id != #{serviceAreaId,jdbcType=INTEGER} group by enb_ap_id) t4
+				where 
+					t4.service_area_id = t1.service_area_id
+					and t4.enb_ap_id = t1.enb_ap_id
+					and t1.service_area_id = t3.id 
+			) t1
+		on 1 = 1
+			and t1.enb_ap_id = t2.id
+			and t2.latitude between #{swLat} and #{neLat}
+			and t2.longitude between #{swLng} and #{neLng}
+			and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = t1.enb_ap_id)
+	</select>
 	
 	<select id="getServiceAreaCountByBmSc" resultMap="ServiceAreaCount" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
 	select x.bmsc_id, x.city, count(*) as count
@@ -521,6 +557,7 @@
 	group by a.bmsc_id, a.service_area_id
 	</select>
 	
+	<!-- 
 	<select id="getSeviceAreaByBmScCity" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
 	select a.bmsc_id, a.service_area_id, d.name as service_area_name
 	, (	select count(*) from ( select x.service_area_id
@@ -537,9 +574,31 @@
 	and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
 	and d.id = a.service_area_id
 	group by a.bmsc_id, a.service_area_id, d.name	
+	order by d.created_at desc
 	limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
-
+	-->
+	
+	<select id="getSeviceAreaByBmScCity" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
+	select a.bmsc_id, a.service_area_id, d.name as service_area_name
+	, (	select count(*) from ( select x.service_area_id
+		from bmsc_service_area x, service_area_enb_ap y, enb_ap z
+		where 1 = 1 and x.bmsc_id = #{bmscId,jdbcType=INTEGER} 
+			and y.service_area_id = x.service_area_id and z.id = y.enb_ap_id
+			and z.city = #{serviceAreaCity,jdbcType=VARCHAR}
+		group by x.bmsc_id, x.service_area_id) xx ) as totalCount
+	from bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
+	where 1 = 1
+	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
+	and b.service_area_id = a.service_area_id
+	and c.id = b.enb_ap_id
+	and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
+	and d.id = a.service_area_id
+	group by a.bmsc_id, a.service_area_id, d.name	
+	order by d.created_at desc
+	limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
+	</select>
+	
 	<!-- Service Area 로 방송 스케쥴 요약 정보 조회 -->
 	<select id="getScheduleSummaryByServiceArea" resultMap="ScheduleSummaryByServiceArea" parameterType="com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam" >
 		select 

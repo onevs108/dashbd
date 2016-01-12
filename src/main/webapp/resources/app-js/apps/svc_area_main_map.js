@@ -58,6 +58,10 @@ function createServiceArea() {
 	                title: "Success !",
 	                text: "Service Area 등록이 완료되엇습니다."
 	            });
+	        	
+	        	drawServiceAreaByBmSc($('#bmsc option:selected').val());
+	            $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
+	            
 	    	} else if( data.count == 0 ) {
 	    		swal({
 	                title: "Info !",
@@ -460,7 +464,7 @@ function moveToEnb(bmscId, serviceAreaId)
 						isSameServieArea : true,
 						zIndex: google.maps.Marker.MAX_ZINDEX + 1
 					});
-				} else if( enb_datas[i].serviceAreaId == '' ) {
+				} else if( enb_datas[i].serviceAreaId == '' || enb_datas[i].serviceAreaId == null ) {
 					marker = new google.maps.Marker({
 						position: latLng, 
 						map: map, 
@@ -691,7 +695,7 @@ function drawEnbOthers(bmscId, serviceAreaId) {
 						isSameServieArea : true,
 						zIndex: google.maps.Marker.MAX_ZINDEX + 1
 					});
-				} else if( enb_datas[i].serviceAreaId == '' ) {
+				} else if( enb_datas[i].serviceAreaId == '' || enb_datas[i].serviceAreaId == null ) {
 					marker = new google.maps.Marker({
 						position: latLng, 
 						map: map, 

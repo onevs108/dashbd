@@ -29,6 +29,8 @@ public class ServiceAreaEnbAp {
     private Date updatedAt;
     
     private Integer totalCount;
+    
+    private Long bandwidth;
 
     public Integer getServiceAreaId() {
         return serviceAreaId;
@@ -133,4 +135,12 @@ public class ServiceAreaEnbAp {
 	public void setTotalCount(Integer totalCount) {
 		this.totalCount = totalCount;
 	}
+	
+	public Long getBandWidth() {
+        return bandwidth;
+    }
+
+    public void setBandwidth(Long bandwidth) {
+        this.bandwidth = bandwidth;
+    }
 }
