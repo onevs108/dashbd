@@ -306,13 +306,13 @@ function initMap() {
 	    
 	    if(e.which === 27) { // esc
 	    	for (var i = 0; i < enb_markers.length; i++) {
-				if(enb_markers[i].isSameServieArea === null && typeof variable === "object") {
-					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_gray.png");
-				} else if(enb_markers[i].isSameServieArea) {
+				if( enb_markers[i].isSameServieArea && enb_markers[i].isSameServieArea !== "N" ) {
 					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_red.png");
-				} else {
+				} else if( !enb_markers[i].isSameServieArea ) {
 					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_blue.png");
-				}
+				} else {
+					enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_gray.png");
+				}  
 				
 				enb_markers[i].selected = false;
             }
@@ -371,23 +371,23 @@ function initMap() {
 	            for (var i = 0; i < enb_markers.length; i++) { // looping through my Markers Collection	
 	                if (gribBoundingBox.getBounds().contains(enb_markers[i].getPosition())) 
 	                {
-	                	if(enb_markers[i].isSameServieArea === null && typeof variable === "object") {
-	                		enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
-	                		if( !enb_markers[i].selected ) {
-		                		toAddEnbs.push(enb_markers[i].infoWindowIndex);
-	                		}
-	                	} else if(enb_markers[i].isSameServieArea) {
+	                	if( enb_markers[i].isSameServieArea && enb_markers[i].isSameServieArea !== "N" ) {
 	                		enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_red_on.png");
 	                		if( !enb_markers[i].selected ) {
 	                			toDeleteEnbs.push(enb_markers[i].infoWindowIndex);
 	                		}
-	                	} else {
+	                	} else if( !enb_markers[i].isSameServieArea ) {
 	                		enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_blue_on.png");
 	                		
 	                		if( !enb_markers[i].selected ) {
 		                		toAddEnbs.push(enb_markers[i].infoWindowIndex);
 	                		}
-	                	}
+	                	} else {
+	                		enb_markers[i].setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
+	                		if( !enb_markers[i].selected ) {
+		                		toAddEnbs.push(enb_markers[i].infoWindowIndex);
+	                		}
+	                	}  
 	                	
 	                	enb_markers[i].selected = true;
 	                	
@@ -471,7 +471,7 @@ function moveToEnb(bmscId, serviceAreaId)
 						icon : '/dashbd/resources/img/icon/enb_gray.png',
 						infoWindowIndex : enb_datas[i].enbApId,
 						selected : false,
-						isSameServieArea : null
+						isSameServieArea : 'N'
 					});
 				} else {
 					marker = new google.maps.Marker({
@@ -551,24 +551,24 @@ function moveToEnb(bmscId, serviceAreaId)
 					if(ctlPressed) {
 						if(this.selected) {
 							this.selected = false;
-							if(this.isSameServieArea === null && typeof variable === "object") {
-								this.setIcon("/dashbd/resources/img/icon/enb_gray.png");
-								//toAddEnbs.remove(this.infoWindowIndex);
-								var idx = toAddEnbs.indexOf( this.infoWindowIndex );
-								if(idx != -1) {
-									toAddEnbs.splice(idx, 1);
-								}
-		                	} else if(this.isSameServieArea) {
+							 if( this.isSameServieArea && this.isSameServieArea !== "N") {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_red.png");
 		                		//toDeleteEnbs.remove(this.infoWindowIndex);
 		                		var idx = toDeleteEnbs.indexOf( this.infoWindowIndex );
 								if(idx != -1) {
 									toDeleteEnbs.splice(idx, 1);
 								}
-		                	} else {
+		                	} else if( !this.isSameServieArea ) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_blue.png");
 		                		//toAddEnbs.remove(this.infoWindowIndex);
 		                		var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
+		                	} else {
+								this.setIcon("/dashbd/resources/img/icon/enb_gray.png");
+								//toAddEnbs.remove(this.infoWindowIndex);
+								var idx = toAddEnbs.indexOf( this.infoWindowIndex );
 								if(idx != -1) {
 									toAddEnbs.splice(idx, 1);
 								}
@@ -576,16 +576,16 @@ function moveToEnb(bmscId, serviceAreaId)
 						}
 						else {
 							this.selected = true;
-							if(this.isSameServieArea === null && typeof variable === "object") {
-								this.setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
-								toAddEnbs.push(this.infoWindowIndex);
-		                	} else if(this.isSameServieArea) {
+							if( this.isSameServieArea && this.isSameServieArea !== "N" ) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_red_on.png");
 		                		toDeleteEnbs.push(this.infoWindowIndex);
-		                	} else {
+		                	} else if( !this.isSameServieArea ) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_blue_on.png");
 		                		toAddEnbs.push(this.infoWindowIndex);
-		                	}
+		                	} else {
+								this.setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
+								toAddEnbs.push(this.infoWindowIndex);
+		                	} 
 						}
 						
 						$("#selectedENBs").empty();
@@ -662,6 +662,8 @@ function moveToEnb(bmscId, serviceAreaId)
             $("#selectedENBs").append( "Selected eNBs : " + 0 );
             
             drawEnbOthers(bmscId, serviceAreaId);
+            
+            google.maps.event.addListener(map, 'dragend', function() { alert('map dragged'); } );
 
 		}
 	});
@@ -702,7 +704,7 @@ function drawEnbOthers(bmscId, serviceAreaId) {
 						icon : '/dashbd/resources/img/icon/enb_gray.png',
 						infoWindowIndex : enb_datas[i].enbApId,
 						selected : false,
-						isSameServieArea : null
+						isSameServieArea : 'N'
 					});
 				} else {
 					marker = new google.maps.Marker({
@@ -782,41 +784,41 @@ function drawEnbOthers(bmscId, serviceAreaId) {
 					if(ctlPressed) {
 						if(this.selected) {
 							this.selected = false;
-							if(this.isSameServieArea === null && typeof variable === "object") {
-								this.setIcon("/dashbd/resources/img/icon/enb_gray.png");
-								//toAddEnbs.remove(this.infoWindowIndex);
-								var idx = toAddEnbs.indexOf( this.infoWindowIndex );
-								if(idx != -1) {
-									toAddEnbs.splice(idx, 1);
-								}
-		                	} else if(this.isSameServieArea) {
+							if( this.isSameServieArea && this.isSameServieArea !== "N" ) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_red.png");
 		                		//toDeleteEnbs.remove(this.infoWindowIndex);
 		                		var idx = toDeleteEnbs.indexOf( this.infoWindowIndex );
 								if(idx != -1) {
 									toDeleteEnbs.splice(idx, 1);
 								}
-		                	} else {
+		                	} else if( !this.isSameServieArea ) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_blue.png");
 		                		//toAddEnbs.remove(this.infoWindowIndex);
 		                		var idx = toAddEnbs.indexOf( this.infoWindowIndex );
 								if(idx != -1) {
 									toAddEnbs.splice(idx, 1);
 								}
-		                	}
+		                	} else {
+								this.setIcon("/dashbd/resources/img/icon/enb_gray.png");
+								//toAddEnbs.remove(this.infoWindowIndex);
+								var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
+		                	}  
 						}
 						else {
 							this.selected = true;
-							if(this.isSameServieArea === null && typeof variable === "object") {
-								this.setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
-								toAddEnbs.push(this.infoWindowIndex);
-		                	} else if(this.isSameServieArea) {
+							if( this.isSameServieArea && this.isSameServieArea !== "N" ) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_red_on.png");
 		                		toDeleteEnbs.push(this.infoWindowIndex);
-		                	} else {
+		                	} else if( !this.isSameServieArea ) {
 		                		this.setIcon("/dashbd/resources/img/icon/enb_blue_on.png");
 		                		toAddEnbs.push(this.infoWindowIndex);
-		                	}
+		                	} else {
+								this.setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
+								toAddEnbs.push(this.infoWindowIndex);
+		                	} 
 						}
 						
 						$("#selectedENBs").empty();
