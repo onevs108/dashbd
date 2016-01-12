@@ -4,7 +4,6 @@ var markers = [];
 var default_lat = 36.869872;
 var default_lng = 127.838728;
 var default_zoom = 7;
-//inbo add START
 var g_ServiceAreaId = '';
 var searchDate
 
@@ -21,7 +20,6 @@ $(function() {
 		location.href = "schdMgmtDetail.do?serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
 	});
 });
-//inbo add END
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -34,7 +32,7 @@ function initMap() {
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-function moveToEnb(bmscId, serviceAreaId)
+function moveToEnb(bmscId, serviceAreaId, serviceAreaName)
 {
 
 	clearMarkers();
@@ -78,8 +76,11 @@ function moveToEnb(bmscId, serviceAreaId)
 			
 			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
 			map.setZoom(12);
+			
 		}
 	});
+	
+	
 	
 	var summary_datas = "";
 	$.ajax({
@@ -97,14 +98,14 @@ function moveToEnb(bmscId, serviceAreaId)
 				content += "<div class=\"file\">";
 				content += "<span class=\"corner\"></span>";
 				content += "<div class=\"image\">";
-				content += "<img alt=\"image\" class=\"img-responsive\" src=\"" + summary_datas[i].thumbnail + "\">";
+				content += "<img alt=\"image\" class=\"img-responsive\" src=\"img/p1.jpg\">";
 				content += '</div>';
 				content += "<div class=\"progress progress-mini\">";
 				content += "<div style=\"width: " + summary_datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
 				content += "<div class=\"file-name\">";
-				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + summary_datas[i].serviceType + "</h5>";
-				content += "<small>[" + summary_datas[i].category + "]</small> ";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> Streaming</h5>";
+				content += "<small>[Sports]</small> ";
 				content += summary_datas[i].scheduleName;
 				content += "</div>";
 				content += "</div>";
@@ -136,7 +137,7 @@ function moveToEnb(bmscId, serviceAreaId)
 		success : function(responseData){
 			$("#ajax").remove();
 			bandwidth_data = JSON.parse(responseData);
-			var content = "<h2>" + bandwidth_data.GBRSum + " % is being used</h2>";
+			var content = "<h2>" + bandwidth_data.GBRSum + "% is being used</h2>";
 			content += "<div class=\"progress progress-big\">";
 			content += "<div style=\"width:" + bandwidth_data.GBRSum + "%;\" class=\"progress-bar\"></div>";
 			content += "</div>";
@@ -145,10 +146,9 @@ function moveToEnb(bmscId, serviceAreaId)
             $("#bandwidth").append(content);
 		}
 	});
-	//inbo add START
+	
 	g_ServiceAreaId = serviceAreaId;
 	callTimetable('', g_ServiceAreaId);
-	//inbo add END
 }
 
 function getParameter(name) {
@@ -186,13 +186,13 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
             	//options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
             	
-            	if( i % 2 == 0 ) {
+            	if(i%2 == 0) {
             		options += "<tr class=\"footable-even\" style=\"display: table-row;\"><td>";
             	} else {
             		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
             	}
             	options += "<span class=\"footable-toggle\"></span>";
-            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ");\">";
+            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + datas[i].serviceAreaName + ");\">";
             	options += datas[i].serviceAreaId;
             	options += "</a>";
 				options += "</td><td>";
@@ -215,7 +215,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             $("#service_area").append(options);
             
             $('.footable').footable();
-            //$('.footable2').footable();
+            $('.footable2').footable();
             
             /*
             // Pagination
@@ -331,14 +331,14 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
 				content += "<div class=\"file\">";
 				content += "<span class=\"corner\"></span>";
 				content += "<div class=\"image\">";
-				content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
+				content += "<img alt=\"image\" class=\"img-responsive\" src=\"img/p1.jpg\">";
 				content += '</div>';
 				content += "<div class=\"progress progress-mini\">";
 				content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
 				content += "<div class=\"file-name\">";
-				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
-				content += "<small>[" + datas[i].category + "]</small> ";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> Streaming</h5>";
+				content += "<small>[Sports]</small> ";
 				content += datas[i].scheduleName;
 				content += "</div>";
 				content += "</div>";
@@ -373,6 +373,104 @@ function clearMarkers() {
 	markers = [];
 }
 
+function callTimetable(bmscId, serviceAreaId_val){
+	var param = {
+			bmscId : bmscId
+			, serviceAreaId : serviceAreaId_val
+			, searchDate	: searchDate
+		};
+		
+		$.ajax({
+			type : "POST",
+			url : "getSchedule.do",
+			data : param,
+			dataType : "json",
+			success : function( data ) {
+				setTimeTable(data);
+		
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+}
 
+
+function setTimeTable(data ){
+	var contents = data.contents;
+	var maxPosition = data.maxPosition;
+	var viewStartHour = data.viewStartHour;
+	var timetable = new Timetable();
+	//현재시점에서 2시전, 끝까지.
+	timetable.setScope(viewStartHour,0);
+	var arrayPosition = [];
+	
+	for (var i = 0; i < maxPosition; i++){
+		arrayPosition[i] = 'position' + i;
+		console.log('idx=', i , ', ap=',arrayPosition[i]);
+	}
+	
+	timetable.addLocations(arrayPosition);
+	var start_hour = 0
+	var start_mins = 0;
+	var end_hour = 0;
+	var end_mins = 0;
+	
+	for ( var i=0; i < contents.length; i++) {
+		var name = contents[i].name;
+		var start_year = contents[i].start_year;
+		var start_month = contents[i].start_month;
+		var start_day = contents[i].start_day;
+		start_hour = contents[i].start_hour;
+		start_mins = contents[i].start_mins;
+		
+		var end_year = contents[i].end_year;
+		var end_month = contents[i].end_month;
+		var end_day = contents[i].end_day;
+		end_hour = contents[i].end_hour;
+		end_mins = contents[i].end_mins;
+		
+		var position = 'position' + contents[i].depthPosition;
+		console.log('idx=', i ,', position =' , position);
+		timetable.addEvent(contents[i].NAME, position, 
+									new Date(start_year,start_month, start_day,start_hour,start_mins ),
+				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
+				 					'');
+	}
+	
+	var renderer = new Timetable.Renderer(timetable);
+	renderer.draw('.timetable');
+	setTimeline(maxPosition, viewStartHour);
+}
+
+
+function setTimeline(maxRow, viewStartHour) {
+   	
+   if(jQuery(".timeline").length == 0){
+      jQuery(".room-timeline").prepend("<div style='width:100%;overflow: visible;'><hr class='timeline'/></div>") 
+    }
+	
+    var timeline = jQuery(".timeline");  
+
+    var now = moment();
+    var day = parseInt(now.format("e"))
+    var width =   24;
+    var height =  46;
+    
+    //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;;
+    var position = ((now.hours() - viewStartHour) + (now.minutes() / 60)) * 4 ;
+    
+    console.log('now.hours()=',now.hours(), ', height=',height,', left=',left,', position=',position);
+    
+    var rowsHeight= height * maxRow ;
+    var left = width * position;
+    console.log('top=',top);
+    
+    timeline
+    .css('left',left+"px")
+    .css('height',rowsHeight+"px")
+    //.css('top',top+"px") 
+
+}
 
 

@@ -17,9 +17,8 @@ $(document).ready(function()
     
     $('#bmsc').change(function(){
         //alert( $('#bmsc option:selected').val() );
-    	//inbo add START
-    	drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
-    	//inbo add END
+        drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
+        callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);
     });
 });
 
