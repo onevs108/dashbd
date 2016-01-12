@@ -1,3 +1,22 @@
+//inbo add START
+var g_ServiceAreaId = '';
+var searchDate
+
+$(function() {
+
+	searchDate = $("#searchDate").val();
+	//callTimetable(g_ServiceAreaId, searchDate);
+	
+	$("#btnScheduleDetail").click(function() {
+		if (g_ServiceAreaId == ''){
+			alert('Please, choose ServiceArea.')
+			return;
+		}
+		location.href = "schdMgmtDetail.do?serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
+	});
+});
+//inbo add END
+
 function callTimetable(bmscId, serviceAreaId_val){
 	var param = {
 			bmscId : bmscId

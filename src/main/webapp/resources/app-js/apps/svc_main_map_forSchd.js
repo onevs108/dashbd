@@ -4,24 +4,7 @@ var markers = [];
 var default_lat = 36.869872;
 var default_lng = 127.838728;
 var default_zoom = 7;
-//inbo add START
-var g_ServiceAreaId = '';
-var searchDate
 
-$(function() {
-
-	searchDate = $("#searchDate").val();
-	//callTimetable(g_ServiceAreaId, searchDate);
-	
-	$("#btnScheduleDetail").click(function() {
-		if (g_ServiceAreaId == ''){
-			alert('Please, choose ServiceArea.')
-			return;
-		}
-		location.href = "schdMgmtDetail.do?serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
-	});
-});
-//inbo add END
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {

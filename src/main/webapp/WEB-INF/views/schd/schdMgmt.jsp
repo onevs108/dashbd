@@ -51,9 +51,10 @@
 	
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="../resources/js/markerwithlabel.js"></script>
+	<script src="../resources/app-js/apps/svc_schd.js"></script>
 	<script src="../resources/app-js/apps/svc_main_forSchd.js"></script>
 	<script src="../resources/app-js/apps/svc_main_map_forSchd.js"></script>
-	<script src="../resources/app-js/apps/svc_schd.js"></script>
+	
         
 	<style type="text/css">
 	.labels {
@@ -205,7 +206,7 @@
 					<div class="ibox float-e-margins">
 						<div class="ibox-content">
 							<div>
-								<h2>Service Area Mgmt</h2>
+								<h2>Schedule Mgmt</h2>
 							</div>
 							<br>
 							<div class="row">
