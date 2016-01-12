@@ -537,33 +537,66 @@ function moveToEnbWithBounds( bmscId, serviceAreaId, lat, lng )
 			for( var i = 0; i < enb_datas.length; i++ ) {
 				var latLng = new google.maps.LatLng( enb_datas[i].latitude, enb_datas[i].longitude );
 				var marker;
-								
+				var thisIcon = "";
+				var thisSelected = false;
+				var isContains = -1;
+				
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
+					isContains = toDeleteEnbs.indexOf( enb_datas[i].enbApId );
+					//alert( "red=" + isContains );
+					if( isContains != -1 ) {
+						thisIcon = '/dashbd/resources/img/icon/enb_red_on.png';
+						thisSelected = true;
+					} else {
+						thisIcon = '/dashbd/resources/img/icon/enb_red.png';
+						thisSelected = false;
+					}
+					
 					marker = new google.maps.Marker({
 						position: latLng, 
 						map: map, 
-						icon : '/dashbd/resources/img/icon/enb_red.png',
+						icon : thisIcon,
 						infoWindowIndex : enb_datas[i].enbApId,
-						selected : false,
+						selected : thisSelected,
 						isSameServieArea : true,
 						zIndex: google.maps.Marker.MAX_ZINDEX + 1
 					});
 				} else if( enb_datas[i].serviceAreaId == '' || enb_datas[i].serviceAreaId == null ) {
+					isContains = toAddEnbs.indexOf( enb_datas[i].enbApId );
+					//alert( "gray=" + isContains );
+					if( isContains != -1 ) {
+						thisIcon = '/dashbd/resources/img/icon/enb_gray_on.png';
+						thisSelected = true;
+					} else {
+						thisIcon = '/dashbd/resources/img/icon/enb_gray.png';
+						thisSelected = false;
+					}
+					
 					marker = new google.maps.Marker({
 						position: latLng, 
 						map: map, 
-						icon : '/dashbd/resources/img/icon/enb_gray.png',
+						icon : thisIcon,
 						infoWindowIndex : enb_datas[i].enbApId,
-						selected : false,
+						selected : thisSelected,
 						isSameServieArea : 'N'
 					});
 				} else {
+					isContains = toAddEnbs.indexOf( enb_datas[i].enbApId );
+					//alert( "blue=" + isContains );
+					if( isContains != -1 ) {
+						thisIcon = '/dashbd/resources/img/icon/enb_blue_on.png';
+						thisSelected = true;
+					} else {
+						thisIcon = '/dashbd/resources/img/icon/enb_blue.png';
+						thisSelected = false;
+					}
+					
 					marker = new google.maps.Marker({
 						position: latLng, 
 						map: map, 
-						icon : '/dashbd/resources/img/icon/enb_blue.png',
+						icon : thisIcon,
 						infoWindowIndex : enb_datas[i].enbApId,
-						selected : false,
+						selected : thisSelected,
 						isSameServieArea : false
 					});
 				}
