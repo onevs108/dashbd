@@ -411,12 +411,6 @@ function initMap() {
 	    });
 	});
 	// mouse drag end
-
-	//map.addListener('center_changed', function() {
-		//alert("1=[" + map.getCenter().lat() + "]");
-		//moveToEnbWithBounds( bmscId, serviceAreaId, map.getCenter().lat(), map.getCenter().lng() );
-	//});
-	
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
@@ -457,85 +451,7 @@ function moveToEnb(bmscId, serviceAreaId)
 			options += "<tbody>";
 			
 			for(var i = 0; i < enb_datas.length; i++) {
-				
-				if( i == 0 ) {
-					options += "<tr>";
-				}
-				else if( i % 3 == 0 ) {
-					options += "</tr><tr>";
-				}
-				options += "<td>";
-				options += "<a href=\"javascript:moveToSelectedEnb(" + enb_datas[i].latitude + ", " + enb_datas[i].longitude + ");\">";
-				options += enb_datas[i].enbApId;
-				options += "</a>";
-				options += "</td>";
-				options += "<td>";
-				options += enb_datas[i].enbApName;
-				options += "</td>";
-			}
-			
-			if( dataLen % 3 == 0 ) {
-				options += "</tr>";
-			} else if( dataLen % 3 == 1 ) {
-				options += "<td></td></tr>";
-			} else if( dataLen % 3 == 2 ) {
-				options += "<td></td><td></td></tr>";
-			}
-			options += "</tbody>";
-			if( dataLen > 10 ) {
-				options += "<tfoot><tr>";
-				options += "<td colspan=\"6\">";
-				options += "<ul class=\"pagination pull-right\"></ul>";
-				options += "</td>";
-				options += "</tr></tfoot>";
-			}
-			options += "</table>";
-
-			$("#enb_table").empty();
-            $("#enb_table").append(options);
-            
-            $('.footable').footable();
-            
-            $("#selectedSvcArea").empty();
-            $("#selectedSvcArea").append("Service Area : " + serviceAreaId);
-            
-            $("#selectedENBs").empty();
-            selectedENBsCount = enb_datas.length;
-            $("#selectedENBs").append( "Selected eNBs : " + 0 );
-            
-            map.setZoom( 12 );
-            moveToEnbWithBounds(bmscId, serviceAreaId, enb_datas[0].latitude, enb_datas[0].longitude);
-		}
-	});
-}
-
-function moveToEnbWithBounds( bmscId, serviceAreaId, lat, lng )
-{
-	google.maps.event.clearListeners( map, 'idle' );
-	clearMarkers();
-	clearEnbMarkers();
-	
-	map.setCenter( new google.maps.LatLng( lat, lng ) );
-	//map.setZoom( 12 );
-	
-	var bounds = map.getBounds();
-
-    var ne = bounds.getNorthEast();
-    var sw = bounds.getSouthWest();
-    
-	$.ajax({
-		url : "/dashbd/api/getServiceAreaEnbApWithBounds.do",
-		type: "get",
-		data : { "serviceAreaId" : serviceAreaId, "swLat" : sw.lat(), "swLng" : sw.lng(), "neLat" : ne.lat(), "neLng" : ne.lng() },
-		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-		success : function( responseData ) {
-			$("#ajax").remove();
-			var enb_datas = JSON.parse( responseData );
-			var dataLen = enb_datas.length;
-			var options = "";
-			
-			for( var i = 0; i < enb_datas.length; i++ ) {
-				var latLng = new google.maps.LatLng( enb_datas[i].latitude, enb_datas[i].longitude );
+				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
 				var marker;
 								
 				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
@@ -694,17 +610,63 @@ function moveToEnbWithBounds( bmscId, serviceAreaId, lat, lng )
 				});
 				
 				enb_markers.push(marker);
+				
+				if( i == 0 ) {
+					options += "<tr>";
+				}
+				else if( i % 3 == 0 ) {
+					options += "</tr><tr>";
+				}
+				options += "<td>";
+				options += "<a href=\"javascript:moveToSelectedEnb(" + enb_datas[i].latitude + ", " + enb_datas[i].longitude + ");\">";
+				options += enb_datas[i].enbApId;
+				options += "</a>";
+				options += "</td>";
+				options += "<td>";
+				options += enb_datas[i].enbApName;
+				options += "</td>";
 			}
+			
+			if( dataLen % 3 == 0 ) {
+				options += "</tr>";
+			} else if( dataLen % 3 == 1 ) {
+				options += "<td></td></tr>";
+			} else if( dataLen % 3 == 2 ) {
+				options += "<td></td><td></td></tr>";
+			}
+			options += "</tbody>";
+			if( dataLen > 10 ) {
+				options += "<tfoot><tr>";
+				options += "<td colspan=\"6\">";
+				options += "<ul class=\"pagination pull-right\"></ul>";
+				options += "</td>";
+				options += "</tr></tfoot>";
+			}
+			options += "</table>";
+
+			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
+			map.setZoom(12);
+			
+			//console.debug(options);
+			$("#enb_table").empty();
+            $("#enb_table").append(options);
+            
+            $('.footable').footable();
+            
+            $("#selectedSvcArea").empty();
+            $("#selectedSvcArea").append("Service Area : " + serviceAreaId);
+            
+            $("#selectedENBs").empty();
+            selectedENBsCount = enb_datas.length;
+            //$("#selectedENBs").append("Selected eNBs : " + selectedENBsCount);
+            $("#selectedENBs").append( "Selected eNBs : " + 0 );
+            
+            drawEnbOthers(bmscId, serviceAreaId);
+            
+            google.maps.event.addListener(map, 'dragend', function() { alert('map dragged'); } );
+
 		}
 	});
-	
-	//google.maps.event.clearListeners(map, 'bounds_changed');
-	google.maps.event.addListener( map, 'idle', function() {
-    	//alert("2=[" + map.getCenter().lat() + "]");
-    	moveToEnbWithBounds( bmscId, serviceAreaId, map.getCenter().lat(), map.getCenter().lng() );
-    } );
-    
-
 }
 
 function drawEnbOthers(bmscId, serviceAreaId) {

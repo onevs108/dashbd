@@ -55,6 +55,8 @@ public interface ServiceAreaMapper {
     
     List<ServiceAreaEnbAp> getServiceAreaEnbAp(HashMap<String, Object> example);
     
+    List<ServiceAreaEnbAp> getServiceAreaEnbApWithBounds(HashMap<String, Object> example);
+    
     List<ServiceAreaEnbAp> getServiceAreaEnbApOther(HashMap<String, Object> example);
     
     List<ServiceAreaCount> getServiceAreaCountByBmSc(BmscServiceAreaSearchParam searchParm);
