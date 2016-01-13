@@ -3,7 +3,7 @@
 <mapper namespace="com.catenoid.dashbd.dao.ContentsMapper" >
 
 	<select id="selectContents" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT id cid, title, category, duration , 
+		SELECT cid, title, category, duration , 
 				(select path from contents_images where cid = content_id and type = 'thumbnail' order by id desc limit 1) path
 				, (select count(*) from contents
 							WHERE 1=1
@@ -14,7 +14,11 @@
 						AND category like concat('%',#{category} , '%')
 					</if>
 					)as totalCount 
-		FROM contents
+		FROM 
+		(
+			select id cid, title, category, duration
+			from contents
+		) x
 		WHERE 1=1
 		<if test="title != null and title !=''" >
 			AND title like concat('%',#{title} , '%')
