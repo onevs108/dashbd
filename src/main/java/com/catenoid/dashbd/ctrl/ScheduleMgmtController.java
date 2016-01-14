@@ -43,7 +43,7 @@ import com.catenoid.dashbd.util.Utils;
 public class ScheduleMgmtController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ScheduleMgmtController.class);
-	long transID = 0;
+	long transID = 101;	//101 ~ 65535
 	@Autowired
 	private SqlSession sqlSession;
 	@Autowired
@@ -240,8 +240,12 @@ public class ScheduleMgmtController {
 		logger.info("schedule ");
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		Map<String, String> mapContentUrl = mapper.selectSchduleContentURL(params);
 		Map<String, String> mapSchedule = mapper.selectSchduleTime(params);
+		
 		mv.addObject( "mapSchedule", mapSchedule );
+		mv.addObject( "mapContentUrl", mapContentUrl );
 		return mv;
 	}
 	
@@ -375,7 +379,6 @@ public class ScheduleMgmtController {
 		if (dateTime == null)
 			return null;
 		
-		
 		dateTime = dateTime.replaceAll("-", "");
 		dateTime = dateTime.replaceAll(":", "");
 		dateTime = dateTime.replaceAll("T", "");
@@ -388,7 +391,10 @@ public class ScheduleMgmtController {
 	}
 
 	private String makeTransId() {
-		return System.currentTimeMillis() + "" + transID++;
+		if (transID >=  65535 )
+			transID = 101;
+		
+		return "" + ++transID;
 	}
 
 	private Map<String, Object> makeRetMsg(String code, String resStr) {
@@ -411,5 +417,4 @@ public class ScheduleMgmtController {
 		Map <String, String> retmap = mapper.selectGBRSum(params);
 		return String.valueOf(retmap.get("GBRSum"));
 	}
-	
 }

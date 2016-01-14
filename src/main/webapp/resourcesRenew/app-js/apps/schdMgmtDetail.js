@@ -284,27 +284,20 @@ function setTimeTable(data ){
 			   week:  "YYYY MMMM",
 			   day: 'YYYY-MM-DD dddd'
 			},
-			
 		selectable: true,
 		selectHelper: true,
 		select: function(start, end) {
-			var title = prompt('Event Title:');
-			var eventData;
-			if (title) {
-				eventData = {
-					title: title,
-					start: start,
-					end: end
-				};
-				$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+			//console.log('select');
+			var ret = confirm('Do you want to add a new content?');
+			if (ret) {
+				location.href='http://localhost:8080/dashbd/view/addContent.do';
 			}
-			console.log('select');
-			$('#calendar').fullCalendar('unselect');
 		},
 		editable: true,
 		eventLimit: true, // allow "more" link when too many events
 		events: events,
-		drop: function(event, dayDelta,minuteDelta,allDay,revertFunc) {
+		drop: function(event, dayDelta, minuteDelta,allDay,revertFunc) {
+			console.log('drop');
 			content_id = $(this).attr("data-id");
 			gTitle = $(this).attr("data-title");
 			gDuration = $(this).attr("data-duration");
@@ -313,7 +306,7 @@ function setTimeTable(data ){
 		},
 		
 		eventReceive: function(event) { // called when a proper external event is dropped
-			// console.log('eventReceive', event, ',' , event.start.format(), ',' , content_id);
+			console.log('eventReceive', event, ',' , event.start.format(), ',' , content_id);
 			g_name = event.title;
 			var startTime = event.start.format();
 			var hours = gDuration.substring(0,2);
@@ -340,7 +333,7 @@ function setTimeTable(data ){
 			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 		},
 		eventDrop: function(event) { // called when an event (already on the calendar) is moved
-			console.log('eventDrop2', event, ',',event.start.format(), ',' , event.end.format() , event.url);
+			console.log('eventDrop', event, ',',event.start.format(), ',' , event.end.format() , event.url);
 			var ret = confirm("It's going to update. are you sure??");
 			if (ret)
 				modifySchedule(event.url, event.start.format(), event.end.format());
@@ -348,7 +341,7 @@ function setTimeTable(data ){
 				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 		}
 		,eventResize: function(event, delta, revertFunc){
-			console.log('event eventResize', event, ',',event.start.format(), ',' , event.end.format() , event.url);
+			console.log('eventResize', event, ',',event.start.format(), ',' , event.end.format() , event.url);
 			console.log('delta', delta, 'revertFunc', revertFunc);
 			var ret = confirm("It's going to update. are you sure??");
 			
@@ -358,8 +351,8 @@ function setTimeTable(data ){
 				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 		}
 		, eventDragStop: function( event, jsEvent, ui, view ) { 
-			//console.log('fc-left=',event , jsEvent, ui, view);
-			console.log(event.url, ',', jsEvent.clientX, ',', jsEvent.clientY);
+			console.log('eventDragStop');
+			//console.log(event.url, ',', jsEvent.clientX, ',', jsEvent.clientY);
 			
 			var trashEl = jQuery('#calendarTrash');
 		    var ofs = trashEl.offset();
@@ -383,8 +376,6 @@ function setTimeTable(data ){
 		    	
 		    }
 	    }
-		
-		
 		/*
 		, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
 			console.log('eventAfterRender..', event);
@@ -395,7 +386,7 @@ function setTimeTable(data ){
 	    }
 		*/
 		, viewRender: function(view, element){
-			console.log(view, element);
+			console.log('viewRender', view, element);
 			var now4compare = replaceAll4Day(moment().format());
 			var viewDay4compare = replaceAll4Day(view.start.format());
 			// console.log(now4compare , viewDay4compare);
@@ -405,11 +396,8 @@ function setTimeTable(data ){
 //			setInterval(function () {
 //		        setTimeline(view);
 //			}, 5000);
-			
 		}
-		
 	});
-	
 	
 	 var fbg = $('#calendar').find('.fc-button-group');
 	 //fbg.append('<div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"></span></div>');

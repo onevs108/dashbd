@@ -255,12 +255,12 @@ public class XmlManager {
 			content.addContent(deliveryInfo);
 			schedule.addContent(content);
 			
-			Element postFileRepair = new Element("postFileRepair");
-			postFileRepair.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
-			postFileRepair.setAttribute(new Attribute("randomTime", params.get("randomTime")));
-			postFileRepair.setAttribute(new Attribute("cancelled", "false"));
+			Element fileRepair = new Element("fileRepair");
+			fileRepair.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
+			fileRepair.setAttribute(new Attribute("randomTime", params.get("randomTime")));
+			fileRepair.setAttribute(new Attribute("cancelled", "false"));
 			
-			associatedDelivery.addContent(postFileRepair);
+			associatedDelivery.addContent(fileRepair);
 			associatedDelivery.addContent(receptionReport);
 			
 			fileDownload.addContent(name);
@@ -272,7 +272,7 @@ public class XmlManager {
 			
 			service.addContent(fileDownload);
 		}
-		else{
+		else{ //streaming
 			service.setAttribute(new Attribute("serviceType", "streaming"));
 			Element streaming = new Element("streaming");
 			streaming.setAttribute(new Attribute("serviceId", params.get("serviceId"))); 
@@ -281,7 +281,7 @@ public class XmlManager {
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));
 			
 			Element contentSet = new Element("contentSet");
-			contentSet.setAttribute(new Attribute("contentSetId", String.valueOf(params.get("BCID")))); 					
+			contentSet.setAttribute(new Attribute("contentSetId", "1")); 					
 			contentSet.setAttribute(new Attribute("cancelled", "false"));				
 								
 			Element serviceArea = new Element("serviceArea");
@@ -376,10 +376,10 @@ public class XmlManager {
 			content.addContent(deliveryInfo);
 			schedule.addContent(content);
 			Element associatedDelivery = new Element("associatedDelivery");
-			Element postFileRepair = new Element("postFileRepair");
-			postFileRepair.setAttribute(new Attribute("offsetTime", "5"));
-			postFileRepair.setAttribute(new Attribute("randomTime", "300"));
-			postFileRepair.setAttribute(new Attribute("cancelled", "false"));
+			Element fileRepair = new Element("fileRepair");
+			fileRepair.setAttribute(new Attribute("offsetTime", "5"));
+			fileRepair.setAttribute(new Attribute("randomTime", "300"));
+			fileRepair.setAttribute(new Attribute("cancelled", "false"));
 			
 			Element receptionReport = new Element("receptionReport");
 			receptionReport.setAttribute(new Attribute("reportType", "RAck"));
@@ -387,7 +387,7 @@ public class XmlManager {
 			receptionReport.setAttribute(new Attribute("offsetTime", "305"));
 			receptionReport.setAttribute(new Attribute("randomTime", "300"));
 			
-			associatedDelivery.addContent(postFileRepair);
+			associatedDelivery.addContent(fileRepair);
 			associatedDelivery.addContent(receptionReport);
 			
 			fileDownload.addContent(name);

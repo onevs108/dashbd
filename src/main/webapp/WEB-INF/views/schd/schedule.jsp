@@ -29,100 +29,14 @@
 	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
 	<script src="../resourcesRenew/js/inspinia.js"></script>
 	<script src="../resourcesRenew/app-js/apps/common.js"></script>
-
+	<script src="../resourcesRenew/app-js/apps/schedule.js"></script>
 	<!-- Page-Level Scripts -->
-	<script>
-	$(document).ready(function() {
-		$("#serviceType").on("change", function() {
-			//alert($(this).val());
-			if ( $(this).val() == "fileDownload" ) {
-				//filedownload
-				$("#bcType_fileDownload").show();
-				$("#bcType_serviceClass").hide();
-				$("#bcType_streaming").hide();
-				$("#bcType_streaming2").hide();
-			}else{
-				$("#bcType_fileDownload").hide();
-				$("#bcType_serviceClass").show();
-				$("#bcType_streaming").show();
-				$("#bcType_streaming2").show();
-			}
-		});
-		
-		
-		$("#btnCancel").click(function() {
-			var tmpServiceAreaId = $("#serviceAreaId").val();
-			var searchDate = $("#searchDate").val();
-			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
-		});
-		
-		$("#btnDelete").click(function() {
-			if (!confirm("It will be deleted. do you want this??"))
-				return;
-			var tmpServiceAreaId = $("#serviceAreaId").val();
-			var searchDate = $("#searchDate").val();
-			
-			var param = {
-					id : $("#id").val(),
-					BCID : $("#BCID").val()
-				};
-			$.ajax({
-				type : "POST",
-				url : "delSchedule.do",
-				data : param,
-				dataType : "json",
-				success : function( data ) {
-					outMsgForAjax(data);
-					location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
-				},
-				error : function(request, status, error) {
-					alert("request=" +request +",status=" + status + ",error=" + error);
-				}
-			});
-		});
-		
-		$("#frmScheduleReg").ajaxForm({
-			dataType : "json",
-			beforeSubmit : function(data, frm, opt) {
-				
-				if (!confirm('are you sure?')) {
-					return false;
-				}
-				
-			},
-			success : function(result) {
-				outMsgForAjax(result);
-				var tmpServiceAreaId = $("#serviceAreaId").val();
-				var searchDate = $("#searchDate").val();
-				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
-			},
-			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
-			}
-		});
-	});
-	
-
-	
-	function validation( from ) {
-		var $form = from;
-		var retFlag = true;
-		console.log('here0');
-		$form.find("input").each(function(idx) {
-			if (retFlag && $(this).attr("required")) {
-				console.log('here1');
-				if ($(this).val() == '') {
-					console.log('here2');
-					alert($(this).attr("alt") + '필수항목 입니다.');
-					retFlag = false;
-					
-				}
-			}
-		});
-		return retFlag;
-	}
-
-</script>
+<style>
+	ul
+{
+    list-style-type: none;
+}
+</style>
 </head>
 <body>
 <div id="wrapper">
@@ -305,13 +219,11 @@
                                         <input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}" placeholder="en">
                                     </div>
                              </div>
-                             <div id="bcType_serviceClass" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">
-                              						style="display:none"</c:if>>
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">Service class</label>
-                                        <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
-                                    </div>
-                               </div>
+                             
+                             	<div class="form-group">
+                                    <label class="col-sm-2 control-label">Service class</label>
+                                    <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
+                                </div>
                                 <div class="hr-line-dashed" style="margin-top:-10px; padding-bottom:15px;"></div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Transfer Config</label>
                                     <div class="col-sm-10">
@@ -368,15 +280,13 @@
                                                 <div class="form-group"><label class="col-sm-2 control-label">Type</label>
                                                     <div class="col-sm-10">
                                                       <select class="input form-control"  id="fecType" name="fecType">
-                                                                <option value="NoFec">NoFec</option>
-                                                                <option value="Streaming">Streaming</option>
-                                                                <option value="Carousel MultiMedia Files">Carousel MultiMedia Files</option>
-                                                                <option value="Carousel Single File">Carousel Single File</option>
+                                                                <option value="NoFEC">NoFEC</option>
+                                                                <option value="Raptor">Raptor</option>
                                                             </select>
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-sm-2 control-label">Ratio</label>
-                                                    <div class="col-sm-10"><input type="text" class="form-control" id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}">
+                                                    <div class="col-sm-10"><input type="text" class="form-control" id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
@@ -390,7 +300,12 @@
                                 </div>
                                 <div class="hr-line-dashed"></div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Service Area</label>
-                                    <div class="col-sm-4"><input type="text" class="form-control" id="said" name="said" value="${mapSchedule.serviceAreaId}"></div>
+                                    <div class="col-sm-4">
+    	                                <!-- 
+                                    	<input type="text" class="form-control" id="said" name="said" value="${mapSchedule.serviceAreaId}">
+	                                     -->
+                                    	<input type="text" class="form-control" id="said" name="said" required="required">
+                                    </div>
                                     <div class="col-sm-4">
                                         <button type="button" class="btn btn-block btn-default">Add more Service Area</button>
                                     </div>
@@ -436,7 +351,16 @@
 	                                                                            <div class="well">
 	                                                                                <div class="form-group">
 	                                                                                    <label class="col-md-2 control-label">File URI</label>
-	                                                                                    <div class="col-md-10"><input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapSchedule.fileURI}"></div>
+	                                                                                    <div class="col-md-10">
+		                                                                                    <c:if test="${empty mapSchedule.BCID}">
+		                                                                                    	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
+		                                                                                    </c:if>
+	                                                                                    	<c:if test="${not empty mapSchedule.BCID}">
+	                                                                                    		<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapSchedule.fileURI}">
+	                                                                                    	</c:if>
+	                                                                                    </div>
+	                                                                                    
+	                                                                                    
 	                                                                                    <label class="col-md-2 control-label">Start</label>
 	                                                                                    <div class="col-md-4">
 	                                                                                    <c:if test="${empty mapSchedule.BCID}">
@@ -475,8 +399,17 @@
                         <div id="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
                             <div class="form-group"><label class="col-sm-2 control-label">ContentSet</label>
                                 <div class="col-sm-8">
-                                    <div class="form-group"><label class="pull-left" style="padding:7px 0 0 35px">mpd</label>
-                                        <div class="col-sm-6"><input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}"></div>
+                                    <div class="form-group">
+                                    	<label class="pull-left" style="padding:7px 0 0 35px">mpd
+                                    	</label>
+                                        <div class="col-sm-10">
+                                        <c:if test="${empty mapSchedule.BCID}">
+                                        	<input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapContentUrl.url}">
+                                        </c:if>
+                                        <c:if test="${not empty mapSchedule.BCID}">
+	                                        <input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}">
+                                        </c:if>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -487,11 +420,11 @@
                                 <div class="col-sm-8">
                                     <div class="well">
                                                     <div class="form-group">
-                                                        <label class="col-md-3 control-label">Post File Pepair</label>
+                                                        <label class="col-md-3 control-label">File Repair</label>
                                                         <div class="col-md-9">
                                                             <div class="swich m-b-n">
                                                                 <div class="onoffswitch">
-                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="postFileRepair" name="postFileRepair">
+                                                                    <input type="checkbox" class="onoffswitch-checkbox" id="FileRepair" name="FileRepair" <c:if test="${mapSchedule.FileRepair == 'on'}">checked</c:if>>
                                                                     <label class="onoffswitch-label" for="postFileRepair">
                                                                         <span class="onoffswitch-inner"></span>
                                                                         <span class="onoffswitch-switch"></span>
@@ -505,7 +438,7 @@
                                                         <div class="col-md-9">
                                                             <div class="swich m-b-n">
                                                                 <div class="onoffswitch">
-                                                                    <input type="checkbox" checked class="onoffswitch-checkbox" id="receptionReport" name="receptionReport">
+                                                                    <input type="checkbox" class="onoffswitch-checkbox" id="receptionReport" name="receptionReport" <c:if test="${mapSchedule.receptionReport == 'on'}">checked</c:if>>
                                                                     <label class="onoffswitch-label" for="receptionReport">
                                                                         <span class="onoffswitch-inner"></span>
                                                                         <span class="onoffswitch-switch"></span>

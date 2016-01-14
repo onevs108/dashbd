@@ -59,7 +59,7 @@ function setTimeTable(data ){
 	var start_mins = 0;
 	var end_hour = 0;
 	var end_mins = 0;
-	
+	var beforPosition = -1;
 	for ( var i=0; i < contents.length; i++) {
 		var name = contents[i].name;
 		var start_year = contents[i].start_year;
@@ -74,9 +74,14 @@ function setTimeTable(data ){
 		end_hour = contents[i].end_hour;
 		end_mins = contents[i].end_mins;
 		
-		var position = 'position' + contents[i].depthPosition;
+		var position = contents[i].depthPosition;
+		
+		if (position == beforPosition && position != 0 )
+			position--;
+		
+		beforPosition = position;
 		console.log('idx=', i ,', position =' , position);
-		timetable.addEvent(contents[i].NAME, position, 
+		timetable.addEvent(contents[i].NAME, 'position' + position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
 				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
 				 					'');
