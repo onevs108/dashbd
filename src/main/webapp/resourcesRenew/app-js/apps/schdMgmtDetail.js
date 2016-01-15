@@ -288,9 +288,9 @@ function setTimeTable(data ){
 		selectHelper: true,
 		select: function(start, end) {
 			//console.log('select');
-			var ret = confirm('Do you want to add a new content?');
+			var ret = confirm('Do you want to add a new schedule?');
 			if (ret) {
-				location.href='http://localhost:8080/dashbd/view/addContent.do';
+				location.href='/dashbd/view/schedule.do';
 			}
 		},
 		editable: true,

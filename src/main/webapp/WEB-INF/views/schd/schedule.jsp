@@ -212,18 +212,22 @@
                         <div class="row">
                             <form method="get" class="form-horizontal">
                             <div class="form-group">
-						  	<label class="col-sm-2 control-label">Service Name</label>
+						  		<label class="col-sm-2 control-label">Service Name</label>
                                     <div class="col-sm-4"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
-                                	<label class="col-sm-2 control-label">Language</label>
+                                <label class="col-sm-2 control-label">Language</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}" placeholder="en">
                                     </div>
                              </div>
                              
-                             	<div class="form-group">
-                                    <label class="col-sm-2 control-label">Service class</label>
-                                    <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
-                                </div>
+                             <div class="form-group">
+                                 <label class="col-sm-2 control-label">Service class</label>
+                             	    <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
+                             	 <label class="col-sm-2 control-label">Service id</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}">
+                                    </div>
+                             </div>
                                 <div class="hr-line-dashed" style="margin-top:-10px; padding-bottom:15px;"></div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Transfer Config</label>
                                     <div class="col-sm-10">
@@ -301,10 +305,10 @@
                                 <div class="hr-line-dashed"></div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Service Area</label>
                                     <div class="col-sm-4">
+                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
     	                                <!-- 
-                                    	<input type="text" class="form-control" id="said" name="said" value="${mapSchedule.serviceAreaId}">
-	                                     -->
                                     	<input type="text" class="form-control" id="said" name="said" required="required">
+	                                     -->
                                     </div>
                                     <div class="col-sm-4">
                                         <button type="button" class="btn btn-block btn-default">Add more Service Area</button>

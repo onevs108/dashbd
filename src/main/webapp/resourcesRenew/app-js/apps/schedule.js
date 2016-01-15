@@ -104,7 +104,7 @@ function validation( from ) {
 function displayRatio(){
 	if ($("#fecType").val()== 'NoFEC'){
 		$("#fecRatio").prop('disabled', true);
-		$("#fecRatio").val("0");
+		$("#fecRatio").val("");
 	}else{
 		$("#fecRatio").prop('disabled', false);
 	}

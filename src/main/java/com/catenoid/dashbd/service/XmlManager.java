@@ -210,7 +210,12 @@ public class XmlManager {
 		
 		Element FEC = new Element("FEC");
 		FEC.addContent( new Element("fecType").setText(params.get("fecType")));
-		FEC.addContent( new Element("fecRatio").setText(params.get("fecRatio")));
+		String ratio = "0";
+		
+		if (null != params.get("fecRatio") && !"".equals(params.get("fecRatio")))
+			ratio = params.get("fecRatio");
+		
+		FEC.addContent( new Element("fecRatio").setText(ratio));
 
 		transferConfig.addContent(QoS);
 		transferConfig.addContent(FEC);

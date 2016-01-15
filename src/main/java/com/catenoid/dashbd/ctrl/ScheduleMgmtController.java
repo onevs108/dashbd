@@ -284,10 +284,12 @@ public class ScheduleMgmtController {
 			
 			//@ xmlMake & Send, recv
 			int xmlMode = xmlManager.BMSC_XML_UPDATE;
+			/*
 			if (bcid == null || "".equals(bcid)){
 				xmlMode = xmlManager.BMSC_XML_CREATE;
 				params.put("serviceId","urn:3gpp:" + params.get("serviceType") + ":" + transId);
 			}
+			*/
 			
 			params.put("transactionId", transId);
 			params.put("schedule_start", convertMysqlDateFormat(params.get("schedule_start"), false));
