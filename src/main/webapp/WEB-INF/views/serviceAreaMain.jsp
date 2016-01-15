@@ -226,10 +226,13 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-						  	<div class="form-group">
+						  		<div class="form-group">
                                         <label class="control-label" for="status"></label>
                                         <p style="margin-top:5px">
                                         <button type="button" class="btn btn-block btn-default btn-sm demo1" id="btn-add-service-area">Create New Service Area</button>
+                                        </p>
+                                        <p style="margin-top:5px">
+                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="btn-not-mapped-service-area">Not Mapped Service Area</button>
                                         </p>
                                     </div>
                                 </div>

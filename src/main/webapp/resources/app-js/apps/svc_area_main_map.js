@@ -10,13 +10,36 @@ $(document).ready(function()
     });
     
     $('#btn-add-service-area').click(function(){
-    	$("#createServiceAreaLayer").modal();
-    	/*
-        swal({
-            title: "Sorry !",
-            text: "Please Select BMSC first."
-        });
-        */
+    	
+    	if( isEmpty( $('#operator option:selected').val() ) ) {
+    		swal({
+                title: "Sorry !",
+                text: "Please select operator first."
+            });
+    	} else if( isEmpty( $('#bmsc option:selected').val() ) ) {
+    		swal({
+                title: "Sorry !",
+                text: "Please select BM-SC first."
+            });
+    	} else {
+    		$("#createServiceAreaLayer").modal();
+    	}
+    });
+    
+    $('#btn-not-mapped-service-area').click(function() {
+    	if( isEmpty( $('#operator option:selected').val() ) ) {
+    		swal({
+                title: "Sorry !",
+                text: "Please select operator first."
+            });
+    	} else if( isEmpty( $('#bmsc option:selected').val() ) ) {
+    		swal({
+                title: "Sorry !",
+                text: "Please select BM-SC first."
+            });
+    	} else {
+    		getSeviceAreaNotMapped( $('#bmsc option:selected').val() );
+    	}
     });
     
     $('#createSvcAreaBtn').click(function(){
@@ -400,6 +423,8 @@ function createServiceArea( operatorId, bmscId ) {
 	                text: "Service Area 등록이 완료되엇습니다."
 	            });
 	        	
+	        	getSeviceAreaNotMapped( bmscId );
+	        	
 	        	map.setZoom( 12 );
 	            moveToEnbNotMappedSA(bmscId, $('#serviceAreaId').val(), default_center_lat, default_center_lng);
 	            
@@ -422,6 +447,71 @@ function createServiceArea( operatorId, bmscId ) {
             });
         }
 	});
+}
+
+function getSeviceAreaNotMapped( bmscId ) {
+	google.maps.event.clearListeners( map, 'idle' );
+	clearMarkers();
+	clearEnbMarkers();
+	clearDatas();
+	
+	$("#service_area").empty();
+	$("#service_area").append(default_service_area);
+	$("#enb_table").empty();
+	$("#enb_table").append(default_enb_table);
+	$("#selectedSvcArea").empty();
+    $("#selectedENBs").empty();
+	
+    map.setZoom(12);
+    map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
+    
+	$.ajax({
+        url : "/dashbd/api/getSeviceAreaNotMapped.do",
+        type: "get",
+        data : { "bmscId" : bmscId },
+        dateType : 'json',
+        success : function( responseData ) {
+        	$("#ajax").remove();
+            datas = JSON.parse( responseData );
+            var dataLen = datas.length;
+            var options = "";
+            var idx = 0;
+            
+            options += "<div class=\"ibox-title\"><h5>Not Mapped Service Area</h5></div>";
+			options += "<div class=\"ibox-content\">";
+			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+			options += "<tbody>";
+			
+            for( var i = 0; i < dataLen; i++ ) {
+            	if( i % 2 == 0 ) {
+            		options += "<tr class=\"footable-even\" style=\"display: table-row;\"><td>";
+            	} else {
+            		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
+            	}
+            	options += "<span class=\"footable-toggle\"></span>";
+            	options += "<a href=\"javascript:map.setZoom( 12 );moveToEnbNotMappedSA(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + default_center_lat + ", " + default_center_lng + ");\">";
+            	options += datas[i].serviceAreaId;
+            	options += "</a>";
+				options += "</td><td>";
+				options += datas[i].serviceAreaName;
+				options += "</td></tr>";
+            }
+
+            options += "</tbody>";
+            
+            options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            
+            options += "</table></div>";
+            
+            $("#service_area").empty();
+            $("#service_area").append( options );
+            
+            $('.footable').footable();
+        },
+        error : function( xhr, status, error ) {
+        }
+    });
 }
 
 function moveToEnb(bmscId, serviceAreaId)
@@ -747,6 +837,8 @@ function moveToEnbNotMappedSA( bmscId, serviceAreaId, lat, lng )
 	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
 	clearEnbMarkers();
+	
+	$('#toAddENBsServiceAreaId').val(serviceAreaId);
 	
 	map.setCenter( new google.maps.LatLng( lat, lng ) );
 	

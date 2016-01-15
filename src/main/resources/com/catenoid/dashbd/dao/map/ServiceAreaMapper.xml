@@ -874,5 +874,24 @@
 		on 1 = 1
 			and t1.enb_ap_id = t2.id
 	</select>
+	
+	<select id="getSeviceAreaNotMapped" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+	select 
+		a.bmsc_id as bmscId, a.service_area_id as serviceAreaId, b.name as serviceAreaName
+		, (	
+			select count(*) 
+			from bmsc_service_area a, service_area b
+			where 1 = 1
+				and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
+				and b.id = a.service_area_id
+				and not exists ( select service_area_id from service_area_enb_ap where bmsc_id = a.bmsc_id  and service_area_id = a.service_area_id ) 
+		) as totalCount
+	from bmsc_service_area a, service_area b
+	where 1 = 1
+	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
+	and b.id = a.service_area_id
+	and not exists ( select service_area_id from service_area_enb_ap where bmsc_id = a.bmsc_id  and service_area_id = a.service_area_id )
+	order by b.created_at desc
+	</select>
 		 
 </mapper>

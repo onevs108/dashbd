@@ -1761,4 +1761,34 @@ public class ServiceAreaController {
 	        e.printStackTrace();
 	    }
 	}
+    
+    @RequestMapping(value = "/api/getSeviceAreaNotMapped.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getSeviceAreaNotMapped( HttpServletRequest request, HttpServletResponse response ) {
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		HashMap< String, Integer > searchParam = new HashMap();
+		searchParam.put( "bmscId", Integer.valueOf( request.getParameter( "bmscId" ) ) );
+		
+		List<HashMap<String, Object>> datas = mapper.getSeviceAreaNotMapped( searchParam );
+
+		JSONArray array = new JSONArray();
+		for( int i = 0; i < datas.size(); i++ ) {
+			HashMap data = datas.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put( "bmscId", data.get( "bmscId" ) );
+			obj.put( "serviceAreaId", data.get( "serviceAreaId" ) );
+			obj.put( "serviceAreaName", data.get( "serviceAreaName" ) );
+			obj.put( "totalCount", data.get( "totalCount" ) );
+			array.add( obj );
+		}
+
+		try {
+			response.setContentType( "application/x-www-form-urlencoded; charset=utf-8" );
+	        response.getWriter().print( array.toJSONString() );
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+    
 }
