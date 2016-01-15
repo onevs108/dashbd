@@ -225,7 +225,7 @@
                              	    <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
                              	 <label class="col-sm-2 control-label">Service id</label>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}">
+                                        <input type="text" class="form-control" id="serviceId" name="serviceId" value="${mapSchedule.serviceId}">
                                     </div>
                              </div>
                                 <div class="hr-line-dashed" style="margin-top:-10px; padding-bottom:15px;"></div>

@@ -233,11 +233,14 @@ public class XmlManager {
 		receptionReport.setAttribute(new Attribute("cancelled", "false"));
 		receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
 		receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));
+		String serviceId = params.get("serviceId");
+		if (serviceId == null)
+			serviceId = "";
 		
 		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
 			service.setAttribute(new Attribute("serviceType", "fileDownload"));
 			Element fileDownload = new Element("fileDownload");
-			fileDownload.setAttribute(new Attribute("serviceId", params.get("serviceId"))); 
+			fileDownload.setAttribute(new Attribute("serviceId", serviceId)); 
 			Element name = new Element("name");
 			name.setAttribute(new Attribute("id", "1"));										//??
 			name.setText(params.get("name"));
@@ -280,9 +283,8 @@ public class XmlManager {
 		else{ //streaming
 			service.setAttribute(new Attribute("serviceType", "streaming"));
 			Element streaming = new Element("streaming");
-			streaming.setAttribute(new Attribute("serviceId", params.get("serviceId"))); 
+			streaming.setAttribute(new Attribute("serviceId", serviceId)); 
 			streaming.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));				
-			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));
 			
 			Element contentSet = new Element("contentSet");
