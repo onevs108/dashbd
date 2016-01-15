@@ -439,10 +439,7 @@
 		t2.plmn as plmn,
 		t2.mbsfn as mbsfn,
 		t1.created_at, t1.updated_at
-		, (select count(*) from service_area_enb_ap t1, enb_ap t2, service_area t3 
-		where 1 = 1 and t1.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
-		and t1.enb_ap_id = t2.id
-		and t1.service_area_id = t3.id) as totalCount
+		, 1 as totalCount
 	from 
 		service_area_enb_ap t1, enb_ap t2, service_area t3
 	where 1 = 1
@@ -450,6 +447,9 @@
 		and t1.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
 		</if>
 		and t1.enb_ap_id = t2.id
+		<if test="bmscId != null" >
+		and t2.bmsc_id = #{bmscId,jdbcType=INTEGER}
+		</if>
 		and t1.service_area_id = t3.id
 	order by t1.created_at desc
 	</select>
@@ -475,15 +475,61 @@
 				where 1 = 1
 					and latitude between #{swLat} and #{neLat}
 					and longitude between #{swLng} and #{neLng}
+					and bmsc_id = #{bmscId,jdbcType=INTEGER}
+			) t2 left join
+			( 
+				select t3.id as service_area_id, t3.name as service_area_name, t1.enb_ap_id
+				from 
+					service_area_enb_ap t1, 
+					service_area t3
+				where 
+					1 = 1
+					and t3.id = #{serviceAreaId,jdbcType=INTEGER}
+					and t1.service_area_id = t3.id 
+			) t1
+		on 1 = 1
+			and t1.enb_ap_id = t2.id
+		union all
+		select 
+			ifnull( t1.service_area_id, '' ) as service_area_id, 
+			ifnull( t1.service_area_name, '' ) as service_area_name, 
+			t2.bandwidth as service_area_bandwidth, 
+			t2.city as service_area_city,
+			t2.id as enb_ap_id, 
+			t2.name as enb_ap_name, 
+			t2.longitude as longitude, 
+			t2.latitude as latitude, 
+			t2.plmn as plmn,
+			t2.mbsfn as mbsfn,
+			t2.created_at, 
+			t2.updated_at
+			, 0 as totalCount
+		from 
+			(
+				select * from enb_ap
+				where 1 = 1
+					and latitude between #{swLat} and #{neLat}
+					and longitude between #{swLng} and #{neLng}
+					and bmsc_id = #{bmscId,jdbcType=INTEGER}
+					and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = id)
 			) t2 left join
 			( 
 				select t3.id as service_area_id, t3.name as service_area_name, t1.enb_ap_id
 				from 
 					service_area_enb_ap t1, 
 					service_area t3, 
-					(select enb_ap_id, max(service_area_id) as service_area_id, count(*) from service_area_enb_ap where 1 = 1 group by enb_ap_id) t4
+					(
+						select enb_ap_id, max(service_area_id) as service_area_id, count(*) 
+						from service_area_enb_ap 
+						where 
+							1 = 1 
+							and service_area_id != #{serviceAreaId,jdbcType=INTEGER}
+						group by enb_ap_id
+					) t4
 				where 
-					t4.service_area_id = t1.service_area_id
+					1 = 1
+					and t1.service_area_id != #{serviceAreaId,jdbcType=INTEGER}
+					and t4.service_area_id = t1.service_area_id
 					and t4.enb_ap_id = t1.enb_ap_id
 					and t1.service_area_id = t3.id 
 			) t1
@@ -553,6 +599,7 @@
 				where 1 = 1
 					and latitude between #{swLat} and #{neLat}
 					and longitude between #{swLng} and #{neLng}
+					and bmsc_id = #{bmscId,jdbcType=INTEGER}
 					and not exists (select enb_ap_id from service_area_enb_ap x where x.service_area_id = #{serviceAreaId,jdbcType=INTEGER} and x.enb_ap_id = id)
 			) t2 left join
 			( 
@@ -579,7 +626,8 @@
 		where 1 = 1
 			and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
 			and b.service_area_id = a.service_area_id
-			and c.id = b.enb_ap_id		
+			and c.id = b.enb_ap_id
+			and c.bmsc_id = a.bmsc_id		
 		group by a.bmsc_id, a.service_area_id, c.city
 	) x
 	group by  x.bmsc_id, x.city
@@ -592,6 +640,7 @@
 	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
 	and b.service_area_id = a.service_area_id
 	and c.id = b.enb_ap_id
+	and c.bmsc_id = a.bmsc_id
 	and c.city = #{city,jdbcType=VARCHAR}
 	and d.id = a.service_area_id
 	group by a.bmsc_id, a.service_area_id
@@ -621,17 +670,13 @@
 	
 	<select id="getSeviceAreaByBmScCity" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
 	select a.bmsc_id, a.service_area_id, d.name as service_area_name
-	, (	select count(*) from ( select x.service_area_id
-		from bmsc_service_area x, service_area_enb_ap y, enb_ap z
-		where 1 = 1 and x.bmsc_id = #{bmscId,jdbcType=INTEGER} 
-			and y.service_area_id = x.service_area_id and z.id = y.enb_ap_id
-			and z.city = #{serviceAreaCity,jdbcType=VARCHAR}
-		group by x.bmsc_id, x.service_area_id) xx ) as totalCount
+	, 1 as totalCount
 	from bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
 	where 1 = 1
 	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
 	and b.service_area_id = a.service_area_id
 	and c.id = b.enb_ap_id
+	and c.bmsc_id = a.bmsc_id
 	and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
 	and d.id = a.service_area_id
 	group by a.bmsc_id, a.service_area_id, d.name	
@@ -690,6 +735,7 @@
 			and s.BCID = b.BCID
 			and sa.service_area_id = s.service_area_id
 			and e.id = sa.enb_ap_id
+			and e.bmsc_id = #{bmscId,jdbcType=INTEGER}
 	</select>
 	
 	<!-- Service Area 에 기지국(eNB) 추가 -->
@@ -837,7 +883,7 @@
 		and e.id = s.enb_ap_id
 	</select>
 	
-	<select id="getServiceAreaEnbApWNotMappedSA" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
+	<select id="getServiceAreaEnbApNotMappedSA" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
 		select 
 			ifnull( t1.service_area_id, '' ) as service_area_id, 
 			ifnull( t1.service_area_name, '' ) as service_area_name, 

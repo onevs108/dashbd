@@ -822,6 +822,11 @@ public class ServiceAreaController {
 			searchParam.put("serviceAreaId", Integer.valueOf(request.getParameter("serviceAreaId")));
 		}
 		
+		if(request.getParameter("bmscId") != null)
+		{
+			searchParam.put("bmscId", Integer.valueOf(request.getParameter("bmscId")));
+		}
+		
 		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbAp(searchParam);
 		
 		JSONArray array = new JSONArray();
@@ -842,8 +847,6 @@ public class ServiceAreaController {
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("totalCount", data.getTotalCount());
 			array.add(obj);
-			
-			//System.out.println("data.getEnbApName()=[" + data.getEnbApName() + "]");
 		}
 		
 		try {
@@ -861,6 +864,7 @@ public class ServiceAreaController {
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
 		HashMap<String, Object> searchParam = new HashMap();
+		searchParam.put( "bmscId", Integer.valueOf( request.getParameter( "bmscId" ) ) );
 		searchParam.put( "serviceAreaId", Integer.valueOf( request.getParameter( "serviceAreaId" ) ) );
 		searchParam.put( "swLat", request.getParameter( "swLat" ) );
 		searchParam.put( "swLng", request.getParameter( "swLng" ) );
@@ -1140,11 +1144,18 @@ public class ServiceAreaController {
 		/*
 		 * 	현재시간 기점으로 GBR 합산 한 값을 리턴하는 메소드 호출하는 샘플코드 
 		 */
-		HashMap< String, Integer > searchParam = new HashMap();
+		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		HashMap< String, Integer > searchParam = new HashMap();
+		if( request.getParameter("bmscId") != null ) {
+			searchParam.put("bmscId", Integer.valueOf(request.getParameter("bmscId")));
+		}
+		
 		searchParam.put("serviceAreaId", Integer.valueOf(request.getParameter("serviceAreaId")));
+		
 		HashMap retmap = mapper.getGBRSum(searchParam);
-//System.out.println("==================================>>>>>" + retmap.get("GBRSum"));
+//System.out.println("==================================>>>>>" + request.getParameter("bmscId"));
 		JSONObject obj = new JSONObject();
 		if(retmap != null) {
 			obj.put("GBRSum", retmap.get("GBRSum"));
@@ -1719,8 +1730,8 @@ public class ServiceAreaController {
     	return workbook;
     }
     
-    @RequestMapping(value = "/api/getServiceAreaEnbApWNotMappedSA.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void getServiceAreaEnbApWNotMappedSA(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/api/getServiceAreaEnbApNotMappedSA.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getServiceAreaEnbApNotMappedSA(HttpServletRequest request, HttpServletResponse response) {
 
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		
@@ -1732,7 +1743,7 @@ public class ServiceAreaController {
 		searchParam.put( "neLat", request.getParameter( "neLat" ) );
 		searchParam.put( "neLng", request.getParameter( "neLng" ) );
 		
-		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbApWNotMappedSA( searchParam );
+		List<ServiceAreaEnbAp> datas = mapper.getServiceAreaEnbApNotMappedSA( searchParam );
 		
 		JSONArray array = new JSONArray();
 		for( int i = 0; i < datas.size(); i++ ) {

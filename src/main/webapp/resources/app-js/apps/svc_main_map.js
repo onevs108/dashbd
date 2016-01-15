@@ -26,7 +26,7 @@ function moveToEnb(bmscId, serviceAreaId)
 	$.ajax({
 		url : "/dashbd/api/getServiceAreaEnbAp.do",
 		type: "get",
-		data : { "serviceAreaId" : serviceAreaId },
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId },
 		success : function(responseData){
 			$("#ajax").remove();
 			enb_datas = JSON.parse(responseData);
@@ -67,7 +67,7 @@ function moveToEnb(bmscId, serviceAreaId)
 	$.ajax({
 		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
 		type: "get",
-		data : { "serviceAreaId" : serviceAreaId },
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId },
 		success : function(responseData){
 			$("#ajax").remove();
 			summary_datas = JSON.parse(responseData);
@@ -111,10 +111,11 @@ function moveToEnb(bmscId, serviceAreaId)
 	});
 	
 	var bandwidth_datas = "";
+
 	$.ajax({
 		url : "/dashbd/api/bandwidthByServiceArea.do",
 		type: "get",
-		data : { "serviceAreaId" : serviceAreaId },
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId },
 		success : function(responseData){
 			$("#ajax").remove();
 			bandwidth_data = JSON.parse(responseData);
