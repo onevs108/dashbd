@@ -34,7 +34,7 @@ $(document).ready(function()
     	} else {
     		$('#createServiceAreaLayer').modal('hide');
     		
-    		createServiceArea();
+    		createServiceArea( $('#operator option:selected').val(), $('#bmsc option:selected').val());
     	}
     });
 
@@ -42,46 +42,6 @@ $(document).ready(function()
     //$('.footable').footable();
     //$('.footable2').footable();
 });
-
-function createServiceArea() {
-	$.ajax({
-	    url : "/dashbd/api/createServiceArea.do",
-	    type: "get",
-	    data : { "serviceAreaId" : $('#serviceAreaId').val(), "serviceAreaName" : $('#serviceAreaName').val(), "serviceAreaDescription" : $('#serviceAreaDescription').val() },
-	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-	    success : function(responseData) {
-	        $("#ajax").remove();
-	        var data = JSON.parse(responseData);
-
-	        if( data.count == 1 ) {
-	        	swal({
-	                title: "Success !",
-	                text: "Service Area 등록이 완료되엇습니다."
-	            });
-	        	
-	        	drawServiceAreaByBmSc($('#bmsc option:selected').val());
-	            $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
-	            
-	    	} else if( data.count == 0 ) {
-	    		swal({
-	                title: "Info !",
-	                text: "이미 등록된 Service Area ID 입니다."
-	            });
-	        } else if( data.count < 0 ) {
-	        	swal({
-	                title: "Fail !",
-	                text: "Service Area 등록을 실패하였습니다."
-	            });
-	        }
-	    },
-        error : function(xhr, status, error) {
-        	swal({
-                title: "Fail !",
-                text: "Service Area 등록을 실패하였습니다."
-            });
-        }
-	});
-}
 
 var perPage = 15;
 var listPageCount = 10;
@@ -220,6 +180,8 @@ var default_lat = 36.869872;
 var default_lng = 127.838728;
 var default_zoom = 7;
 var activeInfoWindow;
+var default_center_lat = 37.551968;
+var default_center_lng = 126.991696;
 
 var shiftPressed = false;
 var ctlPressed = false;
@@ -422,9 +384,49 @@ function initMap() {
 google.maps.event.addDomListener(window, 'load', initMap);
 
 
+function createServiceArea( operatorId, bmscId ) {
+	$.ajax({
+	    url : "/dashbd/api/createServiceArea.do",
+	    type: "get",
+	    data : { "bmscId": bmscId, "serviceAreaId" : $('#serviceAreaId').val(), "serviceAreaName" : $('#serviceAreaName').val(), "serviceAreaDescription" : $('#serviceAreaDescription').val() },
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    success : function(responseData) {
+	        $("#ajax").remove();
+	        var data = JSON.parse(responseData);
+
+	        if( data.count == 1 ) {
+	        	swal({
+	                title: "Success !",
+	                text: "Service Area 등록이 완료되엇습니다."
+	            });
+	        	
+	        	map.setZoom( 12 );
+	            moveToEnbNotMappedSA(bmscId, $('#serviceAreaId').val(), default_center_lat, default_center_lng);
+	            
+	    	} else if( data.count == 0 ) {
+	    		swal({
+	                title: "Info !",
+	                text: "이미 등록된 Service Area ID 입니다."
+	            });
+	        } else if( data.count < 0 ) {
+	        	swal({
+	                title: "Fail !",
+	                text: "Service Area 등록을 실패하였습니다."
+	            });
+	        }
+	    },
+        error : function(xhr, status, error) {
+        	swal({
+                title: "Fail !",
+                text: "Service Area 등록을 실패하였습니다."
+            });
+        }
+	});
+}
 
 function moveToEnb(bmscId, serviceAreaId)
 {
+	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
 	clearEnbMarkers();
 	clearDatas();
@@ -740,7 +742,238 @@ function moveToEnbWithBounds( bmscId, serviceAreaId, lat, lng )
 
 }
 
+function moveToEnbNotMappedSA( bmscId, serviceAreaId, lat, lng )
+{
+	google.maps.event.clearListeners( map, 'idle' );
+	clearMarkers();
+	clearEnbMarkers();
+	
+	map.setCenter( new google.maps.LatLng( lat, lng ) );
+	
+	var bounds = map.getBounds();
+
+    var ne = bounds.getNorthEast();
+    var sw = bounds.getSouthWest();
+    
+	$.ajax({
+		url : "/dashbd/api/getServiceAreaEnbApWNotMappedSA.do",
+		type: "get",
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId, "swLat" : sw.lat(), "swLng" : sw.lng(), "neLat" : ne.lat(), "neLng" : ne.lng() },
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		success : function( responseData ) {
+			$("#ajax").remove();
+			var enb_datas = JSON.parse( responseData );
+			var dataLen = enb_datas.length;
+			var options = "";
+			
+			for( var i = 0; i < enb_datas.length; i++ ) {
+				var latLng = new google.maps.LatLng( enb_datas[i].latitude, enb_datas[i].longitude );
+				var marker;
+				var thisIcon = "";
+				var thisSelected = false;
+				var isContains = -1;
+				
+				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
+					isContains = toDeleteEnbs.indexOf( enb_datas[i].enbApId );
+					//alert( "red=" + isContains );
+					if( isContains != -1 ) {
+						thisIcon = '/dashbd/resources/img/icon/enb_red_on.png';
+						thisSelected = true;
+					} else {
+						thisIcon = '/dashbd/resources/img/icon/enb_red.png';
+						thisSelected = false;
+					}
+					
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : thisIcon,
+						infoWindowIndex : enb_datas[i].enbApId,
+						selected : thisSelected,
+						isSameServieArea : true,
+						zIndex: google.maps.Marker.MAX_ZINDEX + 1
+					});
+				} else if( enb_datas[i].serviceAreaId == '' || enb_datas[i].serviceAreaId == null ) {
+					isContains = toAddEnbs.indexOf( enb_datas[i].enbApId );
+					//alert( "gray=" + isContains );
+					if( isContains != -1 ) {
+						thisIcon = '/dashbd/resources/img/icon/enb_gray_on.png';
+						thisSelected = true;
+					} else {
+						thisIcon = '/dashbd/resources/img/icon/enb_gray.png';
+						thisSelected = false;
+					}
+					
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : thisIcon,
+						infoWindowIndex : enb_datas[i].enbApId,
+						selected : thisSelected,
+						isSameServieArea : 'N'
+					});
+				} else {
+					isContains = toAddEnbs.indexOf( enb_datas[i].enbApId );
+					//alert( "blue=" + isContains );
+					if( isContains != -1 ) {
+						thisIcon = '/dashbd/resources/img/icon/enb_blue_on.png';
+						thisSelected = true;
+					} else {
+						thisIcon = '/dashbd/resources/img/icon/enb_blue.png';
+						thisSelected = false;
+					}
+					
+					marker = new google.maps.Marker({
+						position: latLng, 
+						map: map, 
+						icon : thisIcon,
+						infoWindowIndex : enb_datas[i].enbApId,
+						selected : thisSelected,
+						isSameServieArea : false
+					});
+				}
+				
+				var enbContent = '<ul>' 
+				+ '<li>SA_ID : ' + enb_datas[i].serviceAreaId + '</li>'
+				+ '<li>eNB ID : ' + enb_datas[i].enbApId + '</li>'
+				+ '<li>eNB Name : '	+ enb_datas[i].enbApName + '</li>'
+				+ '<li>PLMN : ' + enb_datas[i].plmn + '</li>'
+				+ '<li>MBSFN : ' + enb_datas[i].mbsfn + '</li>'
+				+ '</ul>';
+				
+				var menuContent = '<ul>' +
+				//'<li><a href="#" class="more_info">More info</span></a></li>' +
+				'<li><a href="javascript:addToServiceArea(' + bmscId + ', ' + serviceAreaId + ');" class="add_to_service_area">Add To Service Area</a></li>' +
+				'<li><a href="javascript:deleteFromServiceArea(' + bmscId + ', ' +  serviceAreaId + ');" class="delete_from_service_area">Delete From Service Area</a></li>' +
+				'</ul>';
+				
+				var enbInfoWindow = new google.maps.InfoWindow({
+					content: enbContent
+				});
+				
+				var menuInfoWindow = new google.maps.InfoWindow({
+					content: menuContent
+				});
+				
+				enbInfoWindows[enb_datas[i].enbApId] = enbInfoWindow;
+				menuInfoWindows[enb_datas[i].enbApId] = menuInfoWindow;
+				
+				//this.enbInfoWindow.setContent(enbContent);
+				
+				// add listener on InfoWindow for mouseover event
+				google.maps.event.addListener(marker, 'mouseover', function() {
+					
+					// Close active window if exists - [one might expect this to be default behaviour no?]				
+					if(activeInfoWindow != null) activeInfoWindow.close();
+
+					// Close info Window on mouseclick if already opened
+					//menuInfoWindows[this.infoWindowIndex].close();
+					
+					// Open new InfoWindow for mouseover event
+					enbInfoWindows[this.infoWindowIndex].open(map, this);
+					
+					// Store new open InfoWindow in global variable
+					activeInfoWindow = enbInfoWindows[this.infoWindowIndex];
+				}); 							
+				
+				// on mouseout (moved mouse off marker) make infoWindow disappear
+				google.maps.event.addListener(marker, 'mouseout', function() {
+					enbInfoWindows[this.infoWindowIndex].close();	
+				});
+				
+				/*
+				google.maps.event.addListener(marker, 'click', function() {
+					closeInfoWindow();
+					this.infowindow.open(map, this);
+				});
+				*/
+				
+				// --------------------------------
+				// ON MARKER CLICK - (Mouse click)
+				// --------------------------------
+				
+				// add content to InfoWindow for click event 
+				//this.menuInfoWindow.setContent(menuContent);
+				
+				// add listener on InfoWindow for click event
+				google.maps.event.addListener(marker, 'click', function() {
+					if(ctlPressed) {
+						if(this.selected) {
+							this.selected = false;
+							 if( this.isSameServieArea && this.isSameServieArea !== "N") {
+		                		this.setIcon("/dashbd/resources/img/icon/enb_red.png");
+		                		//toDeleteEnbs.remove(this.infoWindowIndex);
+		                		var idx = toDeleteEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toDeleteEnbs.splice(idx, 1);
+								}
+		                	} else if( !this.isSameServieArea ) {
+		                		this.setIcon("/dashbd/resources/img/icon/enb_blue.png");
+		                		//toAddEnbs.remove(this.infoWindowIndex);
+		                		var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
+		                	} else {
+								this.setIcon("/dashbd/resources/img/icon/enb_gray.png");
+								//toAddEnbs.remove(this.infoWindowIndex);
+								var idx = toAddEnbs.indexOf( this.infoWindowIndex );
+								if(idx != -1) {
+									toAddEnbs.splice(idx, 1);
+								}
+		                	}
+						}
+						else {
+							this.selected = true;
+							if( this.isSameServieArea && this.isSameServieArea !== "N" ) {
+		                		this.setIcon("/dashbd/resources/img/icon/enb_red_on.png");
+		                		toDeleteEnbs.push(this.infoWindowIndex);
+		                	} else if( !this.isSameServieArea ) {
+		                		this.setIcon("/dashbd/resources/img/icon/enb_blue_on.png");
+		                		toAddEnbs.push(this.infoWindowIndex);
+		                	} else {
+								this.setIcon("/dashbd/resources/img/icon/enb_gray_on.png");
+								toAddEnbs.push(this.infoWindowIndex);
+		                	} 
+						}
+						
+						$("#selectedENBs").empty();
+						//$("#selectedENBs").append( "Selected eNBs : " + (selectedENBsCount + toAddEnbs.length) );
+						$("#selectedENBs").append( "Selected eNBs : " + toAddEnbs.length );
+					}
+					else {
+						if(this.selected) {
+							//Close active window if exists - [one might expect this to be default behaviour no?]				
+							if(activeInfoWindow != null) activeInfoWindow.close();
+		
+							// Close "mouseover" infoWindow
+							enbInfoWindows[this.infoWindowIndex].close();
+							
+							// Open InfoWindow - on click 
+							menuInfoWindows[this.infoWindowIndex].open(map, this);
+							
+							// Store new open InfoWindow in global variable
+							activeInfoWindow = menuInfoWindows[this.infoWindowIndex];
+						}
+					}
+				});
+				
+				enb_markers.push(marker);
+			}
+		}
+	});
+	
+	//google.maps.event.clearListeners(map, 'bounds_changed');
+	google.maps.event.addListener( map, 'idle', function() {
+    	//alert("2=[" + map.getCenter().lat() + "]");
+    	moveToEnbNotMappedSA( bmscId, serviceAreaId, map.getCenter().lat(), map.getCenter().lng() );
+    } );
+    
+
+}
+
 function drawEnbOthers(bmscId, serviceAreaId) {
+	google.maps.event.clearListeners( map, 'idle' );
 	var bounds = map.getBounds();
 
     var ne = bounds.getNorthEast();
@@ -1036,8 +1269,11 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 
 
 function drawServiceAreaByBmSc(bmscId) {
+	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
 	clearEnbMarkers();
+	clearDatas();
+	
 	$("#service_area").empty();
 	$("#service_area").append(default_service_area);
 	$("#enb_table").empty();
@@ -1045,6 +1281,8 @@ function drawServiceAreaByBmSc(bmscId) {
 	$("#selectedSvcArea").empty();
     $("#selectedENBs").empty();
 	
+    map.setZoom(7);
+    
 	$.ajax({
         url : "/dashbd/api/getServiceAreaCountByBmSc.do",
         type: "get",
@@ -1214,7 +1452,6 @@ function clearMarkers() {
 }
 
 function clearEnbMarkers() {
-
 	for (var i = 0; i < enb_markers.length; i++) {
 	    enb_markers[i].setMap(null);
 	}

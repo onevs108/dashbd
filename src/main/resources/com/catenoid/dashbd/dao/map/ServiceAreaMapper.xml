@@ -732,7 +732,7 @@
 	insert into service_area 
 	(id, bandwidth, name, city, description, created_at, updated_at)
 	select  
-		#{id,jdbcType=INTEGER}, #{bandwidth,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, now(), now()
+		#{serviceAreaId,jdbcType=INTEGER}, #{bandwidth,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, now(), now()
 	from dual
 	where not exists 
 		(select id 
@@ -740,6 +740,23 @@
 		where 
 			id = #{id,jdbcType=INTEGER} 
 		)
+	</insert>
+	
+	<!-- BMSC 생성 -->
+	<insert id="createBmScServiceArea" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >
+	insert into bmsc_service_area 
+	( bmsc_id, service_area_id, created_at, updated_at )
+	select  
+		#{bmscId,jdbcType=INTEGER}, #{serviceAreaId,jdbcType=INTEGER}, now(), now()
+	from dual
+	where not exists 
+	(
+		select bmsc_id 
+		from bmsc_service_area 
+		where 
+			bmsc_id = #{bmscId, jdbcType=INTEGER} 
+			and service_area_id = #{serviceAreaId, jdbcType=INTEGER}
+	)
 	</insert>
 	
 	<!-- eNB 생성 -->
@@ -818,6 +835,44 @@
             #{serviceAreaId}
         	</foreach>
 		and e.id = s.enb_ap_id
+	</select>
+	
+	<select id="getServiceAreaEnbApWNotMappedSA" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
+		select 
+			ifnull( t1.service_area_id, '' ) as service_area_id, 
+			ifnull( t1.service_area_name, '' ) as service_area_name, 
+			t2.bandwidth as service_area_bandwidth, 
+			t2.city as service_area_city,
+			t2.id as enb_ap_id, 
+			t2.name as enb_ap_name, 
+			t2.longitude as longitude, 
+			t2.latitude as latitude, 
+			t2.plmn as plmn,
+			t2.mbsfn as mbsfn,
+			t2.created_at, 
+			t2.updated_at
+			, 0 as totalCount
+		from 
+			(
+				select * from enb_ap
+				where 1 = 1
+					and latitude between #{swLat} and #{neLat}
+					and longitude between #{swLng} and #{neLng}
+					and bmsc_id = #{bmscId,jdbcType=INTEGER}
+			) t2 left join
+			( 
+				select t3.id as service_area_id, t3.name as service_area_name, t1.enb_ap_id
+				from 
+					service_area_enb_ap t1, 
+					service_area t3, 
+					(select enb_ap_id, max(service_area_id) as service_area_id, count(*) from service_area_enb_ap where 1 = 1 group by enb_ap_id) t4
+				where 
+					t4.service_area_id = t1.service_area_id
+					and t4.enb_ap_id = t1.enb_ap_id
+					and t1.service_area_id = t3.id 
+			) t1
+		on 1 = 1
+			and t1.enb_ap_id = t2.id
 	</select>
 		 
 </mapper>

@@ -84,5 +84,9 @@ public interface ServiceAreaMapper {
     List<HashMap> downloadENBs( HashMap<String, Object> searchParm );
     
     List<HashMap> downloadENBsByServiceAreaId( HashMap<String, Object> searchParm );
+    
+    List<ServiceAreaEnbAp> getServiceAreaEnbApWNotMappedSA(HashMap<String, Object> searchParm);
+    
+    int createBmScServiceArea(HashMap< String, Object > searchParm);
 
 }
