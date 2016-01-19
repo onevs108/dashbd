@@ -244,8 +244,18 @@ public class ScheduleMgmtController {
 		Map<String, String> mapContentUrl = mapper.selectSchduleContentURL(params);
 		Map<String, String> mapSchedule = mapper.selectSchduleTime(params);
 		
-		mv.addObject( "mapSchedule", mapSchedule );
+		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
+			mapSchedule.put("service_name", "tmpServName");
+			mapSchedule.put("language", "en");
+			mapSchedule.put("GBR", "1400001");
+			mapSchedule.put("QCI", "1");
+			mapSchedule.put("FileRepair", "off");
+			mapSchedule.put("receptionReport", "off");
+			
+			
+		}
 		mv.addObject( "mapContentUrl", mapContentUrl );
+		mv.addObject( "mapSchedule", mapSchedule );
 		return mv;
 	}
 	
@@ -284,12 +294,10 @@ public class ScheduleMgmtController {
 			
 			//@ xmlMake & Send, recv
 			int xmlMode = xmlManager.BMSC_XML_UPDATE;
-			/*
+			
 			if (bcid == null || "".equals(bcid)){
 				xmlMode = xmlManager.BMSC_XML_CREATE;
-				params.put("serviceId","urn:3gpp:" + params.get("serviceType") + ":" + transId);
 			}
-			*/
 			
 			params.put("transactionId", transId);
 			params.put("schedule_start", convertMysqlDateFormat(params.get("schedule_start"), false));
@@ -346,7 +354,7 @@ public class ScheduleMgmtController {
 				params.put("transactionId", makeTransId());
 				
 				//@ xmlMake & Send, recv
-				String resStr = xmlManager.sendBroadcast(params, xmlManager.BMSC_XML_DELETE);
+				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_DELETE);
 				
 				//@ check return XML success
 				if (!xmlManager.isSuccess(resStr))

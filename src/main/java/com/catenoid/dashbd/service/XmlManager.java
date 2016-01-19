@@ -38,7 +38,7 @@ public class XmlManager {
 	public final int BMSC_XML_CREATE = 2; 
 	public final int BMSC_XML_UPDATE = 3;
 	public final int BMSC_XML_DELETE = 4;
-	public final String SERVICE_TYPE_FILE_DOWNLOAD = "FileDownload";
+	public final String SERVICE_TYPE_FILE_DOWNLOAD = "fileDownload";
 	public String agentKey = null;
 	
 	@Value("#{config['b2.interface.url']}")
@@ -66,7 +66,7 @@ public class XmlManager {
 			
 			//@ xml send 
 			respBody = new HttpNetAgent().execute(b2InterfefaceURL, "", reqBody, false);
-		
+			logger.info("[returnXML=" + respBody + "]");
 			if (BMSC_XML_RETRIEVE == mode)
 				respBody = tmpRespRETRIEVE_Body();
 			
@@ -195,6 +195,13 @@ public class XmlManager {
 		Element service = new Element("service");
 		
 		//common- depth five		
+		
+		Element name = new Element("name");
+		name.setAttribute(new Attribute("lang", "en"));										//??
+		name.setText(params.get("name"));
+		Element serviceLanguage = new Element("serviceLanguage");
+		serviceLanguage.setText(params.get("serviceLanguage"));
+		
 		Element transferConfig = new Element("transferConfig");
 		Element QoS = new Element("QoS");
 		QoS.addContent( new Element("GBR").setText(params.get("GBR")));
@@ -224,28 +231,29 @@ public class XmlManager {
 		schedule.setAttribute(new Attribute("index", "1"));
 		schedule.setAttribute(new Attribute("cancelled", "false"));
 		//time format ex) 2015-04-10T17:24:09.000+09:00
-		schedule.setAttribute(new Attribute("start", convertGMT(params.get("schedule_start"))));
-		schedule.setAttribute(new Attribute("stop", convertGMT(params.get("schedule_stop"))));
-		
+		schedule.setAttribute(new Attribute("start", convertDateFormat(params.get("schedule_start"))));
+		schedule.setAttribute(new Attribute("stop", convertDateFormat(params.get("schedule_stop"))));
+		Element receptionReport = null;
 		Element associatedDelivery = new Element("associatedDelivery");
-		Element receptionReport = new Element("receptionReport");
-		receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
-		receptionReport.setAttribute(new Attribute("cancelled", "false"));
-		receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
-		receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));
+		
+		if ("on".equals(params.get("receptionReport"))){
+			receptionReport = new Element("receptionReport");
+			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
+			receptionReport.setAttribute(new Attribute("cancelled", "false"));
+			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
+			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));			
+		}
+
 		String serviceId = params.get("serviceId");
 		if (serviceId == null)
 			serviceId = "";
+		
 		
 		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
 			service.setAttribute(new Attribute("serviceType", "fileDownload"));
 			Element fileDownload = new Element("fileDownload");
 			fileDownload.setAttribute(new Attribute("serviceId", serviceId)); 
-			Element name = new Element("name");
-			name.setAttribute(new Attribute("id", "1"));										//??
-			name.setText(params.get("name"));
-			Element serviceLanguage = new Element("serviceLanguage");
-			serviceLanguage.setText(params.get("serviceLanguage"));
+			
 			
 			Element serviceArea = new Element("serviceArea");
 			serviceArea.addContent( new Element("said").setText(params.get("said")));
@@ -258,33 +266,43 @@ public class XmlManager {
 			content.addContent( new Element("fileURI").setText(params.get("fileURI")));
 			Element deliveryInfo = new Element("deliveryInfo");
 			//time format ex) 2015-04-10T17:24:09.000+09:00
-			deliveryInfo.setAttribute(new Attribute("start", convertGMT(params.get("deliveryInfo_start"))));
-			deliveryInfo.setAttribute(new Attribute("end", convertGMT(params.get("deliveryInfo_end"))));
+			deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(params.get("deliveryInfo_start"))));
+			deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(params.get("deliveryInfo_end"))));
 			content.addContent(deliveryInfo);
 			schedule.addContent(content);
 			
-			Element fileRepair = new Element("fileRepair");
-			fileRepair.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
-			fileRepair.setAttribute(new Attribute("randomTime", params.get("randomTime")));
-			fileRepair.setAttribute(new Attribute("cancelled", "false"));
+			if ("on".equals(params.get("FileRepair"))){
+				Element fileRepair= null; 
+				fileRepair = new Element("postFileRepair");
+				fileRepair.setAttribute(new Attribute("offsetTime", params.get("frOffsetTime")));
+				fileRepair.setAttribute(new Attribute("randomTime", params.get("frRandomTime")));
+				fileRepair.setAttribute(new Attribute("cancelled", "false"));
+				associatedDelivery.addContent(fileRepair);
+			}
 			
-			associatedDelivery.addContent(fileRepair);
-			associatedDelivery.addContent(receptionReport);
+			if ("on".equals(params.get("receptionReport"))){
+				associatedDelivery.addContent(receptionReport);
+			}
 			
 			fileDownload.addContent(name);
 			fileDownload.addContent(serviceLanguage);
 			fileDownload.addContent(transferConfig);
 			fileDownload.addContent(serviceArea);
 			fileDownload.addContent(schedule);
-			fileDownload.addContent(associatedDelivery);
+			
+			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport")))
+				fileDownload.addContent(associatedDelivery);
 			
 			service.addContent(fileDownload);
 		}
 		else{ //streaming
 			service.setAttribute(new Attribute("serviceType", "streaming"));
 			Element streaming = new Element("streaming");
-			streaming.setAttribute(new Attribute("serviceId", serviceId)); 
-			streaming.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));				
+			streaming.setAttribute(new Attribute("serviceId", serviceId));
+
+			if ( null != params.get("serviceClass") && !"".equals(params.get("serviceClass")))
+				streaming.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));
+			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));
 			
 			Element contentSet = new Element("contentSet");
@@ -300,14 +318,23 @@ public class XmlManager {
 			
 			contentSet.addContent(serviceArea);
 			contentSet.addContent(mpd);
+			if ("on".equals(params.get("reportType"))){
+				receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
+				associatedDelivery.addContent(receptionReport);
+			}
 			
-			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
-			associatedDelivery.addContent(receptionReport);
+			if ( null != params.get("name") && !"".equals(params.get("name")))
+				streaming.addContent(name);
+			
+			if ( null != params.get("serviceLanguage") && !"".equals(params.get("serviceLanguage")))
+				streaming.addContent(serviceLanguage);
 			
 			streaming.addContent(transferConfig);
 			streaming.addContent(schedule);
 			streaming.addContent(contentSet);
-			streaming.addContent(associatedDelivery);
+			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport")))
+				streaming.addContent(associatedDelivery);
+			
 			service.addContent(streaming);
 		}
 		
@@ -418,7 +445,9 @@ public class XmlManager {
 		xmlOutput.setFormat(Format.getPrettyFormat());
 		return xmlOutput.outputString(doc);
 	}
-	private String convertGMT(String dateTime){
+	
+
+	private String convertDateFormat(String dateTime){
 		
 		if (dateTime == null)
 			return null;
@@ -426,7 +455,8 @@ public class XmlManager {
 		String retStr = "";
 		
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyyMMddHHmmss");
-		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		//SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		try {
 			//sdfFrom.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date dateFrom = sdfFrom.parse(dateTime);
@@ -515,7 +545,7 @@ public class XmlManager {
 		//System.out.println(new XmlManager().testMaking());
 
 		//System.out.println(getFileDate("YYYYMMdd"));
-		System.out.println(new XmlManager().convertGMT("20151223201100"));
+		System.out.println(new XmlManager().convertDateFormat("20151223201100"));
 		
 		
 		
