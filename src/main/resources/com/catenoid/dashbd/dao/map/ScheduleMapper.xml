@@ -125,6 +125,7 @@
 				, b.said
 				, DATE_FORMAT(schedule_start, '%Y-%m-%d %H:%i:%s') schedule_start
 				, DATE_FORMAT(schedule_stop, '%Y-%m-%d %H:%i:%s') schedule_stop
+				, IFNULL(b.receptionReport, 'off') receptionReport
 				, b.reportType
 				, b.offsetTime
 				, b.randomTime
@@ -133,6 +134,9 @@
 				, DATE_FORMAT(deliveryInfo_end, '%Y-%m-%d %H:%i:%s') deliveryInfo_end
 				, b.mpdURI
 				, b.samplePercentage
+				, IFNULL(b.FileRepair, 'off') FileRepair
+				, b.frOffsetTime
+				, b.frRandomTime
 			FROM schedule s 
 			left join broadcast_info b on s.BCID = b.BCID
 			WHERE 1=1
@@ -175,6 +179,7 @@
 			, said
 			, schedule_start
 			, schedule_stop
+			, receptionReport
 			, reportType
 			, offsetTime
 			, randomTime
@@ -183,6 +188,9 @@
 			, deliveryInfo_end
 			, mpdURI
 			, samplePercentage
+			, FileRepair
+			, frOffsetTime
+			, frRandomTime
 		)VALUES(#{transactionId}
 			, #{serviceId}
 			, #{serviceType}
@@ -200,6 +208,7 @@
 			, #{said}
 			, str_to_date(#{schedule_start}, '%Y%m%d%H%i%s')
 			, str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s')
+			, #{receptionReport}
 			, #{reportType}
 			, #{offsetTime}
 			, #{randomTime}
@@ -208,6 +217,9 @@
 			, str_to_date(#{deliveryInfo_end}, '%Y%m%d%H%i%s')
 			, #{mpdURI}
 			, #{samplePercentage}
+			, #{FileRepair}
+			, #{frOffsetTime}
+			, #{frRandomTime}
 		)
 	</insert>
 	<update id="updateBroadcastInfo" parameterType="java.util.Map">
@@ -256,6 +268,9 @@
 			<if test="schedule_stop != null and schedule_stop !=''" >
 				, schedule_stop		= str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s')
 			</if>
+			<if test="receptionReport != null and receptionReport !=''" >
+				, receptionReport		= #{receptionReport}
+			</if>
 			<if test="reportType != null and reportType !=''" >
 				, reportType		= #{reportType}
 			</if>
@@ -280,6 +295,15 @@
 			<if test="samplePercentage != null and samplePercentage !=''" >
 				, samplePercentage	= #{samplePercentage} 
 			</if>
+			<if test="FileRepair != null and FileRepair !=''" >
+				, FileRepair	= #{FileRepair} 
+			</if>
+			<if test="frOffsetTime != null and frOffsetTime !=''" >
+				, frOffsetTime	= #{frOffsetTime} 
+			</if>
+			<if test="frRandomTime != null and frRandomTime !=''" >
+				, frRandomTime	= #{frRandomTime} 
+			</if>
 		WHERE 1=1
 		AND BCID = #{BCID}
 	</update>
@@ -303,14 +327,18 @@
 			, said				
 			, DATE_FORMAT(schedule_start, '%Y%m%d%H%i%s') schedule_start
 			, DATE_FORMAT(schedule_stop,  '%Y%m%d%H%i%s') schedule_stop
-			, reportType		
+			, IFNULL(receptionReport, 'off') receptionReport
+			, reportType
 			, offsetTime	
 			, randomTime	
 			, fileURI	
 			, DATE_FORMAT(deliveryInfo_start, '%Y%m%d%H%i%s') deliveryInfo_start
 			, DATE_FORMAT(deliveryInfo_end,   '%Y%m%d%H%i%s') deliveryInfo_end	
 			, mpdURI			
-			, samplePercentage	 
+			, samplePercentage	
+			, IFNULL(FileRepair, 'off') FileRepair
+			, frOffsetTime
+			, frRandomTime 
 		FROM broadcast_info 
 		WHERE 1=1
 		AND BCID = #{BCID}
