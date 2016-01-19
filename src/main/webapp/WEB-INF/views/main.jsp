@@ -36,6 +36,8 @@
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
+			getMenuList('MAIN');
+			
 			$('.footable').footable();
 			$('.footable2').footable();
 		});
@@ -76,30 +78,6 @@
 						<img src="img/logo2.png">
 					</div>
 				</li>
-				<li>
-					<a href="/dashbd/resources/user.do"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/permission.do"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/operator.do"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
-				</li>
 			</ul>
 		</div>
 	</nav>
@@ -119,7 +97,7 @@
 				<ul class="nav navbar-top-links navbar-right">
 					<li>
 						<a>
-							<i class="fa fa-user"></i>User Name
+							<i class="fa fa-user"></i><span id="navbar-user-name"></span>
 						</a>
 					</li>
 					<li class="dropdown">

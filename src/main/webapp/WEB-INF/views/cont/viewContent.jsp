@@ -23,16 +23,16 @@
 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 	<script src="../resourcesRenew/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 	
-	<!-- FooTable -->
-		
 	<!-- Custom and plugin javascript -->
 	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 	
-	<!-- Page-Level Scripts -->
+	<script src="../resources/js/common.js"></script>
 	
 <script>
 
 $(document).ready(function() {
+	getMenuList('CONTENTS_MGMT');
+	
 	
 	$("#btnList").click(function(){
 		
@@ -55,6 +55,7 @@ $(document).ready(function() {
     <!-- sidebar -->
     <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
+        	<ul class="nav metismenu" id="side-menu">
              <li class="nav-header">
 					<div class="dropdown profile-element">
 						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
@@ -63,30 +64,7 @@ $(document).ready(function() {
 						<img src="/dashbd/resources/img/logo2.png">
 					</div>
 				</li>
-				<li>
-					<a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/PermissionMgmt.html"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-				</li>
-                <li class="landing_link">
-                    <a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
-                </li>
-                <li>
-					<a href="/dashbd/resources/OperatorMgmt.html"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
-				</li>
+			</ul>
         </div>
     </nav><!-- sidebar end -->
 
@@ -107,7 +85,7 @@ $(document).ready(function() {
             <ul class="nav navbar-top-links navbar-right">
                 <li>
                     <a>
-                    <i class="fa fa-user"></i>User Name
+                    <i class="fa fa-user"></i><span id="navbar-user-name"></span>
                     </a>
                 </li>
                 <li class="dropdown">
@@ -154,7 +132,7 @@ $(document).ready(function() {
                 </li>
 
                 <li>
-                    <a href="login.html">
+                    <a href="/dashbd/out">
                         <i class="fa fa-sign-out"></i> Log out
                     </a>
                 </li>

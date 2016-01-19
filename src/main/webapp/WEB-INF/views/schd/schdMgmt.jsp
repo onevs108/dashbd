@@ -7,7 +7,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	<title>main</title>
+	<title>Schedule Mgmt</title>
 	
 	<link href="../resources/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../resources/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -35,11 +35,15 @@
 	<script src="../resources/js/inspinia.js"></script>
 	<script src="../resources/js/plugins/pace/pace.min.js"></script>
 	
+	<script src="../resources/js/common.js"></script>
+	
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
 			$('.footable').footable();
 			$('.footable2').footable();
+			
+			getMenuList('SCHEDULE_MGMT');
 		});
 	</script>
     	
@@ -95,30 +99,6 @@
 						<img src="/dashbd/resources/img/logo2.png">
 					</div>
 				</li>
-				<li>
-					<a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/PermissionMgmt.html"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/OperatorMgmt.html"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
-				</li>
-				<li class="landing_link">
-					<a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
-				</li>
 			</ul>
 		</div>
 	</nav>
@@ -138,7 +118,7 @@
 				<ul class="nav navbar-top-links navbar-right">
 					<li>
 						<a>
-							<i class="fa fa-user"></i>User Name
+							<i class="fa fa-user"></i><span id="navbar-user-name"></span>
 						</a>
 					</li>
 					<li class="dropdown">
@@ -185,7 +165,7 @@
 					</li>
 		
 					<li>
-						<a href="login.html">
+						<a href="/dashbd/out">
 							<i class="fa fa-sign-out"></i> Log out
 						</a>
 					</li>

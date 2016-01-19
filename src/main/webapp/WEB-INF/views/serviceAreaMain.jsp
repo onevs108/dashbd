@@ -46,7 +46,15 @@
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="/dashbd/resources/js/markerwithlabel.js"></script>
 	<script src="/dashbd/resources/app-js/apps/svc_area_main_map.js"></script>
-        
+    
+    <script src="js/common.js"></script>
+    
+	<script type="text/javascript">
+		$(document).ready(function() {
+			getMenuList('SERVICE_AREA_MGMT');
+		});
+	</script>
+    
 	<style type="text/css">
 	.labels {
 		color: red;
@@ -69,40 +77,15 @@
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
-				<li class="nav-header">
-					<div class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="img/logo_small.png"></a>
-					</div>
-					<div class="logo-element">
-						<img src="img/logo2.png">
-					</div>
-				</li>
-				<li>
-					<a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/PermissionMgmt.html"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/OperatorMgmt.html"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-				</li>
-				<li class="landing_link">
-					<a href="/dashbd/resources/serviceArea.do"><i class="fa fa-globe"></i> <span class="nav-label">Service Area  Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/resources/eNBMgmt.do"><i class="fa fa-puzzle-piece"></i> <span class="nav-label">eNB Mgmt</span></a>
-				</li>
-				<li>
-					<a href="/dashbd/view/schdMgmt.do"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
-				</li>
+					<li class="nav-header">
+						<div class="dropdown profile-element">
+							<a href="/dashbd/resources/main.do"><img src="img/logo_small.png"></a>
+						</div>
+						<div class="logo-element">
+							<img src="img/logo2.png">
+						</div>
+					</li>
                 </ul>
-
             </div>
         </nav>
 
@@ -122,7 +105,7 @@
             <ul class="nav navbar-top-links navbar-right">
                 <li>
                     <a>
-                    <i class="fa fa-user"></i>User Name
+                    <i class="fa fa-user"></i><span id="navbar-user-name"></span>
                     </a>
                 </li>
                 <li class="dropdown">
@@ -169,7 +152,7 @@
                 </li>
 
                 <li>
-                    <a href="login.html">
+                    <a href="/dashbd/out">
                         <i class="fa fa-sign-out"></i> Log out
                     </a>
                 </li>

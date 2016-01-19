@@ -27,6 +27,14 @@
 	
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap"
         async defer></script>
+        
+	<script src="js/common.js"></script>
+    
+	<script type="text/javascript">
+		$(document).ready(function() {
+			getMenuList('SERVICE_AREA_MGMT');
+		});
+	</script>
 </head>
 
 <body>
@@ -43,27 +51,6 @@
                     <div class="logo-element">
                         Logo
                     </div>
-                </li>
-                <li>
-                    <a href="user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="contents_mgmt.html"><i class="fa fa-file-text-o"></i> <span class="nav-label">Contents Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-bullhorn"></i> <span class="nav-label">Operator Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="#" onclick="return false;"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
-                </li>
-                <li class="landing_link">
-                    <a href="service_area_mgmt.html"><i class="fa fa-globe"></i> <span class="nav-label">Service Area Mgmt</span></a>
-                </li>
-                <li>
-                    <a href="schedule_mgmt_eepg.html"><i class="fa fa-calendar"></i> <span class="nav-label">Schedule Mgmt</span></a>
                 </li>
             </ul>
         </div>
@@ -86,7 +73,7 @@
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
                         <a>
-                        <i class="fa fa-user"></i>User Name
+                        <i class="fa fa-user"></i><span id="navbar-user-name"></span>
                         </a>
                     </li>
                     <li class="dropdown">
@@ -132,7 +119,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="login.html">
+                        <a href="/dashbd/out">
                             <i class="fa fa-sign-out"></i> Log out
                         </a>
                     </li>
