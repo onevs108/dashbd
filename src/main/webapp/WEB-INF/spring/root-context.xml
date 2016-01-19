@@ -16,4 +16,6 @@
 	</bean>
 		
 	<import resource="mybatis/mybatis-context.xml" />
+	<import resource="security/security-context.xml" />
 </beans>
+

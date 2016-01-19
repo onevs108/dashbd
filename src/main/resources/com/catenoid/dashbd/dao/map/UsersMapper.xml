@@ -4,17 +4,17 @@
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Users" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
-    <result column="operator_id" property="operatorId" jdbcType="VARCHAR" />
+    <result column="operator_id" property="operatorId" jdbcType="INTEGER" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="first_name" property="firstName" jdbcType="VARCHAR" />
     <result column="last_name" property="lastName" jdbcType="VARCHAR" />
     <result column="department" property="department" jdbcType="VARCHAR" />
-    <result column="permission" property="permission" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Example_Where_Clause" >
-    <where >
+    <where>
       <foreach collection="oredCriteria" item="criteria" separator="or" >
         <if test="criteria.valid" >
           <trim prefix="(" suffix=")" prefixOverrides="and" >
@@ -101,8 +101,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, user_id, operator_id, password, first_name, last_name, department, permission, created_at, 
-    updated_at
+    id, user_id, operator_id, password, first_name, last_name, department, grade, created_at, updated_at
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.UsersExample" >
     select
@@ -121,12 +120,83 @@
       limit ${limitByClause}
     </if>
   </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from users
+  </select>
+  
+	<select id="selectUserList" resultMap="BaseResultMap" parameterType="Map">
+	    SELECT
+	    	<include refid="Base_Column_List" />
+    	FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   <include refid="Base_Column_List" />
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 <include refid="Base_Column_List" />
+					  FROM users
+					  <if test="searchKeyword != null">
+					      <if test="searchColumn.equals('all')">
+						      WHERE ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
+						         OR user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+						         OR department LIKE CONCAT('%', #{searchKeyword}, '%')
+						  </if>
+						  <if test="searchColumn.equals('name')">
+						  	  WHERE ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )	  
+						  </if>
+						  <if test="searchColumn.equals('userId')">
+						  	  WHERE user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+						  </if>
+						  <if test="searchColumn.equals('department')">
+						  	  WHERE department LIKE CONCAT('%', #{searchKeyword}, '%')
+						  </if>
+					  </if>
+					  ORDER BY created_at DESC ) T
+			  ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectUserListCount" resultType="Integer" parameterType="Map">
+	    SELECT COUNT(*)
+		FROM users
+		<if test="searchKeyword != null">
+			<if test="searchColumn.equals('all')">
+				WHERE ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
+				   OR user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+				   OR department LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchColumn.equals('name')">
+				WHERE ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
+			</if>
+			<if test="searchColumn.equals('userId')">
+				WHERE user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="searchColumn.equals('department')">
+				WHERE department LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+		</if>
+	</select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from users
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="String" >
+    select 
+    <include refid="Base_Column_List" />
+    from users
+    where user_id = #{userId}
+  </select>
+  
+	<delete id="deleteUser" parameterType="com.catenoid.dashbd.dao.model.Users">
+	    DELETE FROM users
+	    WHERE user_id = #{userId}
+	</delete>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from users
     where id = #{id,jdbcType=INTEGER}
@@ -137,6 +207,14 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
+	
+	<insert id="insertUser" parameterType="com.catenoid.dashbd.dao.model.Users">
+	    INSERT INTO users (user_id, operator_id, password, first_name, last_name, department, grade, created_at, updated_at)
+		VALUES (#{userId}, #{operatorId}, #{password}, #{firstName}, #{lastName}, #{department}, #{grade}, NOW(), NOW())
+		ON DUPLICATE KEY UPDATE
+		operator_id = #{operatorId}, password = #{password}, first_name = #{firstName}, last_name = #{lastName}, department = #{department}, grade = #{grade}, updated_at = NOW()
+	</insert>
+  
   <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.Users" >
     insert into users (id, user_id, operator_id, password, 
       first_name, last_name, department, 
@@ -318,4 +396,79 @@
       updated_at = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  
+  <select id="selectUserListInPermission" resultMap="BaseResultMap" parameterType="Map">
+	    SELECT
+	    	<include refid="Base_Column_List" />
+    	FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   <include refid="Base_Column_List" />
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 <include refid="Base_Column_List" />
+					  FROM users
+					  WHERE 1 = 1 
+					  <if test="searchUserId != null">
+					      AND user_id LIKE CONCAT('%', #{searchUserId}, '%')
+					  </if>
+					  <if test="searchOperatorId != null">
+					      AND operator_id = #{searchOperatorId}
+					  </if>
+					  ORDER BY created_at DESC ) T
+			  ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectUserListCountInPermission" resultType="Integer" parameterType="Map">
+	    SELECT COUNT(*)
+		FROM users
+		WHERE 1 = 1 
+		<if test="searchUserId != null">
+			AND user_id LIKE CONCAT('%', #{searchUserId}, '%')
+		</if>
+		<if test="searchOperatorId != null">
+			AND operator_id = #{searchOperatorId}
+		</if>
+	</select>
+  
+  
+  <select id="selectPermissionAll" resultType="com.catenoid.dashbd.dao.model.Permission">
+	  select
+    	`id` AS `id`,
+    	`role` AS `role`,
+	    `name` AS `name`,
+	    `description` AS `description`,
+	    `created_at` AS `created_at`,
+	    `updated_at` AS `updated_at`
+    from permission P
+  </select>
+  
+  <select id="selectPermissionsByUserId" resultType="com.catenoid.dashbd.dao.model.Permission" parameterType="String">
+    select
+    	P.`id` AS `id`,
+    	P.`role` AS `role`,
+	    P.`name` AS `name`,
+	    P.`description` AS `description`,
+	    P.`created_at` AS `created_at`,
+	    P.`updated_at` AS `updated_at`
+    from users_permission UP,
+		 permission P
+	where UP.permission_id = P.id
+  	  and UP.user_id = #{userId}
+  </select>
+  
+  <insert id="insertPermissionOfUser" parameterType="Map">
+      INSERT INTO users_permission (`user_id`, `permission_id`, `created_at`, `updated_at`)
+      VALUES
+      		<foreach collection="itemList" item="item" separator=",">
+      		    (#{item.userId}, #{item.permissionId}, NOW(), NOW())
+			</foreach>
+  </insert>
+  
+  <delete id="deletePermissionOfUser" parameterType="String">
+      DELETE FROM users_permission
+      WHERE user_id = #{userId}
+  </delete>
+  
 </mapper>

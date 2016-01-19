@@ -5,16 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.ibatis.session.SqlSession;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +23,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.StatusNotifyMapper;
+import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.StatusNotifyWithBLOBs;
+import com.catenoid.dashbd.dao.model.Users;
 
 import catenoid.net.msg.XmlPara;
 import catenoid.net.msg.XmlParaSet;
@@ -55,23 +58,136 @@ public class HomeController {
 	private SqlSession sqlSession;
 	
 	/**
-	 * Simply selects the home view to render by returning its name.
-	 * @throws UnsupportedEncodingException 
+	 * 로그인 페이지 이동
+	 * 
+	 * @author iskwon
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String home(Locale locale, Model model) throws UnsupportedEncodingException {
+	@RequestMapping(value = { "/", "/login.do" }, method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+	public String doLogin(ModelMap modelMap) {
+		logger.info("-> []");
 		
-		logger.info("Welcome home! The client locale is {}.", locale);
+		OperatorMapper mapper = sqlSession.getMapper(OperatorMapper.class);
+		List<Operator> operatorList = mapper.selectOperatorListAll();
+		modelMap.addAttribute("operatorList", operatorList);
 		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		logger.info("<- [operatorListSize = {}]", operatorList.size());
+		return "login";
+	}
+	
+	/**
+	 * 로그아웃
+	 * 
+	 * @author iskwon
+	 */
+	@RequestMapping(value = "/logout.do", method = RequestMethod.GET)
+	public String doLogoutPage() {
+		logger.info("-> []");
 		
-		String formattedDate = dateFormat.format(date);
+		logger.info("<- []");
+		return "redirect:/login.do";
+	}
+	
+	/**
+	 * 로그인 실패 시 실패 화면 이동
+	 * 
+	 * @author iskwon
+	 */
+	@RequestMapping(value = "/loginfail.do", method = RequestMethod.GET)
+	public String doLoginFail(
+			@RequestParam(value = "cause", required = true) Integer cause,
+			ModelMap modelMap) {
+		logger.info("-> [cause = {}]", cause);
 		
-		model.addAttribute("serverTime", formattedDate );
-		System.out.println(formattedDate);
-				
-		return "home";
+		modelMap.put("cause", cause);
+		
+		logger.info("<- [cause = {}]", cause);
+		return "login_fail";
+	}
+	
+	/**
+	 * session 만료 시 처리
+	 * 
+	 * @author iskwon
+	 */
+	@RequestMapping(value = "/sessiontimeout.do", method = RequestMethod.GET)
+	public String doSessionTimeout() {
+		logger.info("-> []");
+		
+		logger.info("<- []");
+		return "error/session_expired";
+	}
+	
+	/**
+	 * 메뉴 리스트 리턴
+	 */
+	@RequestMapping(value = "/api/menu.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public ResponseEntity<String> doManu(HttpServletRequest request) {
+		logger.info("-> []");
+		
+		logger.info("<- []");
+		return getMenuList(request);
+//		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ResponseEntity<String> getMenuList(HttpServletRequest request) {
+		JSONObject root = new JSONObject();
+		try {
+			StringBuilder menuHtml = new StringBuilder();
+			String currentMenu = (String) request.getParameter("currentMenu");
+			Users user = (Users) request.getSession(false).getAttribute("USER");
+			if (user == null) {
+				logger.info("<- [Session is null!!]");
+				root.put("result", 1);
+				return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
+			}
+			root.put("userFirstName", user.getFirstName());
+			root.put("userLastName", user.getLastName());
+			List<Permission> permissions = user.getPermissions();
+			
+			if (user.getGrade() == Const.USER_GRADE_ADMIN) {
+				menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/contents_mgmt.html\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Operator Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/BMSCManagement.html\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area  Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
+			}
+			else {
+				for (Permission permission : permissions) {
+					if (permission.getRole().equals(Const.ROLE_ADMIN)); // 위 에서 처리 함
+					else if (permission.getRole().equals(Const.ROLE_USER_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_PERMISSION_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_CONTENTS_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/contents_mgmt.html\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_OPERATOR_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Operator Mgmt</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_BMSC_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/BMSCManagement.html\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_SERVICE_AREA_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area  Mgmt</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_ENB_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_SCHEDULE_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
+				}
+			}
+			
+			root.put("result", 0);
+			root.put("menuHtml", menuHtml.toString());
+			logger.info("<- [menuHtml = {}]", menuHtml.toString());
+			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@RequestMapping(value = "B2interface", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")

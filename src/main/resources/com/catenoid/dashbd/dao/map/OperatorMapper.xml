@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Operator" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="name" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -66,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, created_at, updated_at
+    id, name, description, created_at, updated_at
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.OperatorExample" >
     select
@@ -191,4 +192,52 @@
       updated_at = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+
+
+	<select id="selectOperatorListAll" resultType="com.catenoid.dashbd.dao.model.Operator">
+		SELECT 
+			<include refid="Base_Column_List" />
+		FROM operator
+		ORDER BY name ASC
+	</select>
+	
+	<select id="selectOperatorList" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
+		SELECT
+			id,
+			name,
+			description,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   id, name, description, created_at, updated_at
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 id, name, description, created_at, updated_at
+					  FROM operator
+					  ORDER BY name ASC ) T
+			 ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectOperatorListCount" parameterType="Map" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM operator
+		ORDER BY name ASC
+	</select>
+	
+	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
+		INSERT INTO operator(<if test="id != null">`id`,</if>`name`, `description`, `created_at`, `updated_at`)
+		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, NOW(), NOW())
+		ON DUPLICATE KEY UPDATE
+		name = #{name}, description = #{description}, updated_at = NOW()
+	</insert>
+	
+	<delete id="deleteOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
+		DELETE FROM operator
+		WHERE id = #{id}
+	</delete>
+	
 </mapper>

@@ -21,4 +21,10 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(System.currentTimeMillis());
     }
+    
+	public static String getFormatDateTime(Date date, String format) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return new SimpleDateFormat(format).format(cal.getTime());
+	}
 }

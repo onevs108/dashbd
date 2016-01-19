@@ -4,11 +4,12 @@ import java.util.Date;
 
 import org.json.simple.JSONObject;
 
-import com.catenoid.dashbd.util.Utils;
+public class Permission {
+	
+	private Integer id;
 
-public class Operator {
-    private Integer id;
-
+	private String role;
+	
     private String name;
     
     private String description;
@@ -17,14 +18,20 @@ public class Operator {
 
     private Date updatedAt;
     
-    private Integer totalCount;
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role == null ? null : role.trim();
     }
 
     public String getName() {
@@ -59,22 +66,16 @@ public class Operator {
         this.updatedAt = updatedAt;
     }
     
-    public Integer getTotalCount() {
-		return totalCount;
-	}
-
-	public void setTotalCount(Integer totalCount) {
-		this.totalCount = totalCount;
-	}
-	
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	public JSONObject toJSONObject() {
-		JSONObject jsonResult = new JSONObject();
-		jsonResult.put("id", id);
-		jsonResult.put("name", name);
-		jsonResult.put("description", description);
-		jsonResult.put("createdAt", Utils.getFormatDateTime(createdAt, "yyyy-MM-dd HH:mm:ss"));
-		jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
-		return jsonResult;
-	}
+    	JSONObject jsonResult = new JSONObject();
+    	jsonResult.put("id", id);
+//    	jsonResult.put("role", role);
+    	jsonResult.put("name", name);
+    	jsonResult.put("description", description);
+    	jsonResult.put("createdAt", createdAt);
+    	jsonResult.put("updatedAt", updatedAt);
+    	return jsonResult;
+    }
+
 }

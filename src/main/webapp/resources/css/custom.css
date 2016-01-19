@@ -193,3 +193,26 @@ div.scheduled-content-entry {
 	color: #fff;
 	padding: 6px 10px;
 }
+
+/* Commons
+ * author: iskwon
+------------------------------------------------------*/
+.table {
+	font-size: 13px;
+}
+
+/* User Form
+ * author: iskwon
+------------------------------------------------------*/
+.input-group {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+#form-permission-checkbox-area {
+	background-color: #ffffff;
+	color: inherit;
+	border-color: #e7eaec;
+	border-image: none;
+	border-width: 1px 0px;
+}

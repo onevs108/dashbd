@@ -3,6 +3,8 @@ package com.catenoid.dashbd.dao;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorExample;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface OperatorMapper {
@@ -19,7 +21,7 @@ public interface OperatorMapper {
     List<Operator> selectByExample(OperatorExample example);
 
     Operator selectByPrimaryKey(Integer id);
-
+    
     int updateByExampleSelective(@Param("record") Operator record, @Param("example") OperatorExample example);
 
     int updateByExample(@Param("record") Operator record, @Param("example") OperatorExample example);
@@ -27,4 +29,13 @@ public interface OperatorMapper {
     int updateByPrimaryKeySelective(Operator record);
 
     int updateByPrimaryKey(Operator record);
+    
+
+    List<Operator> selectOperatorListAll();
+    
+    List<Operator> selectOperatorList(Map<String, Object> map);
+    
+    int selectOperatorListCount();
+    
+    int insertOperator(Operator operator);
 }

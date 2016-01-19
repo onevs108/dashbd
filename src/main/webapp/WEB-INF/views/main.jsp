@@ -31,6 +31,8 @@
 	<script src="js/inspinia.js"></script>
 	<script src="js/plugins/pace/pace.min.js"></script>
 	
+	<script src="js/common.js"></script>
+	
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
@@ -75,16 +77,16 @@
 					</div>
 				</li>
 				<li>
-					<a href="/dashbd/resources/user_mgmt.html"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
+					<a href="/dashbd/resources/user.do"><i class="fa fa-user"></i> <span class="nav-label">User Mgmt</span></a>
 				</li>
 				<li>
-					<a href="/dashbd/resources/PermissionMgmt.html"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
+					<a href="/dashbd/resources/permission.do"><i class="fa fa-lock"></i> <span class="nav-label">Permission Mgmt</span></a>
 				</li>
 				<li>
 					<a href="/dashbd/resources/contents_mgmt.html"><i class="fa fa-file"></i> <span class="nav-label">Contents Mgmt</span></a>
 				</li>
 				<li>
-					<a href="/dashbd/resources/OperatorMgmt.html"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
+					<a href="/dashbd/resources/operator.do"><i class="fa fa-envelope"></i> <span class="nav-label">Operator Mgmt</span></a>
 				</li>
 				<li>
 					<a href="/dashbd/resources/BMSCManagement.html"><i class="fa fa-flag"></i> <span class="nav-label">BM-SC Mgmt</span></a>
@@ -164,7 +166,7 @@
 					</li>
 		
 					<li>
-						<a href="login.html">
+						<a href="/dashbd/out">
 							<i class="fa fa-sign-out"></i> Log out
 						</a>
 					</li>

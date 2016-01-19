@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+  			http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http auto-config="true" use-expressions="true">
+	    <intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/login.do" access="permitAll" />
+		<intercept-url pattern="/logout.do" access="permitAll" />
+<!-- 		<intercept-url pattern="/resources/main.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT', 'ROLE_PERMISSION_MGMT', 'ROLE_CONTENTS_MGMT', 'ROLE_OPERATOR_MGMT', 'ROLE_BMSC_MGMT', 'ROLE_SERVICE_AREA_MGMT', 'ROLE_ENB_MGMT', 'ROLE_SCHEDULE_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/resources/user.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/api/user/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/resources/permission.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_PERMISSION_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/resources/OperatorMgmt.html" access="hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/resources/BMSCManagement.html" access="hasAnyRole('ROLE_ADMIN', 'ROLE_BMSC_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/resources/serviceArea.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SERVICE_AREA_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/resources/eNBMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_ENB_MGMT')" /> -->
+<!-- 		<intercept-url pattern="/view/schdMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" /> -->
+		
+        <form-login
+            login-page="/login.do"
+            username-parameter="userId" password-parameter="password"
+           	login-processing-url="/authentication"
+           	authentication-success-handler-ref="authenticationSuccessHandler"
+           	authentication-failure-handler-ref="authenticationFailureHandler"
+        	always-use-default-target="false" />
+		
+        <logout invalidate-session="true" logout-url="/out" logout-success-url="/logout.do" delete-cookies="JSESSIONID" />
+        
+        <session-management>
+			<concurrency-control expired-url="/sessiontimeout.do" />
+		</session-management>
+		
+        <!-- check session time out with ajax -->
+<!--         <custom-filter after="EXCEPTION_TRANSLATION_FILTER" ref="ajaxSessionTimeoutFilter"/> -->
+	</http>
+	
+	<beans:bean id="authenticationSuccessHandler" class="com.catenoid.dashbd.security.AuthenticationSuccessHandlerImpl">
+		<beans:property name="sqlSession" ref="sqlSessionTemplate" />
+	</beans:bean>
+	<beans:bean id="authenticationFailureHandler" class="com.catenoid.dashbd.security.AuthenticationFailureHandlerImpl" />
+
+	<beans:bean id="ajaxSessionTimeoutFilter" class="com.catenoid.dashbd.security.AjaxSessionTimeoutFilter">
+		<beans:property name="ajaxHeader" value="AJAX" />
+	</beans:bean>
+
+	<!-- set UserDetails (id, pwd, authority) -->
+	<authentication-manager>
+	    <authentication-provider user-service-ref="userDetailsSevice" />
+	</authentication-manager>
+	<beans:bean id="userDetailsSevice" class="com.catenoid.dashbd.security.UserDetailsServiceImpl">
+	    <beans:property name="sqlSession" ref="sqlSessionTemplate" />
+	</beans:bean>
+    
+</beans:beans>
