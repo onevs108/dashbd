@@ -41,7 +41,7 @@ import com.catenoid.dashbd.dao.model.UsersExample.Criteria;
 @Controller
 @PropertySource("classpath:/config.properties")
 public class UsersController {
-	
+	 
 	private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 	
 	@Resource
