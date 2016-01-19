@@ -6,6 +6,8 @@ import com.catenoid.dashbd.dao.model.BmscExample;
 import com.catenoid.dashbd.dao.model.BmscServiceArea;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface BmscMapper {
@@ -34,4 +36,17 @@ public interface BmscMapper {
     int updateByPrimaryKeySelective(Bmsc record);
 
     int updateByPrimaryKey(Bmsc record);
+    
+    
+    List<Bmsc> selectBmscList(Map<String, Object> map);
+    
+    int selectBmscListCount(Integer operatorId);
+    
+    Bmsc selectBmsc(Integer bmscId);
+    
+    int insertBmsc(Bmsc bmsc);
+    
+    int deleteBmsc(Integer bmscId);
+    
+    int deleteBmscs(Map<String, Object> map);
 }

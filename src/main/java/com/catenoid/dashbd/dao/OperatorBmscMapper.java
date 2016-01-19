@@ -1,5 +1,6 @@
 package com.catenoid.dashbd.dao;
 
+import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.OperatorBmsc;
 import com.catenoid.dashbd.dao.model.OperatorBmscExample;
 import java.util.List;
@@ -21,4 +22,13 @@ public interface OperatorBmscMapper {
     int updateByExampleSelective(@Param("record") OperatorBmsc record, @Param("example") OperatorBmscExample example);
 
     int updateByExample(@Param("record") OperatorBmsc record, @Param("example") OperatorBmscExample example);
+    
+    
+    List<Integer> selectBmscIdListOfOperator(Integer operatorId);
+    
+    int insertOperatorBmsc(Bmsc bmsc);
+    
+    int deleteOperatorBmscOfOperator(Integer operatorId);
+    
+    int deleteOperatorBmscOfBmsc(Integer bmscId);
 }

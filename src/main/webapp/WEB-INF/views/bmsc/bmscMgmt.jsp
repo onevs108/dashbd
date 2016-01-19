@@ -6,8 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Permission Management</title>
+    <title>BM-SC Management</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
@@ -15,7 +14,6 @@
     <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 
 	<script src="js/jquery-2.1.1.js"></script>
 	<script src="js/jquery.cookie.js"></script>
@@ -24,12 +22,12 @@
 	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 	<script src="js/common.js"></script>
-	<script src="js/modules/permission.js"></script>
+	<script src="js/modules/bmsc.js"></script>
 	
 	<script type="text/javascript">
 		$(document).ready(function() {
-			getMenuList('PERMISSION_MGMT');
-			getUserList();
+			getMenuList('BMSC_MGMT');
+			getBmscList();
 		});
 	</script>
 </head>
@@ -134,141 +132,87 @@
 		
 		<!-- content body -->
         <div class="wrapper wrapper-content">
-            <div class="row wrapper border-bottom white-bg page-heading">
-				<div class="col-lg-12">
-					<h2>Permission Management</h2>
-					<ol class="breadcrumb">
-					    <li>
-						   <a href="index.html">Home</a>
-					    </li>
-		                <li class="active">
-						   <strong>Permission Management</strong>
-					    </li>
-					</ol>
-				</div>
-			</div><!-- end row wrapper border-bottom white-bg page-heading -->
-		            
-			<div class="wrapper wrapper-content">
-		        <div class="row">
-		            <!-- Permission Mgmt -->
-		            <div class="col-lg-12">
-		                <div class="ibox float-e-margins">
-		                    <div class="ibox-content">
-		                    	<div class="row" style="padding-top:20px">
-		                            <div class="col-lg-8">
-		                                <form method="get" class="form-horizontal">
-		                                    <div class="form-group"><label class="col-sm-2 control-label">Operator</label>
-		                                        <div class="col-sm-6"><input type="text" class="form-control" id="search-operator-id"></div>
-		                                    </div>
-		                                </form>
-		                            </div>
-		                        </div>
-		                    </div><!-- end ibox-content -->
-		                </div>
-		            </div><!-- end Permission Mgmt -->
-		            
-		            <!-- Permission Mgmt1 -->
-		            <div class="col-lg-8">
-		                <div class="ibox float-e-margins">
-		                    <div class="ibox-content">
-		                    	<div class="row" style="padding-top:30px">
-		                            <div class="col-md-10 col-md-offset-1">
-		                                <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control" id="search-keyword"> <span class="input-group-btn">
-		                                    <button type="button" class="btn btn-sm btn-primary" id="go-search"> search</button> </span>
-		                                </div>
-		                            </div>
-		                        </div>
-		                        <div class="hr-line-dashed"></div>
-		                        <h3 class="text-center" style="padding-bottom:10px;">Search Result</h3>
-		                        <div class="row">
-							    <div class="col-md-10 col-md-offset-1">
-							    	<div class="table-responsive">
-		                            	<table class="table table-striped" id="table"></table>
-		                            </div>
-							    </div>
-						    </div>
-		                    </div><!-- end ibox-content -->
-		                </div>
-		            </div><!-- end Permission Mgmt1 -->
-		            
-		            <!-- Permission Mgmt2 -->
-		            <div class="col-lg-4">
-		                <div class="ibox float-e-margins">
-		                    <div class="ibox-title"><h3>Permission Granted</h3></div>
-							<div class="ibox-content">
-			                    <div class="row">
-									<div class="col-md-12">
-										<fieldset>
-											<c:forEach items="${permissionList}" var="permission">
-												<c:if test="${permission.id == 1}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-user" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox1"> User Management</label>
-													</div>
-												</c:if>
-												<c:if test="${permission.id == 2}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-permission" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox2"> Permission Management</label>
-													</div>
-												</c:if>
-												<c:if test="${permission.id == 3}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-contents" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox3"> Contents Management</label>
-													</div>
-												</c:if>
-												<c:if test="${permission.id == 4}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-operator" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox4"> Operator Management</label>
-													</div>
-												</c:if>
-												<c:if test="${permission.id == 5}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-bmsc" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox5"> BMSC Management</label>
-													</div>
-												</c:if>
-												<c:if test="${permission.id == 6}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-service-area" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox6"> Service Area Management</label>
-													</div>
-												</c:if>
-												<c:if test="${permission.id == 7}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-enb" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox7"> eNB Management</label>
-													</div>
-												</c:if>
-												<c:if test="${permission.id == 8}">
-													<div class="checkbox checkbox-primary">
-														<input id="checkbox-permission-schedule" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox8"> Schedule Management</label>
-													</div>
-												</c:if>
-											</c:forEach>
-										</fieldset>
-									</div>
-								</div>
-								<div class="row">
-									<div class="hr-line-dashed"></div>
-									<div class="col-md-6">
-<!-- 										<input class="btn btn-success" type="button" id="save-btn" value="Save"> -->
-										<button class="btn btn-block btn-sm btn-primary" type="submit" id="save-btn">Save</button>
-									</div>
-									<div class="col-md-6">
-<!-- 										<input class="btn btn-white" type="button" id="cancel-btn" value="Cancel"> -->
-										<button class="btn btn-block btn-sm btn-default" type="submit" id="cancel-btn">Cancel</button>
-									</div>
-								</div>
-							</div><!-- end ibox-content -->
-						</div>
-					</div><!-- end Permission Mgmt2 -->
-				</div>	
-			</div><!-- end wrapper wrapper-content -->
 			
+            <!-- Operator Mgmt -->
+            <div class="row">
+				<div class="col-lg-12">
+	                <div class="ibox float-e-margins">
+	                    <div class="ibox-content">
+	                    	<div class="row" style="padding-top:20px">
+	                    		<div class="col-lg-8">
+	                                <form method="get" class="form-horizontal">
+										<div class="form-group"><label class="col-sm-2 control-label">Operator</label>
+											<div class="col-sm-6">
+												<c:choose>
+													<c:when test="${USER.grade == 0}">
+														<select name="status" id="form-operator-id" class="form-control">
+															<c:forEach items="${operatorList}" var="operator">
+																<option value="${operator.id}">${operator.name}</option>
+															</c:forEach>
+														</select>
+													</c:when>
+													<c:otherwise>
+														<select name="status" id="form-operator-id" class="form-control" disabled="disabled">
+															<c:forEach items="${operatorList}" var="operator">
+																<c:choose>
+																	<c:when test="${USER.operatorId == operator.id}">
+																		<option value="${operator.id}" selected="selected">${operator.name}</option>
+																	</c:when>
+																	<c:otherwise>
+																		<option value="${operator.id}">${operator.name}</option>
+																	</c:otherwise>
+																</c:choose>
+															</c:forEach>
+														</select>
+													</c:otherwise>
+												</c:choose>
+											</div>
+										</div>
+									</form>
+	                            </div>
+	                            <div class="col-lg-4">
+	                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn">
+										Create New BMSC
+	                                </button>
+	                                <div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
+	                                    <div class="modal-dialog">
+	                                        <div class="modal-content animated fadeIn">
+	                                            <div class="modal-header">
+	                                                <button type="button" class="close" id="modal-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	                                                <i class="fa fa-folder-open-o modal-icon"></i>
+	                                                <h4 class="modal-title" id="modal-title">Create New BMSC</h4>
+	                                            </div>
+	                                            <div class="modal-body">
+	                                                <form method="get" class="form-horizontal">
+	                                                    <div class="form-group"><label class="col-sm-3 control-label">BMSC Name</label>
+	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-name"></div>
+	                                                    </div>
+	                                                    <div class="form-group"><label class="col-sm-3 control-label">IP Address</label>
+	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-ipaddress"></div>
+	                                                    </div>
+	                                                    <div class="form-group"><label class="col-sm-3 control-label">Circle</label>
+	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-circle" style="height:200px"></div>
+	                                                    </div>
+	                                                </form>
+	                                            </div>
+	                                            <div class="modal-footer">
+	                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
+	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    	<div class="hr-line-dashed"></div>
+	                    
+							<div class="table-responsive">
+                            	<table class="table table-bordered" id="table"></table>
+                            </div>
+	                    </div><!-- end ibox-content -->
+	                </div>
+	            </div>
+            </div>
         </div><!-- content body end -->
     </div><!-- content end -->
 </div><!-- wrapper end -->

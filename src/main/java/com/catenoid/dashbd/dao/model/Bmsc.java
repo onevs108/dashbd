@@ -2,11 +2,19 @@ package com.catenoid.dashbd.dao.model;
 
 import java.util.Date;
 
+import org.json.simple.JSONObject;
+
+import com.catenoid.dashbd.util.Utils;
+
 public class Bmsc {
     private Integer id;
-
+    
+    private Integer operatorId;
+    
     private String name;
 
+    private String ipaddress;
+    
     private String circle;
 
     private Date createdAt;
@@ -23,12 +31,28 @@ public class Bmsc {
         this.id = id;
     }
     
+    public Integer getOperatorId() {
+        return operatorId;
+    }
+    
+    public void setOperatorId(Integer operatorId) {
+        this.operatorId = operatorId;
+    }
+    
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    public String getIpaddress() {
+        return ipaddress;
+    }
+
+    public void setIpaddress(String ipaddress) {
+        this.ipaddress = ipaddress == null ? null : ipaddress.trim();
     }
 
     public String getCircle() {
@@ -62,4 +86,23 @@ public class Bmsc {
     public void setTotalCount(Integer totalCount) {
         this.totalCount = totalCount;
     }
+    
+	@SuppressWarnings("unchecked")
+	public JSONObject toJSONObject() {
+    	JSONObject jsonResult = new JSONObject();
+    	jsonResult.put("id", id);
+    	jsonResult.put("operatorId", operatorId);
+    	jsonResult.put("name", name);
+    	jsonResult.put("ipaddress", ipaddress);
+    	jsonResult.put("circle", circle);
+    	jsonResult.put("createdAt", Utils.getFormatDateTime(createdAt, "yyyy-MM-dd HH:mm:ss"));
+    	jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
+    	return jsonResult;
+    }
+
+	@Override
+	public String toString() {
+		return "Bmsc [id=" + id + ", operatorId=" + operatorId + ", name=" + name + ", ipaddress=" + ipaddress
+				+ ", circle=" + circle + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+	}
 }

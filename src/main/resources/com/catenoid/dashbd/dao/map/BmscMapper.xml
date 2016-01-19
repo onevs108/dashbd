@@ -247,4 +247,71 @@
       updated_at = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+	<select id="selectBmscList" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Bmsc">
+		SELECT
+			id,
+		    operator_id AS operatorId,
+		    name,
+		    ipaddress,
+		    circle,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   id, operator_id, name, ipaddress, circle, created_at, updated_at
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						  B.id, OB.operator_id, B.name, B.ipaddress, B.circle, B.created_at, B.updated_at
+					  FROM bmsc B, operator_bmsc OB
+		              WHERE B.id = OB.bmsc_id
+		                AND OB.operator_id = #{operatorId}
+					  ORDER BY name ASC ) T
+			 ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectBmscListCount" parameterType="Integer" resultType="Integer">
+	    SELECT COUNT(*)
+		FROM bmsc B, operator_bmsc OB
+		WHERE B.id = OB.bmsc_id
+		  AND OB.operator_id = #{operatorId}
+	</select>
+	
+	<select id="selectBmsc" parameterType="Integer" resultType="com.catenoid.dashbd.dao.model.Bmsc">
+		SELECT
+			id,
+			name,
+			ipaddress,
+			circle,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM bmsc
+		WHERE id = #{bmscId}
+	</select>
+	
+	<insert id="insertBmsc" parameterType="com.catenoid.dashbd.dao.model.Bmsc">
+		INSERT INTO bmsc(<if test="id != null">`id`,</if>`name`, ipaddress, circle, created_at, updated_at)
+		VALUES (<if test="id != null">#{id},</if>#{name}, #{ipaddress}, #{circle}, NOW(), NOW())
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() 
+    	</selectKey>
+		ON DUPLICATE KEY UPDATE
+		name = #{name}, ipaddress = #{ipaddress}, circle = #{circle}, updated_at = NOW()
+	</insert>
+	
+	<delete id="deleteBmsc" parameterType="Integer">
+		DELETE FROM bmsc
+		WHERE id = #{bmscId}
+	</delete>
+	
+	<delete id="deleteBmscs" parameterType="Map">
+		DELETE FROM bmsc
+	    WHERE id IN (
+					<foreach collection="bmscIdList" item="bmscId" separator=",">
+						#{bmscId}
+					</foreach>
+					)
+	</delete>
+
 </mapper>

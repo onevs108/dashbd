@@ -140,7 +140,7 @@
 	                    <div class="ibox-content">
 	                    	<div class="row" style="padding-top:20px">
 	                            <div class="col-md-12 pull-right">
-	                                <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#form-modal">
+	                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn">
 										Create New Operator
 	                                </button>
 	                                <div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -149,7 +149,7 @@
 	                                            <div class="modal-header">
 	                                                <button type="button" class="close" id="modal-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	                                                <i class="fa fa-folder-open-o modal-icon"></i>
-	                                                <h4 class="modal-title">Create New Operator</h4>
+	                                                <h4 class="modal-title" id="modal-title">Create New Operator</h4>
 	                                            </div>
 	                                            <div class="modal-body">
 	                                                <form method="get" class="form-horizontal">
@@ -163,7 +163,7 @@
 	                                            </div>
 	                                            <div class="modal-footer">
 	                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
-	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">Create Operator</button>
+	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
 	                                            </div>
 	                                        </div>
 	                                    </div>

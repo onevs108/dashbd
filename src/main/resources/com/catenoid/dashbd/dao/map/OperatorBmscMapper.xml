@@ -171,4 +171,28 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
+	
+	<select id="selectBmscIdListOfOperator" parameterType="Integer" resultType="Integer">
+		SELECT bmsc_id
+		FROM operator_bmsc
+		WHERE operator_id = #{operatorId}
+	</select>
+  
+	<insert id="insertOperatorBmsc" parameterType="com.catenoid.dashbd.dao.model.Bmsc">
+		INSERT INTO operator_bmsc (operator_id, bmsc_id, created_at, updated_at)
+		VALUES (#{operatorId}, #{id}, NOW(), NOW())
+		ON DUPLICATE KEY UPDATE
+		updated_at = NOW()
+	</insert>
+	
+	<delete id="deleteOperatorBmscOfOperator" parameterType="Integer">
+		DELETE FROM operator_bmsc
+		WHERE operator_id = #{operatorId}
+	</delete>
+	
+	<delete id="deleteOperatorBmscOfBmsc" parameterType="Integer">
+		DELETE FROM operator_bmsc
+		WHERE bmsc_id = #{bmscId}
+	</delete>
+  
 </mapper>

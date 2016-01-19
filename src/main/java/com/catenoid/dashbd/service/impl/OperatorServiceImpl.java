@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.catenoid.dashbd.dao.BmscMapper;
+import com.catenoid.dashbd.dao.OperatorBmscMapper;
 import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.service.OperatorService;
@@ -111,6 +113,19 @@ public class OperatorServiceImpl implements OperatorService {
 	public boolean deleteOperator(Integer operatorId) {
 		try {
 			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			OperatorBmscMapper operatorBmscMapper = sqlSession.getMapper(OperatorBmscMapper.class);
+			BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);
+
+			// Operator에 딸린 BMSC도 삭제해준다.
+			// foreign key 자체가 없어 별도로 지워줘야 한다.
+			List<Integer> bmscIdList = operatorBmscMapper.selectBmscIdListOfOperator(operatorId);
+			operatorBmscMapper.deleteOperatorBmscOfOperator(operatorId);
+			if (bmscIdList != null && !bmscIdList.isEmpty()) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("bmscIdList", bmscIdList);
+				bmscMapper.deleteBmscs(map);
+			}
+			
 			return operatorMapper.deleteByPrimaryKey(operatorId) > 0;
 		} catch (Exception e) {
 			logger.error("~~ An error occurred!", e);

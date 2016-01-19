@@ -5,64 +5,79 @@ $(function() {
 	$('#modal-add-btn').click(doAdd);
 	$('#modal-cancel-btn').click(doModalCancel);
 	$('#modal-cancel-icon-btn').click(doModalCancel);
+	
+	$('#form-operator-id').change(changeOperator);
 });
 
+function changeOperator() {
+	$('#table').bootstrapTable('destroy');
+	getBmscList();
+}
+
 function openModal() {
-	$('#modal-title').html('Create New Operator');
+	$('#modal-title').html('Create New BMSC');
 	$('#form-modal').modal('show');
 }
 
-var operatorId = null;
+var bmscId = null;
 function doAdd() {
-	$('#modal-title').html('Create New Operator');
+	var bmscName = $('#form-bmsc-name').val();
+	var bmscCircle = $('#form-bmsc-circle').val();
+	var bmscIpaddress = $('#form-bmsc-ipaddress').val();
 	
-	var operatorName = $('#form-operator-name').val();
-	var operatorDescription = $('#form-operator-description').val();
-	
-	if (operatorName == null || operatorName.length == 0) {
-		alert('Please input the Operator Name');
+	if (bmscName == null || bmscName.length == 0) {
+		alert('Please input the Name');
 		return false;
 	}
 	
-	if (operatorDescription == null || operatorDescription.length == 0) {
-		alert('Please input the Description');
+	if (bmscIpaddress == null || bmscIpaddress.length == 0) {
+		alert('Please input the IP Address');
+		return false;
+	}
+	
+	if (bmscCircle == null || bmscCircle.length == 0) {
+		alert('Please input the Circle');
 		return false;
 	}
 	
 	var data = {
-		id: operatorId, // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
-		name: operatorName,
-		description: operatorDescription
+		id: bmscId, // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
+		operatorId: $('#form-operator-id').val(),
+		name: bmscName,
+		ipaddress: bmscIpaddress,
+		circle: bmscCircle
 	}
 	callInsert(data);
 }
 
 function doModalCancel() {
-	operatorId = null;
+	bmscId = null;
 	closeModal();
 }
 
-function doEdit(id, name, description) {
-	$('#modal-title').html('Edit Operator');
-	operatorId = id;
-	$('#form-operator-name').val(name);
-	$('#form-operator-description').val(description);
+function doEdit(id, name, ipaddress, circle) {
+	bmscId = id;
+	
+	$('#modal-title').html('Edit BMSC');
+	$('#form-bmsc-name').val(name);
+	$('#form-bmsc-ipaddress').val(ipaddress);
+	$('#form-bmsc-circle').val(circle);
 	$('#form-modal').modal('show');
 }
 
-function doDelete(operatorId, name) {
-	if (confirm('Do you really want to delete the Operator "' + name + '"?')) {
+function doDelete(bmscId, name) {
+	if (confirm('Do you really want to delete the BMSC "' + name + '"?')) {
 		$.ajax({
-			url: '/dashbd/api/operator/delete.do',
+			url: '/dashbd/api/bmsc/delete.do',
 			method: 'POST',
 			dataType: 'json',
 			data: {
-				operatorId: operatorId
+				bmscId: bmscId
 			},
 			success: function(data, textStatus, jqXHR) {
 				if (data.result) { // 성공
 					$('#table').bootstrapTable('destroy');
-					getOperatorList();
+					getBmscList();
 				}
 				else { // 실패
 					alert('Failed!! Please you report to admin!');
@@ -78,16 +93,16 @@ function doDelete(operatorId, name) {
 
 function callInsert(data) {
 	$.ajax({
-		url: '/dashbd/api/operator/insert.do',
+		url: '/dashbd/api/bmsc/insert.do',
 		method: 'POST',
 		dataType: 'json',
 		data: data,
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공
 				$('#table').bootstrapTable('destroy');
-				getOperatorList();
+				getBmscList();
 				closeModal();
-				operatorId = null; // 초기화
+				bmscId = null; // 초기화
 			}
 			else { // 실패
 				alert('Failed!! Please you report to admin!');
@@ -100,18 +115,18 @@ function callInsert(data) {
 	});
 }
 
-function getOperatorList() {
+function getBmscList() {
 	// 테이블 생성
 	var table = $('#table').bootstrapTable({
 		method: 'post',
-		url: '/dashbd/api/operator/list.do',
+		url: '/dashbd/api/bmsc/list.do',
 		contentType: 'application/json',
 		dataType: 'json',
-//		queryParams: function(params) {
-//			location.href = '#';
-//			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
-//			return params;
-//		},
+		queryParams: function(params) {
+			location.href = '#';
+			params['operatorId'] = $('#form-operator-id').val();
+			return params;
+		},
 		cache: false,
 		pagination: true,
 		sidePagination: 'server',
@@ -125,22 +140,29 @@ function getOperatorList() {
 		clickToSelect: false,
 		columns: [{
 			field: 'id',
-			title: 'Operator ID',
+			title: 'BMSC ID',
 			width: '10%',
 			align: 'center',
 			valign: 'middle',
 			sortable: false
 		}, {
 			field: 'name',
-			title: 'Operator Name',
-			width: '20%',
+			title: 'BMSC Name',
+			width: '15%',
 			align: 'center',
 			valign: 'middle',
 			sortable: false
 		}, {
-			field: 'description',
-			title: 'Description',
-			width: '50%',
+			field: 'ipaddress',
+			title: 'IP Address',
+			width: '15%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false
+		}, {
+			field: 'circle',
+			title: 'Circle',
+			width: '40%',
 			align: 'left',
 			valign: 'middle',
 			sortable: false
@@ -152,7 +174,7 @@ function getOperatorList() {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.description + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+				var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.ipaddress + '\', \'' + row.circle + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 						+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
@@ -161,7 +183,8 @@ function getOperatorList() {
 }
 
 function closeModal() {
-	$('#form-operator-name').val('');
-	$('#form-operator-description').val('');
+	$('#form-bmsc-name').val('');
+	$('#form-bmsc-ipaddress').val('');
+	$('#form-bmsc-circle').val('');
 	$('#form-modal').modal('hide');
 }

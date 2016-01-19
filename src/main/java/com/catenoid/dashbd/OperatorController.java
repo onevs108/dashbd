@@ -110,7 +110,6 @@ public class OperatorController {
 		
 		JSONObject jsonResult = new JSONObject();
 		jsonResult.put("result", operatorServiceImpl.insertOperator(operator));
-		jsonResult.put("result", true);
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
@@ -128,7 +127,6 @@ public class OperatorController {
 		
 		JSONObject jsonResult = new JSONObject();
 		jsonResult.put("result", operatorServiceImpl.deleteOperator(operatorId));
-		jsonResult.put("result", true);
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();

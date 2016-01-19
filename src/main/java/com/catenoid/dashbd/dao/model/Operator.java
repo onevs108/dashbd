@@ -77,4 +77,10 @@ public class Operator {
 		jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
 		return jsonResult;
 	}
+
+	@Override
+	public String toString() {
+		return "Operator [id=" + id + ", name=" + name + ", description=" + description + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + "]";
+	}
 }

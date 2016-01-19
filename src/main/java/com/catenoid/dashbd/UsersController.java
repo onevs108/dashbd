@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,13 +45,13 @@ public class UsersController {
 	@RequestMapping(value = "/resources/user.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public String getUserMgmt(
 			@RequestParam(value = "isBack", required = false) Boolean isBack,
-			Model model) {
+			ModelMap modelMap) {
 		logger.info("-> [isBack = {}]", isBack);
 	
-		model.addAttribute("isBack", isBack == null ? false : isBack);
+		modelMap.addAttribute("isBack", isBack == null ? false : isBack);
 		
 		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
-		model.addAttribute("operatorList", operatorList);
+		modelMap.addAttribute("operatorList", operatorList);
 		
 		logger.info("<- [operatorListSize = {}]", operatorList.size());
 		return "user/userMgmt";

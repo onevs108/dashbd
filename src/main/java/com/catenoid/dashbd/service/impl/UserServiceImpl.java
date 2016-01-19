@@ -134,6 +134,7 @@ public class UserServiceImpl implements UserService {
 	public boolean deleteUser(Users user) {
 		try {
 			UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+			usersMapper.deletePermissionOfUser(user.getUserId());
 			return usersMapper.deleteUser(user) > 0;
 		} catch (Exception e) {
 			logger.error("~~ An error occurred!", e);
