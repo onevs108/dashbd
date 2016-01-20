@@ -1,5 +1,7 @@
 $(document).ready(function()
 {
+	getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
+	getServiceAreaBmSc(1, $('#operator_down option:selected').val(), false);
     $('#operator').change(function(){
         //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val(), true);

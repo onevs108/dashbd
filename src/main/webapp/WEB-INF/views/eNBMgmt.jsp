@@ -16,6 +16,7 @@
 
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
     
     <!-- FooTable -->
     <link href="css/plugins/footable/footable.core.css" rel="stylesheet">
@@ -72,93 +73,94 @@
 
 <div id="page-wrapper" class="gray-bg">
 
-	<div class="row border-bottom">
-        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-            <form role="search" class="navbar-form-custom" action="search_results.html">
-                <div class="form-group">
-                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-                </div>
-            </form>
-        </div><!-- end navbar-header -->
+        <div class="row border-bottom">
+			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+				<div class="navbar-header">
+					<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+					<form role="search" class="navbar-form-custom" action="search_results.html">
+						<div class="form-group">
+							<input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+						</div>
+					</form>
+				</div><!-- end navbar-header -->
+		        
+				<ul class="nav navbar-top-links navbar-right">
+					<li>
+						<a>
+							<i class="fa fa-user"></i><span id="navbar-user-name"></span>
+						</a>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+							<i class="fa fa-bell"></i>
+<!-- 							<span class="label label-primary">8</span> -->
+						</a>
+						<ul class="dropdown-menu dropdown-alerts">
+							<li>
+								<a href="mailbox.html">
+									<div>
+										<i class="fa fa-envelope fa-fw"></i> You have 16 messages
+										<span class="pull-right text-muted small">4 minutes ago</span>
+									</div>
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="profile.html">
+									<div>
+										<i class="fa fa-twitter fa-fw"></i> 3 New Followers
+										<span class="pull-right text-muted small">12 minutes ago</span>
+									</div>
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="grid_options.html">
+									<div>
+										<i class="fa fa-upload fa-fw"></i> Server Rebooted
+										<span class="pull-right text-muted small">4 minutes ago</span>
+									</div>
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<div class="text-center link-block">
+									<a href="notifications.html">
+										<strong>See All Alerts</strong>
+										<i class="fa fa-angle-right"></i>
+									</a>
+								</div>
+							</li>
+						</ul>
+					</li>
+		
+					<li>
+						<a href="/dashbd/out">
+							<i class="fa fa-sign-out"></i> Log out
+						</a>
+					</li>
+					<li>
+						<a href="login.html">
+							<img src="img/samsung_small.png">
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div><!-- end border-bottom -->
         
-            <ul class="nav navbar-top-links navbar-right">
-                <li>
-                    <a>
-                    <i class="fa fa-user"></i><span id="navbar-user-name"></span>
-                    </a>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="mailbox.html">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="profile.html">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="grid_options.html">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <div class="text-center link-block">
-                                <a href="notifications.html">
-                                    <strong>See All Alerts</strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="/dashbd/out">
-                        <i class="fa fa-sign-out"></i> Log out
-                    </a>
-                </li>
-                <li>
-                    <a href="login.html">
-                        <img src="img/samsung_small.png">
-                    </a>
-                </li>
-            </ul>
-        </nav>
-	</div><!-- end border-bottom -->
-
-	<div class="row wrapper border-bottom white-bg page-heading">
-		<div class="col-lg-12">
-			<h2>eNB Management</h2>
-			<ol class="breadcrumb">
-			    <li>
-				   <a href="/dashbd/resources/main.do">Home</a>
-			    </li>
-                <li class="active">
-				   <strong>eNB Management</strong>
-			    </li>
-			</ol>
-		</div>
-	</div><!-- end row wrapper border-bottom white-bg page-heading -->
+        <div class="row wrapper border-bottom white-bg page-heading">
+			<div class="col-lg-12">
+				<h2><strong>eNB Mgmt</strong></h2>
+				<ol class="breadcrumb">
+				    <li>
+					   <a href="/dashbd/resources/main.do">Home</a>
+				    </li>
+				    <li class="active">
+					   <strong>eNB Mgmt</strong>
+				    </li>
+				</ol>
+			</div>
+		</div><!-- end row wrapper border-bottom white-bg page-heading -->
             
 	<div class="wrapper wrapper-content">
         <div class="row">
@@ -173,13 +175,36 @@
                         <form class="form-horizontal excelUpload" enctype="multipart/form-data" method="post" action="">
                             <div class="form-group"><label class="col-sm-3 control-label">Operator</label>
                                 <div class="col-sm-9">
-										<select name="operator" id="operator" class="form-control" >
-											<option value=''></option>
-	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
-											<option value="${operatorList.id }">${operatorList.name }</option>
-											</c:forEach>
-										</select>
-						  </div>
+                                	<c:choose>
+										<c:when test="${USER.grade == 0}">
+											<select name="operator" id="operator" class="form-control">
+												<c:forEach items="${OperatorList}" var="operator">
+													<option value="${operator.id}">${operator.name}</option>
+												</c:forEach>
+											</select>
+										</c:when>
+										<c:otherwise>
+											<select name="operator" id="operator" class="form-control" disabled="disabled">
+												<c:forEach items="${OperatorList}" var="operator">
+													<c:choose>
+														<c:when test="${USER.operatorId == operator.id}">
+															<option value="${operator.id}" selected="selected">${operator.name}</option>
+														</c:when>
+														<c:otherwise>
+															<option value="${operator.id}">${operator.name}</option>
+														</c:otherwise>
+													</c:choose>
+												</c:forEach>
+											</select>
+										</c:otherwise>
+									</c:choose>
+<!-- 									<select name="operator" id="operator" class="form-control" > -->
+<!-- 										<option value=''></option> -->
+<%-- 	                                    <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx"> --%>
+<%-- 											<option value="${operatorList.id }">${operatorList.name }</option> --%>
+<%-- 										</c:forEach> --%>
+<!-- 									</select> -->
+						  		</div>
                             </div>
                             <div class="form-group"><label class="col-sm-3 control-label">BMSC</label>
                                 <div class="col-sm-9">
@@ -217,12 +242,35 @@
                         <form method="post" class="form-horizontal" name="downloadForm">
                             <div class="form-group"><label class="col-sm-3 control-label">Operator</label>
                                 <div class="col-sm-9">
-										<select name="operator_down" id="operator_down" class="form-control" >
-											<option value=''></option>
-	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
-											<option value="${operatorList.id }">${operatorList.name }</option>
-											</c:forEach>
-										</select>
+                                	<c:choose>
+										<c:when test="${USER.grade == 0}">
+											<select name="operator_down" id="operator_down" class="form-control">
+												<c:forEach items="${OperatorList}" var="operator">
+													<option value="${operator.id}">${operator.name}</option>
+												</c:forEach>
+											</select>
+										</c:when>
+										<c:otherwise>
+											<select name="operator_down" id="operator_down" class="form-control" disabled="disabled">
+												<c:forEach items="${OperatorList}" var="operator">
+													<c:choose>
+														<c:when test="${USER.operatorId == operator.id}">
+															<option value="${operator.id}" selected="selected">${operator.name}</option>
+														</c:when>
+														<c:otherwise>
+															<option value="${operator.id}">${operator.name}</option>
+														</c:otherwise>
+													</c:choose>
+												</c:forEach>
+											</select>
+										</c:otherwise>
+									</c:choose>
+<!-- 										<select name="operator_down" id="operator_down" class="form-control" > -->
+<!-- 											<option value=''></option> -->
+<%-- 	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx"> --%>
+<%-- 											<option value="${operatorList.id }">${operatorList.name }</option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
 						  </div>
                             </div>
                             <div class="form-group"><label class="col-sm-3 control-label">BMSC</label>

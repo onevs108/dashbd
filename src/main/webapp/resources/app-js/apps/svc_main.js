@@ -10,6 +10,7 @@ default_service_area += "</table></div>";
 
 $(document).ready(function()
 {
+	getServiceAreaBmSc(1, $('#operator option:selected').val());
     $('#operator').change(function(){
         //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val());

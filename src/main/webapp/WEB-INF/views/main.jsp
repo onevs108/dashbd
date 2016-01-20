@@ -102,7 +102,8 @@
 					</li>
 					<li class="dropdown">
 						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+							<i class="fa fa-bell"></i>
+<!-- 							<span class="label label-primary">8</span> -->
 						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
@@ -162,21 +163,45 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="ibox float-e-margins">
-						<div class="ibox-content">
-							<div>
-								<h2>Service Area Mgmt</h2>
+						<div class="ibox-title">
+							<h3>Service Area Mgmt</h3>
+							<div class="ibox-tools">
 							</div>
-							<br>
+						</div><!-- end ibox-title -->
+						<div class="ibox-content">
 							<div class="row">
 								<div class="col-sm-4">
 									<div class="form-group">
 										<label class="control-label" for="status">Operator</label>
-										<select name="operator" id="operator" class="form-control" >
-											<option value=''></option>
-	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
-											<option value="${operatorList.id }">${operatorList.name }</option>
-											</c:forEach>
-										</select>
+										<c:choose>
+											<c:when test="${USER.grade == 0}">
+												<select name="operator" id="operator" class="form-control">
+													<c:forEach items="${OperatorList}" var="operator">
+														<option value="${operator.id}">${operator.name}</option>
+													</c:forEach>
+												</select>
+											</c:when>
+											<c:otherwise>
+												<select name="status" id="operator" class="form-control" disabled="disabled">
+													<c:forEach items="${OperatorList}" var="operator">
+														<c:choose>
+															<c:when test="${USER.operatorId == operator.id}">
+																<option value="${operator.id}" selected="selected">${operator.name}</option>
+															</c:when>
+															<c:otherwise>
+																<option value="${operator.id}">${operator.name}</option>
+															</c:otherwise>
+														</c:choose>
+													</c:forEach>
+												</select>
+											</c:otherwise>
+										</c:choose>
+<!-- 										<select name="operator" id="operator" class="form-control" > -->
+<!-- 											<option value=''></option> -->
+<%-- 	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx"> --%>
+<%-- 											<option value="${operatorList.id }">${operatorList.name }</option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
 									</div>
 									</div>
 									<div class="col-sm-4">

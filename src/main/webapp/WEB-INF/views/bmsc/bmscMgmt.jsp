@@ -75,7 +75,8 @@
 					</li>
 					<li class="dropdown">
 						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+							<i class="fa fa-bell"></i>
+<!-- 							<span class="label label-primary">8</span> -->
 						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
@@ -129,6 +130,20 @@
 				</ul>
 			</nav>
 		</div><!-- end border-bottom -->
+        
+        <div class="row wrapper border-bottom white-bg page-heading">
+			<div class="col-lg-12">
+				<h2><strong>BM-SC Mgmt</strong></h2>
+				<ol class="breadcrumb">
+				    <li>
+					   <a href="/dashbd/resources/main.do">Home</a>
+				    </li>
+				    <li class="active">
+					   <strong>BM-SC Mgmt</strong>
+				    </li>
+				</ol>
+			</div>
+		</div><!-- end row wrapper border-bottom white-bg page-heading -->
 		
 		<!-- content body -->
         <div class="wrapper wrapper-content">

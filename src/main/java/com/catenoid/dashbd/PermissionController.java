@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Permission;
+import com.catenoid.dashbd.service.OperatorService;
 import com.catenoid.dashbd.service.PermissionService;
 
 /**
@@ -32,6 +34,8 @@ public class PermissionController {
 	
 	@Autowired
 	private PermissionService permissionServiceImpl;
+	@Autowired
+	private OperatorService operatorServiceImpl;
 	
 	/**
 	 * Permission 관리 페이지 이동
@@ -43,7 +47,10 @@ public class PermissionController {
 		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
 		modelMap.addAttribute("permissionList", permissionList);
 		
-		logger.info("<- [permissionListSize = {}]", permissionList.size());
+		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
+		modelMap.addAttribute("operatorList", operatorList);
+		
+		logger.info("<- [permissionListSize = {}], [operatorListSize = {}]", permissionList.size(), operatorList.size());
 		return "permission/permissionMgmt";
 	}
 	

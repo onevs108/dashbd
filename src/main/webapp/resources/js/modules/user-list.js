@@ -128,7 +128,7 @@ function getUserList(isBack, isSearch) {
 			valign: 'middle',
 			sortable: false
 		}, {
-			field: 'operatorId',
+			field: 'operatorName',
 			title: 'Operator',
 			width: '15%',
 			align: 'center',

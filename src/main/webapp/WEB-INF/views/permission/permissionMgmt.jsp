@@ -77,7 +77,8 @@
 					</li>
 					<li class="dropdown">
 						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+							<i class="fa fa-bell"></i>
+<!-- 							<span class="label label-primary">8</span> -->
 						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
@@ -131,23 +132,21 @@
 				</ul>
 			</nav>
 		</div><!-- end border-bottom -->
+        
+        <div class="row wrapper border-bottom white-bg page-heading">
+			<div class="col-lg-12">
+				<h2><strong>Permission Mgmt</strong></h2>
+				<ol class="breadcrumb">
+				    <li>
+					   <a href="/dashbd/resources/main.do">Home</a>
+				    </li>
+				    <li class="active">
+					   <strong>Permission Mgmt</strong>
+				    </li>
+				</ol>
+			</div>
+		</div><!-- end row wrapper border-bottom white-bg page-heading -->
 		
-		<!-- content body -->
-        <div class="wrapper wrapper-content">
-            <div class="row wrapper border-bottom white-bg page-heading">
-				<div class="col-lg-12">
-					<h2>Permission Management</h2>
-					<ol class="breadcrumb">
-					    <li>
-						   <a href="index.html">Home</a>
-					    </li>
-		                <li class="active">
-						   <strong>Permission Management</strong>
-					    </li>
-					</ol>
-				</div>
-			</div><!-- end row wrapper border-bottom white-bg page-heading -->
-		            
 			<div class="wrapper wrapper-content">
 		        <div class="row">
 		            <!-- Permission Mgmt -->
@@ -157,9 +156,36 @@
 		                    	<div class="row" style="padding-top:20px">
 		                            <div class="col-lg-8">
 		                                <form method="get" class="form-horizontal">
-		                                    <div class="form-group"><label class="col-sm-2 control-label">Operator</label>
-		                                        <div class="col-sm-6"><input type="text" class="form-control" id="search-operator-id"></div>
-		                                    </div>
+		                                	<label class="col-sm-2 control-label">Operator</label>
+		                                    <div class="col-sm-6">
+			                                	<c:choose>
+													<c:when test="${USER.grade == 0}">
+														<select name="status" id="search-operator-id" class="form-control">
+															<c:forEach items="${operatorList}" var="operator">
+																<option value="${operator.id}">${operator.name}</option>
+															</c:forEach>
+														</select>
+													</c:when>
+													<c:otherwise>
+														<select name="status" id="search-operator-id" class="form-control" disabled="disabled">
+															<c:forEach items="${operatorList}" var="operator">
+																<c:choose>
+																	<c:when test="${USER.operatorId == operator.id}">
+																		<option value="${operator.id}" selected="selected">${operator.name}</option>
+																	</c:when>
+																	<c:otherwise>
+																		<option value="${operator.id}">${operator.name}</option>
+																	</c:otherwise>
+																</c:choose>
+															</c:forEach>
+														</select>
+													</c:otherwise>
+												</c:choose>
+											</div>
+<!-- 		                                    <div class="form-group"> -->
+<!-- 		                                    	<label class="col-sm-2 control-label">Operator</label> -->
+<!-- 		                                        <div class="col-sm-6"><input type="text" class="form-control" id="search-operator-id"></div> -->
+<!-- 		                                    </div> -->
 		                                </form>
 		                            </div>
 		                        </div>
@@ -218,7 +244,7 @@
 														<label for="checkbox3"> Contents Management</label>
 													</div>
 												</c:if>
-												<c:if test="${permission.id == 4}">
+												<c:if test="${permission.id == 4 && USER.grade == 0}">
 													<div class="checkbox checkbox-primary">
 														<input id="checkbox-permission-operator" type="checkbox" name="permissions" value="${permission.id}">
 														<label for="checkbox4"> Operator Management</label>

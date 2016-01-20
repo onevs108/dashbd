@@ -14,9 +14,7 @@
 	
 	<link href="../resources/css/animate.css" rel="stylesheet">
 	<link href="../resources/css/style.css" rel="stylesheet">
-	<!-- 
 	<link href="../resources/css/custom.css" rel="stylesheet">
-	 -->
 	<link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
 	
 	<!-- FooTable -->
@@ -104,7 +102,7 @@
 	</nav>
 
 	<div id="page-wrapper" class="gray-bg">
-		<div class="row border-bottom">
+        <div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 				<div class="navbar-header">
 					<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
@@ -123,7 +121,8 @@
 					</li>
 					<li class="dropdown">
 						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+							<i class="fa fa-bell"></i>
+<!-- 							<span class="label label-primary">8</span> -->
 						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
@@ -171,34 +170,67 @@
 					</li>
 					<li>
 						<a href="login.html">
-							<img src="../resources/img/samsung_small.png">
+							<img src="img/samsung_small.png">
 						</a>
 					</li>
 				</ul>
 			</nav>
 		</div><!-- end border-bottom -->
+        
+        <div class="row wrapper border-bottom white-bg page-heading">
+			<div class="col-lg-12">
+				<h2><strong>Schedule Mgmt</strong></h2>
+				<ol class="breadcrumb">
+				    <li>
+					   <a href="/dashbd/resources/main.do">Home</a>
+				    </li>
+				    <li class="active">
+					   <strong>Schedule Mgmt</strong>
+				    </li>
+				</ol>
+			</div>
+		</div><!-- end row wrapper border-bottom white-bg page-heading -->
 
 		<div class="wrapper wrapper-content">
 		<input type="hidden" id="searchDate" name="searchDate" value="${searchDate}">
-			<!-- User Mgmt -->
+			<!-- Schedule Mgmt -->
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="ibox float-e-margins">
 						<div class="ibox-content">
-							<div>
-								<h2>Schedule Mgmt</h2>
-							</div>
-							<br>
 							<div class="row">
 								<div class="col-sm-4">
 									<div class="form-group">
 										<label class="control-label" for="status">Operator</label>
-										<select name="operator" id="operator" class="form-control" >
-											<option value=''></option>
-	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx">
-											<option value="${operatorList.id }">${operatorList.name }</option>
-											</c:forEach>
-										</select>
+										<c:choose>
+											<c:when test="${USER.grade == 0}">
+												<select name="operator" id="operator" class="form-control">
+													<c:forEach items="${OperatorList}" var="operator">
+														<option value="${operator.id}">${operator.name}</option>
+													</c:forEach>
+												</select>
+											</c:when>
+											<c:otherwise>
+												<select name="operator" id="operator" class="form-control" disabled="disabled">
+													<c:forEach items="${OperatorList}" var="operator">
+														<c:choose>
+															<c:when test="${USER.operatorId == operator.id}">
+																<option value="${operator.id}" selected="selected">${operator.name}</option>
+															</c:when>
+															<c:otherwise>
+																<option value="${operator.id}">${operator.name}</option>
+															</c:otherwise>
+														</c:choose>
+													</c:forEach>
+												</select>
+											</c:otherwise>
+										</c:choose>
+<!-- 										<select name="operator" id="operator" class="form-control" > -->
+<!-- 											<option value=''></option> -->
+<%-- 	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx"> --%>
+<%-- 											<option value="${operatorList.id }">${operatorList.name }</option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 										</select> -->
 									</div>
 									</div>
 									<div class="col-sm-4">

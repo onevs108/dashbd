@@ -40,7 +40,9 @@ function doSave() {
 		},
 		success: function(data, textStatus, jqXHR) {
 			curUser = null; // null로 초기화
-			if (!data.result)
+			if (data.result)
+				alert('It has been saved successfully!');
+			else
 				alert('Error occurred!');
 		},
 		error: function(jqXHR, textStatus, errorThrown) {

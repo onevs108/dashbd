@@ -28,13 +28,14 @@ public class UserServiceImpl implements UserService {
 	 * userList 리턴
 	 */
 	@Override
-	public List<Users> getUserList(String searchColumn, String searchKeyword, long offset, long limit) {
+	public List<Users> getUserList(String searchColumn, String searchKeyword, Integer operatorId, long offset, long limit) {
 		if (searchColumn == null || searchColumn.isEmpty()) searchColumn = null;
 		if (searchKeyword == null || searchKeyword.isEmpty()) searchKeyword = null;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("searchColumn", searchColumn);
 		map.put("searchKeyword", searchKeyword);
+		map.put("operatorId", operatorId);
 		map.put("start", offset);
 		map.put("end", offset + limit);
 		
@@ -56,13 +57,14 @@ public class UserServiceImpl implements UserService {
 	 * userListCount 리턴
 	 */
 	@Override
-	public int getUserListCount(String searchColumn, String searchKeyword) {
+	public int getUserListCount(String searchColumn, String searchKeyword, Integer operatorId) {
 		if (searchColumn == null || searchColumn.isEmpty()) searchColumn = null;
 		if (searchKeyword == null || searchKeyword.isEmpty()) searchKeyword = null;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("searchColumn", searchColumn);
 		map.put("searchKeyword", searchKeyword);
+		map.put("operatorId", operatorId);
 		
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		return usersMapper.selectUserListCount(map);
@@ -73,8 +75,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getUserListToJsonArray(String searchColumn, String searchKeyword, long offset, long limit) {
-		List<Users> userList = getUserList(searchColumn, searchKeyword, offset, limit);
+	public JSONArray getUserListToJsonArray(String searchColumn, String searchKeyword, Integer operatorId, long offset, long limit) {
+		List<Users> userList = getUserList(searchColumn, searchKeyword, operatorId, offset, limit);
 		
 		JSONArray jsonArray = new JSONArray();
 		for (Users user : userList)

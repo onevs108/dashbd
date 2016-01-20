@@ -11,9 +11,7 @@
     <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-    	<!-- 
 	<link href="../resources/css/custom.css" rel="stylesheet">
-	 -->
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>

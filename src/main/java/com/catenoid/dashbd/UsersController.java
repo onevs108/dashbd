@@ -2,6 +2,9 @@ package com.catenoid.dashbd;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -86,7 +89,8 @@ public class UsersController {
 	@RequestMapping(value = "/api/user/list.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
 	public String postUserList(
-			@RequestBody String body) {
+			@RequestBody String body,
+			HttpServletRequest request) {
 		logger.info("-> [body = {}]", body);
 		
 		JSONObject jsonResult = new JSONObject();
@@ -100,12 +104,20 @@ public class UsersController {
 			long offset = (Long) requestJson.get("offset");
 			long limit = (Long) requestJson.get("limit");
 			
-			JSONArray rows = userServiceImpl.getUserListToJsonArray(searchColumn, searchKeyword, offset, limit);
-			jsonResult.put("rows", rows);
-			int total = userServiceImpl.getUserListCount(searchColumn, searchKeyword);
-			jsonResult.put("total", total);
-			
-			logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				Users user = (Users) session.getAttribute("USER");
+				if (user != null) {
+					Integer operatorId = user.getOperatorId();
+					JSONArray rows = userServiceImpl.getUserListToJsonArray(searchColumn, searchKeyword, operatorId, offset, limit);
+					jsonResult.put("rows", rows);
+					int total = userServiceImpl.getUserListCount(searchColumn, searchKeyword, operatorId);
+					jsonResult.put("total", total);
+					
+					logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
+				}
+			}
+			logger.info("<- [Session is null!!]");
 		} catch (ParseException e) {
 			logger.error("~~ [An error occurred!]", e);
 		}

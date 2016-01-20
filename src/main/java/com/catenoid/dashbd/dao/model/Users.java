@@ -15,6 +15,8 @@ public class Users {
     private String userId;
 
     private Integer operatorId;
+    
+    private String operatorName;
 
     private String password;
 
@@ -68,6 +70,14 @@ public class Users {
 
     public void setOperatorId(Integer operatorId) {
         this.operatorId = operatorId;
+    }
+    
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName == null ? null : operatorName.trim();
     }
 
     public String getPassword() {
@@ -150,6 +160,7 @@ public class Users {
     	jsonResult.put("password", password);
     	jsonResult.put("userId", userId);
     	jsonResult.put("operatorId", operatorId);
+    	jsonResult.put("operatorName", operatorName);
     	jsonResult.put("firstName", firstName);
     	jsonResult.put("lastName", lastName);
     	jsonResult.put("department", department);

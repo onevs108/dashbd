@@ -75,7 +75,8 @@
 					</li>
 					<li class="dropdown">
 						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+							<i class="fa fa-bell"></i>
+<!-- 							<span class="label label-primary">8</span> -->
 						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
@@ -130,6 +131,20 @@
 			</nav>
 		</div><!-- end border-bottom -->
 		
+		<div class="row wrapper border-bottom white-bg page-heading">
+			<div class="col-lg-12">
+				<h2><strong>User Mgmt</strong></h2>
+				<ol class="breadcrumb">
+				    <li>
+					   <a href="/dashbd/resources/main.do">Home</a>
+				    </li>
+				    <li class="active">
+					   <strong>User Mgmt</strong>
+				    </li>
+				</ol>
+			</div>
+		</div><!-- end row wrapper border-bottom white-bg page-heading -->
+		
 		<!-- content body -->
         <div class="wrapper wrapper-content">
 
@@ -137,13 +152,13 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h5>User Mgmt</h5>
-                            <div class="ibox-tools">
-                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a-->
-                            </div>
-                        </div>
+<!--                         <div class="ibox-title"> -->
+<!--                             <h5>User Mgmt</h5> -->
+<!--                             <div class="ibox-tools"> -->
+<!--                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a> -->
+<!--                                 <a class="close-link"><i class="fa fa-times"></i></a> -->
+<!--                             </div> -->
+<!--                         </div> -->
                         <div class="ibox-content">
                             <div class="row">
                                 <div class="col-sm-3 m-b-sm">
