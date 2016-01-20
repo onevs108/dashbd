@@ -8,12 +8,10 @@ $(document).ready(function()
 		if ( $(this).val() == "fileDownload" ) {
 			//filedownload
 			$("#bcType_fileDownload").show();
-			$("#bcType_fileDownload2").show();
 			$("#bcType_streaming").hide();
 			$("#bcType_streaming2").hide();
 		}else{
 			$("#bcType_fileDownload").hide();
-			$("#bcType_fileDownload2").hide();
 			$("#bcType_streaming").show();
 			$("#bcType_streaming2").show();
 		}
@@ -22,34 +20,6 @@ $(document).ready(function()
 	$("#fecType").on("change", function() {
 		displayRatio();
 	});
-	
-	$("#FileRepair").on("change", function() {
-		if(this.checked){
-			$("#frOffsetTime").prop('disabled', false);
-			$("#frRandomTime").prop('disabled', false);
-			
-		}else{
-			$("#frOffsetTime").prop('disabled', true);
-			$("#frRandomTime").prop('disabled', true);
-		}
-	});
-	
-	
-	$("#receptionReport").on("change", function() {
-		if(this.checked){
-			$("#offsetTime").prop('disabled', false);
-			$("#samplePercentage").prop('disabled', false);
-			$("#reportType").prop('disabled', false);
-			$("#randomTime").prop('disabled', false);
-		}else{
-			$("#offsetTime").prop('disabled', true);
-			$("#samplePercentage").prop('disabled', true);
-			$("#reportType").prop('disabled', true);
-			$("#randomTime").prop('disabled', true);
-		}
-	});
-	
-	
 		
 	$("#btnCancel").click(function() {
 		var tmpServiceAreaId = $("#serviceAreaId").val();
@@ -107,7 +77,7 @@ $(document).ready(function()
 	
 function valadationCheck(){
 	if ($("#fecType").val()== 'Raptor' && $("#fecRatio").val() == '0'){
-		alert('0 is not allowed for ratio.')
+		alert('0 of Ratio value is NOT correct.')
 		return false;
 	}
 	return true;
