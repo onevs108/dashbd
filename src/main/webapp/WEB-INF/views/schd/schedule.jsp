@@ -36,7 +36,7 @@
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
 		});
-	</script>
+ 	</script>
 	
 <style>
 	ul
