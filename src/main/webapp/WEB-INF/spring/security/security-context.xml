@@ -10,15 +10,19 @@
 	    <intercept-url pattern="/" access="permitAll" />
 		<intercept-url pattern="/login.do" access="permitAll" />
 		<intercept-url pattern="/logout.do" access="permitAll" />
-<!-- 		<intercept-url pattern="/resources/main.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT', 'ROLE_PERMISSION_MGMT', 'ROLE_CONTENTS_MGMT', 'ROLE_OPERATOR_MGMT', 'ROLE_BMSC_MGMT', 'ROLE_SERVICE_AREA_MGMT', 'ROLE_ENB_MGMT', 'ROLE_SCHEDULE_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/resources/user.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/api/user/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/resources/permission.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_PERMISSION_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/resources/OperatorMgmt.html" access="hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/resources/BMSCManagement.html" access="hasAnyRole('ROLE_ADMIN', 'ROLE_BMSC_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/resources/serviceArea.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SERVICE_AREA_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/resources/eNBMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_ENB_MGMT')" /> -->
-<!-- 		<intercept-url pattern="/view/schdMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" /> -->
+		<intercept-url pattern="/resources/main.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT', 'ROLE_PERMISSION_MGMT', 'ROLE_CONTENTS_MGMT', 'ROLE_OPERATOR_MGMT', 'ROLE_BMSC_MGMT', 'ROLE_SERVICE_AREA_MGMT', 'ROLE_ENB_MGMT', 'ROLE_SCHEDULE_MGMT')" />
+		<intercept-url pattern="/resources/user.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT')" />
+		<intercept-url pattern="/api/user/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT')" />
+		<intercept-url pattern="/resources/permission.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_PERMISSION_MGMT')" />
+		<intercept-url pattern="/api/permission/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_PERMISSION_MGMT')" />
+		<intercept-url pattern="/resources/contents_mgmt.html" access="hasAnyRole('ROLE_ADMIN', 'ROLE_CONTENTS_MGMT')" />
+		<intercept-url pattern="/resources/operator.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR_MGMT')" />
+		<intercept-url pattern="/api/operator/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR_MGMT')" />
+		<intercept-url pattern="/resources/bmsc.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_BMSC_MGMT')" />
+		<intercept-url pattern="/api/bmsc/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_BMSC_MGMT')" />
+		<intercept-url pattern="/resources/serviceArea.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SERVICE_AREA_MGMT')" />
+		<intercept-url pattern="/resources/eNBMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_ENB_MGMT')" />
+		<intercept-url pattern="/view/schdMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" />
 		
         <form-login
             login-page="/login.do"
