@@ -101,6 +101,8 @@ public class UsersController {
 			
 			String searchColumn = (String) requestJson.get("searchColumn");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
 			long limit = (Long) requestJson.get("limit");
 			
@@ -109,7 +111,7 @@ public class UsersController {
 				Users user = (Users) session.getAttribute("USER");
 				if (user != null) {
 					Integer operatorId = user.getOperatorId();
-					JSONArray rows = userServiceImpl.getUserListToJsonArray(searchColumn, searchKeyword, operatorId, offset, limit);
+					JSONArray rows = userServiceImpl.getUserListToJsonArray(searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
 					jsonResult.put("rows", rows);
 					int total = userServiceImpl.getUserListCount(searchColumn, searchKeyword, operatorId);
 					jsonResult.put("total", total);
@@ -157,11 +159,33 @@ public class UsersController {
 	@RequestMapping(value = "/api/user/insert.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
 	public String postUserInsert(
-			@ModelAttribute Users user) {
-		logger.info("-> [user = {}]", user.toString());
+			@ModelAttribute Users user,
+			HttpServletRequest request) {
 		
 		JSONObject jsonResult = new JSONObject();
-		jsonResult.put("result", userServiceImpl.insertUser(user));
+		
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		Users userOfSession = (Users) session.getAttribute("USER");
+		if (userOfSession == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		logger.info("-> [user = {}], [userOfSession = {}]", user.toString(), userOfSession.toString());
+		
+		// 사용자를 등록 or 수정하려는 사용자가 일반 사용자인 경우 등록 or 수정 대상의 Operator와 일치해야 한다.
+		// 이 확인은 Security가 대신 해줄수 없기 때문에 직접 해준다.
+		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN)
+			jsonResult.put("result", userServiceImpl.insertUser(user));
+		else if (userOfSession.getGrade() == Const.USER_GRADE_USER && userOfSession.getOperatorId() == user.getOperatorId())
+			jsonResult.put("result", userServiceImpl.insertUser(user));
+		else
+			logger.info("~~ [Operator was incorrect!]");
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
@@ -174,11 +198,33 @@ public class UsersController {
 	@RequestMapping(value = "/api/user/delete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
 	public String postUserDelete(
-			@ModelAttribute Users user) {
-		logger.info("-> [user = {}]", user.toString());
+			@ModelAttribute Users user,
+			HttpServletRequest request) {
 		
 		JSONObject jsonResult = new JSONObject();
-		jsonResult.put("result", userServiceImpl.deleteUser(user));
+		
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		Users userOfSession = (Users) session.getAttribute("USER");
+		if (userOfSession == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		logger.info("-> [user = {}], [userOfSession = {}]", user.toString(), userOfSession.toString());
+		
+		// 사용자를 삭제하려는 사용자가 일반 사용자인 경우 삭제 대상의 Operator와 일치해야 한다.
+		// 이 확인은 Security가 대신 해줄수 없기 때문에 직접 해준다.
+		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN)
+			jsonResult.put("result", userServiceImpl.deleteUser(user));
+		else if (userOfSession.getGrade() == Const.USER_GRADE_USER && userOfSession.getOperatorId() == user.getOperatorId())
+			jsonResult.put("result", userServiceImpl.deleteUser(user));
+		else
+			logger.info("~~ [Operator was incorrect!]");
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();

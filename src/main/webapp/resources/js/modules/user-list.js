@@ -22,14 +22,15 @@ function doEdit(userId) {
 	location.href = '/dashbd/resources/userform.do?flag=edit&userId=' + userId;
 }
 
-function doDelete(userId, firstName, lastName) {
+function doDelete(userId, operatorId, firstName, lastName) {
 	if (confirm('Do you really want to delete the user "' + firstName + ' ' + lastName + '"?')) {
 		$.ajax({
 			url: '/dashbd/api/user/delete.do',
 			method: 'POST',
 			dataType: 'json',
 			data: {
-				userId: userId
+				userId: userId,
+				operatorId: operatorId
 			},
 			success: function(data, textStatus, jqXHR) {
 				if (data.result) { // 성공
@@ -93,47 +94,40 @@ function getUserList(isBack, isSearch) {
 		minimumCountColumns: 3,
 		clickToSelect: false,
 		columns: [{
-			field: 'id',
-			title: 'No.',
-			width: '5%',
-			align: 'center',
-			valign: 'middle',
-			sortable: false
-		}, {
-			field: 'lastName',
-			title: 'Last Name',
+			field: 'operatorName',
+			title: 'Operator',
 			width: '15%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: true
+		}, {
+			field: 'userId',
+			title: 'ID',
+			width: '15%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
 		}, {
 			field: 'firstName',
 			title: 'First Name',
 			width: '15%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
-			field: 'userId',
-			title: 'ID',
-			width: '10%',
+			field: 'lastName',
+			title: 'Last Name',
+			width: '15%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
 			field: 'department',
 			title: 'Department',
 			width: '15%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
-		}, {
-			field: 'operatorName',
-			title: 'Operator',
-			width: '15%',
-			align: 'center',
-			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
 			field: 'command',
 			title: 'Command',
@@ -145,7 +139,7 @@ function getUserList(isBack, isSearch) {
 				var no = row.no;
 				var html = '<button type="button" onclick="doInfo(\'' + row.userId + '\')" class="btn btn-default btn-xs button-info">Info</button> '
 						+ '<button type="button" onclick="doEdit(\'' + row.userId + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
-						+ '<button type="button" onclick="doDelete(\'' + row.userId + '\', \'' + row.firstName + '\', \'' + row.lastName + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
+						+ '<button type="button" onclick="doDelete(\'' + row.userId + '\', \'' + row.operatorId + '\', \'' + row.firstName + '\', \'' + row.lastName + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
 		}]

@@ -165,14 +165,46 @@
                         </div>
                         <div class="ibox-content">
                             <form class="form-horizontal">
+                            	<div class="form-group">
+                                    <label class="col-sm-3 control-label">Grade</label>
+                                    <div class="col-sm-9">
+                                    	<select class="input-sm form-control input-s-sm" id="form-grade" <c:if test="${USER.grade != 0}">disabled="disabled"</c:if>>
+                                    		<option value="1" selected="selected">User</option>
+                                    		<option value="0">Super Admin</option>
+										</select>
+	                                </div>
+                                </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">Operator</label>
                                     <div class="col-sm-9">
-	                                    <select class="input-sm form-control input-s-sm" id="form-operator-id">
-	                                    	<c:forEach items="${operatorList}" var="operator">
-												<option value="${operator.id}">${operator.name}</option>
-											</c:forEach>
-	                                    </select>
+                                    	<c:choose>
+											<c:when test="${USER.grade == 0}">
+												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm">
+													<c:forEach items="${operatorList}" var="operator">
+														<option value="${operator.id}">${operator.name}</option>
+													</c:forEach>
+												</select>
+											</c:when>
+											<c:otherwise>
+												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm" disabled="disabled">
+													<c:forEach items="${operatorList}" var="operator">
+														<c:choose>
+															<c:when test="${USER.operatorId == operator.id}">
+																<option value="${operator.id}" selected="selected">${operator.name}</option>
+															</c:when>
+															<c:otherwise>
+																<option value="${operator.id}">${operator.name}</option>
+															</c:otherwise>
+														</c:choose>
+													</c:forEach>
+												</select>
+											</c:otherwise>
+										</c:choose>
+<!-- 	                                    <select class="input-sm form-control input-s-sm" id="form-operator-id"> -->
+<%-- 	                                    	<c:forEach items="${operatorList}" var="operator"> --%>
+<%-- 												<option value="${operator.id}">${operator.name}</option> --%>
+<%-- 											</c:forEach> --%>
+<!-- 	                                    </select> -->
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -209,15 +241,6 @@
                                 <div class="form-group" id="form-modified-date-area">
                                     <label class="col-sm-3 control-label">Modified Date</label>
                                     <div class="col-sm-9"><input type="text" id="form-modified-date" disabled="disabled" class="form-control"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label">Grade</label>
-                                    <div class="col-sm-9">
-                                    	<select class="input-sm form-control input-s-sm" id="form-grade">
-                                    		<option value="1">User</option>
-                                    		<option value="0">Super Admin</option>
-										</select>
-	                                </div>
                                 </div>
                                 <div class="form-group" id="form-permission-area">
                                     <label class="col-sm-3 control-label">Permission</label>

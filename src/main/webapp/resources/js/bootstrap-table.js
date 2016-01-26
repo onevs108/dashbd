@@ -1537,8 +1537,12 @@
         $.each(this.$header.find('th'), function (i, th) {
             if ($(th).data('field') === that.options.sortName) {
                 $(th).find('.sortable').css('background-image', 'url(' + (that.options.sortOrder === 'desc' ? arrowDesc : arrowAsc) + ')');
+                $(th).find('.sortable').css('background-repeat', 'no-repeat');
+                $(th).find('.sortable').css('background-position-x', '100%');
             } else {
                 $(th).find('.sortable').css('background-image', 'url(' + arrowBoth +')');
+                $(th).find('.sortable').css('background-repeat', 'no-repeat');
+                $(th).find('.sortable').css('background-position-x', '100%');
             }
         });
     };

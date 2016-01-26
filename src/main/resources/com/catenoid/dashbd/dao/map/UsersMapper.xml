@@ -136,9 +136,9 @@
 				   id, user_id, operator_id, operator_name, password, first_name, last_name, department, grade, created_at, updated_at
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( SELECT
-						 id, user_id, operator_id, password, first_name, last_name, department, grade, created_at, updated_at,
-						 (SELECT name FROM operator WHERE id = U.operator_id) AS operator_name
-					  FROM users U
+						 U.id, U.user_id, U.operator_id, U.password, U.first_name, U.last_name, U.department, U.grade, U.created_at, U.updated_at,
+						 O.name AS operator_name
+					  FROM users U LEFT JOIN operator O ON U.operator_id = O.id
 					  <choose>
 					      <when test="searchKeyword != null">
 					          <if test="searchColumn.equals('all')">
@@ -174,7 +174,15 @@
 					          </if>
 					      </otherwise>
 					  </choose>
-					  ORDER BY created_at DESC ) T
+					  ORDER BY <if test="sort == null">user_id ASC</if>
+					  		   <if test="sort != null">
+					  		       <if test="sort == 'operatorName'">O.name</if>
+					  		       <if test="sort == 'userId'">U.user_id</if>
+					  		       <if test="sort == 'firstName'">U.first_name</if>
+					  		       <if test="sort == 'lastName'">U.last_name</if>
+					  		       <if test="sort == 'department'">U.department</if>
+					  		       ${order}
+					  		   </if> ) T
 			  ) R
 		WHERE rownum BETWEEN #{start} AND #{end}
 	</select>

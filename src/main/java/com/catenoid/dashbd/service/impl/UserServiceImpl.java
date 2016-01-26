@@ -28,14 +28,18 @@ public class UserServiceImpl implements UserService {
 	 * userList 리턴
 	 */
 	@Override
-	public List<Users> getUserList(String searchColumn, String searchKeyword, Integer operatorId, long offset, long limit) {
+	public List<Users> getUserList(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit) {
 		if (searchColumn == null || searchColumn.isEmpty()) searchColumn = null;
 		if (searchKeyword == null || searchKeyword.isEmpty()) searchKeyword = null;
+		if (sort == null || sort.isEmpty()) sort = null;
+		if (order == null || order.isEmpty()) order = null;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("searchColumn", searchColumn);
 		map.put("searchKeyword", searchKeyword);
 		map.put("operatorId", operatorId);
+		map.put("sort", sort);
+		map.put("order", order);
 		map.put("start", offset);
 		map.put("end", offset + limit);
 		
@@ -75,8 +79,8 @@ public class UserServiceImpl implements UserService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getUserListToJsonArray(String searchColumn, String searchKeyword, Integer operatorId, long offset, long limit) {
-		List<Users> userList = getUserList(searchColumn, searchKeyword, operatorId, offset, limit);
+	public JSONArray getUserListToJsonArray(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit) {
+		List<Users> userList = getUserList(searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
 		
 		JSONArray jsonArray = new JSONArray();
 		for (Users user : userList)

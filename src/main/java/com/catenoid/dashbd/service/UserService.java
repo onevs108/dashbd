@@ -10,9 +10,9 @@ import com.catenoid.dashbd.dao.model.Users;
 @Service
 public interface UserService {
 	
-	public List<Users> getUserList(String searchColumn, String searchKeyword, Integer operatorId, long offset, long limit);
+	public List<Users> getUserList(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit);
 	public int getUserListCount(String searchColumn, String searchKeyword, Integer operatorId);
-	public JSONArray getUserListToJsonArray(String searchColumn, String searchKeyword, Integer operatorId, long offset, long limit);
+	public JSONArray getUserListToJsonArray(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit);
 	public Users getUser(Users user);
 	public boolean checkUserId(String userId);
 	public boolean insertUser(Users user);
