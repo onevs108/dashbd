@@ -71,10 +71,12 @@ public class BmscController {
 			
 			String operatorIdToStr = (String) requestJson.get("operatorId");
 			Integer operatorId = operatorIdToStr == null ? null : Integer.parseInt(operatorIdToStr);
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
 			long limit = (Long) requestJson.get("limit");
 			
-			JSONArray rows = bmscServiceImpl.getBmscListToJsonArray(operatorId, offset, limit);
+			JSONArray rows = bmscServiceImpl.getBmscListToJsonArray(operatorId, sort, order, offset, limit);
 			jsonResult.put("rows", rows);
 			int total = bmscServiceImpl.getBmscListCount(operatorId);
 			jsonResult.put("total", total);

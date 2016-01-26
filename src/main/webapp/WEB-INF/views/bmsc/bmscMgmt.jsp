@@ -160,14 +160,14 @@
 											<div class="col-sm-6">
 												<c:choose>
 													<c:when test="${USER.grade == 0}">
-														<select name="status" id="form-operator-id" class="form-control">
+														<select id="search-operator-id" class="form-control">
 															<c:forEach items="${operatorList}" var="operator">
 																<option value="${operator.id}">${operator.name}</option>
 															</c:forEach>
 														</select>
 													</c:when>
 													<c:otherwise>
-														<select name="status" id="form-operator-id" class="form-control" disabled="disabled">
+														<select id="search-operator-id" class="form-control" disabled="disabled">
 															<c:forEach items="${operatorList}" var="operator">
 																<c:choose>
 																	<c:when test="${USER.operatorId == operator.id}">
@@ -199,13 +199,22 @@
 	                                            </div>
 	                                            <div class="modal-body">
 	                                                <form method="get" class="form-horizontal">
+	                                                	<div class="form-group"><label class="col-sm-3 control-label">Operator</label>
+		                                                	<div class="col-sm-9">
+																<select id="form-operator-id" class="form-control" disabled="disabled">
+																	<c:forEach items="${operatorList}" var="operator">
+																		<option value="${operator.id}">${operator.name}</option>
+																	</c:forEach>
+																</select>
+															</div>
+	                                                    </div>
 	                                                    <div class="form-group"><label class="col-sm-3 control-label">BMSC Name</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-name"></div>
 	                                                    </div>
 	                                                    <div class="form-group"><label class="col-sm-3 control-label">IP Address</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-ipaddress"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Circle</label>
+	                                                    <div class="form-group"><label class="col-sm-3 control-label">Description</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-circle" style="height:200px"></div>
 	                                                    </div>
 	                                                </form>

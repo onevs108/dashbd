@@ -24,7 +24,7 @@ function doSave() {
 	
 	// 화면 처리
 	initTableRow();
-	initPermissionCheckbox();
+	initPermissionBox();
 	
 	var body = {
 		userId: curUser.userId,
@@ -41,7 +41,7 @@ function doSave() {
 		success: function(data, textStatus, jqXHR) {
 			curUser = null; // null로 초기화
 			if (data.result)
-				alert('It has been saved successfully!');
+				alert('Success!');
 			else
 				alert('Error occurred!');
 		},
@@ -55,7 +55,7 @@ function doSave() {
 
 function doCancel() {
 	initTableRow();
-	initPermissionCheckbox();
+	initPermissionBox();
 	curUser = null;
 }
 
@@ -68,10 +68,13 @@ function getUserList() {
 		contentType: 'application/json',
 		dataType: 'json',
 		queryParams: function(params) {
-			location.href = '#';
+//			location.href = '#';
 			
 			params['searchUserId'] = $('#search-keyword').val();
 			params['searchOperatorId'] = $('#search-operator-id').val();
+			
+			// 테이블 재 구성 시 permission box 초기화
+			initPermissionBox();
 			
 			return params;
 		},
@@ -81,7 +84,7 @@ function getUserList() {
 		pageNumber: 1,
 		pageSize: 10,
 		search: false,
-		showHeader: false,
+		showHeader: true,
 		showColumns: false,
 		showRefresh: false,
 		minimumCountColumns: 3,
@@ -89,6 +92,7 @@ function getUserList() {
 		onClickRow: function(row, $element) {
 			curUser = row;
 			
+			// 선택한 row의 background 색깔 변경
 			$tds = $element.parent().find('td');
 			for (var inx = 0; inx < $tds.length; inx++)
 				$tds[inx].removeAttribute('style');
@@ -101,27 +105,49 @@ function getUserList() {
 		columns: [{
 			field: 'id',
 			title: 'No.',
-			align: 'center',
-			valign: 'middle',
 			sortable: false,
 			visible: false
 		}, {
 			field: 'userId',
 			title: 'ID',
-			width: '100%',
+			width: '25%',
 			align: 'left',
 			valign: 'middle',
-			sortable: false,
-			formatter: function(value, row, index) {
-				var html = '<i class="fa fa-circle fa-fw"></i> ' + row.userId;
-				return html;
-			}
+			sortable: true
+//			formatter: function(value, row, index) {
+//				var html = '<i class="fa fa-circle fa-fw"></i> ' + row.userId;
+//				return html;
+//			}
+		}, {
+			field: 'firstName',
+			title: 'First Name',
+			width: '25%',
+			align: 'left',
+			valign: 'middle',
+			sortable: true
+		}, {
+			field: 'lastName',
+			title: 'Last Name',
+			width: '25%',
+			align: 'left',
+			valign: 'middle',
+			sortable: true
+		}, {
+			field: 'department',
+			title: 'Department',
+			width: '25%',
+			align: 'left',
+			valign: 'middle',
+			sortable: true
 		}]
 	});
 }
 
 function getUserPermissions() {
-	initPermissionCheckbox();
+	initPermissionBox();
+	
+	// permission box 타이틀 변경
+	$('#permission-box-title').html('Permission Granted for ' + curUser.userId);
 	
 	$.ajax({
 		url: '/dashbd/api/permission/list.do',
@@ -169,7 +195,10 @@ function getUserPermissions() {
 	});
 }
 
-function initPermissionCheckbox() {
+function initPermissionBox() {
+	// permission box 타이틀 변경
+	$('#permission-box-title').html('Permission Granted');
+	
 	$('#checkbox-permission-user').prop("checked", false);
 	$('#checkbox-permission-permission').prop("checked", false);
 	$('#checkbox-permission-contents').prop("checked", false);

@@ -29,13 +29,17 @@ public class PermissionServiceImpl implements PermissionService {
 	 * userList 리턴
 	 */
 	@Override
-	public List<Users> getUserList(String searchOperatorId, String searchUserId, long offset, long limit) {
+	public List<Users> getUserList(String searchOperatorId, String searchUserId, String sort, String order, long offset, long limit) {
 		if (searchOperatorId == null || searchOperatorId.isEmpty()) searchOperatorId = null;
 		if (searchUserId == null || searchUserId.isEmpty()) searchUserId = null;
+		if (sort == null || sort.isEmpty()) sort = null;
+		if (order == null || order.isEmpty()) order = null;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("searchOperatorId", searchOperatorId);
 		map.put("searchUserId", searchUserId);
+		map.put("sort", sort);
+		map.put("order", order);
 		map.put("start", offset);
 		map.put("end", offset + limit);
 		
@@ -74,8 +78,8 @@ public class PermissionServiceImpl implements PermissionService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getUserListToJsonArray(String searchOperatorId, String searchUserId, long offset, long limit) {
-		List<Users> userList = getUserList(searchOperatorId, searchUserId, offset, limit);
+	public JSONArray getUserListToJsonArray(String searchOperatorId, String searchUserId, String sort, String order, long offset, long limit) {
+		List<Users> userList = getUserList(searchOperatorId, searchUserId, sort, order, offset, limit);
 		
 		JSONArray jsonArray = new JSONArray();
 		for (Users user : userList)

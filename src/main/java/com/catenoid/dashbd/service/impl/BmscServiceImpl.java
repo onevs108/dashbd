@@ -29,9 +29,14 @@ public class BmscServiceImpl implements BmscService {
 	 * BMSC 리스트 리턴
 	 */
 	@Override
-	public List<Bmsc> getBmscList(Integer operatorId, long offset, long limit) {
+	public List<Bmsc> getBmscList(Integer operatorId, String sort, String order, long offset, long limit) {
+		if (sort == null || sort.isEmpty()) sort = null;
+		if (order == null || order.isEmpty()) order = null;
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("operatorId", operatorId);
+		map.put("sort", sort);
+		map.put("order", order);
 		map.put("start", offset);
 		map.put("end", offset + limit);
 		
@@ -59,8 +64,8 @@ public class BmscServiceImpl implements BmscService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getBmscListToJsonArray(Integer operatorId, long offset, long limit) {
-		List<Bmsc> bmscList = getBmscList(operatorId, offset, limit);
+	public JSONArray getBmscListToJsonArray(Integer operatorId, String sort, String order, long offset, long limit) {
+		List<Bmsc> bmscList = getBmscList(operatorId, sort, order, offset, limit);
 		
 		JSONArray jsonArray = new JSONArray();
 		for (Bmsc bmsc : bmscList)

@@ -72,10 +72,12 @@ public class PermissionController {
 			
 			String searchOperatorId = (String) requestJson.get("searchOperatorId");
 			String searchUserId = (String) requestJson.get("searchUserId");
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
 			long limit = (Long) requestJson.get("limit");
 			
-			JSONArray rows = permissionServiceImpl.getUserListToJsonArray(searchOperatorId, searchUserId, offset, limit);
+			JSONArray rows = permissionServiceImpl.getUserListToJsonArray(searchOperatorId, searchUserId, sort, order, offset, limit);
 			jsonResult.put("rows", rows);
 			int total = permissionServiceImpl.getUserListCount(searchOperatorId, searchUserId);
 			jsonResult.put("total", total);

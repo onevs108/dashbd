@@ -11,9 +11,9 @@ import com.catenoid.dashbd.dao.model.Users;
 @Service
 public interface PermissionService {
 	
-	public List<Users> getUserList(String searchOperatorId, String searchUserId, long offset, long limit);
+	public List<Users> getUserList(String searchOperatorId, String searchUserId, String sort, String order, long offset, long limit);
 	public int getUserListCount(String searchOperatorId, String searchUserId);
-	public JSONArray getUserListToJsonArray(String searchOperatorId, String searchUserId, long offset, long limit);
+	public JSONArray getUserListToJsonArray(String searchOperatorId, String searchUserId, String sort, String order, long offset, long limit);
 	
 	public List<Permission> getPermissionList(String userId);
 	public JSONArray getPermissionListToJsonArray(String userId);

@@ -6,7 +6,7 @@ $(function() {
 	$('#modal-cancel-btn').click(doModalCancel);
 	$('#modal-cancel-icon-btn').click(doModalCancel);
 	
-	$('#form-operator-id').change(changeOperator);
+	$('#search-operator-id').change(changeOperator);
 });
 
 function changeOperator() {
@@ -15,6 +15,7 @@ function changeOperator() {
 }
 
 function openModal() {
+	$('#form-operator-id').val($('#search-operator-id').val());
 	$('#modal-title').html('Create New BMSC');
 	$('#form-modal').modal('show');
 }
@@ -55,9 +56,10 @@ function doModalCancel() {
 	closeModal();
 }
 
-function doEdit(id, name, ipaddress, circle) {
+function openEditModal(id, name, ipaddress, circle) {
 	bmscId = id;
 	
+	$('#form-operator-id').val($('#search-operator-id').val());
 	$('#modal-title').html('Edit BMSC');
 	$('#form-bmsc-name').val(name);
 	$('#form-bmsc-ipaddress').val(ipaddress);
@@ -123,8 +125,8 @@ function getBmscList() {
 		contentType: 'application/json',
 		dataType: 'json',
 		queryParams: function(params) {
-			location.href = '#';
-			params['operatorId'] = $('#form-operator-id').val();
+//			location.href = '#';
+			params['operatorId'] = $('#search-operator-id').val();
 			return params;
 		},
 		cache: false,
@@ -141,31 +143,28 @@ function getBmscList() {
 		columns: [{
 			field: 'id',
 			title: 'BMSC ID',
-			width: '10%',
-			align: 'center',
-			valign: 'middle',
-			sortable: false
+			visible: false
 		}, {
 			field: 'name',
 			title: 'BMSC Name',
 			width: '15%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
 			field: 'ipaddress',
 			title: 'IP Address',
 			width: '15%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
 			field: 'circle',
-			title: 'Circle',
-			width: '40%',
+			title: 'Description',
+			width: '50%',
 			align: 'left',
 			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
 			field: 'command',
 			title: 'Command',
@@ -174,7 +173,7 @@ function getBmscList() {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.ipaddress + '\', \'' + row.circle + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+				var html = '<button type="button" onclick="openEditModal(\'' + row.id + '\', \'' + row.name + '\', \'' + row.ipaddress + '\', \'' + row.circle + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 						+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}

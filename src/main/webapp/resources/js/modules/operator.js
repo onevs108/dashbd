@@ -129,11 +129,12 @@ function getOperatorList() {
 			width: '10%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: false,
+			visible: false
 		}, {
 			field: 'name',
 			title: 'Operator Name',
-			width: '20%',
+			width: '30%',
 			align: 'center',
 			valign: 'middle',
 			sortable: false

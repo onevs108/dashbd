@@ -266,7 +266,13 @@
 					  FROM bmsc B, operator_bmsc OB
 		              WHERE B.id = OB.bmsc_id
 		                AND OB.operator_id = #{operatorId}
-					  ORDER BY name ASC ) T
+					  ORDER BY <if test="sort == null">B.name ASC</if>
+					  		   <if test="sort != null">
+								   <if test="sort == 'name'">B.name</if>
+								   <if test="sort == 'ipaddress'">B.ipaddress</if>
+								   <if test="sort == 'circle'">B.circle</if>
+								   ${order}
+						       </if> ) T
 			 ) R
 		WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
