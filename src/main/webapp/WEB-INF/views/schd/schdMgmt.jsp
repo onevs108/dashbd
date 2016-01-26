@@ -104,13 +104,11 @@
 	<div id="page-wrapper" class="gray-bg">
         <div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-				<div class="navbar-header">
-					<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-					<form role="search" class="navbar-form-custom" action="search_results.html">
-						<div class="form-group">
-							<input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-						</div>
-					</form>
+				<div class="navbar-header" style="padding-bottom: 10px;">
+					<h2 style="margin-left: 15px;"><strong>Schedule Mgmt</strong></h2>
+					<span style="margin-left: 15px;">
+						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> Schedule Mgmt</strong>
+					</span>
 				</div><!-- end navbar-header -->
 		        
 				<ul class="nav navbar-top-links navbar-right">
@@ -177,19 +175,19 @@
 			</nav>
 		</div><!-- end border-bottom -->
         
-        <div class="row wrapper border-bottom white-bg page-heading">
-			<div class="col-lg-12">
-				<h2><strong>Schedule Mgmt</strong></h2>
-				<ol class="breadcrumb">
-				    <li>
-					   <a href="/dashbd/resources/main.do">Home</a>
-				    </li>
-				    <li class="active">
-					   <strong>Schedule Mgmt</strong>
-				    </li>
-				</ol>
-			</div>
-		</div><!-- end row wrapper border-bottom white-bg page-heading -->
+<!--         <div class="row wrapper border-bottom white-bg page-heading"> -->
+<!-- 			<div class="col-lg-12"> -->
+<!-- 				<h2><strong>Schedule Mgmt</strong></h2> -->
+<!-- 				<ol class="breadcrumb"> -->
+<!-- 				    <li> -->
+<!-- 					   <a href="/dashbd/resources/main.do">Home</a> -->
+<!-- 				    </li> -->
+<!-- 				    <li class="active"> -->
+<!-- 					   <strong>Schedule Mgmt</strong> -->
+<!-- 				    </li> -->
+<!-- 				</ol> -->
+<!-- 			</div> -->
+<!-- 		</div>end row wrapper border-bottom white-bg page-heading -->
 
 		<div class="wrapper wrapper-content">
 		<input type="hidden" id="searchDate" name="searchDate" value="${searchDate}">
