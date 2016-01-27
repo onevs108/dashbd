@@ -85,14 +85,9 @@
 	<div id="page-wrapper" class="gray-bg">
 		<div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-<!-- 				<div class="navbar-header"> -->
-<!-- 					<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
-<!-- 					<form role="search" class="navbar-form-custom" action="search_results.html"> -->
-<!-- 						<div class="form-group"> -->
-<!-- 							<input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search"> -->
-<!-- 						</div> -->
-<!-- 					</form> -->
-<!-- 				</div>end navbar-header -->
+				<div class="navbar-header" style="padding-bottom: 10px;">
+					<h2 style="margin-left: 15px;"><strong>Provisioning Server</strong></h2>
+				</div><!-- end navbar-header -->
 		        
 				<ul class="nav navbar-top-links navbar-right">
 					<li>
@@ -163,11 +158,11 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<h3>Service Area Mgmt</h3>
-							<div class="ibox-tools">
-							</div>
-						</div><!-- end ibox-title -->
+<!-- 						<div class="ibox-title"> -->
+<!-- 							<h3>Service Area Mgmt</h3> -->
+<!-- 							<div class="ibox-tools"> -->
+<!-- 							</div> -->
+<!-- 						</div>end ibox-title -->
 						<div class="ibox-content">
 							<div class="row">
 								<div class="col-sm-4">
