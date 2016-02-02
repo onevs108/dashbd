@@ -99,8 +99,9 @@ public class UsersController {
 		try {
 			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
 			
-			String searchColumn = (String) requestJson.get("searchColumn");
+			String searchOperatorId = (String) requestJson.get("searchOperatorId");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
+			String searchColumn = (String) requestJson.get("searchColumn");
 			String sort = (String) requestJson.get("sort");
 			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
@@ -110,7 +111,7 @@ public class UsersController {
 			if (session != null) {
 				Users user = (Users) session.getAttribute("USER");
 				if (user != null) {
-					Integer operatorId = user.getOperatorId();
+					Integer operatorId = searchOperatorId == null || searchOperatorId.isEmpty() ? null : Integer.parseInt(searchOperatorId);
 					JSONArray rows = userServiceImpl.getUserListToJsonArray(searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
 					jsonResult.put("rows", rows);
 					int total = userServiceImpl.getUserListCount(searchColumn, searchKeyword, operatorId);
@@ -119,7 +120,9 @@ public class UsersController {
 					logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
 				}
 			}
-			logger.info("<- [Session is null!!]");
+			else {
+				logger.info("<- [Session is null!!]");
+			}
 		} catch (ParseException e) {
 			logger.error("~~ [An error occurred!]", e);
 		}
@@ -178,14 +181,25 @@ public class UsersController {
 		
 		logger.info("-> [user = {}], [userOfSession = {}]", user.toString(), userOfSession.toString());
 		
-		// 사용자를 등록 or 수정하려는 사용자가 일반 사용자인 경우 등록 or 수정 대상의 Operator와 일치해야 한다.
-		// 이 확인은 Security가 대신 해줄수 없기 때문에 직접 해준다.
+		// 사용자를 등록 or 수정하려는 사용자가 올바른 사용자인지 확인한다.
+		// 이 확인 작업은 Security가 대신 해줄수 없기 때문에 직접 해준다.
 		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN)
 			jsonResult.put("result", userServiceImpl.insertUser(user));
-		else if (userOfSession.getGrade() == Const.USER_GRADE_USER && userOfSession.getOperatorId() == user.getOperatorId())
-			jsonResult.put("result", userServiceImpl.insertUser(user));
+		else if (userOfSession.getGrade() == Const.USER_GRADE_USER) {
+			// 등록 작업을 수행하는 사용자의 등급이 일반 사용자인데 super admin을 등록시킬순 없다.
+			// 이는 고의로 super admin 을 등록시키려는 경우다.
+			if (user.getGrade() == Const.USER_GRADE_ADMIN)
+				logger.info("~~ [Incorrect grade!]");
+			else {
+				// 사용자를 등록 or 수정하려는 사용자가 일반 사용자인 경우 등록 or 수정 대상의 Operator와 일치해야 한다.
+				if (userOfSession.getOperatorId() == user.getOperatorId())
+					jsonResult.put("result", userServiceImpl.insertUser(user));
+				else
+					logger.info("~~ [Incorrect operator!]");
+			}
+		}
 		else
-			logger.info("~~ [Operator was incorrect!]");
+			logger.info("~~ [Incorrect grade of session!]");
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();

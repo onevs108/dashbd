@@ -37,5 +37,7 @@ public interface OperatorMapper {
     
     int selectOperatorListCount();
     
+    Operator selectByOperatorName(String operatorName);
+    
     int insertOperator(Operator operator);
 }

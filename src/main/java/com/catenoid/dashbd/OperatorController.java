@@ -131,4 +131,21 @@ public class OperatorController {
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
 	}
+	
+	/**
+	 * Operator Name 중복 체크
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/operator/check.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String postOperatorCheck(
+			@RequestParam(value = "operatorName", required = true) String operatorName) {
+		logger.info("-> [operatorName = {}]", operatorName);
+		
+		JSONObject jsonResult = new JSONObject();
+		jsonResult.put("result", operatorServiceImpl.checkOperatorName(operatorName));
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
 }

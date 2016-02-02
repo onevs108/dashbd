@@ -91,6 +91,20 @@ public class OperatorServiceImpl implements OperatorService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Operator Name 중복 확인
+	 */
+	@Override
+	public boolean checkOperatorName(String operatorName) {
+		try {
+			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			return operatorMapper.selectByOperatorName(operatorName) == null ? true : false;
+		} catch (Exception e) {
+			logger.error("~~ An error occurred!", e);
+			return false;
+		}
+	}
 
 	/**
 	 * Operator 등록 or 수정
@@ -132,5 +146,4 @@ public class OperatorServiceImpl implements OperatorService {
 			return false;
 		}
 	}
-
 }

@@ -4,6 +4,7 @@ $(function() {
 	$('#go-search').click(doSearch);
 	$('#save-btn').click(doSave);
 	$('#cancel-btn').click(doCancel);
+	$('#search-operator-id').change(doSearch);
 });
 
 function doSearch() {

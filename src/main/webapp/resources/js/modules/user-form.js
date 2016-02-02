@@ -5,6 +5,7 @@ $(function() {
 	$('#save-btn').click(doInsert);
 	$('#cancel-btn').click(goList);
 	$('#list-btn').click(goList);
+	$('#form-grade').change(changeGrade);
 	
 	// id 입력 or 변경 checkUserId 초기화
 	$('#form-user-id').keypress(function() {
@@ -56,6 +57,19 @@ function initForm(flag, userId) {
 		$('#save-btn').show();
 		$('#cancel-btn').show();
 		$('#list-btn').hide();
+	}
+}
+
+function changeGrade() {
+	var grade = $('#form-grade').val();
+	
+	if (grade == 0) { // super admin
+		$('#form-operator-id').attr("disabled", "disabled");
+		$('#form-operator-id').val('');
+	}
+	else {
+		$('#form-operator-id').removeAttr("disabled");
+		$('#form-operator-id').val($("#form-operator-id option:first").val());
 	}
 }
 

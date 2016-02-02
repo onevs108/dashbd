@@ -228,6 +228,17 @@
 		ORDER BY name ASC
 	</select>
 	
+	<select id="selectByOperatorName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
+	    SELECT
+	    	id,
+			name,
+			description,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM operator
+		WHERE name = #{operatorName}
+	</select>
+	
 	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
 		INSERT INTO operator(<if test="id != null">`id`,</if>`name`, `description`, `created_at`, `updated_at`)
 		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, NOW(), NOW())

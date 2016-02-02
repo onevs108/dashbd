@@ -158,17 +158,43 @@
 <!--                             </div> -->
 <!--                         </div> -->
                         <div class="ibox-content">
-                            <div class="row">
-                                <div class="col-sm-3 m-b-sm">
+                            <div class="row" id="search-area">
+                            	<div class="col-sm-3">
+									<c:choose>
+										<c:when test="${USER.grade == 0}">
+											<select name="status" id="search-operator-id" class="input-sm form-control input-s-sm">
+												<option value="">All</option>
+												<c:forEach items="${operatorList}" var="operator">
+													<option value="${operator.id}">${operator.name}</option>
+												</c:forEach>
+											</select>
+										</c:when>
+										<c:otherwise>
+											<select name="status" id="search-operator-id" class="input-sm form-control input-s-sm" disabled="disabled">
+												<c:forEach items="${operatorList}" var="operator">
+													<c:choose>
+														<c:when test="${USER.operatorId == operator.id}">
+															<option value="${operator.id}" selected="selected">${operator.name}</option>
+														</c:when>
+														<c:otherwise>
+															<option value="${operator.id}">${operator.name}</option>
+														</c:otherwise>
+													</c:choose>
+												</c:forEach>
+											</select>
+										</c:otherwise>
+									</c:choose>
+								</div>
+                                <div class="col-sm-3">
                                     <select class="input-sm form-control input-s-sm" id="search-column">
                                         <option value="all">All</option>
                                         <option value="name">Name</option>
                                         <option value="userId">ID</option>
                                         <option value="department">Department</option>
-                                        <!--option value="3">Operator</option-->
+<!--                                         <option value="operator">Operator</option> -->
                                     </select>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-3" id="search-keyword-area">
                                     <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control" id="search-keyword"> <span class="input-group-btn">
                                             <button type="button" class="btn btn-sm btn-primary" id="go-search"> Go!</button>
                                         </span>

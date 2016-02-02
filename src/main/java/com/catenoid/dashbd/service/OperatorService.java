@@ -16,6 +16,7 @@ public interface OperatorService {
 	public int getOperatorListCount();
 	public JSONArray getOperatorListToJsonArray(long offset, long limit);
 	public Operator getOperator(Integer operatorId);
+	public boolean checkOperatorName(String operatorName);
 	public boolean insertOperator(Operator operator);
 	public boolean deleteOperator(Integer operatorId);
 	

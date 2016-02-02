@@ -52,15 +52,18 @@ function doDelete(userId, operatorId, firstName, lastName) {
 
 function getUserList(isBack, isSearch) {
 	var pageNumber = 1;
-	var searchKeyword = '';
+	var searchOperatorId = '';
 	var searchColumn = '';
+	var searchKeyword = '';
 	if (isBack) {
 		pageNumber = $.cookie('pagaNumber');
+		searchOperatorId = $.cookie('searchOperatorId');
 		searchKeyword = $.cookie('searchKeyword');
 		searchColumn = $.cookie('searchColumn');
 		
-		$('#search-keyword').val(searchKeyword);
+		$('#search-operator-id').val(searchOperatorId);
 		$('#search-column').val(searchColumn);
+		$('#search-keyword').val(searchKeyword);
 	}
 	
 	// 테이블 생성
@@ -73,12 +76,17 @@ function getUserList(isBack, isSearch) {
 			location.href = '#';
 			
 			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+			var tempSearchOperatorId = $('#search-operator-id').val();
+			var tempSearchColumn = $('#search-column').val();
 			var tempSearchKeyword = $('#search-keyword').val();
-			var tempsearchColumn = $('#search-column').val();
+			
+			$.cookie('searchOperatorId', tempSearchOperatorId);
+			$.cookie('searchColumn', tempSearchColumn);
 			$.cookie('searchKeyword', tempSearchKeyword);
-			$.cookie('searchColumn', tempsearchColumn);
+			
+			params['searchOperatorId'] = tempSearchOperatorId;
+			params['searchColumn'] = tempSearchColumn;
 			params['searchKeyword'] = tempSearchKeyword;
-			params['searchColumn'] = tempsearchColumn;
 			
 			return params;
 		},

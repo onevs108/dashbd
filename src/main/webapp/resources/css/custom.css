@@ -201,12 +201,24 @@ div.scheduled-content-entry {
 	font-size: 13px;
 }
 
-/* User Form
- * author: iskwon
-------------------------------------------------------*/
 .input-group {
     padding-right: 15px;
     padding-left: 15px;
+}
+
+/* User Mgmt
+ * author: iskwon
+------------------------------------------------------*/
+#search-area {
+	height: 40px;
+}
+
+#search-keyword-area {
+	padding-left: 0;
+}
+
+#search-keyword-area > .input-group {
+	padding-left: 0;
 }
 
 #form-permission-checkbox-area {

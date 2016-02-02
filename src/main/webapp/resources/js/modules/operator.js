@@ -1,3 +1,5 @@
+var operatorId = null;
+var checkOperatorName = false;
 
 $(function() {
 	// button click event in list
@@ -5,14 +7,21 @@ $(function() {
 	$('#modal-add-btn').click(doAdd);
 	$('#modal-cancel-btn').click(doModalCancel);
 	$('#modal-cancel-icon-btn').click(doModalCancel);
+	
+	$('#check-name-btn').click(doCheckName);
+	// name 입력 or 변경 checkOperatorName 초기화
+	$('#form-operator-name').keypress(function() {
+		checkOperatorName = false;
+		$('#form-operator-name-input-area').attr('class', 'input-group has-warning');
+	});
 });
 
 function openModal() {
+	checkOperatorName = false;
 	$('#modal-title').html('Create New Operator');
 	$('#form-modal').modal('show');
 }
 
-var operatorId = null;
 function doAdd() {
 	$('#modal-title').html('Create New Operator');
 	
@@ -21,6 +30,12 @@ function doAdd() {
 	
 	if (operatorName == null || operatorName.length == 0) {
 		alert('Please input the Operator Name');
+		return false;
+	}
+	
+	if (!checkOperatorName) {
+		alert('Please check the Operator Name');
+		$('#check-name-btn').focus();
 		return false;
 	}
 	
@@ -39,11 +54,13 @@ function doAdd() {
 
 function doModalCancel() {
 	operatorId = null;
+	operatorCheckName = false;
 	closeModal();
 }
 
 function doEdit(id, name, description) {
 	$('#modal-title').html('Edit Operator');
+	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다.
 	operatorId = id;
 	$('#form-operator-name').val(name);
 	$('#form-operator-description').val(description);
@@ -74,6 +91,41 @@ function doDelete(operatorId, name) {
 			}
 		});
 	}
+}
+
+function doCheckName() {
+	var operatorName = $('#form-operator-name').val();
+	if (operatorName == null || operatorName.length == 0) {
+		alert('Please input Operator Name');
+		return false;
+	}
+	
+	$.ajax({
+		url: '/dashbd/api/operator/check.do',
+		method: 'POST',
+		dataType: 'json',
+		data: {
+			operatorName: operatorName
+		},
+		success: function(data, textStatus, jqXHR) {
+			if (data.result) { // 성공
+				checkOperatorName = true;
+				$('#form-operator-name-input-area').attr('class', 'input-group has-success');
+				alert('Avaliable!');
+			}
+			else { // 실패
+				checkOperatorName = false;
+				$('#form-operator-name-input-area').attr('class', 'input-group has-error');
+				alert('Already exist!');
+				$('#form-operator-name').focus();
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown);
+			checkUserId = false;
+			return false;
+		}
+	});
 }
 
 function callInsert(data) {

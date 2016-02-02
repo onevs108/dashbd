@@ -166,10 +166,15 @@
 	                                            </div>
 	                                            <div class="modal-body">
 	                                                <form method="get" class="form-horizontal">
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Operator Name</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-operator-name"></div>
-	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Description</label>
+					                                    <div class="form-group">
+					                                    	<label class="col-sm-3 control-label">Operator Name</label>
+					                                    	<div class="input-group" id="form-operator-name-input-area">
+					                                    		<input type="text" id="form-operator-name" class="form-control">
+														    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn" type="button">Check</button></span>
+					                                    	</div>
+													    </div>
+	                                                    <div class="form-group">
+	                                                    	<label class="col-sm-3 control-label">Description</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-operator-description" style="height:200px"></div>
 	                                                    </div>
 	                                                </form>
