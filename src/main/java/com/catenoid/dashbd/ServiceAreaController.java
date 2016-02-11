@@ -752,6 +752,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -787,6 +788,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -990,6 +992,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -1017,6 +1020,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -1053,6 +1057,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -1093,6 +1098,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -1133,6 +1139,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
