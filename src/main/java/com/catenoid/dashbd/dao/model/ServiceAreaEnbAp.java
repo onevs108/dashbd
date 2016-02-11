@@ -23,6 +23,18 @@ public class ServiceAreaEnbAp {
     private String plmn;
     
     private String mbsfn;
+    
+    private String circle;
+
+    private String circleName;
+
+    private Integer clusterId;
+
+    private String ipaddress;
+
+    private String earfcn;
+    
+    private Integer mbmsServiceAreaId;
 
     private Date createdAt;
 
@@ -31,6 +43,12 @@ public class ServiceAreaEnbAp {
     private Integer totalCount;
     
     private Long bandwidth;
+    
+    private String city;
+    
+    private Integer operatorId;
+    
+    private Integer bmscId;
 
     public Integer getServiceAreaId() {
         return serviceAreaId;
@@ -136,11 +154,83 @@ public class ServiceAreaEnbAp {
 		this.totalCount = totalCount;
 	}
 	
-	public Long getBandWidth() {
+	public Long getBandwidth() {
         return bandwidth;
     }
 
     public void setBandwidth(Long bandwidth) {
         this.bandwidth = bandwidth;
+    }
+    
+    public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+	
+    public String getCircle() {
+        return circle;
+    }
+
+    public void setCircle(String circle) {
+        this.circle = circle == null ? null : circle.trim();
+    }
+
+    public String getCircleName() {
+        return circleName;
+    }
+
+    public void setCircleName(String circleName) {
+        this.circleName = circleName == null ? null : circleName.trim();
+    }
+
+    public Integer getClusterId() {
+        return clusterId;
+    }
+
+    public void setClusterId(Integer clusterId) {
+        this.clusterId = clusterId;
+    }
+
+    public String getIpaddress() {
+        return ipaddress;
+    }
+
+    public void setIpaddress(String ipaddress) {
+        this.ipaddress = ipaddress == null ? null : ipaddress.trim();
+    }
+
+    public String getEarfcn() {
+        return earfcn;
+    }
+
+    public void setEarfcn(String earfcn) {
+        this.earfcn = earfcn == null ? null : earfcn.trim();
+    }
+    
+    public Integer getMbmsServiceAreaId() {
+        return mbmsServiceAreaId;
+    }
+
+    public void setMbmsServiceAreaId(Integer mbmsServiceAreaId) {
+        this.mbmsServiceAreaId = mbmsServiceAreaId;
+    }
+    
+    public Integer getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(Integer operatorId) {
+        this.operatorId = operatorId;
+    }
+    
+    public Integer getBmscId() {
+        return bmscId;
+    }
+
+    public void setBmscId(Integer bmscId) {
+        this.bmscId = bmscId;
     }
 }

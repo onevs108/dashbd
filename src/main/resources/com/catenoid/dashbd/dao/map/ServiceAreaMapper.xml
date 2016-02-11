@@ -454,6 +454,43 @@
 	order by t1.created_at desc
 	</select>
 	
+	<select id="getEnbsList" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
+	SELECT
+		enbApId, enbApName, longitude, latitude, plmn, circle, circleName, clusterId, ipaddress,
+		earfcn, mbsfn, mbmsServiceAreaId, createdAt, updatedAt,
+		city, bandwidth, operatorId, bmscId,
+		(select count(*) from enb_ap where operator_id = #{operatorId} and bmsc_id = #{bmscId}) as totalCount
+	FROM 
+	( 
+		SELECT
+			@ROWNUM := @ROWNUM + 1 AS rownum,
+			enbApId, enbApName, longitude, latitude, plmn, circle, circleName, clusterId, ipaddress,
+			earfcn, mbsfn, mbmsServiceAreaId, createdAt, updatedAt,
+			city, bandwidth, operatorId, bmscId
+		FROM 
+		( SELECT @ROWNUM := 0 AS rownum ) R,
+		( 	
+			SELECT
+				id as enbApId, name as enbApName, longitude, latitude, plmn, circle, circle_name as circleName, 
+				cluster_id as clusterId, ipaddress, earfcn, mbsfn, mbms_service_area_id as mbmsServiceAreaId, 
+				created_at as createdAt, updated_at as updatedAt, city, bandwidth, 
+				operator_id as operatorId, bmsc_id as bmscId
+			FROM enb_ap
+			WHERE 
+				operator_id = #{operatorId}
+				and bmsc_id = #{bmscId}
+			ORDER BY 	<if test="sort == null">created_at desc</if>
+						<if test="sort != null">
+							<if test="sort == 'id'">id</if>
+							<if test="sort == 'name'">name</if>
+							<if test="sort == 'city'">city</if>
+							${order}
+						</if> 
+		) T
+	) R
+	WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
 	<select id="getServiceAreaEnbApWithBounds" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
 		select 
 			ifnull( t1.service_area_id, '' ) as service_area_id, 

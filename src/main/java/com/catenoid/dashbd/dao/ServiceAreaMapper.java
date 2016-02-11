@@ -90,5 +90,7 @@ public interface ServiceAreaMapper {
     int createBmScServiceArea(HashMap< String, Object > searchParm);
     
     List<HashMap<String, Object>> getSeviceAreaNotMapped(HashMap<String, Integer> searchParm);
+    
+    List<ServiceAreaEnbAp> getEnbsList(HashMap<String, Object> example);
 
 }

@@ -33,6 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -860,6 +862,75 @@ public class ServiceAreaController {
 	    }
 	}
 	
+	/**
+	 * ENB 리스트 리턴
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/getEnbsList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getEnbsList(@RequestBody String body) {
+		logger.info("-> [body = {}]", body);
+		
+		JSONObject jsonResult = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
+			
+			String operatorIdToStr = (String) requestJson.get("operatorId");
+			String bmscIdToStr = (String) requestJson.get("bmscId");
+			Integer operatorId = operatorIdToStr == null ? 0 : Integer.parseInt(operatorIdToStr);
+			Integer bmscId = bmscIdToStr == null ? 0 : Integer.parseInt(bmscIdToStr);
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
+			long offset = (Long) requestJson.get("offset");
+			long limit = (Long) requestJson.get("limit");
+			
+			if (sort == null || sort.isEmpty()) sort = null;
+			if (order == null || order.isEmpty()) order = null;
+			
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			HashMap<String, Object> searchParam = new HashMap();
+			searchParam.put("operatorId", operatorId);
+			searchParam.put("bmscId", bmscId);
+			searchParam.put("sort", sort);
+			searchParam.put("order", order);
+			searchParam.put("start", offset);
+			searchParam.put("end", offset + limit);
+			
+			List<ServiceAreaEnbAp> datas = mapper.getEnbsList(searchParam);
+			
+			JSONArray rows = new JSONArray();
+			for(int i = 0; i < datas.size(); i++) {
+				ServiceAreaEnbAp data = datas.get(i);
+				JSONObject obj = new JSONObject();
+				obj.put("id", data.getEnbApId());
+				obj.put("name", data.getEnbApName());
+				obj.put("longitude", data.getLongitude());
+				obj.put("latitude", data.getLatitude());
+				obj.put("plmn", data.getPlmn());
+				obj.put("mbsfn", data.getMbsfn());
+				obj.put("city", data.getCity());
+				obj.put("bandwidth", data.getBandwidth());
+				obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+				obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+				obj.put("totalCount", data.getTotalCount());
+				rows.add(obj);
+				
+				if( i == 0 ) {
+					jsonResult.put("total", data.getTotalCount());
+				}
+			}
+			
+			jsonResult.put("rows", rows);
+
+		} catch (Exception e) {
+			logger.error("~~ [An error occurred!]", e);
+		}
+		return jsonResult.toString();
+	}
+	
 	@RequestMapping(value = "/api/getServiceAreaEnbApWithBounds.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getServiceAreaEnbApWithBounds(HttpServletRequest request, HttpServletResponse response) {
 
@@ -1286,6 +1357,25 @@ public class ServiceAreaController {
 		return mv;
 	}
 
+	@RequestMapping(value = "/resources/eNBsExcelMgmt.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView eNBsExcelMgmtView(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("/enb/eNBsExcelMgmt");
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+		Integer perPage = 50;
+		
+		OperatorSearchParam searchParam = new OperatorSearchParam();
+		searchParam.setPage((page-1) * perPage);
+		searchParam.setPerPage(perPage);
+		
+		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+		
+		mv.addObject("OperatorList", result);
+		
+		return mv;
+	}
+	
 	@RequestMapping(value = "/api/createServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void createServiceArea(HttpServletRequest request, HttpServletResponse response) {
 
@@ -1321,6 +1411,77 @@ public class ServiceAreaController {
 			obj.put("count", rst);
 
 		
+	        response.getWriter().print(obj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@RequestMapping(value = "/api/createENB.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void createENB(HttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			Integer operator = Integer.valueOf( request.getParameter( "operator" ) );
+			Integer bmsc = Integer.valueOf( request.getParameter( "bmsc" ) );
+			Integer id = Integer.valueOf( request.getParameter( "id" ) );
+			String name = request.getParameter( "name" );
+			Double longitude = 0.0;
+			if( request.getParameter( "longitude" ) != null && request.getParameter( "longitude" ).length() > 0 ) {
+				longitude = Double.valueOf( request.getParameter( "longitude" ) );
+			}
+			Double latitude = 0.0;
+			if( request.getParameter( "latitude" ) != null && request.getParameter( "latitude" ).length() > 0 ) {
+				latitude = Double.valueOf( request.getParameter( "latitude" ) );
+			}
+			String plmn = request.getParameter( "plmn" );
+			String circle = request.getParameter( "circle" );
+			String circleName = request.getParameter( "circleName" );
+			Integer clusterId = 0;
+			if( request.getParameter( "clusterId" ) != null && request.getParameter( "clusterId" ).length() > 0 ) {
+				clusterId = Integer.valueOf( request.getParameter( "clusterId" ) );
+			}
+			String ipAddress = request.getParameter( "ipaddress" );
+			String earfcn = request.getParameter( "earfcn" );
+			String mbsfn = request.getParameter( "mbsfn" );
+			Integer mbmsServiceAreaId = 0;
+			if( request.getParameter( "mbmsServiceAreaId" ) != null && request.getParameter( "mbmsServiceAreaId" ).length() > 0 ) {
+				mbmsServiceAreaId = Integer.valueOf( request.getParameter( "mbmsServiceAreaId" ) );
+			}
+			String city = request.getParameter( "city" );
+			Integer bandwidth = 0;
+			if( request.getParameter( "bandwidth" ) != null && request.getParameter( "bandwidth" ).length() > 0 ) {
+				bandwidth = Integer.valueOf( request.getParameter( "bandwidth" ) );
+			}
+			
+			//System.out.println( operator );
+			//System.out.println( bmsc );
+			
+			int rst = 0;
+			ServiceAreaMapper mapper = sqlSession.getMapper( ServiceAreaMapper.class );
+			
+			HashMap< String, Object > searchParam = new HashMap< String, Object >();
+			searchParam.put( "id", id );
+			searchParam.put( "name", name );
+			searchParam.put( "longitude", longitude );
+			searchParam.put( "latitude", latitude );
+			searchParam.put( "plmn", plmn );
+			searchParam.put( "circle", circle );
+			searchParam.put( "circleName", circleName );
+			searchParam.put( "clusterId", clusterId );
+			searchParam.put( "ipAddress", ipAddress );
+			searchParam.put( "earfcn", earfcn );
+			searchParam.put( "mbsfn", mbsfn );
+			searchParam.put( "mbmsServiceAreaId", mbmsServiceAreaId );
+			searchParam.put( "city", city );
+			searchParam.put( "bandwidth", bandwidth );
+			searchParam.put( "operator", operator );
+			searchParam.put( "bmsc", bmsc );
+			
+			rst += mapper.createENBs( searchParam );
+			
+			JSONObject obj = new JSONObject();
+			obj.put( "count", rst );
+
 	        response.getWriter().print(obj.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -1529,6 +1690,7 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			response.setContentType( "application/x-www-form-urlencoded; charset=utf-8" );
 	        response.getWriter().print( array.toJSONString() );
 	    } catch( Exception e ) {
 	        e.printStackTrace();
