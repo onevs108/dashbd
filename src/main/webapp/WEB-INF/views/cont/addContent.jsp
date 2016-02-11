@@ -187,17 +187,16 @@ var ctrl = {
 					<div class="ibox-content">
 					    <div class="row">
 						   <div class="col-sm-8 b-r">
-						   
-							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required"></div>
-							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Title</label>
+						      <div class="form-group"><label class="col-sm-3 control-label">Title</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required"></div>
+							   </div>
+							   <div class="form-group"><label class="col-sm-3 control-label">Category</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="category" name="category" required="required"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Age restriction</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">duration</label>
+							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
@@ -211,6 +210,9 @@ var ctrl = {
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Description</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description"></div>
+							   </div>
+							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required"></div>
 							   </div>
 		
 						   </div>

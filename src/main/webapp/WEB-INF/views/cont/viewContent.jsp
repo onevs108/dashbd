@@ -166,18 +166,17 @@ $(document).ready(function() {
                     <div class="ibox float-e-margins">
 					<div class="ibox-content">
 					    <div class="row">
-						   <div class="col-sm-8 b-r">
-						   
-							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required" value="${mapContent.type}"></div>
-							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Title</label>
+						   <div class="col-sm-7 b-r">
+						      <div class="form-group"><label class="col-sm-3 control-label">Title</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required" value="${mapContent.title}"></div>
+							   </div>
+							   <div class="form-group"><label class="col-sm-3 control-label">Category</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="category" name="category" required="required"  value="${mapContent.category}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Age restriction</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">duration</label>
+							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required" value="${mapContent.duration}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
@@ -192,12 +191,13 @@ $(document).ready(function() {
 							   <div class="form-group"><label class="col-sm-3 control-label">Description</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description" value="${mapContent.description}"></div>
 							   </div>
-		
+							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required" value="${mapContent.type}"></div>
+							   </div>
 						   </div>
-						   <div class="col-sm-4" style="padding:70px 0;">
-								<p class="text-center">
-                                    		<a href=""><i class="fa fa-file big-icon"></i></a>
-                                		</p>
+						   <div class="col-sm-5" style="padding:10px 10px 10px 10px;">
+						<iframe src="${mapContent.url}" width="100%" height="400px" frameborder="0" allowfullscreen>
+						</iframe>
 						   </div>
 					    </div>
 					</div>
