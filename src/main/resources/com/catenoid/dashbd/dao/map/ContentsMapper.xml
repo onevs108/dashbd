@@ -42,7 +42,6 @@
 			, description
 			, url
 			, duration
-			, bitrate
 		)VALUES(#{type}
 			, #{title}
 			, #{category}
@@ -54,7 +53,6 @@
 			, #{description}
 			, #{url}
 			, #{duration}
-			, #{bitrate}
 		)
 	</insert>
 	
@@ -88,9 +86,6 @@
 			</if>
 			<if test="duration != null and duration !=''" >
 				, duration =  #{duration}
-			</if>
-			<if test=" bitrate != null and bitrate !=''" >
-				, bitrate = #{bitrate} 
 			</if>
 		WHERE id = #{id}
 	</update>
@@ -285,11 +280,11 @@
   </delete>
   <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.Contents" >
     insert into contents (id, type, title, category, director, 
-      actors, content_provider, file_format, age_restriction, url, duration, bitrate, 
+      actors, content_provider, file_format, age_restriction, url, duration,  
       created_at, updated_at, description
       )
     values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{director,jdbcType=VARCHAR}, 
-      #{actors,jdbcType=VARCHAR}, #{contentProvider,jdbcType=VARCHAR}, #{fileFormat,jdbcType=VARCHAR}, #{ageRestriction,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{duration,jdbcType=INTEGER}, #{bitrate,jdbcType=INTEGER}, 
+      #{actors,jdbcType=VARCHAR}, #{contentProvider,jdbcType=VARCHAR}, #{fileFormat,jdbcType=VARCHAR}, #{ageRestriction,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{duration,jdbcType=INTEGER}, 
       #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR}
       )
     <selectKey resultType="int" keyProperty="id" order="AFTER"> 
