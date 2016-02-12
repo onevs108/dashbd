@@ -168,31 +168,31 @@ $(document).ready(function() {
 					    <div class="row">
 						   <div class="col-sm-7 b-r">
 						      <div class="form-group"><label class="col-sm-3 control-label">Title</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required" value="${mapContent.title}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required" value="${mapContent.title}" disabled></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Category</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="category" name="category" required="required"  value="${mapContent.category}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="category" name="category" required="required"  value="${mapContent.category}" disabled></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Age restriction</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}" disabled></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required" value="${mapContent.duration}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required" value="${mapContent.duration}" disabled></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
-							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required" value="${mapContent.bitrate}"></div>
-							   </div>
+						<!-- 	   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
+							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required" value="${mapContent.bitrate}" disabled></div>
+							   </div>  -->
 							   <div class="form-group"><label class="col-sm-3 control-label">Director</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="director" name="director" value="${mapContent.director}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="director" name="director" value="${mapContent.director}" disabled></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Actors</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="actors" name="actors" value="${mapContent.actors}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="actors" name="actors" value="${mapContent.actors}" disabled></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Description</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description" value="${mapContent.description}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description" value="${mapContent.description}" disabled></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required" value="${mapContent.type}"></div>
+							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required" value="${mapContent.type}" disabled></div>
 							   </div>
 						   </div>
 						   <div class="col-sm-5" style="padding:10px 10px 10px 10px;">

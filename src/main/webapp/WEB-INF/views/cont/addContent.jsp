@@ -199,9 +199,9 @@ var ctrl = {
 							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
+						   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
 							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required"></div>
-							   </div>
+							   </div> 
 							   <div class="form-group"><label class="col-sm-3 control-label">Director</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="director" name="director"></div>
 							   </div>
