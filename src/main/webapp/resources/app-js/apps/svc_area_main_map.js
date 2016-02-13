@@ -2,8 +2,8 @@ var initBmScId = 1;
 
 $(document).ready(function()
 {
-	getServiceAreaBmSc(1, $('#operator option:selected').val());
-	
+	//getServiceAreaBmSc(1, $('#operator option:selected').val());
+    
     $('#operator').change(function(){
         getServiceAreaBmSc(1, $('#operator option:selected').val());
     });
@@ -91,10 +91,6 @@ function getServiceAreaBmSc(page, operatorId)
             var dataLen = data.length;
             var options = '<option value=""></option>';
             for( var i = 0; i < dataLen; i++ ) {
-            	if( i == 0 ) {
-            		initBmScId = data[i].id;
-            	}
-            	
             	options += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
             }
             
@@ -327,6 +323,10 @@ function initMap() {
 	    });
 	});
 	// mouse drag end
+	
+	//alert($('#bmsc option:selected').val());
+	drawServiceAreaByBmSc($('#bmsc option:selected').val());
+    $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
