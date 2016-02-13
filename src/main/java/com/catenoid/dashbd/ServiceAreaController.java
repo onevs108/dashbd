@@ -1101,33 +1101,32 @@ public class ServiceAreaController {
 	
 	@RequestMapping(value = "/api/serviceAreaByBmScCity.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getServiceAreaByBmscCity(HttpServletRequest request, HttpServletResponse response) {
-		
-		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
-		Integer perPage = 1000;
-		
-		if(request.getParameter("bmscId") == null) return;
-
-		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
-		searchParam.setPage((page-1) * perPage);
-		searchParam.setPerPage(perPage);
-		searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
-		searchParam.setServiceAreaCity(request.getParameter("city"));
-		
-		List<BmscServiceArea> datas = mapper.getSeviceAreaByBmScCity(searchParam);
-		
-		JSONArray array = new JSONArray();
-		for(int i = 0; i < datas.size(); i++) {
-			BmscServiceArea data = datas.get(i);
-			JSONObject obj = new JSONObject();
-			obj.put("bmscId", data.getBmscId());
-			obj.put("serviceAreaId", data.getServiceAreaId());
-			obj.put("serviceAreaName", data.getServiceAreaName());
-			obj.put("totalCount", data.getTotalCount());
-			array.add(obj);
-		}
-		
 		try {
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+			Integer perPage = 1000;
+			
+			if(request.getParameter("bmscId") == null) return;
+	
+			BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
+			searchParam.setPage((page-1) * perPage);
+			searchParam.setPerPage(perPage);
+			searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
+			searchParam.setServiceAreaCity(URLDecoder.decode(request.getParameter("city"), "utf-8"));
+			
+			List<BmscServiceArea> datas = mapper.getSeviceAreaByBmScCity(searchParam);
+			
+			JSONArray array = new JSONArray();
+			for(int i = 0; i < datas.size(); i++) {
+				BmscServiceArea data = datas.get(i);
+				JSONObject obj = new JSONObject();
+				obj.put("bmscId", data.getBmscId());
+				obj.put("serviceAreaId", data.getServiceAreaId());
+				obj.put("serviceAreaName", data.getServiceAreaName());
+				obj.put("totalCount", data.getTotalCount());
+				array.add(obj);
+			}
+
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
@@ -1384,7 +1383,7 @@ public class ServiceAreaController {
 			Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
 			Integer bandwidth = request.getParameter("serviceAreaBandwidth") == null ? 0 : Integer.valueOf(request.getParameter("serviceAreaBandwidth"));
 			String name = URLDecoder.decode(request.getParameter("serviceAreaName"), "UTF-8");
-			String description = request.getParameter("serviceAreaDescription");
+			String description = URLDecoder.decode(request.getParameter("serviceAreaDescription"));
 			String city = request.getParameter("serviceAreaCity");
 			
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);

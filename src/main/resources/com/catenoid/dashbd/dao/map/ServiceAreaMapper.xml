@@ -706,16 +706,18 @@
 	-->
 	
 	<select id="getSeviceAreaByBmScCity" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
-	select a.bmsc_id, a.service_area_id, d.name as service_area_name
-	, 1 as totalCount
-	from bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
+	select 
+		a.bmsc_id, a.service_area_id, d.name as service_area_name
+		, (select count(*) from service_area_enb_ap x where x.service_area_id = a.service_area_id) as totalCount
+	from 
+		bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
 	where 1 = 1
-	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
-	and b.service_area_id = a.service_area_id
-	and c.id = b.enb_ap_id
-	and c.bmsc_id = a.bmsc_id
-	and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
-	and d.id = a.service_area_id
+		and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
+		and b.service_area_id = a.service_area_id
+		and c.id = b.enb_ap_id
+		and c.bmsc_id = a.bmsc_id
+		and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
+		and d.id = a.service_area_id
 	group by a.bmsc_id, a.service_area_id, d.name	
 	order by d.created_at desc
 	limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}

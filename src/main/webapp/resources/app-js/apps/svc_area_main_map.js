@@ -1,6 +1,9 @@
+var initBmScId = 1;
+
 $(document).ready(function()
 {
 	getServiceAreaBmSc(1, $('#operator option:selected').val());
+	
     $('#operator').change(function(){
         getServiceAreaBmSc(1, $('#operator option:selected').val());
     });
@@ -87,7 +90,11 @@ function getServiceAreaBmSc(page, operatorId)
             var data = JSON.parse(responseData);
             var dataLen = data.length;
             var options = '<option value=""></option>';
-            for(var i=0; i<dataLen; i++){
+            for( var i = 0; i < dataLen; i++ ) {
+            	if( i == 0 ) {
+            		initBmScId = data[i].id;
+            	}
+            	
             	options += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
             }
             
@@ -324,11 +331,10 @@ function initMap() {
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-
 function createServiceArea( operatorId, bmscId ) {
 	$.ajax({
 	    url : "/dashbd/api/createServiceArea.do",
-	    type: "get",
+	    type: "GET",
 	    data : { "bmscId": bmscId, "serviceAreaId" : $('#serviceAreaId').val(), "serviceAreaName" : $('#serviceAreaName').val(), "serviceAreaDescription" : $('#serviceAreaDescription').val() },
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 	    success : function(responseData) {
@@ -956,10 +962,12 @@ function getParameter(name) {
 
 function getServiceAreaByBmScCity(page, bmscId, city)
 {
+	var selectedCity = encodeURIComponent(city);
 	$.ajax({
         url : "/dashbd/api/serviceAreaByBmScCity.do",
         type: "get",
-        data : { "page" : page, "bmscId" : bmscId, "city" : city },
+        data : { "page" : page, "bmscId" : bmscId, "city" : selectedCity },
+        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
         success : function(responseData){
             $("#ajax").remove();
             datas = JSON.parse(responseData);
@@ -982,6 +990,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             	options += "<span class=\"footable-toggle\"></span>";
             	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ");\">";
             	options += datas[i].serviceAreaId;
+            	options += " (" + datas[i].totalCount + ")";
             	options += "</a>";
 				options += "</td><td>";
 				options += datas[i].serviceAreaName;
