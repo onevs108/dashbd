@@ -14,7 +14,7 @@
 	
 	<link href="/dashbd/resources/css/animate.css" rel="stylesheet">
     <link href="/dashbd/resources/css/style.css" rel="stylesheet">
-    <!-- <link href="/dashbd/resources/css/custom.css" rel="stylesheet"> -->
+    <link href="/dashbd/resources/css/custom_main.css" rel="stylesheet">
 	
 	<!-- FooTable -->
 	<link href="css/plugins/footable/footable.core.css" rel="stylesheet">

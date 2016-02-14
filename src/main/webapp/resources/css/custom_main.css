@@ -1,0 +1,198 @@
+/* sidebar */
+.navbar-default.navbar-static-side .fa.fa-lock {
+    font-size: 120%;
+}
+
+.navbar-default .landing_link a,
+.navbar-default .landing_link a:hover {
+    background: #1c84c6!important;
+}
+
+.table .btn {
+    font-size: 80%;
+    margin-bottom: 0;
+}
+
+.footable > thead > tr > th > span.footable-sort-indicator {
+    font-size: 12px;
+}
+
+input[type=file] {
+    font-size: 11px;
+    padding-top: 7px;
+}
+
+form h5 {
+    color: #1c84c6;
+    font-weight: bold;
+}
+
+form .swich {
+    padding-top: 7px;
+}
+
+.alert .form-group {
+    margin-bottom: 0;
+}
+
+
+.schedule-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.form-group .well {
+    background: transparent;
+    padding-bottom: 0;
+}
+
+.form-group .well .well {
+    background: #f8f8f8!important;
+}
+
+.form-group .well span.input-group-addon {
+    font-size: 12px;
+    letter-spacing: -1px;
+}
+
+/* Service Area Mgmt */
+.service_area_box {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0;
+    padding: 10px;
+    min-height: 48px;
+    list-style: none;
+}
+
+.service_area_box li a {
+    display: block;
+    line-height: 1;
+    padding: 8px 6px;
+}
+
+.service_area_box li a.active,
+.service_area_box li a:hover {
+    background: #1c84c6;
+    border-radius: 2px;
+    color: #fff;
+    transition: .2s;
+}
+
+.google_map {
+	width: 100%;
+	height: 400px;
+    margin-bottom: 10px;
+}
+
+.search-list ul,
+.search-list li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.search-list li {
+    background: #1ab394;
+    border-radius: 3px;
+    color: #fff;
+    display: block;
+    margin-bottom: 10px;
+    padding: 6px 10px;
+}
+
+.search-list li .fa {
+    margin-right: 2px;
+}
+
+/* modal */
+.inmodal .modal-header {
+    padding: 20px;
+    text-align: left;
+}
+
+.inmodal .modal-title {
+    font-size: 18px;
+}
+
+.inmodal .modal-body {
+    background: #fff;
+    padding: 30px 20px;
+}
+
+.inmodal .modal-footer {
+    background: #f8f8f8;
+}
+
+table.info-window-table th {
+	background-color: #787878;
+	color: #FFF;
+}
+
+table.info-window-table td {
+	background-color: #F0F0F0;
+}
+
+/* eepg table */
+div#epg-table {
+	min-height: 400px;
+}
+
+ul.left-hour-tag,
+ul.left-hour-tag li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 35px;
+}
+
+ul.left-hour-tag li {
+    background: #1c84c6;
+    border-bottom: 1px solid #FFF;
+    color: #fff;
+    display: block;
+    padding: 6px 10px;
+}
+
+div.scheduled-content-entry {
+	position: absolute;
+	background: #1c84c6;
+	color: #fff;
+	padding: 6px 10px;
+}
+
+/* Commons
+ * author: iskwon
+------------------------------------------------------*/
+.table {
+	font-size: 13px;
+}
+
+.input-group {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+/* User Mgmt
+ * author: iskwon
+------------------------------------------------------*/
+#search-area {
+	height: 40px;
+}
+
+#search-keyword-area {
+	padding-left: 0;
+}
+
+#search-keyword-area > .input-group {
+	padding-left: 0;
+}
+
+#form-permission-checkbox-area {
+	background-color: #ffffff;
+	color: inherit;
+	border-color: #e7eaec;
+	border-image: none;
+	border-width: 1px 0px;
+}
