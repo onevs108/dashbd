@@ -16,7 +16,7 @@ function changeOperator() {
 
 function openModal() {
 	$('#form-operator-id').val($('#search-operator-id').val());
-	$('#modal-title').html('Create New BMSC');
+	$('#modal-title').html('Create New BM-SC');
 	$('#form-modal').modal('show');
 }
 
@@ -60,7 +60,7 @@ function openEditModal(id, name, ipaddress, circle) {
 	bmscId = id;
 	
 	$('#form-operator-id').val($('#search-operator-id').val());
-	$('#modal-title').html('Edit BMSC');
+	$('#modal-title').html('Edit BM-SC');
 	$('#form-bmsc-name').val(name);
 	$('#form-bmsc-ipaddress').val(ipaddress);
 	$('#form-bmsc-circle').val(circle);
@@ -68,7 +68,7 @@ function openEditModal(id, name, ipaddress, circle) {
 }
 
 function doDelete(bmscId, name) {
-	if (confirm('Do you really want to delete the BMSC "' + name + '"?')) {
+	if (confirm('Do you really want to delete the BM-SC "' + name + '"?')) {
 		$.ajax({
 			url: '/dashbd/api/bmsc/delete.do',
 			method: 'POST',
@@ -146,7 +146,7 @@ function getBmscList() {
 			visible: false
 		}, {
 			field: 'name',
-			title: 'BMSC Name',
+			title: 'BM-SC Name',
 			width: '15%',
 			align: 'center',
 			valign: 'middle',

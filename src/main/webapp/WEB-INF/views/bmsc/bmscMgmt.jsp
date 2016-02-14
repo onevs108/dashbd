@@ -185,7 +185,7 @@
 	                            </div>
 	                            <div class="col-lg-4">
 	                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn">
-										Create New BMSC
+										Create New BM-SC
 	                                </button>
 	                                <div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
 	                                    <div class="modal-dialog">
@@ -193,7 +193,7 @@
 	                                            <div class="modal-header">
 	                                                <button type="button" class="close" id="modal-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	                                                <i class="fa fa-folder-open-o modal-icon"></i>
-	                                                <h4 class="modal-title" id="modal-title">Create New BMSC</h4>
+	                                                <h4 class="modal-title" id="modal-title">Create New BM-SC</h4>
 	                                            </div>
 	                                            <div class="modal-body">
 	                                                <form method="get" class="form-horizontal">
@@ -206,7 +206,7 @@
 																</select>
 															</div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">BMSC Name</label>
+	                                                    <div class="form-group"><label class="col-sm-3 control-label">BM-SC Name</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-name"></div>
 	                                                    </div>
 	                                                    <div class="form-group"><label class="col-sm-3 control-label">IP Address</label>

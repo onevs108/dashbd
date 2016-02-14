@@ -307,26 +307,26 @@
 								<tr>
 									<td>
 										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#1</h4>
+										<h4 class="text-center">BM-SC</h4>
 									</td>
 									<td>
 										<button class="btn btn-sm btn-danger" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#2</h4>
+										<h4 class="text-center">GW</h4>
 									</td>
 									<td>
 										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#3</h4>
+										<h4 class="text-center">MME</h4>
 									</td>
 									<td>
 										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#4</h4>
+										<h4 class="text-center">MCE</h4>
 									</td>
 									<td>
 										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#5</h4>
+										<h4 class="text-center">eNB</h4>
 									</td>
 								</tr>
-								<tr>
+								<!--  <tr>
 									<td>
 										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
 										<h4 class="text-center">#6</h4>
@@ -347,7 +347,7 @@
 										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
 										<h4 class="text-center">#10</h4>
 									</td>
-								</tr>
+								</tr> -->
 							<tbody>
 							</table>
 						</div>
