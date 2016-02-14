@@ -513,7 +513,7 @@
 					and latitude between #{swLat} and #{neLat}
 					and longitude between #{swLng} and #{neLng}
 					and bmsc_id = #{bmscId,jdbcType=INTEGER}
-			) t2 left join
+			) t2 inner join
 			( 
 				select t3.id as service_area_id, t3.name as service_area_name, t1.enb_ap_id
 				from 
