@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-	getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
+	//getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
     $('#operator').change(function() {
         //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
@@ -11,6 +11,9 @@ $(document).ready(function()
     });
 
     $('#enb-excel-mgmt-btn').click(moveToExcelMgmt);
+    
+    // default bm-sc setting
+    getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val());
 });
 
 //BmSc 조회 by operator id

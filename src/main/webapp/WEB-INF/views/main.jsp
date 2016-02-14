@@ -12,11 +12,15 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 	
-	<link href="css/animate.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
+	<link href="/dashbd/resources/css/animate.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/style.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/custom.css" rel="stylesheet">
 	
 	<!-- FooTable -->
 	<link href="css/plugins/footable/footable.core.css" rel="stylesheet">
+	
+	<!-- Sweet Alert -->
+    <link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 
     <!-- Mainly scripts -->
     <script src="js/jquery-2.1.1.js"></script>
@@ -203,6 +207,9 @@
 										<div class="form-group">
 											<label class="control-label" for="status">BM-SC</label>
 											<select name="bmsc" id="bmsc" class="form-control">
+											<c:forEach var='bmscList' items="${BmscList}" varStatus="idx">
+												<option value="${bmscList.id }">${bmscList.name }</option>
+											</c:forEach>
 											</select>
 										</div>
 									</div>
