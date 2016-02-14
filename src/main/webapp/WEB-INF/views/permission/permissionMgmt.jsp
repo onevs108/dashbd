@@ -251,7 +251,7 @@
 												<c:if test="${permission.id == 5}">
 													<div class="checkbox checkbox-primary">
 														<input id="checkbox-permission-bmsc" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox5"> BMSC Management</label>
+														<label for="checkbox5"> BM-SC Management</label>
 													</div>
 												</c:if>
 												<c:if test="${permission.id == 6}">
