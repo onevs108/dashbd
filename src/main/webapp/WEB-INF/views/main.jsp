@@ -86,7 +86,7 @@
 		<div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 				<div class="navbar-header" style="padding-bottom: 10px;">
-					<h2 style="margin-left: 15px;"><strong>Provisioning Server</strong></h2>
+					<h2 style="margin-left: 15px;"><strong>eMBMS Provisioning Server </strong></h2>
 				</div><!-- end navbar-header -->
 		        
 				<ul class="nav navbar-top-links navbar-right">
@@ -293,7 +293,7 @@
                 <div class="col-md-4">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h3>BM-SC Interface Status</h3>
+                            <h3>eMBMS Session Monitoring</h3>
                             <div class="ibox-tools">
                                 <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 <a class="close-link"><i class="fa fa-times"></i></a-->
