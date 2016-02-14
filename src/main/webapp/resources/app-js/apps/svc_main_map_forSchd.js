@@ -263,7 +263,9 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 
 
 function drawServiceAreaByBmSc(bmscId, bmscName) {
+	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
+	map.setZoom( 8 );
 	$("#service_area").empty();
 	$("#service_area").append(default_service_area);
 	
