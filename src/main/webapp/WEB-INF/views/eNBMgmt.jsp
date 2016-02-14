@@ -231,7 +231,9 @@
 	                                                    <div class="form-group"><label class="col-sm-3 control-label">BM-SC</label>
 		                                                	<div class="col-sm-9">
 																<select id="form-bmsc-id" class="form-control" disabled="disabled">
-																		<option value="${operator.id}">$('#bmsc option:selected').val()</option>
+																<c:forEach var='bmscList' items="${BmscList}" varStatus="idx">
+																	<option value="${bmscList.id }">${bmscList.name }</option>
+																</c:forEach>
 																</select>
 															</div>
 	                                                    </div>
