@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
+import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
@@ -73,7 +74,19 @@ public class ScheduleMgmtController {
 			searchParam.setPage((page-1) * perPage);
 			searchParam.setPerPage(perPage);
 			List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+			
+			Operator initOperator = result.get(0);
+			
+			searchParam = new OperatorSearchParam();
+			searchParam.setPage((page-1) * perPage);
+			searchParam.setPerPage(perPage);
+			searchParam.setOperatorId(initOperator.getId());
+			
+			List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
+			
 			mv.addObject("OperatorList", result);
+			
+			mv.addObject("BmscList", bmscs);
 			
 			//logger.info("GBRSum=", exampleGBRSum());
 //			String transId = makeTransId();

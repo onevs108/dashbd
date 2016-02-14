@@ -235,6 +235,9 @@
 										<div class="form-group">
 											<label class="control-label" for="status">BM-SC</label>
 											<select name="bmsc" id="bmsc" class="form-control">
+											  <c:forEach var='bmscList' items="${BmscList}" varStatus="idx">
+												<option value="${bmscList.id }">${bmscList.name }</option>
+											  </c:forEach>
 											</select>
 										</div>
 									</div>

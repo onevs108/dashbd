@@ -1,16 +1,27 @@
 
-var default_service_area = "";
-default_service_area += "<div class=\"ibox-title\"><h5>Service Area</h5></div>";
+var default_service_area = "<div class=\"ibox-title\"><h5>Service Area  </h5></div>";
 default_service_area += "<div class=\"ibox-content\">";
 default_service_area += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-default_service_area += "<thead><tr><th>SA_ID</th><th>Description</th></tr></thead>";
+default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
 default_service_area += "<tbody>";
+default_service_area += "<tr>";
+default_service_area += "<td></td>";
+default_service_area += "<td></td>";
+default_service_area += "</tr>";
 default_service_area += "</tbody>";
-default_service_area += "</table></div>";
+default_service_area += "<tfoot>";
+default_service_area += "<tr>";
+default_service_area += "<td colspan=\"2\">";
+default_service_area += "</td>";
+default_service_area += "</tr>";
+default_service_area += "</tfoot>";
+default_service_area += "</table>";
+default_service_area += "</div>";
 
 $(document).ready(function()
 {
-	getServiceAreaBmSc(1, $('#operator option:selected').val());
+	
+	//getServiceAreaBmSc(1, $('#operator option:selected').val());
     $('#operator').change(function(){
         //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val());
