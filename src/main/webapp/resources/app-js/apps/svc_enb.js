@@ -7,6 +7,7 @@ $(document).ready(function()
     });
     
     $('#bmsc').change(function() {
+    	//alert( $('#bmsc option:selected').val() );
     	getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val());
     });
 
@@ -175,6 +176,9 @@ function callInsert(data) {
 }
 
 function getEnbList(operatorId, bmscId) {
+	
+	$('#table').bootstrapTable('destroy');
+	
 	// 테이블 생성
 	var table = $('#table').bootstrapTable({
 		method: 'post',
