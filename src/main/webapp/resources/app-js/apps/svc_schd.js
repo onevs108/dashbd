@@ -1,5 +1,6 @@
 //inbo add START
 var g_ServiceAreaId = '';
+var g_bmscId = '';
 var searchDate
 
 $(function() {
@@ -12,7 +13,7 @@ $(function() {
 			alert('Please, choose ServiceArea.')
 			return;
 		}
-		location.href = "schdMgmtDetail.do?serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
+		location.href = "schdMgmtDetail.do?bmscId=" + g_bmscId + "&serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
 	});
 });
 //inbo add END

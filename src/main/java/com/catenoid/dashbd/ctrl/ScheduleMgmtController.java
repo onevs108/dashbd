@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
@@ -236,6 +237,7 @@ public class ScheduleMgmtController {
 		logger.info("schdMgmtDetail {}", params);
 		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
 		mv.addObject( "serviceAreaId", params.get("serviceAreaId")); 
+		mv.addObject( "bmscId", params.get("bmscId"));
 		mv.addObject("searchDate", params.get("searchDate"));
 		mv.addObject("title", params.get("title"));
 		mv.addObject("category", params.get("category"));
@@ -304,6 +306,9 @@ public class ScheduleMgmtController {
 		try{
 			String transId = makeTransId();
 			String bcid = params.get("BCID");
+			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
+			Bmsc bmsc = mapperBmsc.selectBmsc(0);
+			String bmscId = bmsc.getIpaddress();
 			
 			//@ xmlMake & Send, recv
 			int xmlMode = xmlManager.BMSC_XML_UPDATE;
@@ -317,7 +322,7 @@ public class ScheduleMgmtController {
 			params.put("schedule_stop", convertMysqlDateFormat(params.get("schedule_stop"),false));
 			params.put("deliveryInfo_start", convertMysqlDateFormat(params.get("deliveryInfo_start"), false));
 			params.put("deliveryInfo_end", convertMysqlDateFormat(params.get("deliveryInfo_end"),false));
-			
+			params.put("bmscIp", bmsc.getIpaddress());
 			String resStr = xmlManager.sendBroadcast(params, xmlMode);
 			
 			//@ check return XML success

@@ -44,16 +44,16 @@ public class XmlManager {
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
 	
-	@Value("#{config['b2.server.ipaddress']}")
-	private String b2serverIpaddress;
+//	@Value("#{config['b2.server.ipaddress']}")
+//	private String b2serverIpaddress;
 	
 	
 	public String sendBroadcast(Map<String, String> params, int mode){
 		String respBody = "SUCCESS";
 		String reqBody = "";
-		
+		String bmscIp = params.get("bmscIp");
 		if (agentKey == null)
-			agentKey = Base64Coder.encode(b2serverIpaddress);
+			agentKey = Base64Coder.encode(bmscIp);
 		
 		try {
 			//@set param to XML
@@ -65,7 +65,7 @@ public class XmlManager {
 				reqBody= makeXmlDelete(params);
 			
 			//@ xml send 
-			respBody = new HttpNetAgent().execute(b2InterfefaceURL, "", reqBody, false);
+			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
 			logger.info("[returnXML=" + respBody + "]");
 			if (BMSC_XML_RETRIEVE == mode)
 				respBody = tmpRespRETRIEVE_Body();

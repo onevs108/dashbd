@@ -132,6 +132,7 @@ function moveToEnb(bmscId, serviceAreaId)
 	});
 	//inbo add START
 	g_ServiceAreaId = serviceAreaId;
+	g_bmscId = bmscId;
 	callTimetable('', g_ServiceAreaId);
 	//inbo add END
 }

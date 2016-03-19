@@ -240,6 +240,7 @@
             <!-- Contents -->
             <div class="row">
             <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${serviceAreaId}"/>
+            <input type="hidden" id="bmscId" name="bmscId" value="${bmscId}"/>
             <input type="hidden" id="searchDate" name="searchDate" value="${searchDate}"/>
             <input type="hidden" id="category" name="category" value="${category}"/>
             <input type="hidden" id="title" name="title" value="${title}"/>
