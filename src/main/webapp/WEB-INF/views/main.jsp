@@ -292,7 +292,7 @@
 							
 							<div class="ibox-content">
 	                            <div class="row">
-	                            	<div class="col-lg-12" id="schedule_summary">
+	                            	<div class="col-lg-12" id="schedule_waiting_summary">
 	                            		<div class="nothumbnail">
 	                                    	<p>
 	                                        	<i class="fa fa-search"></i> No Service is available<br/>

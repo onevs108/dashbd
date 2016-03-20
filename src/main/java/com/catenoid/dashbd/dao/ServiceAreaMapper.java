@@ -67,7 +67,7 @@ public interface ServiceAreaMapper {
     
     List<ScheduleSummary> getScheduleSummaryByServiceArea(ScheduleSummarySearchParam searchParm);
     
-    List<ScheduleSummary> getScheduleSummaryByBmsc(HashMap<String, Integer> searchParm);
+    List<ScheduleSummary> getScheduleSummaryByBmsc(HashMap<String, Object> searchParm);
     
     HashMap<String, Integer> getGBRSum(HashMap<String, Integer> searchParm);
     

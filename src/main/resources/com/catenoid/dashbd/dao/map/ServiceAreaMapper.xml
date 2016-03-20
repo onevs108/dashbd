@@ -97,6 +97,7 @@
 		<result column="service_type" property="serviceType" jdbcType="VARCHAR" />
 		<result column="category" property="category" jdbcType="VARCHAR" />
 		<result column="url" property="url" jdbcType="VARCHAR" />
+		
 	</resultMap>
 
 	<resultMap id="ServiceAreaByBmScId" type="com.catenoid.dashbd.dao.model.BmscServiceArea" >
@@ -741,7 +742,15 @@
 			where 1 = 1
 			and a.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
 			and a.del_yn = 'N'
-			and now() between a.start_date and a.end_date
+			<if test="activeContent == 1">
+				and now() between a.start_date and a.end_date
+			</if>
+			<if test="activeContent == 0">
+			 	AND DATE_FORMAT(now(), '%Y-%m-%d') = DATE_FORMAT(a.start_date , '%Y-%m-%d')
+			 	<![CDATA[ 
+ 				AND NOW() < a.start_date  
+ 				]]>
+			</if>
 			and b.bcid = a.bcid
 			and c.id = a.content_id
 		order by a.start_date
@@ -762,11 +771,19 @@
 			where 1 = 1
 			and a.service_area_id in (select b.service_area_id from bmsc_service_area b where b.bmsc_id = #{bmscId,jdbcType=INTEGER})
 			and a.del_yn = 'N'
-			and now() between a.start_date and a.end_date
+			<if test="activeContent == 1">
+				and now() between a.start_date and a.end_date
+			</if>
+			<if test="activeContent == 0">
+			 	AND DATE_FORMAT(now(), '%Y-%m-%d') = DATE_FORMAT(a.start_date , '%Y-%m-%d')
+			 	<![CDATA[ 
+ 				AND NOW() < a.start_date  
+ 				]]>
+			</if>
 			and b.bcid = a.bcid
 			and c.id = a.content_id
 		order by a.start_date
-		limit 0, #{maxCount}
+		limit 0, #{maxCount, jdbcType=INTEGER}
 	</select>
 	
 	<!-- Service Area 로 사용중인 Bandwidth 조회 -->

@@ -333,7 +333,7 @@
 	</insert>
 	
 	<select id="selectEmbms" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT id, bmscId, serverName, session 
+		SELECT id, bmscId, serverName, protocol,host, loginId, password, command, session 
 		FROM embms
 		WHERE 1=1
 		AND bmscId = #{bmscId}

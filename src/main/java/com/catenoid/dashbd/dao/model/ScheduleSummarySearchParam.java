@@ -19,6 +19,7 @@ public class ScheduleSummarySearchParam {
     private Integer page;
     private Integer perPage;
     private Integer maxCount;
+    private Integer activeContent;
 
     public Integer getScheduleId() {
         return scheduleId;
@@ -138,6 +139,14 @@ public class ScheduleSummarySearchParam {
 
 	public void setMaxCount(Integer maxCount) {
 		this.maxCount = maxCount;
+	}
+
+	public Integer getActiveContent() {
+		return activeContent;
+	}
+
+	public void setActiveContent(Integer activeContent) {
+		this.activeContent = activeContent;
 	}
 	
 	

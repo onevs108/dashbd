@@ -23,12 +23,17 @@ google.maps.event.addDomListener(window, 'load', initMap);
 
 function moveToEnb(bmscId, serviceAreaId)
 {
-	
 	var summary_datas = "";
+	
+	$("#schedule_summary_service_area_id").empty();
+	$("#schedule_summary").empty();
+	$("#bandwidth").empty();
+	$("#schedule_waiting_summary").empty();
+	
 	$.ajax({
 		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
 		type: "get",
-		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId },
+		data : { "bmscId" : bmscId, "activeContent":1 , "serviceAreaId" : serviceAreaId},
 		success : function(responseData){
 			$("#ajax").remove();
 			summary_datas = JSON.parse(responseData);
@@ -39,16 +44,18 @@ function moveToEnb(bmscId, serviceAreaId)
 				content += "<div class=\"file-box\">";
 				content += "<div class=\"file\">";
 				content += "<span class=\"corner\"></span>";
-				content += "<div class=\"image\">";
-				content += "<img alt=\"image\" class=\"img-responsive\" src=\"" + summary_datas[i].thumbnail + "\">";
-				content += '</div>';
-				content += "<div class=\"progress progress-mini\">";
-				content += "<div style=\"width: " + summary_datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				//content += "<div class=\"image\">";
+				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
+				//content += '</div>';
+				//content += "<div class=\"progress progress-mini\">";
+				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
+				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<small>[" + datas[i].category + "]</small> ";
+				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
-				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + summary_datas[i].serviceType + "</h5>";
-				content += "<small>[" + summary_datas[i].category + "]</small> ";
-				content += summary_datas[i].scheduleName;
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
+				content += "<small>Remaining: " + datas[i].leftTime + "</small> ";
 				content += "</div>";
 				content += "</div>";
 				content += "</div>";
@@ -63,10 +70,10 @@ function moveToEnb(bmscId, serviceAreaId)
 				content += "</div>";
 			}
 			
-			$("#schedule_summary_service_area_id").empty();
+			
             $("#schedule_summary_service_area_id").append('(Service Area ' + serviceAreaId + ')');
             
-			$("#schedule_summary").empty();
+			
             $("#schedule_summary").append(content);
 		}
 	});
@@ -76,7 +83,7 @@ function moveToEnb(bmscId, serviceAreaId)
 	$.ajax({
 		url : "/dashbd/api/bandwidthByServiceArea.do",
 		type: "get",
-		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId },
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId},
 		success : function(responseData){
 			$("#ajax").remove();
 			bandwidth_data = JSON.parse(responseData);
@@ -85,8 +92,55 @@ function moveToEnb(bmscId, serviceAreaId)
 			content += "<div style=\"width:" + bandwidth_data.GBRSum + "%;\" class=\"progress-bar\"></div>";
 			content += "</div>";
             
-			$("#bandwidth").empty();
+			
             $("#bandwidth").append(content);
+		}
+	});
+	
+	
+	var summary_datas = "";
+	$.ajax({
+		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
+		type: "get",
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId , "activeContent":0},
+		success : function(responseData){
+			$("#ajax").remove();
+			summary_datas = JSON.parse(responseData);
+			var dataLen = summary_datas.length;
+			var options = "";
+			var content = "";
+			for (var i = 0; i < summary_datas.length; i++) {
+				content += "<div class=\"file-box\">";
+				content += "<div class=\"file\">";
+				content += "<span class=\"corner\"></span>";
+				//content += "<div class=\"image\">";
+				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
+				//content += '</div>';
+				//content += "<div class=\"progress progress-mini\">";
+				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "</div>";
+				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<small>[" + datas[i].category + "]</small> ";
+				content += datas[i].scheduleName;
+				content += "<div class=\"file-name\">";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
+				content += "<small>Remaining: " + datas[i].leftTime + "</small> ";
+				content += "</div>";
+				content += "</div>";
+				content += "</div>";
+			}
+
+			if(summary_datas.length == 0) {
+				content += "<div class=\"nothumbnail\">";
+				content += "<p>";
+				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "</p>";
+				content += "<small></small>";
+				content += "</div>";
+			}
+			
+			
+            $("#schedule_waiting_summary").append(content);
 		}
 	});
 }

@@ -2,6 +2,7 @@ package com.catenoid.dashbd;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +36,10 @@ import com.catenoid.dashbd.dao.model.Embms;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.service.BmscService;
 import com.catenoid.dashbd.service.OperatorService;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 
 /**
  * BM-SC 관리 Controller
@@ -183,7 +188,7 @@ public class BmscController {
 	}
 	
 	/**
-	 * Bmsc 삭제
+	 * embms 삭제
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/bmsc/embmsDel.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
@@ -218,4 +223,76 @@ public class BmscController {
         
 		return (Map<String, Object>) resultMap;
 	}
+	
+	
+	@RequestMapping( value = "api/bmsc/getEmbmsSession.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public Map< String, Object > getEmbmsSession( @RequestParam Map< String, Object > params,
+	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
+		
+		List<Map> list = mapper.selectEmbms(params);
+		 
+		for(Map map : list){
+			String serverName = (String)map.get("serverName");
+			String protocol = (String)map.get("protocol");
+			String host = (String)map.get("host");
+			String loginId = (String)map.get("loginId");
+			String password = (String)map.get("password");
+			String command = (String)map.get("command");
+			
+			 try{
+	             
+		            java.util.Properties config = new java.util.Properties(); 
+		            config.put("StrictHostKeyChecking", "no");
+		            JSch jsch = new JSch();
+		            Session session=jsch.getSession(loginId, host, 2222);
+		            session.setPassword(password);
+		            session.setConfig(config);
+		            session.connect();
+		            System.out.println("Connected");
+		             
+		            Channel channel=session.openChannel("exec");
+		            ((ChannelExec)channel).setCommand(command);
+		            channel.setInputStream(null);
+		            ((ChannelExec)channel).setErrStream(System.err);
+		             
+		            InputStream in=channel.getInputStream();
+		            channel.connect();
+		            byte[] tmp=new byte[1024];
+		            while(true){
+		              while(in.available()>0){
+		                int i=in.read(tmp, 0, 1024);
+		                if(i<0)break;
+		                System.out.print(new String(tmp, 0, i));
+		              }
+		              if(channel.isClosed()){
+		                System.out.println("exit-status: "+channel.getExitStatus());
+		                break;
+		              }
+		              try{Thread.sleep(1000);}catch(Exception ee){}
+		            }
+		            channel.disconnect();
+		            session.disconnect();
+		            System.out.println("DONE");
+		        }catch(Exception e){
+		            e.printStackTrace();
+		        }
+			break;
+			
+		}
+		
+        Map< String, Object > returnMap = new HashMap< String, Object >();
+        returnMap.put( "resultCode", "1000" );
+        returnMap.put( "resultMsg", "SUCCESS");
+        
+        Map< String, Object > resultMap = new HashMap< String, Object >();
+        resultMap.put( "resultInfo", returnMap );
+        
+		return (Map<String, Object>) resultMap;
+	}
+
+	
 }
+

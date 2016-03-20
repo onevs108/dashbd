@@ -20,19 +20,13 @@ default_service_area += "</div>";
 
 $(document).ready(function()
 {
-	//getServiceAreaBmSc(1, $('#operator option:selected').val());
 	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '');
     $('#operator').change(function(){
-        //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val());
     });
     
     $('#bmsc').change(function(){
-        //alert( $('#bmsc option:selected').val() );
-    	//getServiceAreaByBmSc(1, $('#bmsc option:selected').val());
     	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '');
-        //drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
-    	//callTimetable($('#operator option:selected').val(), $('#bmsc option:selected').val());
     	refreshEmbms();
     	callScheduleTable($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
     });
@@ -40,7 +34,6 @@ $(document).ready(function()
     callScheduleTable($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
     refreshEmbms();	
     
-    //$('#addServer').click(openModal);
     $('#modal-add-btn').click(doAdd);
 	$('#modal-cancel-btn').click(doModalCancel);
 	$('#modal-cancel-icon-btn').click(doModalCancel);
@@ -52,7 +45,7 @@ function callScheduleTable(bmscId, bmscName){
 	$.ajax({
 		url : "/dashbd/api/scheduleSummaryByBmsc.do",
 		type: "get",
-		data : { "bmscId" : bmscId },
+		data : { "bmscId" : bmscId, "activeContent" : "1" },
 		success : function(responseData){
 			$("#ajax").remove();
 			datas = JSON.parse(responseData);
@@ -94,6 +87,52 @@ function callScheduleTable(bmscId, bmscName){
             
 			$("#schedule_summary").empty();
             $("#schedule_summary").append(content);
+		}
+	});
+	
+	$.ajax({
+		url : "/dashbd/api/scheduleSummaryByBmsc.do",
+		type: "get",
+		data : { "bmscId" : bmscId, "activeContent" : "0" },
+		success : function(responseData){
+			$("#ajax").remove();
+			datas = JSON.parse(responseData);
+			var dataLen = datas.length;
+			var options = "";
+			var content = "";
+			for (var i = 0; i < datas.length; i++) {
+				content += "<div class=\"file-box\">";
+				content += "<div class=\"file\">";
+				content += "<span class=\"corner\"></span>";
+				//content += "<div class=\"image\">";
+				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
+				//content += '</div>';
+				//content += "<div class=\"progress progress-mini\">";
+				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "</div>";
+				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<small>[" + datas[i].category + "]</small> ";
+				content += datas[i].scheduleName;
+				content += "<div class=\"file-name\">";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
+				content += "<small>Remaining: " + datas[i].leftTime + "</small> ";
+				content += "</div>";
+				content += "</div>";
+				content += "</div>";
+			}
+			
+			if(datas.length == 0) {
+				content += "<div class=\"nothumbnail\">";
+				content += "<p>";
+				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "</p>";
+				content += "<small></small>";
+				content += "</div>";
+			}
+
+			
+			$("#schedule_waiting_summary").empty();
+            $("#schedule_waiting_summary").append(content);
 		}
 	});
 }

@@ -91,7 +91,7 @@ public class ServiceAreaController {
 	private String fileUploadPath;
 	
 	@Value("#{config['main.contents.max']}")
-	private String contentMax;
+	private Integer contentMax;
 	
 	@RequestMapping(value = "api/service_area.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	@ResponseBody
@@ -1164,7 +1164,8 @@ public class ServiceAreaController {
 		
 		ScheduleSummarySearchParam searchParam = new ScheduleSummarySearchParam();
 		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
-		searchParam.setMaxCount(Integer.parseInt(contentMax));
+		searchParam.setMaxCount(contentMax);
+		searchParam.setActiveContent(Integer.valueOf(request.getParameter("activeContent")));
 		
 		List<ScheduleSummary> datas = mapper.getScheduleSummaryByServiceArea(searchParam);
 
@@ -1206,9 +1207,10 @@ public class ServiceAreaController {
 		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		//Integer perPage = 15;
 		
-		HashMap<String, Integer> searchParam = new HashMap();
+		HashMap<String, Object> searchParam = new HashMap();
 		searchParam.put("bmscId", Integer.valueOf(request.getParameter("bmscId")));
-		searchParam.put("maxCount", Integer.parseInt(contentMax));
+		searchParam.put("activeContent", Integer.valueOf(request.getParameter("activeContent")));
+		searchParam.put("maxCount", contentMax);
 		
 		List<ScheduleSummary> datas = mapper.getScheduleSummaryByBmsc(searchParam);
 
