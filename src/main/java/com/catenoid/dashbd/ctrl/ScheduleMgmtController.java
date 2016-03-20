@@ -156,6 +156,31 @@ public class ScheduleMgmtController {
 		return (Map<String, Object>) resultMap;
 	}
 	
+	
+	@RequestMapping( value = "/view/getScheduleForMain.do")
+	@ResponseBody
+	public Map< String, Object > getScheduleForMain( @RequestParam Map< String, Object > params,
+	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		
+		String searchDate = Utils.getFileDate("yyyy-MM-dd");
+		params.put("searchDate", searchDate);
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		List<Map> list = mapper.selectSchdule(params);
+		
+        
+        Map< String, Object > returnMap = new HashMap< String, Object >();
+        returnMap.put( "resultCode", "1000" );
+        returnMap.put( "resultMsg", "SUCCESS");
+        
+        Map< String, Object > resultMap = new HashMap< String, Object >();
+        resultMap.put( "resultInfo", returnMap );
+        resultMap.put( "contents", list );
+        
+		return (Map<String, Object>) resultMap;
+	}
+	
 	/**
 	 * 스케줄 상세페이지 > 팝업 > 스케줄 추가(ajax)
 	 * @param params
@@ -188,6 +213,9 @@ public class ScheduleMgmtController {
 		logger.info("modifyScheduleTime param{}", params);
 
 		try{
+			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
+			Bmsc bmsc = mapperBmsc.selectBmsc(Integer.parseInt(params.get("bmscId")));
+			
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 			String startTime = convertMysqlDateFormat(params.get("startTime"), true);
 			String endTime = convertMysqlDateFormat(params.get("endTime"), false);
@@ -209,7 +237,7 @@ public class ScheduleMgmtController {
 
 				//@ xml update 연동
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
-				
+				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
 	
 				//@ check return XML success
@@ -307,8 +335,7 @@ public class ScheduleMgmtController {
 			String transId = makeTransId();
 			String bcid = params.get("BCID");
 			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
-			Bmsc bmsc = mapperBmsc.selectBmsc(0);
-			String bmscId = bmsc.getIpaddress();
+			Bmsc bmsc = mapperBmsc.selectBmsc(Integer.parseInt(params.get("bmscId")));
 			
 			//@ xmlMake & Send, recv
 			int xmlMode = xmlManager.BMSC_XML_UPDATE;
@@ -370,6 +397,10 @@ public class ScheduleMgmtController {
 			if (params.get("BCID") != null && !"".equals(params.get("BCID"))){
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
 				params.put("transactionId", makeTransId());
+				
+				BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
+				Bmsc bmsc = mapperBmsc.selectBmsc(Integer.parseInt(params.get("bmscId")));
+				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				
 				//@ xmlMake & Send, recv
 				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_DELETE);

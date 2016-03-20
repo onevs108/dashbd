@@ -21,6 +21,7 @@ default_service_area += "</div>";
 $(document).ready(function()
 {
 	//getServiceAreaBmSc(1, $('#operator option:selected').val());
+	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '');
     $('#operator').change(function(){
         //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val());
@@ -28,9 +29,328 @@ $(document).ready(function()
     
     $('#bmsc').change(function(){
         //alert( $('#bmsc option:selected').val() );
-        drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
+    	//getServiceAreaByBmSc(1, $('#bmsc option:selected').val());
+    	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '');
+        //drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
+    	//callTimetable($('#operator option:selected').val(), $('#bmsc option:selected').val());
+    	refreshEmbms();
+    	callScheduleTable($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
     });
+    
+    callScheduleTable($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
+    refreshEmbms();	
+    
+    //$('#addServer').click(openModal);
+    $('#modal-add-btn').click(doAdd);
+	$('#modal-cancel-btn').click(doModalCancel);
+	$('#modal-cancel-icon-btn').click(doModalCancel);
 });
+
+
+function callScheduleTable(bmscId, bmscName){
+
+	$.ajax({
+		url : "/dashbd/api/scheduleSummaryByBmsc.do",
+		type: "get",
+		data : { "bmscId" : bmscId },
+		success : function(responseData){
+			$("#ajax").remove();
+			datas = JSON.parse(responseData);
+			var dataLen = datas.length;
+			var options = "";
+			var content = "";
+			for (var i = 0; i < datas.length; i++) {
+				content += "<div class=\"file-box\">";
+				content += "<div class=\"file\">";
+				content += "<span class=\"corner\"></span>";
+				//content += "<div class=\"image\">";
+				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
+				//content += '</div>';
+				//content += "<div class=\"progress progress-mini\">";
+				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "</div>";
+				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<small>[" + datas[i].category + "]</small> ";
+				content += datas[i].scheduleName;
+				content += "<div class=\"file-name\">";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
+				content += "<small>Remaining: " + datas[i].leftTime + "</small> ";
+				content += "</div>";
+				content += "</div>";
+				content += "</div>";
+			}
+			
+			if(datas.length == 0) {
+				content += "<div class=\"nothumbnail\">";
+				content += "<p>";
+				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "</p>";
+				content += "<small></small>";
+				content += "</div>";
+			}
+
+			$("#schedule_summary_service_area_id").empty();
+            $("#schedule_summary_service_area_id").append('(' + bmscName + ')');
+            
+			$("#schedule_summary").empty();
+            $("#schedule_summary").append(content);
+		}
+	});
+}
+function callTimetable(bmscId, serviceAreaId_val){
+	var param = {
+			bmscId : bmscId
+			, serviceAreaId : serviceAreaId_val
+		};
+		
+		$.ajax({
+			type : "POST",
+			url : "/dashbd/views/schd/getScheduleForMain.do",
+			data : param,
+			dataType : "json",
+			success : function( data ) {
+				setContents(data);
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+}
+function setContents(data){
+	var contents = data.contents;
+	
+	for ( var i=0; i < contents.length; i++) {
+		contents[i].NAME;
+	}
+}
+
+function openModal() {
+	console.log('modeal load..');
+	$('#form-operator-id').val($('#search-operator-id').val());
+	$('#modal-title').html('Add Server');
+	$('#form-modal').modal('show');
+}
+
+
+var bmscId = null;
+function doAdd() {
+	
+	var serverName = $('#frm_md_serer_name').val();
+	var protocol = $('#frm_md_protocol').val();
+	var loginId = $('#frm_md_loginId').val();
+	var password = $('#frm_md_password').val();
+	var command = $('#frm_md_command').val();
+	
+	if (serverName == null || serverName.length == 0) {
+		alert('Please input the serverName');
+		return false;
+	}
+	
+	if (protocol == null || protocol.length == 0) {
+		alert('Please input protocol');
+		return false;
+	}
+	
+	if (loginId == null || loginId.length == 0) {
+		alert('Please input the loginId');
+		return false;
+	}
+	
+	if (password == null || password.length == 0) {
+		alert('Please input the password');
+		return false;
+	}
+	
+	if (command == null || command.length == 0) {
+		alert('Please input the command');
+		return false;
+	}
+	
+	var data = {
+		bmscId: $('#bmsc option:selected').val(), // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
+		serverName: serverName,
+		protocol: protocol,
+		loginId: loginId,
+		password: password,
+		command: command
+	}
+	
+	insertEmbms(data);
+}
+
+function insertEmbms(data) {
+	$.ajax({
+		url: '/dashbd/api/bmsc/embmsInsert.do',
+		method: 'POST',
+		dataType: 'json',
+		data: data,
+		success: function(data, textStatus, jqXHR) {
+			if (data.result) { // 성공
+				//$('#table').bootstrapTable('destroy');
+				refreshEmbms();	//함수만들어야 함.
+				closeModal();
+				bmscId = null; // 초기화
+			}
+			else { // 실패
+				alert('Failed!! Please you report to admin!');
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
+function delEmbms(embmsId) {
+	if (!confirm('Do you really want to delete the embms?')) {
+		return;
+	}
+	var param = {
+			embmsId : embmsId
+		};
+	$.ajax({
+		url: '/dashbd/api/bmsc/embmsDel.do',
+		method: 'POST',
+		dataType: 'json',
+		data: param,
+		success: function(data, textStatus, jqXHR) {
+			if (data.result) { // 성공
+				refreshEmbms();	//함수만들어야 함.
+			}
+			else { // 실패
+				alert('Failed!! Please you report to admin!');
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
+function doModalCancel() {
+	bmscId = null;
+	closeModal();
+}
+
+function refreshEmbms(){
+	var param = {
+			bmscId :  $('#bmsc option:selected').val()
+		};
+	$.ajax({
+		type : "POST",
+		url : "/dashbd/api/bmsc/embmsList.do",
+		        
+		data : param,
+		dataType : "json",
+		success : function( data ) {
+			embmsList(data.contents);
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
+
+function embmsList(data){
+
+	var $list = $("#embmsList");
+	
+	// list 초기화
+	$list.empty();
+	
+	if (data.length < 1){
+		//alert("No data.");
+	}
+	
+	var $td_header = $("<td width='16%'/>");
+	var $btn_header = $("<button/>");
+	var $h4_header = $("<h4/>");
+	var $i_header = $("<i/>");
+	
+	$btn_header.attr("class","btn btn-sm btn-default");
+	$btn_header.attr("type","button");
+	$i_header.attr("class","fa fa-desktop");
+	$h4_header.attr("class","text-center");
+	$h4_header.html($('#bmsc option:selected').text() );
+	
+	$btn_header.append($i_header);
+	$td_header.append($btn_header);
+	$td_header.append($h4_header);
+	$list.append( $td_header );
+	
+	
+	var $td_plus= $("<td width='6%'/>");
+	var $btn_plus = $("<button/>");
+	var $h4_plus = $("<h4/>");
+	var $i_plus= $("<i/>");
+	
+	$btn_plus.attr("class","btn btn-primary btn-sm");
+	$btn_plus.attr("type","button");
+	//$btn_plus.attr("id","addServer");
+	$btn_plus.attr("onclick","openModal()");
+	$i_plus.attr("class","fa fa-plus");
+	$h4_plus.attr("class","text-center");
+	$h4_plus.html("&nbsp;");
+	
+	$btn_plus.append($i_plus);
+	$td_plus.append($btn_plus);
+	$td_plus.append($h4_plus);
+	$list.append( $td_plus );
+	var tmpSession ="";
+	var diffSession = false;
+	for ( var i=0; i<data.length; i++) {
+		var $td = $("<td width='9%'/>");
+		var $btn = $("<td/>");
+		var $h4 = $("<h4/>");
+		var $i = $("<i/>");
+		
+		var embmsId = data[i].id;
+		var serverName = data[i].serverName;
+		var session = data[i].session;
+		
+		if (i > 0){
+			if (session != tmpSession)
+				diffSession = true;
+		}
+		tmpSession = session;
+		
+		$btn.attr("class","btn btn-sm btn-default");
+		$btn.attr("type","button");
+		$btn.attr("onclick","delEmbms(" + embmsId +")");
+		$i.attr("class","fa fa-close");
+		$h4.attr("class","text-center");
+		$h4.html(serverName + '(' + session + ')');
+		
+		$btn.append($i);
+		$td.append($btn);
+		$td.append($h4);
+		$list.append( $td );
+	}
+	
+	var $td_desc = $("<td width='22%'/>");
+	
+	if (diffSession){
+		$td_desc.html("Error Different Session[" + tmpSession +"]")
+	}else{
+		$td_desc.html("eMBMS Session[" + tmpSession +"]")
+	}
+	
+	$list.append( $td_desc );
+		
+
+
+}
+
+function closeModal() {
+	$('#frm_md_serer_name').val('');
+	$('#frm_md_protocol').val('');
+	$('#frm_md_loginId').val('');
+	$('#frm_md_password').val('');
+	$('#frm_md_command').val('');
+	$('#form-modal').modal('hide');
+}
 
 var perPage = 15;
 var listPageCount = 10;

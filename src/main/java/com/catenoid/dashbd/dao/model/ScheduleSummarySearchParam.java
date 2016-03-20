@@ -18,6 +18,7 @@ public class ScheduleSummarySearchParam {
     private BigDecimal progressRate;
     private Integer page;
     private Integer perPage;
+    private Integer maxCount;
 
     public Integer getScheduleId() {
         return scheduleId;
@@ -130,5 +131,15 @@ public class ScheduleSummarySearchParam {
 	public void setPerPage(Integer perPage) {
         this.perPage = perPage;
     }
+
+	public Integer getMaxCount() {
+		return maxCount;
+	}
+
+	public void setMaxCount(Integer maxCount) {
+		this.maxCount = maxCount;
+	}
+	
+	
 
 }

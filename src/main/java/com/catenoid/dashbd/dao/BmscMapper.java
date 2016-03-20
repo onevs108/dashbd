@@ -4,6 +4,7 @@ import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.BmscServiceAreaEnbAp;
 import com.catenoid.dashbd.dao.model.BmscExample;
 import com.catenoid.dashbd.dao.model.BmscServiceArea;
+import com.catenoid.dashbd.dao.model.Embms;
 
 import java.util.List;
 import java.util.Map;
@@ -49,4 +50,11 @@ public interface BmscMapper {
     int deleteBmsc(Integer bmscId);
     
     int deleteBmscs(Map<String, Object> map);
+    
+    int insertEmbms(Embms embms);
+    
+    List<Map> selectEmbms(Map map);
+    
+    int deleteEmbms(Integer embmsId);
+    
 }

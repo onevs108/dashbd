@@ -90,6 +90,8 @@ public class ServiceAreaController {
 	@Value("#{config['file.upload.path']}")
 	private String fileUploadPath;
 	
+	@Value("#{config['main.contents.max']}")
+	private String contentMax;
 	
 	@RequestMapping(value = "api/service_area.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	@ResponseBody
@@ -1162,6 +1164,7 @@ public class ServiceAreaController {
 		
 		ScheduleSummarySearchParam searchParam = new ScheduleSummarySearchParam();
 		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
+		searchParam.setMaxCount(Integer.parseInt(contentMax));
 		
 		List<ScheduleSummary> datas = mapper.getScheduleSummaryByServiceArea(searchParam);
 
@@ -1181,8 +1184,10 @@ public class ServiceAreaController {
 			obj.put("delYn", data.getDelYn());
 			obj.put("thumbnail", data.getThumbnail());
 			obj.put("progressRate", data.getProgressRate());
+			obj.put("leftTime", data.getLeftTime());
 			obj.put("serviceType", data.getServiceType());
 			obj.put("category", data.getCategory());
+			obj.put("url", data.getUrl());
 			array.add(obj);
 		}
 		
@@ -1203,6 +1208,7 @@ public class ServiceAreaController {
 		
 		HashMap<String, Integer> searchParam = new HashMap();
 		searchParam.put("bmscId", Integer.valueOf(request.getParameter("bmscId")));
+		searchParam.put("maxCount", Integer.parseInt(contentMax));
 		
 		List<ScheduleSummary> datas = mapper.getScheduleSummaryByBmsc(searchParam);
 
@@ -1222,8 +1228,10 @@ public class ServiceAreaController {
 			obj.put("delYn", data.getDelYn());
 			obj.put("thumbnail", data.getThumbnail());
 			obj.put("progressRate", data.getProgressRate());
+			obj.put("leftTime", data.getLeftTime());
 			obj.put("serviceType", data.getServiceType());
 			obj.put("category", data.getCategory());
+			obj.put("url", data.getUrl());
 			array.add(obj);
 		}
 		

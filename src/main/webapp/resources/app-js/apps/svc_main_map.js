@@ -23,50 +23,6 @@ google.maps.event.addDomListener(window, 'load', initMap);
 
 function moveToEnb(bmscId, serviceAreaId)
 {
-
-	clearMarkers();
-	
-	var enb_datas;
-
-	$.ajax({
-		url : "/dashbd/api/getServiceAreaEnbAp.do",
-		type: "get",
-		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId },
-		success : function(responseData){
-			$("#ajax").remove();
-			enb_datas = JSON.parse(responseData);
-			var dataLen = enb_datas.length;
-			var options = "";
-			
-			for (var i = 0; i < enb_datas.length; i++) {
-				var latLng = new google.maps.LatLng(enb_datas[i].latitude, enb_datas[i].longitude);
-				var marker;
-				if( enb_datas[i].serviceAreaId == serviceAreaId ) {
-					marker = new google.maps.Marker({
-						position: latLng, 
-						map: map, 
-						icon : '/dashbd/resources/img/icon/enb_red.png'
-					});
-				} else if( enb_datas[i].serviceAreaId == '' ) {
-					marker = new google.maps.Marker({
-						position: latLng, 
-						map: map, 
-						icon : '/dashbd/resources/img/icon/enb_gray.png'
-					});
-				} else {
-					marker = new google.maps.Marker({
-						position: latLng, 
-						map: map, 
-						icon : '/dashbd/resources/img/icon/enb_blue.png'
-					});
-				}
-				markers.push(marker);
-			}
-			
-			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
-			map.setZoom(12);
-		}
-	});
 	
 	var summary_datas = "";
 	$.ajax({
@@ -263,12 +219,12 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 
 
 function drawServiceAreaByBmSc(bmscId, bmscName) {
-	
+	/*
 	google.maps.event.clearListeners( map, 'idle' );
 	
 	clearMarkers();
 	map.setZoom( 8 );
-	
+	*/
 	$("#service_area").empty();
 	$("#service_area").append(default_service_area);
 	
@@ -308,52 +264,6 @@ function drawServiceAreaByBmSc(bmscId, bmscName) {
             map.setZoom(default_zoom);
         }
     });
-	
-	$.ajax({
-		url : "/dashbd/api/scheduleSummaryByBmsc.do",
-		type: "get",
-		data : { "bmscId" : bmscId },
-		success : function(responseData){
-			$("#ajax").remove();
-			datas = JSON.parse(responseData);
-			var dataLen = datas.length;
-			var options = "";
-			var content = "";
-			for (var i = 0; i < datas.length; i++) {
-				content += "<div class=\"file-box\">";
-				content += "<div class=\"file\">";
-				content += "<span class=\"corner\"></span>";
-				content += "<div class=\"image\">";
-				content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
-				content += '</div>';
-				content += "<div class=\"progress progress-mini\">";
-				content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
-				content += "</div>";
-				content += "<div class=\"file-name\">";
-				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
-				content += "<small>[" + datas[i].category + "]</small> ";
-				content += datas[i].scheduleName;
-				content += "</div>";
-				content += "</div>";
-				content += "</div>";
-			}
-			
-			if(datas.length == 0) {
-				content += "<div class=\"nothumbnail\">";
-				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
-				content += "</p>";
-				content += "<small></small>";
-				content += "</div>";
-			}
-
-			$("#schedule_summary_service_area_id").empty();
-            $("#schedule_summary_service_area_id").append('(' + bmscName + ')');
-            
-			$("#schedule_summary").empty();
-            $("#schedule_summary").append(content);
-		}
-	});
 }
 
 function clearMarkers() {

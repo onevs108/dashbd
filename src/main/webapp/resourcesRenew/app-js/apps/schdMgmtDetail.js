@@ -106,21 +106,6 @@ function getContents(data, page){
 		var duration = data[i].duration;
 		var path = data[i].path;
 		// console.log((new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0]);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
 		
 		$div1.attr("class","feed-element");
@@ -204,6 +189,7 @@ function getContents(data, page){
 	
 function setTimeTable(data ){
 	var tmpServiceAreaId = $("#serviceAreaId").val();
+	var tmpbmscId = $("#bmscId").val();
 	var searchDate = $("#searchDate").val();
 	var title = $("#form-title").val();
 	var category =  $("#form-category").val();
@@ -330,7 +316,7 @@ function setTimeTable(data ){
 			
 			var title = encodeURI($("#form-title").val());
 			var category =  encodeURI($("#form-category").val());
-			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+			location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 		},
 		eventDrop: function(event) { // called when an event (already on the calendar) is moved
 			console.log('eventDrop', event, ',',event.start.format(), ',' , event.end.format() , event.url);
@@ -445,6 +431,7 @@ function modifySchedule(url, startTime, endTime){
 	var param = {
 			scheduleId : id,
 			BCID : BCID,
+			bmscId : $("#bmscId").val(),
 			startTime : startTime,
 			endTime: endTime
 	};
@@ -479,7 +466,8 @@ function deleteSchedule(url){
 	
 	var param = {
 			id : id,
-			BCID : BCID
+			BCID : BCID,
+			bmscId : $("#bmscId").val()
 	};
 	console.log('del param=', param);
 	$.ajax({
@@ -502,8 +490,11 @@ function deleteSchedule(url){
 }
 	
 function addSchedule(content_id, g_name, startTime, endTime){
+	console.log("bmscId="+$("#bmscId").val());
+	
 	var param = {
 			serviceAreaId : $("#serviceAreaId").val(),
+			bmscId : $("#bmscId").val(),
 			contentId : content_id,
 			titleName : g_name,
 			startTime : startTime,

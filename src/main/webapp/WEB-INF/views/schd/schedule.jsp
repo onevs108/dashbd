@@ -157,6 +157,7 @@
     <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
     <input type="hidden" id="contentId" name="contentId" value="${mapSchedule.contentId}">
     <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
+    <input type="hidden" id="bmscId" name="bmscId" value="${mapSchedule.bmscId}"/>
     <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
     <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
     

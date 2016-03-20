@@ -1,8 +1,17 @@
 package com.catenoid.dashbd;
 
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.ibatis.session.SqlSession;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,7 +28,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.catenoid.dashbd.dao.BmscMapper;
+import com.catenoid.dashbd.dao.ContentsMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
+import com.catenoid.dashbd.dao.model.Embms;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.service.BmscService;
 import com.catenoid.dashbd.service.OperatorService;
@@ -38,6 +50,8 @@ public class BmscController {
 	private BmscService bmscServiceImpl;
 	@Autowired
 	private OperatorService operatorServiceImpl;
+	@Autowired
+	private SqlSession sqlSession;
 	
 	/**
 	 * BMSC 관리 페이지 이동
@@ -144,5 +158,64 @@ public class BmscController {
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
+	}
+
+
+
+	
+	
+	/**
+	 * embms 등록 및 수정
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/bmsc/embmsInsert.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String postEmbmsInsert(
+			@ModelAttribute Embms embms) {
+		
+		logger.info("-> [operator = {}]", embms.toString());
+		
+		JSONObject jsonResult = new JSONObject();
+		jsonResult.put("result", bmscServiceImpl.insertEmbms(embms));
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
+	
+	/**
+	 * Bmsc 삭제
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/bmsc/embmsDel.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String embmsDel(
+			@RequestParam(value = "embmsId", required = true) Integer bmscId) {
+		logger.info("-> [bmscId = {}]", bmscId);
+		
+		JSONObject jsonResult = new JSONObject();
+		jsonResult.put("result", bmscServiceImpl.deleteEmbms(bmscId));
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
+	
+	@RequestMapping( value = "api/bmsc/embmsList.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public Map< String, Object > embmsList( @RequestParam Map< String, Object > params,
+	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
+		
+		List<Map> list = mapper.selectEmbms(params);
+		
+        Map< String, Object > returnMap = new HashMap< String, Object >();
+        returnMap.put( "resultCode", "1000" );
+        returnMap.put( "resultMsg", "SUCCESS");
+        
+        Map< String, Object > resultMap = new HashMap< String, Object >();
+        resultMap.put( "resultInfo", returnMap );
+        resultMap.put( "contents", list );
+        
+		return (Map<String, Object>) resultMap;
 	}
 }

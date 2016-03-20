@@ -10,6 +10,13 @@
  1.2. tomcat conf에 server.xml에 URIEncoding 추가
 	:<Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443" URIEncoding="UTF-8"/>
 
+ 1.3. 개발디비 서버
+   * 182.252.178.75
+   * 콘솔 접속 - ssh2 port : 2222
+   * id/pwd : nexdream/nexdream!@#
+   * root pwd : nexdream!@#
+   * tomcat BASE PATH : /usr/local/server/dashdb_tomcat-7.0.65/
+
 
 2. 소스설정
  2.1. interface URL 설정
@@ -17,4 +24,14 @@
     
  2.2. xml 만드는페이지
     : src/catenoid/dashbd/service/XmlManager.java 안에서  xml 메이커하고 파싱 합니다.
-   
+
+3.  작업내용
+  * [16.03.20] 
+    1) bmsc  연동시 HOST 정보를 DB에 저장된 데이타고 함. 							=>  OK
+    2) active content max  는 설정파일로 뺀다.							 			=>  OK
+    3) 메인화면
+        - [UI]active contents														=>  OK
+        - [UI]waiting contents 														=>  OK
+        - [UI]embms session Monitoring  (추가, 삭제 기능)							=>  OK
+        - [기능] 쉘 명령어 구현														=> NOT
+        - [기능] 영상 play  기능  													=> NOT

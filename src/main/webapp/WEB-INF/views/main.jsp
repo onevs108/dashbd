@@ -216,9 +216,40 @@
 								</div>
 	
 								<div class="row">
-									<div class="col-sm-8">
-										<div class="google-map" id="map" style="height:535px;"></div>
+								<!-- <div class="col-sm-8"><div class="google-map" id="map" style="height:535px;"></div></div>-->
+								 
+								 <div class="col-sm-8">
+									<div class="ibox float-e-margins">
+										<div class="ibox-title">
+											<h3>Active Contents <span id="schedule_waiting_service_area_id"></span></h3>
+											<div class="ibox-tools">
+												<!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+												<a class="close-link"><i class="fa fa-times"></i></a-->
+											</div>
+										</div><!-- end ibox-title -->
+										
+										<div class="ibox-content">
+				                            <div class="row">
+				                            	<div class="col-lg-12" id="schedule_summary">
+				                            		<div class="nothumbnail">
+				                                    	<p>
+				                                        	<i class="fa fa-search"></i> No Service is available<br/>
+				                                        </p>
+				                                        <small></small>
+				                                    </div>
+				                            	</div>
+				                            </div>
+				                        </div><!-- end ibox-content -->
 									</div>
+								</div>
+								 
+									<div class="ibox-title">
+										<h3>Service Areas for BM-SC<span id="schedule_summary_service_area_id"></span></h3>
+										<div class="ibox-tools">
+											<!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+											<a class="close-link"><i class="fa fa-times"></i></a-->
+										</div>
+									</div><!-- end ibox-title -->
 									<div class="col-sm-4">
 										<div class="ibox float-e-margins" id="service_area">
 											<div class="ibox-title">
@@ -252,7 +283,7 @@
 					<div class="col-md-8">
 						<div class="ibox float-e-margins">
 							<div class="ibox-title">
-								<h3>Contents Being Serviced <span id="schedule_summary_service_area_id"></span></h3>
+								<h3>Waiting Contents<span id="schedule_waiting_service_area_id"></span></h3>
 								<div class="ibox-tools">
 									<!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
 									<a class="close-link"><i class="fa fa-times"></i></a-->
@@ -296,78 +327,96 @@
 						</div>
 					</div>
 					<!-- end Bandwidth -->
-					<!-- BM-SC Interface Status  -->
-                <div class="col-md-4">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h3>eMBMS Session Monitoring</h3>
-                            <div class="ibox-tools">
-                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a-->
-                            </div>
-                        </div><!-- end ibox-title -->
-                        <div class="ibox-content">
-                            <div class="row">
-						<div class="col-md-12">	
-							<table class="table2">
-							<tbody>
-								<tr>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">BM-SC</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-danger" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">GW</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">MME</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">MCE</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">eNB</h4>
-									</td>
-								</tr>
-								<!--  <tr>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#6</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-danger" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#7</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#8</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#9</h4>
-									</td>
-									<td>
-										<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
-										<h4 class="text-center">#10</h4>
-									</td>
-								</tr> -->
-							<tbody>
-							</table>
-						</div>
-                            </div>
-                        </div><!-- end ibox-content -->                        
-                    </div>
-                </div>
-                <!-- end BM-SC Interface Status  -->
 				</div> 
+				<div class="row">
+					<div class="col-md-9">
+						 <div class="ibox float-e-margins">
+	                        <div class="ibox-title">
+	                            <h3>eMBMS Session Monitoring</h3>
+	                            <div class="ibox-tools">
+	                                <!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+	                                <a class="close-link"><i class="fa fa-times"></i></a-->
+	                            </div>
+	                        </div><!-- end ibox-title -->
+	                   		<div class="ibox-content">
+	                            <div class="row">
+							<div class="col-md-12">	
+								<table class="table2" >
+								<tbody>
+									<tr id="embmsList">
+									<!-- 
+									
+										<td>
+											<button class="btn btn-sm btn-default" type="button"><i class="fa fa-desktop"></i></button>
+											<h4 class="text-center">BM-SC</h4>
+										</td>
+										<td>
+											<button type="button" id="addServer" title="Create new cluster" class="btn btn-primary btn-sm">
+											<i class="fa fa-plus"></i> <span class="bold"></span></button>
+										</td>
+										<td>
+											<button class="btn btn-sm btn-default" type="button"><i class="fa fa-close"></i></button>
+											<h4 class="text-center">GW</h4>
+										</td>
+										<td>
+											<button class="btn btn-sm btn-default" type="button"><i class="fa fa-close"></i></button>
+											<h4 class="text-center">MME</h4>
+										</td>
+										<td>
+											<button class="btn btn-sm btn-default" type="button"><i class="fa fa-close"></i></button>
+											<h4 class="text-center">MCE</h4>
+										</td>
+										<td>
+											<button class="btn btn-sm btn-default" type="button"><i class="fa fa-close"></i></button>
+											<h4 class="text-center">eNB</h4>
+										</td>
+									</tr>
+									 -->
+								<tbody>
+								</table>
+								</div>
+	                            </div>
+	                        </div><!-- end ibox-content -->
+                        </div>  <!-- end ibox -->
+					</div>
+				</div>
 				<!-- end Contents Being Serviced -->
 		</div><!-- end wrapper wrapper-content -->
 	</div><!-- end page-wrapper -->
 </div><!-- end wrapper -->
-
+<div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog">
+       <div class="modal-content animated fadeIn">
+           <div class="modal-header">
+               <button type="button" class="close" id="modal-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+               <i class="fa fa-folder-open-o modal-icon"></i>
+               <h4 class="modal-title" id="modal-title">Add Server</h4>
+           </div>
+           <div class="modal-body">
+               <form method="get" class="form-horizontal">
+               	<div class="form-group"><label class="col-sm-3 control-label">Server Name</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_serer_name"></div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label">Protocol</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_protocol"></div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label">Login Id</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_loginId"></div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label">Password</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_password"></div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label">eMBMS session Command</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_command" style="height:200px"></div>
+                   </div>
+               </form>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
+               <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
+           </div>
+       </div>
+   </div>
+</div>
 </body>
 </html>

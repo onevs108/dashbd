@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.OperatorBmscMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
+import com.catenoid.dashbd.dao.model.Embms;
 import com.catenoid.dashbd.service.BmscService;
 
 @Service(value = "bmscServiceImpl")
@@ -121,6 +122,34 @@ public class BmscServiceImpl implements BmscService {
 			OperatorBmscMapper operatorBmscMapper = sqlSession.getMapper(OperatorBmscMapper.class);
 			operatorBmscMapper.deleteOperatorBmscOfBmsc(bmscId); // operator_bmsc에서도 제거해준다.
 			return bmscMapper.deleteBmsc(bmscId) > 0;
+		} catch (Exception e) {
+			logger.error("~~ An error occurred!", e);
+			return false;
+		}
+	}
+
+	@Override
+	public boolean insertEmbms(Embms embms) {
+		try {
+			BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);
+			
+			if (bmscMapper.insertEmbms(embms) > 0) {
+				return true;
+			}
+				
+			return false;
+		} catch (Exception e) {
+			logger.error("~~ An error occurred!", e);
+			return false;
+		}
+	
+	}
+
+	@Override
+	public boolean deleteEmbms(Integer embmsId) {
+		try {
+			BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);
+			return bmscMapper.deleteEmbms(embmsId) > 0;
 		} catch (Exception e) {
 			logger.error("~~ An error occurred!", e);
 			return false;

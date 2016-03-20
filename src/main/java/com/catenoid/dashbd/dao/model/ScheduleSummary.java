@@ -16,8 +16,10 @@ public class ScheduleSummary {
     private String delYn;
     private String thumbnail;
     private BigDecimal progressRate;
+    private String leftTime;
     private String serviceType;
     private String category;
+    private String url;
     
     private Integer page;
     private Integer perPage;
@@ -119,6 +121,14 @@ public class ScheduleSummary {
 		this.progressRate = progressRate;
 	}
 	
+	public String getLeftTime() {
+		return leftTime;
+	}
+
+	public void setLeftTime(String leftTime) {
+		this.leftTime = leftTime;
+	}
+
 	public String getServiceType() {
         return serviceType;
     }
@@ -135,6 +145,15 @@ public class ScheduleSummary {
         this.category = category == null ? null : category.trim();
     }
     
+    
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	public Integer getPage() {
         return page;
     }

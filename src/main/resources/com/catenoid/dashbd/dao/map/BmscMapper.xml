@@ -319,5 +319,29 @@
 					</foreach>
 					)
 	</delete>
+	
+	
+	 
+	<insert id="insertEmbms" parameterType="com.catenoid.dashbd.dao.model.Embms">
+		INSERT INTO embms(<if test="id != null">`id`,</if>bmscId,serverName, protocol, loginId, password,command, updated_at)
+		VALUES (<if test="id != null">#{id},</if>#{bmscId}, #{serverName}, #{protocol}, #{loginId}, #{password}, #{command}, NOW())
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			SELECT LAST_INSERT_ID() 
+    	</selectKey>
+		ON DUPLICATE KEY UPDATE
+		serverName = #{serverName}, protocol = #{protocol}, loginId = #{loginId}, password = #{password}, command = #{command}, updated_at = NOW()
+	</insert>
+	
+	<select id="selectEmbms" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT id, bmscId, serverName, session 
+		FROM embms
+		WHERE 1=1
+		AND bmscId = #{bmscId}
+	</select>
+	
+	<delete id="deleteEmbms" parameterType="Integer">
+		DELETE FROM embms
+		WHERE id = #{embmsId}
+	</delete>
 
 </mapper>

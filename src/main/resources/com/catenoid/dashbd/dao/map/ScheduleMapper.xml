@@ -93,6 +93,7 @@
 	</select>
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT id
+				, bmscId as bmscId
 				, service_area_id as serviceAreaId
 				, content_id as contentId
 				, name
@@ -140,9 +141,9 @@
 	</select>
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
-			(service_area_id, content_id, name, start_date, end_date)
+			(bmscId,service_area_id, content_id, name, start_date, end_date)
 		VALUES
-			(#{serviceAreaId}, #{contentId}, #{titleName}
+			(#{bmscId}, #{serviceAreaId}, #{contentId}, #{titleName}
 						, str_to_date(#{startTime}, '%Y%m%d%H%i%s')
 						, str_to_date(#{endTime}, '%Y%m%d%H%i%s')
 				

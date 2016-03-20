@@ -65,7 +65,8 @@ $(document).ready(function()
 		
 		var param = {
 				id : $("#id").val(),
-				BCID : $("#BCID").val()
+				BCID : $("#BCID").val(),
+				bmscId : $("#bmscId").val()
 			};
 		$.ajax({
 			type : "POST",

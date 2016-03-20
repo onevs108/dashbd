@@ -1,11 +1,13 @@
 package com.catenoid.dashbd.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
 
 import com.catenoid.dashbd.dao.model.Bmsc;
+import com.catenoid.dashbd.dao.model.Embms;
 
 @Service
 public interface BmscService {
@@ -16,5 +18,8 @@ public interface BmscService {
 	public Bmsc getBmsc(Integer bmscId);
 	public boolean insertBmsc(Bmsc bmsc);
 	public boolean deleteBmsc(Integer bmscId);
+	
+	public boolean insertEmbms(Embms bmsc);
+	public boolean deleteEmbms(Integer embmsId);
 	
 }

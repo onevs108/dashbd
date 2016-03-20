@@ -93,8 +93,10 @@
 		<result column="del_yn" property="delYn" jdbcType="VARCHAR" />
 		<result column="thumbnail" property="thumbnail" jdbcType="VARCHAR" />
 		<result column="progress_rate" property="progressRate" jdbcType="DECIMAL" />
+		<result column="left_time" property="leftTime" jdbcType="VARCHAR" />
 		<result column="service_type" property="serviceType" jdbcType="VARCHAR" />
 		<result column="category" property="category" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<resultMap id="ServiceAreaByBmScId" type="com.catenoid.dashbd.dao.model.BmscServiceArea" >
@@ -716,7 +718,9 @@
 		and b.service_area_id = a.service_area_id
 		and c.id = b.enb_ap_id
 		and c.bmsc_id = a.bmsc_id
-		and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
+		<if test="serviceAreaCity != null and serviceAreaCity != ''">
+			and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
+		</if>
 		and d.id = a.service_area_id
 	group by a.bmsc_id, a.service_area_id, d.name	
 	order by d.created_at desc
@@ -729,8 +733,10 @@
 			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
 			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
 			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
+			, timediff(a.end_date,NOW())  AS left_time
 			, b.service as service_type
 			, c.category
+			, c.url
 		from schedule a, broadcast_info b, contents c
 			where 1 = 1
 			and a.service_area_id = #{serviceAreaId,jdbcType=INTEGER}
@@ -739,7 +745,7 @@
 			and b.bcid = a.bcid
 			and c.id = a.content_id
 		order by a.start_date
-		limit 0, 20
+		limit 0, #{maxCount}
 	</select>
 	
 	<!-- BMSC 로 방송 스케쥴 요약 정보 조회 -->
@@ -748,8 +754,10 @@
 			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
 			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
 			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
+			, timediff(a.end_date,NOW())  AS left_time
 			, b.service as service_type
 			, c.category
+			, c.url
 		from schedule a, broadcast_info b, contents c
 			where 1 = 1
 			and a.service_area_id in (select b.service_area_id from bmsc_service_area b where b.bmsc_id = #{bmscId,jdbcType=INTEGER})
@@ -758,7 +766,7 @@
 			and b.bcid = a.bcid
 			and c.id = a.content_id
 		order by a.start_date
-		limit 0, 20
+		limit 0, #{maxCount}
 	</select>
 	
 	<!-- Service Area 로 사용중인 Bandwidth 조회 -->
