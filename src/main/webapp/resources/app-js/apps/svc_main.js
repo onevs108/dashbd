@@ -176,6 +176,7 @@ function doAdd() {
 	
 	var serverName = $('#frm_md_serer_name').val();
 	var protocol = $('#frm_md_protocol').val();
+	var IPAddress = $('#frm_md_IPAddress').val();
 	var loginId = $('#frm_md_loginId').val();
 	var password = $('#frm_md_password').val();
 	var command = $('#frm_md_command').val();
@@ -189,6 +190,11 @@ function doAdd() {
 		alert('Please input protocol');
 		return false;
 	}
+	if (IPAddress == null || IPAddress.length == 0) {
+		alert('Please input IPAddress');
+		return false;
+	}
+	
 	
 	if (loginId == null || loginId.length == 0) {
 		alert('Please input the loginId');
@@ -209,6 +215,7 @@ function doAdd() {
 		bmscId: $('#bmsc option:selected').val(), // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
 		serverName: serverName,
 		protocol: protocol,
+		IPAddress: IPAddress,
 		loginId: loginId,
 		password: password,
 		command: command
@@ -303,47 +310,41 @@ function embmsList(data){
 		//alert("No data.");
 	}
 	
-	var $td_header = $("<td width='16%'/>");
+	var $td_header = $("<td width='20%'/>");
 	var $btn_header = $("<button/>");
 	var $h4_header = $("<h4/>");
 	var $i_header = $("<i/>");
 	
+	var $btn_plus = $("<button/>");
+	var $i_plus= $("<i/>");
+	
+	$td_header.attr("style", "text-align:center;")
 	$btn_header.attr("class","btn btn-sm btn-default");
 	$btn_header.attr("type","button");
 	$i_header.attr("class","fa fa-desktop");
 	$h4_header.attr("class","text-center");
 	$h4_header.html($('#bmsc option:selected').text() );
 	
+	$btn_plus.attr("class","btn btn-primary btn-sm");
+	$btn_plus.attr("type","button");
+	$btn_plus.attr("onclick","openModal()");
+	$i_plus.attr("class","fa fa-plus");
+	$btn_plus.append($i_plus);
+	
 	$btn_header.append($i_header);
 	$td_header.append($btn_header);
 	$td_header.append($h4_header);
+	$td_header.append($btn_plus);
 	$list.append( $td_header );
-	
-	
-	var $td_plus= $("<td width='6%'/>");
-	var $btn_plus = $("<button/>");
-	var $h4_plus = $("<h4/>");
-	var $i_plus= $("<i/>");
-	
-	$btn_plus.attr("class","btn btn-primary btn-sm");
-	$btn_plus.attr("type","button");
-	//$btn_plus.attr("id","addServer");
-	$btn_plus.attr("onclick","openModal()");
-	$i_plus.attr("class","fa fa-plus");
-	$h4_plus.attr("class","text-center");
-	$h4_plus.html("&nbsp;");
-	
-	$btn_plus.append($i_plus);
-	$td_plus.append($btn_plus);
-	$td_plus.append($h4_plus);
-	$list.append( $td_plus );
+		
 	var tmpSession ="";
 	var diffSession = false;
 	for ( var i=0; i<data.length; i++) {
-		var $td = $("<td width='9%'/>");
-		var $btn = $("<td/>");
+		var $td = $("<td width='16%'/>");
+		var $btn = $("<button/>");
 		var $h4 = $("<h4/>");
 		var $i = $("<i/>");
+		var $img = $("<img/>");
 		
 		var embmsId = data[i].id;
 		var serverName = data[i].serverName;
@@ -359,16 +360,19 @@ function embmsList(data){
 		$btn.attr("type","button");
 		$btn.attr("onclick","delEmbms(" + embmsId +")");
 		$i.attr("class","fa fa-close");
+		$img.attr("src","img/server_network.png");
+		$img.attr("width","80%");
 		$h4.attr("class","text-center");
 		$h4.html(serverName + '(' + session + ')');
 		
 		$btn.append($i);
 		$td.append($btn);
+		$td.append($img);
 		$td.append($h4);
 		$list.append( $td );
 	}
 	
-	var $td_desc = $("<td width='22%'/>");
+	var $td_desc = $("<td/>");
 	
 	if (diffSession){
 		$td_desc.html("Error Different Session[" + tmpSession +"]")

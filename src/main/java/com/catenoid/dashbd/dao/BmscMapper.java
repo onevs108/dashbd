@@ -55,6 +55,8 @@ public interface BmscMapper {
     
     List<Map> selectEmbms(Map map);
     
+    int updateEmbms(Map map);
+    
     int deleteEmbms(Integer embmsId);
     
 }

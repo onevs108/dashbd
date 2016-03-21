@@ -34,10 +34,10 @@
 3.  작업내용
   * [16.03.20] 
     1) bmsc  연동시 HOST 정보를 DB에 저장된 데이타고 함. 							=>  OK
-    2) active content max  는 설정파일로 뺀다.							 			=>  OK
+    2) active content max  는 설정파일로 뺀다.							 	=>  OK
     3) 메인화면
-        - [UI]active contents														=>  OK
-        - [UI]waiting contents 														=>  OK
-        - [UI]embms session Monitoring  (추가, 삭제 기능)							=>  OK
-        - [기능] 쉘 명령어 구현														=> NOT
-        - [기능] 영상 play  기능  													=> NOT
+        - [UI]active contents										=>  OK
+        - [UI]waiting contents 										=>  OK
+        - [UI]embms session Monitoring  (추가, 삭제 기능)					=>  OK
+        - [기능] 쉘 명령어 구현												=>  OK
+        - [기능] 영상 play  기능  											=> NOT yet

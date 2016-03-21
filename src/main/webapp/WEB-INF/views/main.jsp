@@ -329,7 +329,7 @@
 					<!-- end Bandwidth -->
 				</div> 
 				<div class="row">
-					<div class="col-md-9">
+					<div class="col-md-11">
 						 <div class="ibox float-e-margins">
 	                        <div class="ibox-title">
 	                            <h3>eMBMS Session Monitoring</h3>
@@ -400,11 +400,14 @@
                    <div class="form-group"><label class="col-sm-3 control-label">Protocol</label>
                        <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_protocol"></div>
                    </div>
+                   <div class="form-group"><label class="col-sm-3 control-label">IPAddress</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_IPAddress"></div>
+                   </div>
                    <div class="form-group"><label class="col-sm-3 control-label">Login Id</label>
                        <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_loginId"></div>
                    </div>
                    <div class="form-group"><label class="col-sm-3 control-label">Password</label>
-                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_password"></div>
+                       <div class="col-sm-9"><input type="password" class="form-control" id="frm_md_password"></div>
                    </div>
                    <div class="form-group"><label class="col-sm-3 control-label">eMBMS session Command</label>
                        <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_command" style="height:200px"></div>

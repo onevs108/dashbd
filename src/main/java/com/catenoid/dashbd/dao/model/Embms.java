@@ -5,6 +5,7 @@ public class Embms {
 	Integer bmscId;
 	String serverName = "";
 	String protocol = "";
+	String IPAddress = "";
 	String loginId = "";
 	String password = "";
 	String command = "";
@@ -39,6 +40,15 @@ public class Embms {
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
+	
+	public String getIPAddress() {
+		return IPAddress;
+	}
+
+	public void setIPAddress(String iPAddress) {
+		IPAddress = iPAddress;
+	}
+
 	public String getLoginId() {
 		return loginId;
 	}

@@ -251,10 +251,11 @@ public class BmscController {
 		            session.setPassword(password);
 		            session.setConfig(config);
 		            session.connect();
-		            System.out.println("Connected");
+		            System.out.println("session Connected");
 		             
 		            Channel channel=session.openChannel("exec");
 		            ((ChannelExec)channel).setCommand(command);
+		            
 		            channel.setInputStream(null);
 		            ((ChannelExec)channel).setErrStream(System.err);
 		             

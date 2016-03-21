@@ -319,12 +319,10 @@
 					</foreach>
 					)
 	</delete>
-	
-	
 	 
 	<insert id="insertEmbms" parameterType="com.catenoid.dashbd.dao.model.Embms">
-		INSERT INTO embms(<if test="id != null">`id`,</if>bmscId,serverName, protocol, loginId, password,command, updated_at)
-		VALUES (<if test="id != null">#{id},</if>#{bmscId}, #{serverName}, #{protocol}, #{loginId}, #{password}, #{command}, NOW())
+		INSERT INTO embms(<if test="id != null">`id`,</if>bmscId,serverName, protocol,IPAddress, loginId, password,command, updated_at)
+		VALUES (<if test="id != null">#{id},</if>#{bmscId}, #{serverName}, #{protocol},#{IPAddress}, #{loginId}, #{password}, #{command}, NOW())
 		<selectKey resultType="int" keyProperty="id" order="AFTER">
 			SELECT LAST_INSERT_ID() 
     	</selectKey>
@@ -333,11 +331,17 @@
 	</insert>
 	
 	<select id="selectEmbms" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT id, bmscId, serverName, protocol,host, loginId, password, command, session 
+		SELECT id, bmscId, serverName, protocol, IPAddress, loginId, password, command, session 
 		FROM embms
 		WHERE 1=1
 		AND bmscId = #{bmscId}
 	</select>
+	
+	<update id="updateEmbms" parameterType="java.util.Map">
+		UPDATE embms SET session = #{sessionCnt} 
+		WHERE 1=1
+		AND id = #{id}
+	</update>
 	
 	<delete id="deleteEmbms" parameterType="Integer">
 		DELETE FROM embms
