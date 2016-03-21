@@ -242,19 +242,18 @@
 				                        </div><!-- end ibox-content -->
 									</div>
 								</div>
-								 
-									<div class="ibox-title">
+								 	<div class="ibox-title">
 										<h3>Service Areas for BM-SC<span id="schedule_summary_service_area_id"></span></h3>
 										<div class="ibox-tools">
 											<!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
 											<a class="close-link"><i class="fa fa-times"></i></a-->
 										</div>
 									</div><!-- end ibox-title -->
+									
+									
+									
 									<div class="col-sm-4">
 										<div class="ibox float-e-margins" id="service_area">
-											<div class="ibox-title">
-												<h5>Service Area</h5>
-											</div>
 											<div class="ibox-content">
 												<table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
 													<thead>
@@ -329,7 +328,7 @@
 					<!-- end Bandwidth -->
 				</div> 
 				<div class="row">
-					<div class="col-md-11">
+					<div class="col-md-9">
 						 <div class="ibox float-e-margins">
 	                        <div class="ibox-title">
 	                            <h3>eMBMS Session Monitoring</h3>

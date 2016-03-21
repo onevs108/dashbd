@@ -25,7 +25,7 @@ function moveToEnb(bmscId, serviceAreaId)
 {
 	var summary_datas = "";
 	
-	$("#schedule_summary_service_area_id").empty();
+	//$("#schedule_summary_service_area_id").empty();
 	$("#schedule_summary").empty();
 	$("#bandwidth").empty();
 	$("#schedule_waiting_summary").empty();
@@ -70,10 +70,7 @@ function moveToEnb(bmscId, serviceAreaId)
 				content += "</div>";
 			}
 			
-			
-            $("#schedule_summary_service_area_id").append('(Service Area ' + serviceAreaId + ')');
-            
-			
+            //$("#schedule_summary_service_area_id").append('(Service Area ' + serviceAreaId + ')');
             $("#schedule_summary").append(content);
 		}
 	});
@@ -170,8 +167,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             var dataLen = datas.length;
             var options = "";
             var idx = 0;
-            
-			options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
+            //options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
 			options += "<div class=\"ibox-content\">";
 			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
 			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";

@@ -340,7 +340,7 @@ function embmsList(data){
 	var tmpSession ="";
 	var diffSession = false;
 	for ( var i=0; i<data.length; i++) {
-		var $td = $("<td width='16%'/>");
+		var $td = $("<td width='10%'/>");
 		var $btn = $("<button/>");
 		var $h4 = $("<h4/>");
 		var $i = $("<i/>");
@@ -364,6 +364,8 @@ function embmsList(data){
 		$img.attr("width","80%");
 		$h4.attr("class","text-center");
 		$h4.html(serverName + '(' + session + ')');
+		
+		$td.attr("style", "text-align:right;")
 		
 		$btn.append($i);
 		$td.append($btn);
