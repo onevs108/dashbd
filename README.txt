@@ -17,7 +17,7 @@
    * root pwd : nexdream!@#
    * tomcat BASE PATH : /usr/local/server/dashdb_tomcat-7.0.65/
  
- 1.4.  lib
+ 1.4. lib
    * ssh lib - jsch-0.1.53.jar
      ref url> http://www.journaldev.com/246/java-program-to-run-shell-commands-on-ssh-enabled-system
      		  https://tomeuwork.wordpress.com/2014/09/24/java-program-to-run-ssh-commands/

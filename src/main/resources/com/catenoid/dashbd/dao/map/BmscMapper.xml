@@ -334,7 +334,9 @@
 		SELECT id, bmscId, serverName, protocol, IPAddress, loginId, password, command, session 
 		FROM embms
 		WHERE 1=1
-		AND bmscId = #{bmscId}
+		<if test="bmscId != null and bmscId != ''">
+			AND bmscId = #{bmscId}
+		</if>
 	</select>
 	
 	<update id="updateEmbms" parameterType="java.util.Map">

@@ -1,3 +1,4 @@
+var g_bmscId = null;
 
 var default_service_area = "<div class=\"ibox-title\"><h5>Service Area  </h5></div>";
 default_service_area += "<div class=\"ibox-content\">";
@@ -163,7 +164,8 @@ function setContents(data){
 	}
 }
 
-function openModal() {
+function openModal(bmscId) {
+	g_bmscId = bmscId;
 	console.log('modeal load..');
 	$('#form-operator-id').val($('#search-operator-id').val());
 	$('#modal-title').html('Add Server');
@@ -171,7 +173,7 @@ function openModal() {
 }
 
 
-var bmscId = null;
+
 function doAdd() {
 	
 	var serverName = $('#frm_md_serer_name').val();
@@ -212,7 +214,7 @@ function doAdd() {
 	}
 	
 	var data = {
-		bmscId: $('#bmsc option:selected').val(), // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
+		bmscId: g_bmscId, // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
 		serverName: serverName,
 		protocol: protocol,
 		IPAddress: IPAddress,
@@ -235,7 +237,7 @@ function insertEmbms(data) {
 				//$('#table').bootstrapTable('destroy');
 				refreshEmbms();	//함수만들어야 함.
 				closeModal();
-				bmscId = null; // 초기화
+				
 			}
 			else { // 실패
 				alert('Failed!! Please you report to admin!');
@@ -276,39 +278,44 @@ function delEmbms(embmsId) {
 }
 
 function doModalCancel() {
-	bmscId = null;
+	g_bmscId = null;
 	closeModal();
 }
 
 function refreshEmbms(){
-	var param = {
-			bmscId :  $('#bmsc option:selected').val()
-		};
-	$.ajax({
-		type : "POST",
-		url : "/dashbd/api/bmsc/embmsList.do",
-		        
-		data : param,
-		dataType : "json",
-		success : function( data ) {
-			embmsList(data.contents);
-		},
-		error : function(request, status, error) {
-			alert("request=" +request +",status=" + status + ",error=" + error);
-		}
-	});
+	var size = $('#bmsc option').size();
+	$("#embmsList").empty();
+	
+	for (var i = 0 ; i< size; i++){
+		var bmscId = $('#bmsc option:eq(' + i + ')').val();
+		var bmscName = $('#bmsc option:eq(' + i + ')').text();
+		
+		console.log('bmscId=' + bmscId + ', bmscName=' + bmscName);
+		
+		var param = {
+				bmscId :  bmscId
+			};
+		$.ajax({
+			type : "POST",
+			url : "/dashbd/api/bmsc/embmsList.do",
+			data : param,
+			async : false,
+			dataType : "json",
+			success : function( data ) {
+				embmsList(data.contents, bmscId, bmscName);
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	}
 }
 
-function embmsList(data){
+function embmsList(data, bmscId, bmscName){
 
 	var $list = $("#embmsList");
 	
-	// list 초기화
-	$list.empty();
-	
-	if (data.length < 1){
-		//alert("No data.");
-	}
+	var $tr = $("<tr/>");
 	
 	var $td_header = $("<td width='20%'/>");
 	var $btn_header = $("<button/>");
@@ -323,11 +330,11 @@ function embmsList(data){
 	$btn_header.attr("type","button");
 	$i_header.attr("class","fa fa-desktop");
 	$h4_header.attr("class","text-center");
-	$h4_header.html($('#bmsc option:selected').text() );
+	$h4_header.html(bmscName );
 	
 	$btn_plus.attr("class","btn btn-primary btn-sm");
 	$btn_plus.attr("type","button");
-	$btn_plus.attr("onclick","openModal()");
+	$btn_plus.attr("onclick","openModal(" + bmscId + ")");
 	$i_plus.attr("class","fa fa-plus");
 	$btn_plus.append($i_plus);
 	
@@ -335,7 +342,9 @@ function embmsList(data){
 	$td_header.append($btn_header);
 	$td_header.append($h4_header);
 	$td_header.append($btn_plus);
-	$list.append( $td_header );
+	
+	$tr.append( $td_header );
+	
 		
 	var tmpSession ="";
 	var diffSession = false;
@@ -351,7 +360,7 @@ function embmsList(data){
 		var session = data[i].session;
 		
 		if (i > 0){
-			if (session != tmpSession)
+			if (session != tmpSession || session == '-1')
 				diffSession = true;
 		}
 		tmpSession = session;
@@ -371,7 +380,7 @@ function embmsList(data){
 		$td.append($btn);
 		$td.append($img);
 		$td.append($h4);
-		$list.append( $td );
+		$tr.append( $td );
 	}
 	
 	var $td_desc = $("<td/>");
@@ -382,8 +391,8 @@ function embmsList(data){
 		$td_desc.html("eMBMS Session[" + tmpSession +"]")
 	}
 	
-	$list.append( $td_desc );
-		
+	$tr.append( $td_desc );
+	$list.append( $tr );
 
 
 }

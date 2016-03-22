@@ -31,11 +31,9 @@ public class QuartzEmbmsSession extends QuartzJobBean{
 	@Override
 	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 		logger.info("QuartzEmbmsSession START");
-      //  weatherService.setWeatherInfo(weatherService.WEATHER_GENERAL_TYPE_TODAY);
 		
 		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("bmscId", 1);
 		List<Map> list = mapper.selectEmbms(params);
 		 
 		for(Map map : list){
@@ -48,6 +46,7 @@ public class QuartzEmbmsSession extends QuartzJobBean{
 			String command = (String)map.get("command");
 			
 			//ex> getSession.sh ServerName IPAddress UserID Password
+			//return> Session_Cnt:3
 			String exeCommand = String.format("%s %s %s %s", command, serverName, IPAddress,loginId, password);
 			try{
 				  Runtime runtime = Runtime.getRuntime();
@@ -59,10 +58,11 @@ public class QuartzEmbmsSession extends QuartzJobBean{
 	              while((line = br.readLine()) != null) {
 	                  System.out.println(line);
 	              }
-	              String sessionCnt = line.substring(RETURN_SHELL.length());
-	              params.put("sessionCnt", sessionCnt);
-	              params.put("id", id);
-	              mapper.updateEmbms(params);
+	            //String line = "session Cnt:3";  //for TEST
+				String sessionCnt = line.substring(RETURN_SHELL.length());
+				params.put("sessionCnt", sessionCnt);
+				params.put("id", id);
+				mapper.updateEmbms(params);
 	              
 		          //System.out.println("DONE");
 		    }catch(Exception e){

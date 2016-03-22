@@ -32,11 +32,13 @@
  	<!--  ** 참조 : Quartz 시간 expression * * * * * ? (*) : 초 분 시 일 월 요일 (년)-->
 	<bean id="cronTriggerSessionEMBMS" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="sessionEMBMS"/>
-	    <!-- 매 5분 마다
-	    <property name="cronExpression" value="* */5 * * * ?"/> 
-	   	-->
-		<!-- 매 10초마다 -->
+	    <!-- 매 10초마다 (for test) 
 	    <property name="cronExpression" value="*/10 * * * * ?"/> 
+		-->
+	    <!-- 매 5분 마다
+	   	-->
+	    <property name="cronExpression" value="* */5 * * * ?"/> 
+
 	</bean>
 	
 		<!-- 3. Cron 실행 -->
