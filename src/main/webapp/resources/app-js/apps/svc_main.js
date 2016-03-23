@@ -40,6 +40,257 @@ $(document).ready(function()
 	$('#modal-cancel-icon-btn').click(doModalCancel);
 });
 
+function moveToEnb2(bmscId, serviceAreaId)
+{
+	$("#schedule_summary").empty();
+	setActiveContents(bmscId, serviceAreaId);
+	console.log("moveToEnb 1");
+	
+	$("#schedule_waiting_summary").empty();
+	console.log("moveToEnb 2");
+	setWaitContents(bmscId, serviceAreaId);
+	
+	console.log("moveToEnb 3");
+	$("#bandwidth").empty();
+	bandWidth(bmscId, serviceAreaId);
+}
+
+function setActiveContents(bmscId, serviceAreaId){
+	$.ajax({
+		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
+		type: "get",
+		async:false,
+		data : { "bmscId" : bmscId, "activeContent":"1" , "serviceAreaId" : serviceAreaId},
+		success : function(responseData){
+			datas = JSON.parse(responseData);
+			var dataLen = datas.length;
+			var options = "";
+			var content = "";
+			for (var i = 0; i < datas.length; i++) {
+				content += "<div class=\"file-box\">";
+				content += "<div class=\"file\">";
+				content += "<span class=\"corner\"></span>";
+				//content += "<div class=\"image\">";
+				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
+				//content += '</div>';
+				//content += "<div class=\"progress progress-mini\">";
+				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "</div>";
+				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<small>[" + datas[i].category + "]</small> ";
+				content += datas[i].scheduleName;
+				content += "<div class=\"file-name\">";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
+				content += "<small>Remaining: " + datas[i].leftTime + "</small> ";
+				content += "</div>";
+				content += "</div>";
+				content += "</div>";
+			}
+			
+			if(datas.length == 0) {
+				content += "<div class=\"nothumbnail\">";
+				content += "<p>";
+				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "</p>";
+				content += "<small></small>";
+				content += "</div>";
+			}
+			
+            $("#schedule_summary").append(content);
+		}
+	});
+}
+function bandWidth(bmscId, serviceAreaId){
+	
+	console.log('here0');
+	
+	$.ajax({
+		url : "/dashbd/api/bandwidthByServiceArea.do",
+		type: "get",
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId},
+		success : function(responseData){
+			console.log('here1');
+			var bandwidth_data = JSON.parse(responseData);
+			console.log('here2');		
+			var content = "<h2>" + bandwidth_data.GBRSum + " % is being used</h2>";
+			content += "<div class=\"progress progress-big\">";
+			content += "<div style=\"width:" + bandwidth_data.GBRSum + "%;\" class=\"progress-bar\"></div>";
+			content += "</div>";
+			console.log('here3');	
+			
+            $("#bandwidth").append(content);
+            console.log('here4');	
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+	
+}
+
+function setWaitContents(bmscId, serviceAreaId){
+	console.log("setWaitContents 1");
+	$.ajax({
+		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
+		type: "get",
+		async:false,
+		data : { "bmscId" : bmscId, "serviceAreaId" : serviceAreaId , "activeContent":"0"},
+		success : function(responseData){
+			datas = JSON.parse(responseData);
+			var dataLen = datas.length;
+			var options = "";
+			var content = "";
+			for (var i = 0; i < datas.length; i++) {
+				content += "<div class=\"file-box\">";
+				content += "<div class=\"file\">";
+				content += "<span class=\"corner\"></span>";
+				//content += "<div class=\"image\">";
+				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
+				//content += '</div>';
+				//content += "<div class=\"progress progress-mini\">";
+				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
+				content += "</div>";
+				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<small>[" + datas[i].category + "]</small> ";
+				content += datas[i].scheduleName;
+				content += "<div class=\"file-name\">";
+				content += "<h5 class=\"text-navy\"><i class=\"fa fa-desktop\"></i> " + datas[i].serviceType + "</h5>";
+				content += "<small>Remaining: " + datas[i].leftTime + "</small> ";
+				content += "</div>";
+				content += "</div>";
+				content += "</div>";
+			}
+			
+			if(datas.length == 0) {
+				content += "<div class=\"nothumbnail\">";
+				content += "<p>";
+				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "</p>";
+				content += "<small></small>";
+				content += "</div>";
+			}
+            $("#schedule_waiting_summary").append(content);
+		}
+	});
+	
+	console.log("setWaitContents 2");
+}
+
+
+function getServiceAreaByBmScCity(page, bmscId, city)
+{
+	var selectedCity = encodeURIComponent(city);
+
+	$.ajax({
+        url : "/dashbd/api/serviceAreaByBmScCity.do",
+        type: "get",
+        data : { "page" : page, "bmscId" : bmscId, "city" : selectedCity },
+        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+        success : function(responseData){
+            //$("#ajax").remove();
+            datas = JSON.parse(responseData);
+            var dataLen = datas.length;
+            var options = "";
+            var idx = 0;
+            //options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
+			options += "<div class=\"ibox-content\">";
+			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+			options += "<tbody>";
+
+            for(var i = 0; i < dataLen; i++ ) {
+            	//options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
+            	//options += '<tbody><tr><td>' + datas[i].serviceAreaId + '</td><td>' + datas[i].serviceAreaName + '</td></tr></tbody>';
+            	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
+            	//options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
+            	
+            	if( i % 2 == 0 ) {
+            		options += "<tr class=\"footable-even\" style=\"display: table-row;\"><td>";
+            	} else {
+            		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
+            	}
+            	options += "<span class=\"footable-toggle\"></span>";
+            	options += "<a href=\"javascript:moveToEnb2(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ");\">";
+            	options += datas[i].serviceAreaId;
+            	options += " (" + datas[i].totalCount + ")";
+            	options += "</a>";
+				options += "</td><td>";
+				options += datas[i].serviceAreaName;
+				options += "</td></tr>";
+				
+            }
+
+            options += "</tbody>";
+            
+            if(dataLen > 10) {
+            	//alert(dataLen);
+            	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            }
+            
+            options += "</table></div>";
+        
+            //alert(options);
+            $("#service_area").empty();
+            $("#service_area").append(options);
+            
+            $('.footable').footable();
+            //$('.footable2').footable();
+            
+            /*
+            // Pagination
+            var totalCount = datas[0].totalCount;
+            if(totalCount > perPage) {
+            	var totalPageCount = Math.ceil(totalCount / perPage); // 마지막 페이지
+            	//alert(totalPageCount);
+            	
+            	var pageination = '';
+                pageination += '<div class="text-center">';
+                pageination += '<ul class="pagination">';
+                if( page == 1 )
+                {
+                	pageination += '<li class="disabled"><a href="javascript:getServiceAreaByBmScCity(' + (page-1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-left"></span></a></li>';
+                }
+                else {
+                	pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + (page-1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-left"></span></a></li>';
+                }
+                
+                if(totalPageCount > listPageCount) {
+                	for(var i = page, j = 0; i <= totalPageCount && j < listPageCount ; i++, j++) {
+                    	if( i == page ) {
+                    		pageination += '<li class="active"><a href="#">' + i + '</a></li>';
+                    	}
+                    	else {
+                    		pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + i + ',' + bmscId + ', \'' + city + '\');">' + i + '</a></li>';
+                    	}
+                    }
+                }
+                else {
+                	for(var i = 1; i <= totalPageCount && i <= listPageCount ; i++) {
+                    	if( i == page ) {
+                    		pageination += '<li class="active"><a href="#">' + i + '</a></li>';
+                    	}
+                    	else {
+                    		pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + i + ',' + bmscId + ', \'' + city + '\');">' + i + '</a></li>';
+                    	}
+                    }
+                }
+                
+                
+                if( page == totalPageCount ) {
+                	pageination += '<li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>';
+                }
+                else {
+                	pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + (page+1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-right"></span></a></li>';
+                }
+    			pageination += '</ul>';
+    			pageination += '</div>';
+    			
+    			//$("#service_area").append(pageination);
+            }
+            */
+        }
+    });
+}
 
 function callScheduleTable(bmscId, bmscName){
 
@@ -48,7 +299,7 @@ function callScheduleTable(bmscId, bmscName){
 		type: "get",
 		data : { "bmscId" : bmscId, "activeContent" : "1" },
 		success : function(responseData){
-			$("#ajax").remove();
+			//$("#ajax").remove();
 			datas = JSON.parse(responseData);
 			var dataLen = datas.length;
 			var options = "";
@@ -96,7 +347,7 @@ function callScheduleTable(bmscId, bmscName){
 		type: "get",
 		data : { "bmscId" : bmscId, "activeContent" : "0" },
 		success : function(responseData){
-			$("#ajax").remove();
+			//$("#ajax").remove();
 			datas = JSON.parse(responseData);
 			var dataLen = datas.length;
 			var options = "";
@@ -166,7 +417,7 @@ function setContents(data){
 
 function openModal(bmscId) {
 	g_bmscId = bmscId;
-	console.log('modeal load..');
+	//console.log('modeal load..');
 	$('#form-operator-id').val($('#search-operator-id').val());
 	$('#modal-title').html('Add Server');
 	$('#form-modal').modal('show');
@@ -290,7 +541,7 @@ function refreshEmbms(){
 		var bmscId = $('#bmsc option:eq(' + i + ')').val();
 		var bmscName = $('#bmsc option:eq(' + i + ')').text();
 		
-		console.log('bmscId=' + bmscId + ', bmscName=' + bmscName);
+		//console.log('bmscId=' + bmscId + ', bmscName=' + bmscName);
 		
 		var param = {
 				bmscId :  bmscId
@@ -348,7 +599,7 @@ function embmsList(data, bmscId, bmscName){
 		
 	var tmpSession ="";
 	var diffSession = false;
-	for ( var i=0; i<data.length; i++) {
+	for ( var i=0; i < data.length; i++) {
 		var $td = $("<td width='10%'/>");
 		var $btn = $("<button/>");
 		var $h4 = $("<h4/>");
@@ -370,8 +621,9 @@ function embmsList(data, bmscId, bmscName){
 		$btn.attr("onclick","delEmbms(" + embmsId +")");
 		$i.attr("class","fa fa-close");
 		$img.attr("src","img/server_network.png");
-		$img.attr("width","80%");
+		$img.attr("width","70px");
 		$h4.attr("class","text-center");
+		$h4.attr("style","height:30px;");
 		$h4.html(serverName + '(' + session + ')');
 		
 		$td.attr("style", "text-align:right;")
@@ -417,7 +669,7 @@ function getServiceAreaByBmSc(page, bmscId)
         type: "get",
         data : { "page" : page, "bmscId" : bmscId },
         success : function(responseData){
-            $("#ajax").remove();
+            //$("#ajax").remove();
             var data = JSON.parse(responseData);
             var dataLen = data.length;
             var options = "";
@@ -492,7 +744,7 @@ function getServiceAreaBmSc(page, operatorId)
         data : { "page" : page, "operatorId" : operatorId },
         //data : { "page" : page, "operatorId" : 1 },
         success : function(responseData){
-            $("#ajax").remove();
+            //$("#ajax").remove();
             var data = JSON.parse(responseData);
             var dataLen = data.length;
             var options = '<option value="">Select BM-SC</option>';

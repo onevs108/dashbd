@@ -40,19 +40,19 @@
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
-			getMenuList('MAIN');
-			
 			$('.footable').footable();
 			$('.footable2').footable();
+			
+			getMenuList('MAIN');
 		});
 	</script>
     	
 	<script src="app-js/config.js"></script>
 	<script src="app-js/apps/svc_main.js"></script>
-	
+	<!-- 
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="js/markerwithlabel.js"></script>
-	<script src="app-js/apps/svc_main_map.js"></script>
+	 -->
         
 	<style type="text/css">
 	.labels {

@@ -37,7 +37,7 @@
 		-->
 	    <!-- 매 5분 마다
 	   	-->
-	    <property name="cronExpression" value="* */5 * * * ?"/> 
+	    <property name="cronExpression" value="0 */5 * * * ?"/> 
 
 	</bean>
 	
