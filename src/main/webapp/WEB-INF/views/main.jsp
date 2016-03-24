@@ -34,8 +34,8 @@
 	<!-- Custom and plugin javascript -->
 	<script src="js/inspinia.js"></script>
 	<script src="js/plugins/pace/pace.min.js"></script>
-	
 	<script src="js/common.js"></script>
+	<script src="js/dash.all.min.js"></script>
 	
 	<!-- Page-Level Scripts -->
 	<script>
@@ -53,7 +53,7 @@
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="js/markerwithlabel.js"></script>
 	 -->
-        
+    <script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>
 	<style type="text/css">
 	.labels {
 		color: red;
@@ -66,6 +66,11 @@
 		border: 1px solid red;
 		white-space: nowrap;
 	}
+	
+	 video {
+       width: 90%;
+       height: 120px;
+    }
 	</style>
 </head>
 
@@ -222,6 +227,11 @@
 									<div class="ibox float-e-margins">
 										<div class="ibox-title">
 											<h3>Active Contents <span id="schedule_waiting_service_area_id"></span></h3>
+											    	   <div>
+											    	   <!-- 
+									       <video data-dashjs-player autoplay src="http://vm2.dashif.org/livesim/testpic_2s/Manifest.mpd" controls></video>
+											    	    -->
+									   </div>
 											<div class="ibox-tools">
 												<!--a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
 												<a class="close-link"><i class="fa fa-times"></i></a-->

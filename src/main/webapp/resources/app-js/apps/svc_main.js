@@ -54,7 +54,11 @@ function moveToEnb2(bmscId, serviceAreaId)
 	$("#bandwidth").empty();
 	bandWidth(bmscId, serviceAreaId);
 }
-
+function playVideo(id, url){
+	console.log('id=',id, ',url=',url);
+    var player = dashjs.MediaPlayer().create();
+    player.initialize(document.querySelector("#video_" + id), url, true);
+}
 function setActiveContents(bmscId, serviceAreaId){
 	$.ajax({
 		url : "/dashbd/api/scheduleSummaryByServiceArea.do",
@@ -76,7 +80,10 @@ function setActiveContents(bmscId, serviceAreaId){
 				//content += "<div class=\"progress progress-mini\">";
 				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
-				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				//content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				//content += "<div><video data-dashjs-player autoplay src=\"" + datas[i].url +"\" controls></video></div>"
+				//content += "<div><video data-dashjs-player autoplay src=\"" + datas[i].url +"\" controls></video></div>"
+				content += "<div><video id=\"video_" + i +"\" controls></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -85,6 +92,7 @@ function setActiveContents(bmscId, serviceAreaId){
 				content += "</div>";
 				content += "</div>";
 				content += "</div>";
+				
 			}
 			
 			if(datas.length == 0) {
@@ -97,6 +105,12 @@ function setActiveContents(bmscId, serviceAreaId){
 			}
 			
             $("#schedule_summary").append(content);
+            
+        	for (var i = 0; i < datas.length; i++) {
+        		playVideo(i, datas[i].url);
+        	}
+            
+            
 		}
 	});
 }
@@ -150,7 +164,8 @@ function setWaitContents(bmscId, serviceAreaId){
 				//content += "<div class=\"progress progress-mini\">";
 				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
-				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				//content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<div><video id=\"video_w" + i +"\" controls></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -170,6 +185,11 @@ function setWaitContents(bmscId, serviceAreaId){
 				content += "</div>";
 			}
             $("#schedule_waiting_summary").append(content);
+            
+        	for (var i = 0; i < datas.length; i++) {
+        		playVideo('w' + i, datas[i].url);
+        	}
+            
 		}
 	});
 	
@@ -314,7 +334,8 @@ function callScheduleTable(bmscId, bmscName){
 				//content += "<div class=\"progress progress-mini\">";
 				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
-				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				//content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<div><video id=\"video_" + i +"\" controls></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -339,6 +360,10 @@ function callScheduleTable(bmscId, bmscName){
             
 			$("#schedule_summary").empty();
             $("#schedule_summary").append(content);
+            
+        	for (var i = 0; i < datas.length; i++) {
+        		playVideo(i, datas[i].url);
+        	}
 		}
 	});
 	
@@ -362,7 +387,7 @@ function callScheduleTable(bmscId, bmscName){
 				//content += "<div class=\"progress progress-mini\">";
 				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				content += "</div>";
-				content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
+				content += "<div><video id=\"video_w" + i +"\" controls></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -385,6 +410,10 @@ function callScheduleTable(bmscId, bmscName){
 			
 			$("#schedule_waiting_summary").empty();
             $("#schedule_waiting_summary").append(content);
+            
+            for (var i = 0; i < datas.length; i++) {
+        		playVideo('w'+i, datas[i].url);
+        	}
 		}
 	});
 }
