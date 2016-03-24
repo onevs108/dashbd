@@ -57,7 +57,7 @@ function moveToEnb2(bmscId, serviceAreaId)
 function playVideo(id, url){
 	console.log('id=',id, ',url=',url);
     var player = dashjs.MediaPlayer().create();
-    player.initialize(document.querySelector("#video_" + id), url, true);
+    player.initialize(document.querySelector("#video_" + id), url, false);
 }
 function setActiveContents(bmscId, serviceAreaId){
 	$.ajax({
