@@ -650,15 +650,16 @@ function embmsList(data, bmscId, bmscName){
 		$btn.attr("onclick","delEmbms(" + embmsId +")");
 		$i.attr("class","fa fa-close");
 		$img.attr("src","img/server_network.png");
-		$img.attr("width","70px");
+		$img.attr("width","50px");
 		$h4.attr("class","text-center");
-		$h4.attr("style","height:30px;");
+		$h4.attr("style","height:20px;");
 		$h4.html(serverName + '(' + session + ')');
 		
-		$td.attr("style", "text-align:right;")
+		$td.attr("style", "text-align:center;")
 		
 		$btn.append($i);
 		$td.append($btn);
+		$td.append($("<br/>"));
 		$td.append($img);
 		$td.append($h4);
 		$tr.append( $td );
