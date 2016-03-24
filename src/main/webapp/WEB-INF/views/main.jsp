@@ -53,7 +53,7 @@
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="js/markerwithlabel.js"></script>
 	 -->
-    <script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    
 	<style type="text/css">
 	.labels {
 		color: red;

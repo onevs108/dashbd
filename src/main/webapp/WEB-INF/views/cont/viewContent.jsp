@@ -27,6 +27,7 @@
 	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 	
 	<script src="../resources/js/common.js"></script>
+	<script src="../resources/js/dash.all.min.js"></script>
 	
 <script>
 
@@ -196,8 +197,10 @@ $(document).ready(function() {
 							   </div>
 						   </div>
 						   <div class="col-sm-5" style="padding:10px 10px 10px 10px;">
-						<iframe src="${mapContent.url}" width="100%" height="400px" frameborder="0" allowfullscreen>
-						</iframe>
+						   <!-- 
+						<iframe src="${mapContent.url}" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>
+						    -->
+						<div><video data-dashjs-player src="${mapContent.url}" controls></video></div>
 						   </div>
 					    </div>
 					</div>
