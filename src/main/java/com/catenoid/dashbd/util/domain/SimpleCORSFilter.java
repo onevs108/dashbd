@@ -30,6 +30,8 @@ public class SimpleCORSFilter implements Filter {
 	        //response.setHeader("Access-Control-Allow-Origin", "*");
 	        response.addHeader("Access-Control-Allow-Origin", "http://dash.edgesuite.net");
 	        response.addHeader("Access-Control-Allow-Origin", "http://vm2.dashif.org");
+	        response.addHeader("Access-Control-Allow-Origin", "http://165.213.100.148");
+	        response.addHeader("Access-Control-Allow-Origin", "http://temp.samsung.co.kr");
 	        //response.addHeader("Access-Control-Allow-Origin", "http://test.ozrank.co.kr");
 	     
 
