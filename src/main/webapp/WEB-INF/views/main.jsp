@@ -269,7 +269,7 @@
 													<thead>
 														<tr>
 															<th>SA_ID</th>
-															<th>Description</th>
+															<th>SA_NAME</th>
 														</tr>
 													</thead>
 													<tbody>
@@ -338,7 +338,7 @@
 					<!-- end Bandwidth -->
 				</div> 
 				<div class="row">
-					<div class="col-md-9">
+					<div class="col-md-8">
 						 <div class="ibox float-e-margins">
 	                        <div class="ibox-title">
 	                            <h3>eMBMS Session Monitoring</h3>

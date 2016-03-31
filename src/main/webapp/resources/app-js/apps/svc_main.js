@@ -3,7 +3,7 @@ var g_bmscId = null;
 var default_service_area = "<div class=\"ibox-title\"><h5>Service Area  </h5></div>";
 default_service_area += "<div class=\"ibox-content\">";
 default_service_area += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th></tr></thead>";
 default_service_area += "<tbody>";
 default_service_area += "<tr>";
 default_service_area += "<td></td>";
@@ -213,9 +213,11 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             var options = "";
             var idx = 0;
             //options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
+            
+            //메인페이지 Service Areas for BM-SC 영역
 			options += "<div class=\"ibox-content\">";
 			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th></tr></thead>";
 			options += "<tbody>";
 
             for(var i = 0; i < dataLen; i++ ) {

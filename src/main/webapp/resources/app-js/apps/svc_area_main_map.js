@@ -143,7 +143,7 @@ var toDeleteEnbs = [];
 var default_service_area = "<div class=\"ibox-title\"><h5>Service Area  </h5></div>";
 default_service_area += "<div class=\"ibox-content\">";
 default_service_area += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th></tr></thead>";
 default_service_area += "<tbody>";
 default_service_area += "<tr>";
 default_service_area += "<td></td>";
@@ -404,7 +404,7 @@ function getSeviceAreaNotMapped( bmscId ) {
             options += "<div class=\"ibox-title\"><h5>Not Mapped Service Area</h5></div>";
 			options += "<div class=\"ibox-content\">";
 			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th></tr></thead>";
 			options += "<tbody>";
 			
             for( var i = 0; i < dataLen; i++ ) {
@@ -423,8 +423,10 @@ function getSeviceAreaNotMapped( bmscId ) {
             }
 
             options += "</tbody>";
-            
-            options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            if(dataLen > 10) {
+            	//alert(dataLen);
+            	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            }
             
             options += "</table></div>";
             
@@ -978,7 +980,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             options += "<div class=\"ibox-title\"><h5>Service Area for " + city + "</h5></div>";
 			options += "<div class=\"ibox-content\">";
 			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">Description</th></tr></thead>";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th></tr></thead>";
 			options += "<tbody>";
 			
             for(var i=0; i<dataLen; i++){
@@ -999,7 +1001,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 
             options += "</tbody>";
             
-            if(dataLen > 30) {
+            if(dataLen > 10) {
             	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
             }
             

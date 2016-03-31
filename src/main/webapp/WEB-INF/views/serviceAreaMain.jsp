@@ -266,7 +266,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>SA_ID</th>
-                                                    <th>Description</th>
+                                                    <th>SA_NAME</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
