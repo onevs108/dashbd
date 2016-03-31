@@ -27,7 +27,11 @@
 	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 	
 	<script src="../resources/js/common.js"></script>
-	<script src="../resources/js/dash.all.min.js"></script>
+	<!--
+	 dash.all.debug.js
+	 dash.all.min.js
+	 -->
+	<script src="../resources/js/dash.all.debug.js"></script>
 	
 <script>
 

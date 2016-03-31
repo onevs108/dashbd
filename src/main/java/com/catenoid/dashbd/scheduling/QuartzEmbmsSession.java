@@ -55,11 +55,13 @@ public class QuartzEmbmsSession extends QuartzJobBean{
 	              InputStreamReader isr = new InputStreamReader(is);
 	              BufferedReader br = new BufferedReader(isr);
 	              String line;
+	              StringBuffer sb = new StringBuffer();
 	              while((line = br.readLine()) != null) {
-	                  System.out.println(line);
+	                 // System.out.println(line);
+	            	  sb.append(line);
 	              }
-	            //String line = "session Cnt:3";  //for TEST
-				String sessionCnt = line.substring(RETURN_SHELL.length());
+	            
+				String sessionCnt = sb.substring(RETURN_SHELL.length());
 				params.put("sessionCnt", sessionCnt);
 				params.put("id", id);
 				mapper.updateEmbms(params);
