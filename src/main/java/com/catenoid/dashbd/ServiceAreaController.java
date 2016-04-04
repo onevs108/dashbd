@@ -44,6 +44,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,6 +72,7 @@ import com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaSchedule;
 import com.catenoid.dashbd.dao.model.ServiceAreaScheduleExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
+import com.catenoid.dashbd.dao.model.Users;
 
 /**
  * Handles requests for the application home page.
@@ -518,7 +520,7 @@ public class ServiceAreaController {
 				logger.info("INSERT RESULT: " + res);
 			}
 			else {
-				/// 다른 서비스에어리어에 묶여있는 기지국(enb_ap)일 경우 수신된 서비스에어리어로 재 mapping한다.
+				/// �떎瑜� �꽌鍮꾩뒪�뿉�뼱由ъ뼱�뿉 臾띠뿬�엳�뒗 湲곗�援�(enb_ap)�씪 寃쎌슦 �닔�떊�맂 �꽌鍮꾩뒪�뿉�뼱由ъ뼱濡� �옱 mapping�븳�떎.
 				ServiceAreaEnbAp record = new ServiceAreaEnbAp();
 				record.setServiceAreaId(Integer.parseInt(request.getParameter("id")));
 				int res = mapper.updateByExampleSelective(record, exm);
@@ -858,6 +860,7 @@ public class ServiceAreaController {
 			obj.put("latitude", data.getLatitude());
 			obj.put("plmn", data.getPlmn());
 			obj.put("mbsfn", data.getMbsfn());
+			obj.put("mapCity", data.getMapCity());
 			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("totalCount", data.getTotalCount());
@@ -874,7 +877,7 @@ public class ServiceAreaController {
 	}
 	
 	/**
-	 * ENB 리스트 리턴
+	 * ENB 由ъ뒪�듃 由ы꽩
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/getEnbsList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
@@ -1134,7 +1137,7 @@ public class ServiceAreaController {
 			searchParam.setPerPage(perPage);
 			searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
 			searchParam.setServiceAreaCity(URLDecoder.decode(request.getParameter("city"), "utf-8"));
-			
+			searchParam.setToSearchTxt(URLDecoder.decode(request.getParameter("toSearchTxt"), "utf-8"));
 			List<BmscServiceArea> datas = mapper.getSeviceAreaByBmScCity(searchParam);
 			
 			JSONArray array = new JSONArray();
@@ -1144,6 +1147,7 @@ public class ServiceAreaController {
 				obj.put("bmscId", data.getBmscId());
 				obj.put("serviceAreaId", data.getServiceAreaId());
 				obj.put("serviceAreaName", data.getServiceAreaName());
+				obj.put("description", data.getDescription());
 				obj.put("totalCount", data.getTotalCount());
 				array.add(obj);
 			}
@@ -1248,7 +1252,7 @@ public class ServiceAreaController {
 	@RequestMapping(value = "/api/bandwidthByServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getScheduleGBRSum(HttpServletRequest request, HttpServletResponse response) {
 		/*
-		 * 	현재시간 기점으로 GBR 합산 한 값을 리턴하는 메소드 호출하는 샘플코드 
+		 * 	�쁽�옱�떆媛� 湲곗젏�쑝濡� GBR �빀�궛 �븳 媛믪쓣 由ы꽩�븯�뒗 硫붿냼�뱶 �샇異쒗븯�뒗 �깦�뵆肄붾뱶 
 		 */
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
@@ -1310,6 +1314,9 @@ public class ServiceAreaController {
 		
 		String[] enbId = enbIds.split( "," );
 		
+		JSONArray array = new JSONArray();
+		JSONObject obj = new JSONObject();
+		int NEnbCnt = 0;
 		for( int i = 0; i < enbId.length; i++ ) {
 			if( enbId[i].contains( "-" ) || enbId[i].contains( "~" ) ) {
 				String[] fromToEnbId = null;
@@ -1327,20 +1334,38 @@ public class ServiceAreaController {
 						searchParam = new HashMap();
 						searchParam.put("serviceAreaId", serviceAreaId );
 						searchParam.put("enbApId", Integer.valueOf(enb));
-						addCount += mapper.addToServiceArea(searchParam);
+						int enbCnt = mapper.selectEnbListCount(searchParam);
+						if(enbCnt > 0){
+							addCount += mapper.addToServiceArea(searchParam);
+						}else{
+							NEnbCnt++;
+						}
 					}
 				}
 			} else {
 				//System.out.println( "enbApId=[" + enbId[i].trim() + "]" );
-				
 				searchParam = new HashMap();
 				searchParam.put("serviceAreaId", serviceAreaId );
 				searchParam.put("enbApId", Integer.valueOf(enbId[i].trim()));
-				addCount += mapper.addToServiceArea(searchParam);
+				int enbCnt = mapper.selectEnbListCount(searchParam);
+				if(enbCnt > 0){
+					addCount += mapper.addToServiceArea(searchParam);
+				}else{
+					NEnbCnt++;
+				}
 
 			}
+			obj.put( "enbCnt", enbId.length);
+			obj.put( "NEnbCnt", NEnbCnt);
+			array.add( obj );
 		}
 
+		try {
+			response.setContentType( "application/x-www-form-urlencoded; charset=utf-8" );
+	        response.getWriter().print( array.toJSONString() );
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 		return;
 	}
 	
@@ -1422,7 +1447,7 @@ public class ServiceAreaController {
 			Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
 			Integer bandwidth = request.getParameter("serviceAreaBandwidth") == null ? 0 : Integer.valueOf(request.getParameter("serviceAreaBandwidth"));
 			String name = URLDecoder.decode(request.getParameter("serviceAreaName"), "UTF-8");
-			String description = URLDecoder.decode(request.getParameter("serviceAreaDescription"));
+			String description = URLDecoder.decode(request.getParameter("serviceAreaDescription"), "UTF-8");
 			String city = request.getParameter("serviceAreaCity");
 			
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
@@ -1434,27 +1459,70 @@ public class ServiceAreaController {
 			searchParam.put("description", description);
 			searchParam.put("city", city);
 			
-			System.out.println( "name=" + name );
-			int rst = mapper.createServiceArea(searchParam);
+			int selCnt = mapper.selectServiceAreaCnt(searchParam);
+			System.out.println( "selCnt=" + selCnt );
 			
-			if( rst == 1 ) {
-				searchParam = new HashMap();
-				searchParam.put("bmscId", bmscId);
-				searchParam.put("serviceAreaId", serviceAreaId);
-				
-				rst = mapper.createBmScServiceArea(searchParam);
-			}
-	
 			JSONObject obj = new JSONObject();
-			obj.put("count", rst);
-
+			if(selCnt == 0){
+				int rst = mapper.createServiceArea(searchParam);
+				
+				if( rst == 1 ) {
+					searchParam = new HashMap();
+					searchParam.put("bmscId", bmscId);
+					searchParam.put("serviceAreaId", serviceAreaId);
+					
+					rst = mapper.createBmScServiceArea(searchParam);
+				}
+				obj.put("count", rst);
+			}else{
 		
+				obj.put("count", "0");
+			}
+
 	        response.getWriter().print(obj.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
 	
+	@RequestMapping(value = "/api/editServiceArea.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void editServiceArea(HttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			Integer bmscId = Integer.valueOf(request.getParameter("bmscId"));
+			Integer serviceAreaId = Integer.valueOf(request.getParameter("serviceAreaId"));
+			String name = URLDecoder.decode(request.getParameter("serviceAreaName"), "UTF-8");
+			String description = URLDecoder.decode(request.getParameter("serviceAreaDescription"), "UTF-8");
+			String city = request.getParameter("serviceAreaCity");
+			
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			HashMap< String, Object > searchParam = new HashMap();
+			searchParam.put("serviceAreaId", serviceAreaId);
+			searchParam.put("name", name);
+			searchParam.put("description", description);
+			searchParam.put("city", city);
+			
+			int selCnt = mapper.selectServiceAreaCnt(searchParam);
+			System.out.println( "selCnt=" + selCnt );
+			
+			JSONObject obj = new JSONObject();
+			if(selCnt == 0){
+				obj.put("count", "0");
+			}else{
+				ServiceArea record = new ServiceArea();
+				record.setId(Integer.parseInt(request.getParameter("serviceAreaId")));
+				if(valueCheck(URLDecoder.decode(request.getParameter("serviceAreaName"), "UTF-8"))) record.setName(URLDecoder.decode(request.getParameter("serviceAreaName"), "UTF-8"));
+				record.setDescription(description);
+				int res = mapper.updateByPrimaryKeySelective(record);
+				obj.put("count", res);
+			}
+
+	        response.getWriter().print(obj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 	@RequestMapping(value = "/api/createENB.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void createENB(HttpServletRequest request, HttpServletResponse response) {
 
@@ -1596,7 +1664,7 @@ public class ServiceAreaController {
                     file = new File( uploadPath + fileName );
                     mFile.transferTo( file );
                      
-                    // Excel 파일 읽기!!
+                    // Excel �뙆�씪 �씫湲�!!
                     list = readExcelFileXLSX( file );
 
                 } catch( Exception e ) {
@@ -1723,6 +1791,7 @@ public class ServiceAreaController {
 			obj.put( "bmscId", data.getBmscId() );
 			obj.put( "serviceAreaId", data.getServiceAreaId() );
 			obj.put( "serviceAreaName", data.getServiceAreaName() );
+			obj.put( "description", data.getDescription());
 			obj.put( "totalCount", data.getTotalCount() );
 			array.add( obj );
 		}
@@ -1775,11 +1844,11 @@ public class ServiceAreaController {
 		columnList.add( "bmsc_id" );
 
 		/*
-		//MAP의 KEY값을 담기위함 
+		//MAP�쓽 KEY媛믪쓣 �떞湲곗쐞�븿 
 		if( list != null && list.size() > 0 ) {
-		    //LIST의 첫번째 데이터의 KEY값만 알면 되므로 
+		    //LIST�쓽 泥ル쾲吏� �뜲�씠�꽣�쓽 KEY媛믩쭔 �븣硫� �릺誘�濡� 
 		    Map<String,Object>m = list.get( 0 );
-		    //MAP의 KEY값을 columnList객체에 ADD 
+		    //MAP�쓽 KEY媛믪쓣 columnList媛앹껜�뿉 ADD 
 		    for( String k : m.keySet() ) {
 		        columnList.add( k );
 		    }
@@ -1797,7 +1866,7 @@ public class ServiceAreaController {
 		XSSFWorkbook workbook = downloadExcel( list, columnList );
 		
 		try {
-			OutputStream xlsOut = response.getOutputStream(); //OutputStream으로 엑셀을 저장한다.
+			OutputStream xlsOut = response.getOutputStream(); //OutputStream�쑝濡� �뿊���쓣 ���옣�븳�떎.
 			workbook.write( xlsOut );
 			xlsOut.close();
 	    } catch( Exception e ) {
@@ -1855,11 +1924,11 @@ public class ServiceAreaController {
 		columnList.add( "bmsc_id" );
 
 		/*
-		//MAP의 KEY값을 담기위함 
+		//MAP�쓽 KEY媛믪쓣 �떞湲곗쐞�븿 
 		if( list != null && list.size() > 0 ) {
-		    //LIST의 첫번째 데이터의 KEY값만 알면 되므로 
+		    //LIST�쓽 泥ル쾲吏� �뜲�씠�꽣�쓽 KEY媛믩쭔 �븣硫� �릺誘�濡� 
 		    Map<String,Object>m = list.get( 0 );
-		    //MAP의 KEY값을 columnList객체에 ADD 
+		    //MAP�쓽 KEY媛믪쓣 columnList媛앹껜�뿉 ADD 
 		    for( String k : m.keySet() ) {
 		        columnList.add( k );
 		    }
@@ -1877,7 +1946,7 @@ public class ServiceAreaController {
 		XSSFWorkbook workbook = downloadExcel( list, columnList );
 		
 		try {
-			OutputStream xlsOut = response.getOutputStream(); //OutputStream으로 엑셀을 저장한다.
+			OutputStream xlsOut = response.getOutputStream(); //OutputStream�쑝濡� �뿊���쓣 ���옣�븳�떎.
 			workbook.write( xlsOut );
 			xlsOut.close();
 	    } catch( Exception e ) {
@@ -1889,37 +1958,37 @@ public class ServiceAreaController {
     
     public XSSFWorkbook downloadExcel( List<HashMap> list, ArrayList<String> columnList )
     {
-    	//1차로 workbook을 생성 
+    	//1李⑤줈 workbook�쓣 �깮�꽦 
     	XSSFWorkbook workbook = new XSSFWorkbook();
-    	//2차는 sheet생성 
+    	//2李⑤뒗 sheet�깮�꽦 
     	XSSFSheet sheet = workbook.createSheet( "eNBs" );
-    	//엑셀의 행 
+    	//�뿊���쓽 �뻾 
     	XSSFRow row = null;
-    	//엑셀의 셀 
+    	//�뿊���쓽 �� 
     	XSSFCell cell = null;
     	
     	row = sheet.createRow( (short)0 );
         if( columnList != null && columnList.size() > 0 ) {
             for( int j = 0; j < columnList.size(); j++ ) {
-                //생성된 row에 컬럼을 생성한다 
+                //�깮�꽦�맂 row�뿉 而щ읆�쓣 �깮�꽦�븳�떎 
                 cell = row.createCell( j );
-                //map에 담긴 데이터를 가져와 cell에 add한다 
+                //map�뿉 �떞湲� �뜲�씠�꽣瑜� 媛��졇�� cell�뿉 add�븳�떎 
                 cell.setCellValue( String.valueOf( columnList.get( j ) ) );
             }
         }
         
-    	//임의의 DB데이터 조회 
+    	//�엫�쓽�쓽 DB�뜲�씠�꽣 議고쉶 
     	if( list != null && list.size() > 0 ) {
     	    int i = 1;
     	    for( HashMap<String,Object>mapobject : list ) {
-    	        // 시트에 하나의 행을 생성한다(i 값이 0이면 첫번째 줄에 해당) 
+    	        // �떆�듃�뿉 �븯�굹�쓽 �뻾�쓣 �깮�꽦�븳�떎(i 媛믪씠 0�씠硫� 泥ル쾲吏� 以꾩뿉 �빐�떦) 
     	        row = sheet.createRow( (short)i );
     	        i++;
     	        if( columnList != null && columnList.size() > 0 ) {
     	            for( int j = 0; j < columnList.size(); j++ ) {
-    	                //생성된 row에 컬럼을 생성한다 
+    	                //�깮�꽦�맂 row�뿉 而щ읆�쓣 �깮�꽦�븳�떎 
     	                cell = row.createCell( j );
-    	                //map에 담긴 데이터를 가져와 cell에 add한다 
+    	                //map�뿉 �떞湲� �뜲�씠�꽣瑜� 媛��졇�� cell�뿉 add�븳�떎 
     	                if( mapobject.get( columnList.get( j ) ) != null ) {
     	                	cell.setCellValue( String.valueOf( mapobject.get( columnList.get( j ) ) ) );
     	                } else {
@@ -1931,7 +2000,7 @@ public class ServiceAreaController {
     	}
     	
 		for( int i = 0; i < columnList.size(); i++ ) {
-			sheet.autoSizeColumn(i); //cell 크기 자동 맞춤
+			sheet.autoSizeColumn(i); //cell �겕湲� �옄�룞 留욎땄
 		}
 		
     	return workbook;
@@ -1997,6 +2066,7 @@ public class ServiceAreaController {
 			obj.put( "bmscId", data.get( "bmscId" ) );
 			obj.put( "serviceAreaId", data.get( "serviceAreaId" ) );
 			obj.put( "serviceAreaName", data.get( "serviceAreaName" ) );
+			obj.put( "description", data.get( "description" ) );
 			obj.put( "totalCount", data.get( "totalCount" ) );
 			array.add( obj );
 		}
@@ -2007,6 +2077,57 @@ public class ServiceAreaController {
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/serviceAreaByDelete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String serviceAreaByDelete(@ModelAttribute Users user, HttpServletRequest request) {
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		Users userOfSession = (Users) session.getAttribute("USER");
+		if (userOfSession == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		logger.info("-> [user = {}], [userOfSession = {}]", user.toString(), userOfSession.toString());
+		
+		HashMap< String, Object > serviceParam = new HashMap();
+		serviceParam.put("serviceAreaId", request.getParameter( "serviceAreaId" ));
+		
+		int serviceDelCnt = mapper.serviceAreaByDelete(serviceParam);
+		System.out.println( "serviceDelCnt=" + serviceDelCnt );
+		
+		JSONObject obj = new JSONObject();
+		
+		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN){
+			if(serviceDelCnt == 0){
+				jsonResult.put("result", "NoData");
+			}else{
+				if(request.getParameter("dType").toString().equals("N")){
+					jsonResult.put("result", "SUCCESS");
+				}else{
+					int enBDelCnt = mapper.serviceAreaByENBDelete(serviceParam);
+					if(enBDelCnt == 0){
+						jsonResult.put("result", "NoData");
+					}else{
+						jsonResult.put("result", "SUCCESS");
+					}
+				}
+			}
+		}else{
+			jsonResult.put("result", "NoAuth");
+		}
+
+		return jsonResult.toString();
 	}
     
 }

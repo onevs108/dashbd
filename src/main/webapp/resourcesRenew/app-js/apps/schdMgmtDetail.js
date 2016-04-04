@@ -270,14 +270,14 @@ function setTimeTable(data ){
 			   week:  "YYYY MMMM",
 			   day: 'YYYY-MM-DD dddd'
 			},
-		selectable: true,
+		selectable: false,
 		selectHelper: true,
 		select: function(start, end) {
 			//console.log('select');
-			var ret = confirm('Do you want to add a new schedule?');
-			if (ret) {
-				location.href='/dashbd/view/schedule.do';
-			}
+			//var ret = confirm('Do you want to add a new schedule?');
+			//if (ret) {
+			//	location.href='/dashbd/view/schedule.do';
+			//}
 		},
 		editable: true,
 		eventLimit: true, // allow "more" link when too many events

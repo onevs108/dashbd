@@ -20,6 +20,7 @@
   	<result column="latitude" property="latitude" jdbcType="DECIMAL" />
   	<result column="plmn" property="plmn" jdbcType="VARCHAR" />
   	<result column="mbsfn" property="mbsfn" jdbcType="VARCHAR" />
+  	<result column="map_city" property="mapCity" jdbcType="VARCHAR" />
   	<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -61,6 +62,7 @@
 		<result column="latitude" property="latitude" jdbcType="DECIMAL" />
 		<result column="plmn" property="plmn" jdbcType="VARCHAR" />
 		<result column="mbsfn" property="mbsfn" jdbcType="VARCHAR" />
+  		<result column="map_city" property="mapCity" jdbcType="VARCHAR" />
 		<result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
@@ -76,6 +78,7 @@
 		<result column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
 		<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
 		<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
 
@@ -104,6 +107,7 @@
 		<result column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
 		<result column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
 		<result column="service_area_name" property="serviceAreaName" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>	
 		
@@ -227,6 +231,7 @@
 	t2.latitude as latitude, 
 	t2.plmn as plmn,
 	t2.mbsfn as mbsfn,
+	t2.city as map_city,
 	t1.created_at, t1.updated_at
 	from service_area_enb_ap t1, enb_ap t2, service_area t3
 	<if test="_parameter != null" >
@@ -249,6 +254,7 @@
 	t2.latitude as latitude, 
 	t2.plmn as plmn,
 	t2.mbsfn as mbsfn,
+	t2.city as map_city,
 	t1.created_at, t1.updated_at
 	from 	service_area_enb_ap t1 right outer join enb_ap t2 on t1.enb_ap_id = t2.id
 	<if test="_parameter != null" >
@@ -380,6 +386,9 @@
       <if test="createdAt != null" >
         created_at = #{createdAt,jdbcType=TIMESTAMP},
       </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
         updated_at = now(),
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -441,7 +450,8 @@
 		t2.latitude as latitude, 
 		t2.plmn as plmn,
 		t2.mbsfn as mbsfn,
-		t1.created_at, t1.updated_at
+		t1.created_at, t1.updated_at,
+		t2.city as map_city
 		, 1 as totalCount
 	from 
 		service_area_enb_ap t1, enb_ap t2, service_area t3
@@ -454,7 +464,7 @@
 		and t2.bmsc_id = #{bmscId,jdbcType=INTEGER}
 		</if>
 		and t1.service_area_id = t3.id
-	order by t1.created_at desc
+	order by t1.enb_ap_id
 	</select>
 	
 	<select id="getEnbsList" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
@@ -482,7 +492,7 @@
 			WHERE 
 				operator_id = #{operatorId}
 				and bmsc_id = #{bmscId}
-			ORDER BY 	<if test="sort == null">created_at desc</if>
+			ORDER BY 	<if test="sort == null">id</if>
 						<if test="sort != null">
 							<if test="sort == 'id'">id</if>
 							<if test="sort == 'name'">name</if>
@@ -674,7 +684,7 @@
 	</select>
 
 	<select id="getServiceAreaByLatLng" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
-	select a.bmsc_id, a.service_area_id, d.name, count(*) as totalCount
+	select a.bmsc_id, a.service_area_id, d.name, d,description, count(*) as totalCount
 	from bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
 	where 1 = 1
 	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
@@ -710,7 +720,7 @@
 	
 	<select id="getSeviceAreaByBmScCity" resultMap="ServiceAreaByBmScCity" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
 	select 
-		a.bmsc_id, a.service_area_id, d.name as service_area_name
+		a.bmsc_id, a.service_area_id, d.name as service_area_name, d.description
 		, (select count(*) from service_area_enb_ap x where x.service_area_id = a.service_area_id) as totalCount
 	from 
 		bmsc_service_area a, service_area_enb_ap b, enb_ap c, service_area d
@@ -723,8 +733,11 @@
 			and c.city = #{serviceAreaCity,jdbcType=VARCHAR}
 		</if>
 		and d.id = a.service_area_id
+		<if test="toSearchTxt != null and toSearchTxt != ''">
+			and (a.service_area_id LIKE CONCAT('%', #{toSearchTxt}, '%') or d.name LIKE CONCAT('%', #{toSearchTxt}, '%') )
+		</if>
 	group by a.bmsc_id, a.service_area_id, d.name	
-	order by d.created_at desc
+	order by a.service_area_id
 	limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 	
@@ -838,6 +851,13 @@
 	</delete>
 
 	<!-- Service Area 생성 -->
+	<select id="selectServiceAreaCnt" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" resultType="java.lang.Integer" >
+	select count(*)
+	from service_area
+	where id = #{serviceAreaId,jdbcType=INTEGER}
+	</select>
+
+	<!-- Service Area 생성 -->
 	<insert id="createServiceArea" parameterType="com.catenoid.dashbd.dao.model.ServiceArea" >
 	insert into service_area 
 	(id, bandwidth, name, city, description, created_at, updated_at)
@@ -891,7 +911,7 @@
 	</insert>
 
 	<select id="getSeviceAreaByBmScId" resultMap="ServiceAreaByBmScId" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
-	select a.bmsc_id, a.service_area_id, d.name as service_area_name
+	select a.bmsc_id, a.service_area_id, d.name as service_area_name, d.description
 	, (	select count(*) from ( select x.service_area_id
 		from bmsc_service_area x, service_area_enb_ap y, enb_ap z
 		where 1 = 1 and x.bmsc_id = #{bmscId,jdbcType=INTEGER} 
@@ -987,7 +1007,7 @@
 	
 	<select id="getSeviceAreaNotMapped" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
 	select 
-		a.bmsc_id as bmscId, a.service_area_id as serviceAreaId, b.name as serviceAreaName
+		a.bmsc_id as bmscId, a.service_area_id as serviceAreaId, b.name as serviceAreaName, b.description
 		, (	
 			select count(*) 
 			from bmsc_service_area a, service_area b
@@ -1001,7 +1021,22 @@
 	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
 	and b.id = a.service_area_id
 	and not exists ( select service_area_id from service_area_enb_ap where bmsc_id = a.bmsc_id  and service_area_id = a.service_area_id )
-	order by b.created_at desc
+	order by a.service_area_id asc
 	</select>
-		 
+	
+	<delete id="serviceAreaByDelete" parameterType="java.util.HashMap" >
+	    DELETE FROM service_area
+	    WHERE id = #{serviceAreaId}
+	</delete>
+	
+	<delete id="serviceAreaByENBDelete" parameterType="java.util.HashMap" >
+	    DELETE FROM service_area_enb_ap
+	    WHERE service_area_id = #{serviceAreaId}
+	</delete>
+	
+	<select id="selectEnbListCount" resultType="Integer" parameterType="java.util.HashMap">
+	    SELECT COUNT(*)
+		FROM enb_ap
+	    WHERE id = #{enbApId}
+	</select>
 </mapper>

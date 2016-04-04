@@ -16,6 +16,8 @@ public class BmscServiceAreaSearchParam {
 	private String serviceAreaName;
 	
 	private String serviceAreaCity;
+	
+	private String toSearchTxt;
 
     private Date createdAt;
 
@@ -87,6 +89,14 @@ public class BmscServiceAreaSearchParam {
 
 	public void setServiceAreaCity(String serviceAreaCity) {
 		this.serviceAreaCity = serviceAreaCity;
+	}
+
+	public String getToSearchTxt() {
+		return toSearchTxt;
+	}
+
+	public void setToSearchTxt(String toSearchTxt) {
+		this.toSearchTxt = toSearchTxt;
 	}
 
 	public Integer getServiceAreaBandwidth() {

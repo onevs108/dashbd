@@ -41,11 +41,13 @@ $(document).ready(function()
 			$("#samplePercentage").prop('disabled', false);
 			$("#reportType").prop('disabled', false);
 			$("#randomTime").prop('disabled', false);
+			changePercentage();
 		}else{
 			$("#offsetTime").prop('disabled', true);
 			$("#samplePercentage").prop('disabled', true);
 			$("#reportType").prop('disabled', true);
 			$("#randomTime").prop('disabled', true);
+			$("#samplePercentage").val("");
 		}
 	});
 	
@@ -141,8 +143,6 @@ function displayRatio(){
 	}
 }
 
-
-
 function setDefaultQCI_Level_SegmentAvailableOffset(){
 	if ($("#QCI").val() == '')
 		$("#QCI").val(1);
@@ -152,7 +152,14 @@ function setDefaultQCI_Level_SegmentAvailableOffset(){
 
 	if ($("#SegmentAvailableOffset").val() == '')
 		$("#SegmentAvailableOffset").val(10);
-	
-	
-	
+}
+
+function changePercentage(){
+	if ($("#reportType").val()== 'RAck'){
+		$("#samplePercentage").prop('disabled', true);
+		$("#samplePercentage").val("100");
+	}else{
+		$("#samplePercentage").prop('disabled', false);
+		$("#samplePercentage").val("");
+	}
 }

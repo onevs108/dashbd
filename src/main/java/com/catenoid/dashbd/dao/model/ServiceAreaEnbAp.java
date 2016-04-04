@@ -49,6 +49,8 @@ public class ServiceAreaEnbAp {
     private Integer operatorId;
     
     private Integer bmscId;
+    
+    private String mapCity;
 
     public Integer getServiceAreaId() {
         return serviceAreaId;
@@ -233,4 +235,13 @@ public class ServiceAreaEnbAp {
     public void setBmscId(Integer bmscId) {
         this.bmscId = bmscId;
     }
+
+	public String getMapCity() {
+		return mapCity;
+	}
+
+	public void setMapCity(String mapCity) {
+		this.mapCity = mapCity;
+	}
+    
 }

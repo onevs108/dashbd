@@ -52,7 +52,7 @@ public class ScheduleMgmtController {
 	private XmlManager xmlManager;
 	
 	/**
-	 * 스케줄 메인페이지
+	 * �뒪耳�以� 硫붿씤�럹�씠吏�
 	 * @param params
 	 * @param req
 	 * @param locale
@@ -63,7 +63,7 @@ public class ScheduleMgmtController {
 	 */
 	@RequestMapping(value = "/view/schdMgmt.do")
 	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request) throws UnsupportedEncodingException {
-		//bmcm 와 serviceArea  값으로  스케줄 정보를 가져온다.
+		//bmcm �� serviceArea  媛믪쑝濡�  �뒪耳�以� �젙蹂대�� 媛��졇�삩�떎.
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		try
 		{
@@ -114,7 +114,7 @@ public class ScheduleMgmtController {
 	}
 	
 	/**
-	 * 스케줄 메인페이지 > timetable 스케줄 가져오기(ajax)
+	 * �뒪耳�以� 硫붿씤�럹�씠吏� > timetable �뒪耳�以� 媛��졇�삤湲�(ajax)
 	 * @param params
 	 * @param req
 	 * @param locale
@@ -182,7 +182,7 @@ public class ScheduleMgmtController {
 	}
 	
 	/**
-	 * 스케줄 상세페이지 > 팝업 > 스케줄 추가(ajax)
+	 * �뒪耳�以� �긽�꽭�럹�씠吏� > �뙘�뾽 > �뒪耳�以� 異붽�(ajax)
 	 * @param params
 	 * @param req
 	 * @param locale
@@ -235,7 +235,7 @@ public class ScheduleMgmtController {
 				ret = mapper.updateBroadcastInfo(params);
 				logger.info("updateSchedule ret{}", ret);
 
-				//@ xml update 연동
+				//@ xml update �뿰�룞
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
@@ -254,7 +254,7 @@ public class ScheduleMgmtController {
 	
 
 	/**
-	 * 스케줄 메인페이지 > 스케줄 상세페이지
+	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏�
 	 * @param locale
 	 * @param model
 	 * @return
@@ -274,7 +274,7 @@ public class ScheduleMgmtController {
 	}
 	
 	/**
-	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지
+	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏�
 	 */
 	@RequestMapping(value = "view/schedule.do")
 	public ModelAndView schedule( @RequestParam Map< String, Object > params) throws UnsupportedEncodingException {
@@ -290,11 +290,11 @@ public class ScheduleMgmtController {
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
 			mapSchedule.put("service_name", "tmpServName");
 			mapSchedule.put("language", "en");
-			mapSchedule.put("GBR", "1400001");
+			mapSchedule.put("GBR", "140000000");
 			mapSchedule.put("QCI", "1");
 			mapSchedule.put("FileRepair", "off");
 			mapSchedule.put("receptionReport", "off");
-			
+			 
 			
 		}
 		mv.addObject( "mapContentUrl", mapContentUrl );
@@ -303,7 +303,7 @@ public class ScheduleMgmtController {
 	}
 	
 	/**
-	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지 > 등록, 수정
+	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏� > �벑濡�, �닔�젙
 	 * @param locale
 	 * @param model
 	 * @return
@@ -378,8 +378,8 @@ public class ScheduleMgmtController {
 	}
 	
 	/**
-	 * 스케줄 메인페이지 > 스케줄 상세페이지 > broadcast  상세페이지 > 삭제
-	 * bcid가 있으면  BMSC삭제 연동. 없으면 db만 삭제처리.
+	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏� > �궘�젣
+	 * bcid媛� �엳�쑝硫�  BMSC�궘�젣 �뿰�룞. �뾾�쑝硫� db留� �궘�젣泥섎━.
 	 * @param params
 	 * @param req
 	 * @param locale

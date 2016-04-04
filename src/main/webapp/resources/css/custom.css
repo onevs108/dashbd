@@ -228,3 +228,9 @@ div.scheduled-content-entry {
 	border-image: none;
 	border-width: 1px 0px;
 }
+.text-importance{color:red}
+
+.tr-highlighted {
+    color: #261F1D;
+    background-color: #E5C37E;
+}

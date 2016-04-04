@@ -15,6 +15,10 @@ $(document).ready(function()
     
     // default bm-sc setting
     getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val());
+    
+    $('#form-modal').on('hidden.bs.modal', function (e) {
+		$('#form-modal').find('input').val('');
+	})
 });
 
 //BmSc 조회 by operator id

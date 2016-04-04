@@ -105,10 +105,6 @@
 						</a>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>
-<!-- 							<span class="label label-primary">8</span> -->
-						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
 								<a href="mailbox.html">
@@ -154,9 +150,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="login.html">
-							<img src="img/samsung_small.png">
-						</a>
+						<img src="img/samsung_small.png">
 					</li>
 				</ul>
 			</nav>

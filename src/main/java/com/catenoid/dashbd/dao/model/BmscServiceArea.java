@@ -16,6 +16,8 @@ public class BmscServiceArea {
 	private String serviceAreaName;
 	
 	private String serviceAreaCity;
+	
+	private String description;
 
     private Date createdAt;
 
@@ -85,6 +87,14 @@ public class BmscServiceArea {
 
 	public void setServiceAreaCity(String serviceAreaCity) {
 		this.serviceAreaCity = serviceAreaCity;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Integer getServiceAreaBandwidth() {

@@ -28,11 +28,11 @@ $(document).ready(function()
     });
     
     $('#bmsc').change(function(){
-        //alert( $('#bmsc option:selected').val() );
-    	drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
-    	//inbo add START
-    	callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);
-    	//inbo add END
+		$("#viewProgram").hide();
+		drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
+		//inbo add START
+		callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);
+		//inbo add END
     });
 });
 

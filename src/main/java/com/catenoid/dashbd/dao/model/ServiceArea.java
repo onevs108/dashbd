@@ -11,6 +11,8 @@ public class ServiceArea {
 
     private String city;
 
+    private String description;
+
     private Date createdAt;
 
     private Date updatedAt;
@@ -38,8 +40,16 @@ public class ServiceArea {
     public void setCity(String city) {
         this.city = city == null ? null : city.trim();
     }
+    
+    public String getDescription() {
+		return description;
+	}
 
-    public Date getCreatedAt() {
+	public void setDescription(String description) {
+		this.description = description == null ? null : description;
+	}
+
+	public Date getCreatedAt() {
         return createdAt;
     }
 

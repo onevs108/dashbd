@@ -15,9 +15,12 @@ import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
+import com.catenoid.dashbd.dao.model.Users;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ServiceAreaMapper {
@@ -92,5 +95,12 @@ public interface ServiceAreaMapper {
     List<HashMap<String, Object>> getSeviceAreaNotMapped(HashMap<String, Integer> searchParm);
     
     List<ServiceAreaEnbAp> getEnbsList(HashMap<String, Object> example);
+    
+    int selectServiceAreaCnt(HashMap< String, Object > searchParm);
+    
+    int serviceAreaByDelete(HashMap< String, Object > serviceParam);
+    
+    int serviceAreaByENBDelete(HashMap< String, Object > serviceParam);
 
+    int selectEnbListCount(HashMap<String, Integer> searchParam);
 }

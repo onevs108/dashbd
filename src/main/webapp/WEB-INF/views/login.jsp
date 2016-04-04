@@ -22,7 +22,6 @@
     
     <script src="/dashbd/resources/js/jquery-2.1.1.js"></script>
 	<script src="/dashbd/resources/js/bootstrap.min.js"></script>
-	
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
@@ -63,7 +62,7 @@
 				}
 			});
 		});
-		
+
 	</script>
 </head>
 
@@ -71,11 +70,11 @@
 
 	<div id="wrapper">
 		<img id="loginTitle" align="middle" src="/dashbd/resources/img/logo_small.png">
-		<form class="form-signin" id="loginForm" action="/dashbd/authentication" method="post">
+		<form class="form-signin" id="loginForm" action="/dashbd/authentication" method="post" autocomplete="off">
 			<label for="inputEmail" class="sr-only">ID</label>
-			<input type="text" id="userId" name="userId" class="form-control" placeholder="ID" required autofocus>
+			<input type="text" id="userId" name="userId" class="form-control" placeholder="ID" value="" autofocus>
 			<label for="inputPassword" class="sr-only">Password</label>
-			<input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+			<input type="password" id="password" name="password" class="form-control" placeholder="Password" value="">
 			<select class="form-control" id="operatorId" name="operatorId">
 				<option value="">Please select your operator</option>
 				<option value="-1">Super Admin</option>

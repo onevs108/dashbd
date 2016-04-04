@@ -108,10 +108,6 @@
 						</a>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>
-<!-- 							<span class="label label-primary">8</span> -->
-						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
 								<a href="mailbox.html">
@@ -157,9 +153,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="login.html">
-							<img src="img/samsung_small.png">
-						</a>
+						<img src="img/samsung_small.png">
 					</li>
 				</ul>
 			</nav>
@@ -267,17 +261,19 @@
                                                 <tr>
                                                     <th>SA_ID</th>
                                                     <th>SA_NAME</th>
+                                                    <th>COMMAND</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
                                                     <td></td>
                                                     <td></td>
+                                                    <td></td>
                                                 </tr>
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <td colspan="2">
+                                                    <td colspan="3">
                                                     </td>
                                                 </tr>
                                             </tfoot>
@@ -285,7 +281,7 @@
                                     </div><!-- end ibox-content -->
                                 </div><!-- end ibox float-e-margins -->
                             </div>
-					<div class="col-sm-12">
+							<div class="col-sm-12" id="viewEnbIDAdd" style="display:none;">
                                 <div class="ibox float-e-margins">
                                     <div class="ibox-content"><br>
 							 	<form method="get" class="form-horizontal">
@@ -304,17 +300,17 @@
                                     </div><!-- end ibox-content -->
                                 </div><!-- end ibox float-e-margins -->
                             </div>
-					   
-					   <div class="col-sm-12" style="margin-top:-30px;">
-                                <div class="ibox float-e-margins">
-                                	<div class="ibox-content" id="enb_table"><br>
+					  		 <div class="col-sm-12" style="margin-top:-30px;display:none;" id="viewEnbIDList">
+                                <div class="ibox ">
+                                	<input type="hidden" id="checkCityName" name="checkCityName">
+                                	<div class="ibox-content" id="enb_table">
                                         <table class="footable table table-stripped" data-page-size="10">
                                             <thead>
-                                                <tr>
+                                                <tr style="border-top-style:solid;border-top-width:1px;border-top-color:#c0c0c0;">
                                                     <th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3">eNB Name</th>
+                                                    <th class="col-sm-3" style="border-right-style:solid;border-right-width:1px;border-right-color:#c0c0c0;">eNB Name</th>
 										  			<th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3">eNB Name</th>
+                                                    <th class="col-sm-3" style="border-right-style:solid;border-right-width:1px;border-right-color:#c0c0c0;">eNB Name</th>
 										  			<th class="col-sm-1">eNB ID</th>
                                                     <th class="col-sm-3">eNB Name</th>
                                                 </tr>
@@ -433,10 +429,10 @@
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal">
-				<div class="form-group"><label class="col-lg-4 control-label">Service Area ID</label>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area ID</label>
 				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaId"></div>
 				</div>
-				<div class="form-group"><label class="col-lg-4 control-label">Service Area Name</label>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area Name</label>
 				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaName"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
@@ -453,6 +449,38 @@
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
+<div class="modal fade" id="editServiceAreaLayer">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="modal-title">Create New Service Area</h5>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+				<input type="hidden" placeholder="" class="form-control" id="editType">
+				<div class="form-group"><label class="col-lg-4 control-label">Service Area ID</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="editServiceAreaId" disabled></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area Name</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="editServiceAreaName"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr" id="editServiceAreaDescription"></div>
+				</div>
+				<br>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary btn-sm btn-white" id="editSvcAreaBtn">Edit Service Area</button>
+				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 </body>
 </html>

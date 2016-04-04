@@ -82,9 +82,6 @@
                     </a>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
-                    </a>
                     <ul class="dropdown-menu dropdown-alerts">
                         <li>
                             <a href="mailbox.html">
@@ -129,11 +126,9 @@
                         <i class="fa fa-sign-out"></i> Log out
                     </a>
                 </li>
-                <li>
-                    <a href="login.html">
-                        <img src="../resources/img/samsung_small.png">
-                    </a>
-                </li>
+				<li>
+					<img src="../resources/img/samsung_small.png">
+				</li>
             </ul>
         </nav>
 	</div><!-- end border-bottom -->
@@ -194,18 +189,26 @@
                         <div class="row">
                             <form method="get" class="form-horizontal">
                             <div class="form-group">
-						  		<label class="col-sm-2 control-label">Service Name</label>
+						  		<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service Name</label>
                                     <div class="col-sm-4"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
                                 <label class="col-sm-2 control-label">Language</label>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control" id="serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}">
+										<c:if test="${empty mapSchedule.BCID}">
+						                	<select class="input-sm form-control input-s-sm" id="serviceLanguage" name="serviceLanguage">
+			                    		</c:if>
+		                        		<c:if test="${not empty mapSchedule.BCID}">
+		                        			<input type="hidden" id=serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}">
+		                        			<select class="input-sm form-control input-s-sm" disabled>            	
+		                        		</c:if>
+		                        	    	    <option value="en" <c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
+	                                    </select>
                                     </div>
                              </div>
                              
                              <div class="form-group">
                                  <label class="col-sm-2 control-label">Service class</label>
                              	    <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
-                             	 <label class="col-sm-2 control-label">Service id</label>
+                             	 <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service id</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}">
                                     </div>
@@ -219,16 +222,16 @@
                                                     <h3><i class="fa fa-check text-success"> Qos</i></h3>
                                                 </div>
                                                 <div class="panel-body">
-                                                    <div class="form-group"><label class="col-sm-2 control-label">GBR</label>
-                                                        <div class="col-sm-10"><input type="text" class="form-control" id="GBR" name="GBR" required="required" value="${mapSchedule.GBR}"></div>
+                                                    <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> GBR</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control" id="GBR" name="GBR" required="required" value="${mapSchedule.GBR}"></div>
                                                     </div>
-                                                    <div class="form-group"><label class="col-sm-2 control-label">QCI</label>
-                                                        <div class="col-sm-10"><input type="text" class="form-control" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}"></div>
+                                                    <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> QCI</label>
+                                                        <div class="col-sm-9"><input type="text" class="form-control" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}"></div>
                                                     </div>
-                                                    <div class="form-group"><label class="col-sm-2 control-label">ARP</label>
-                                                        <div class="col-sm-9" style="padding:10px; margin-left:12px; background:#eee">
-                                                            <div class="form-group"><label class="col-sm-2 control-label">Level</label>
-                                                                <div class="col-sm-10"><input type="text" class="form-control" id="level" name="level" required="required" value="${mapSchedule.level}"></div>
+                                                    <div class="form-group"><label class="col-sm-3 control-label">ARP</label>
+                                                        <div class="col-sm-9" style="padding:10px; margin-left:75px; background:#eee">
+                                                            <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Level</label>
+                                                                <div class="col-sm-8"><input type="text" class="form-control" id="level" name="level" required="required" value="${mapSchedule.level}"></div>
                                                             </div>
                                                             <label>PreEmptionCapabiity</label>
                                                      			<div class="swich">
@@ -454,7 +457,7 @@
                                                     <div class="form-group">
                                                         <label class="col-sm-3 control-label">Report Type</label>
                                                         <div class="col-sm-9">
-                                                            <select class="input input-sm form-control" id="reportType" name="reportType" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>>
+                                                            <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>>
                                                                 <option value="RAck">RAck</option>
                                                                 <option value="StaR-all">StaR-all</option>
                                                             </select>

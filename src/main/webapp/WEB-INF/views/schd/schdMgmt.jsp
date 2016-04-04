@@ -6,7 +6,6 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
 	<title>Schedule Mgmt</title>
 	
 	<link href="../resources/css/bootstrap.min.css" rel="stylesheet">
@@ -118,10 +117,6 @@
 						</a>
 					</li>
 					<li class="dropdown">
-						<a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell"></i>
-<!-- 							<span class="label label-primary">8</span> -->
-						</a>
 						<ul class="dropdown-menu dropdown-alerts">
 							<li>
 								<a href="mailbox.html">
@@ -167,9 +162,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="login.html">
-							<img src="img/samsung_small.png">
-						</a>
+						<img src="../resources/img/samsung_small.png">
 					</li>
 				</ul>
 			</nav>
@@ -276,7 +269,7 @@
 				<!-- end User Mgmt -->
         
 				<!-- Contents Being Serviced -->
-				<div class="row">
+				<div class="row" id="viewProgram" style="display:none;">
 					<div class="col-md-12">
 						<div class="ibox float-e-margins">
 							<div class="ibox-title">

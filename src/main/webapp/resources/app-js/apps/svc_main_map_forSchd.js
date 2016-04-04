@@ -21,11 +21,10 @@ google.maps.event.addDomListener(window, 'load', initMap);
 
 function moveToEnb(bmscId, serviceAreaId)
 {
-
 	clearMarkers();
-	
 	var enb_datas;
-
+	$("#"+serviceAreaId).siblings().removeClass("tr-highlighted");
+	$("#"+serviceAreaId).toggleClass("tr-highlighted");
 	$.ajax({
 		url : "/dashbd/api/getServiceAreaEnbAp.do",
 		type: "get",
@@ -63,6 +62,7 @@ function moveToEnb(bmscId, serviceAreaId)
 			
 			map.setCenter(new google.maps.LatLng(enb_datas[0].latitude, enb_datas[0].longitude));
 			map.setZoom(12);
+			$("#viewProgram").show();
 		}
 	});
 	
@@ -169,18 +169,9 @@ function getServiceAreaByBmScCity(page, bmscId, city)
 			options += "<tbody>";
 
             for(var i = 0; i < dataLen; i++ ) {
-            	//options += '<li><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');">' + datas[i].serviceAreaId + '</a></li>';
-            	//options += '<tbody><tr><td>' + datas[i].serviceAreaId + '</td><td>' + datas[i].serviceAreaName + '</td></tr></tbody>';
-            	//options += '<ul class="service_area_box list-inline"><a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ');"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></a></ul>';
-            	//options += '<a href="javascript:moveToEnb(' + datas[i].bmscId + ', ' + datas[i].serviceAreaId + ', ' + datas[i].serviceAreaName + ');"><ul class="service_area_box list-inline"><li>' + datas[i].serviceAreaId + '</li><li>' + datas[i].serviceAreaName + '</li></ul></a>';
-            	
-            	if( i % 2 == 0 ) {
-            		options += "<tr class=\"footable-even\" style=\"display: table-row;\"><td>";
-            	} else {
-            		options += "<tr class=\"footable-odd\" style=\"display: table-row;\"><td>";
-            	}
+            	options += "<tr id=\"" + datas[i].serviceAreaId + "\" class=\"footable-even\" style=\"display: table-row;cursor:pointer;\" onclick=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ");\"><td>";
             	options += "<span class=\"footable-toggle\"></span>";
-            	options += "<a href=\"javascript:moveToEnb(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ");\">";
+            	options += "<a href=\"#\">";
             	options += datas[i].serviceAreaId;
             	options += " (" + datas[i].totalCount + ")";
             	options += "</a>";
@@ -204,6 +195,7 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             $("#service_area").append(options);
             
             $('.footable').footable();
+            $("#service_area").find('tr').removeClass("footable-odd");
             //$('.footable2').footable();
             
             /*
