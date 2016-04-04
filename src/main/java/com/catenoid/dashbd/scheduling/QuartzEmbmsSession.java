@@ -12,14 +12,11 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import com.catenoid.dashbd.dao.BmscMapper;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
+
 
 public class QuartzEmbmsSession extends QuartzJobBean{
 	private final String RETURN_SHELL = "Session_Cnt:";
