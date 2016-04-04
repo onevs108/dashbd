@@ -213,8 +213,8 @@
 	                                            </div>
 	                                            <div class="modal-body">
 	                                                <form method="get" class="form-horizontal">
-	                                                	<div class="form-group"><label class="col-sm-3 control-label">Operator</label>
-		                                                	<div class="col-sm-9">
+	                                                	<div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Operator</label>
+		                                                	<div class="col-sm-8">
 																<select id="form-operator-id" class="form-control" disabled="disabled">
 																	<c:forEach items="${OperatorList}" var="operator">
 																		<option value="${operator.id}">${operator.name}</option>
@@ -222,8 +222,8 @@
 																</select>
 															</div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">BM-SC</label>
-		                                                	<div class="col-sm-9">
+	                                                    <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> BM-SC</label>
+		                                                	<div class="col-sm-8">
 																<select id="form-bmsc-id" class="form-control" disabled="disabled">
 																<c:forEach var='bmscList' items="${BmscList}" varStatus="idx">
 																	<option value="${bmscList.id }">${bmscList.name }</option>
@@ -231,47 +231,47 @@
 																</select>
 															</div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">eNB Id</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-id"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> eNB ID</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-id"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">eNB Name</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-name"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> eNB Name</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-name"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Longitude</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-longitude"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Longitude</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-longitude"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Latitude</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-latitude"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Latitude</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-latitude"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">plmn</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-plmn"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">plmn</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-plmn"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Circle</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-circle"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">Circle</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-circle"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Circle Name</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-circle-name"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">Circle Name</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-circle-name"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Cluster Id</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-cluster-id"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">Cluster Id</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-cluster-id"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">IP Address</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-ipaddress"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">IP Address</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-ipaddress"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">earfcn</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-earfcn"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">earfcn</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-earfcn"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">mbsfn</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-mbsfn"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">mbsfn</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-mbsfn"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">mbms Service Area Id</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-mbms-service-area-id"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label">mbms Service Area Id</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-mbms-service-area-id"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">City</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-city"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> City</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-city"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">Bandwidth</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-enb-bandwidth"></div>
+	                                                    <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Bandwidth</label>
+	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-enb-bandwidth"></div>
 	                                                    </div>
 	                                                </form>
 	                                            </div>

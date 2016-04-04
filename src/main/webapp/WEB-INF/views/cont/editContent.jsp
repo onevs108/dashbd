@@ -204,13 +204,13 @@ function delContentImage(id, target){
 					<div class="ibox-content">
 					    <div class="row">
 						   <div class="col-sm-8 b-r">
-						      <div class="form-group"><label class="col-sm-3 control-label">Title</label>
+						      <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Title</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="title" name="title" required="required" value="${mapContent.title}"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Category</label>
+							   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Category</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="category" name="category" required="required"  value="${mapContent.category}"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Age restriction</label>
+							   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Age Restriction</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}"></div>
 							   </div>
 							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
@@ -228,7 +228,7 @@ function delContentImage(id, target){
 							   <div class="form-group"><label class="col-sm-3 control-label">Description</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="description" name="description" value="${mapContent.description}"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">type</label>
+							   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Type(Content Mime type)</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="type" name="type" required="required" value="${mapContent.type}"></div>
 							   </div>
 		
@@ -248,7 +248,7 @@ function delContentImage(id, target){
 				    <div class="ibox-content">
 				    <br>
 					  <div class="ibox-title">
-                            <h3>Contents URL</h3>
+                            <h3><i class="fa fa-check text-importance"></i> Contents URL</h3>
                         </div>
 				    <div class="ibox-content">
 					  <h4>Enter the URL where the contents located</h4>

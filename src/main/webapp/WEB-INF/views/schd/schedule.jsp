@@ -266,7 +266,7 @@
                                                 <h3><i class="fa fa-check text-success"> FEC</i></h3>
                                             </div>
                                             <div class="panel-body">
-                                                <div class="form-group"><label class="col-sm-2 control-label">Type</label>
+                                                <div class="form-group"><label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Type</label>
                                                     <div class="col-sm-10">
                                                       <select class="input form-control"  id="fecType" name="fecType">
                                                                 <option value="NoFEC" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> selected</c:if>>NoFEC</option>
@@ -275,12 +275,12 @@
                                                             </select>
                                                     </div>
                                                 </div>
-                                                <div class="form-group"><label class="col-sm-2 control-label">Ratio</label>
+                                                <div class="form-group"><label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Ratio</label>
                                                     <div class="col-sm-10"><input type="text" class="form-control" id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> disabled</c:if>>
                                                     </div>
                                                 </div>
                                                 <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
-                                                	<label class="col-sm-12" style="padding-bottom:6px">Segmentation Available Offset</label>
+                                                	<label class="col-sm-12" style="padding-bottom:6px"><i class="fa fa-check text-importance"></i> Segmentation Available Offset</label>
                                                     <div class="col-sm-12"><input type="text" class="form-control" id="SegmentAvailableOffset" name="SegmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
                                                 </div>
                                             </div>

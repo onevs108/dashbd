@@ -191,7 +191,7 @@
 	                                            </div>
 	                                            <div class="modal-body">
 	                                                <form method="get" class="form-horizontal">
-	                                                	<div class="form-group"><label class="col-sm-3 control-label">Operator</label>
+	                                                	<div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Operator</label>
 		                                                	<div class="col-sm-9">
 																<select id="form-operator-id" class="form-control" disabled="disabled">
 																	<c:forEach items="${operatorList}" var="operator">
@@ -200,10 +200,10 @@
 																</select>
 															</div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">BM-SC Name</label>
+	                                                    <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> BM-SC Name</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-name"></div>
 	                                                    </div>
-	                                                    <div class="form-group"><label class="col-sm-3 control-label">IP Address</label>
+	                                                    <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> IP Address</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-ipaddress"></div>
 	                                                    </div>
 	                                                    <div class="form-group"><label class="col-sm-3 control-label">Description</label>
