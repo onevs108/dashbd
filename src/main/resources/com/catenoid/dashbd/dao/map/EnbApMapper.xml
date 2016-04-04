@@ -16,6 +16,8 @@
     <result column="mbms_service_area_id" property="mbmsServiceAreaId" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="bandwidth" property="bandwidth" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -106,7 +108,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, name, longitude, latitude, plmn, circle, circle_name, cluster_id, ipaddress, earfcn, 
-    mbsfn, mbms_service_area_id, created_at, updated_at
+    mbsfn, mbms_service_area_id, created_at, updated_at, city, bandwidth
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.EnbApExample" >
     select
@@ -132,6 +134,12 @@
     delete from enb_ap
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  
+  <delete id="deleteByPrimaryKeyService" parameterType="java.lang.Integer" >
+    delete from service_area_enb_ap
+    where enb_ap_id = #{id,jdbcType=INTEGER}
+  </delete>
+  
   <delete id="deleteByExample" parameterType="com.catenoid.dashbd.dao.model.EnbApExample" >
     delete from enb_ap
     <if test="_parameter != null" >

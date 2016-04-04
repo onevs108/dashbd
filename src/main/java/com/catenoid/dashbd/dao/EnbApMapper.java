@@ -10,7 +10,9 @@ public interface EnbApMapper {
 
     int deleteByExample(EnbApExample example);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Integer id);;
+
+    int deleteByPrimaryKeyService(Integer id);
 
     int insert(EnbAp record);
 

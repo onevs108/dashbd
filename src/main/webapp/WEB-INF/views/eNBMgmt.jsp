@@ -278,12 +278,20 @@
 	                                            <div class="modal-footer">
 	                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
 	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
+	                                                <button type="button" class="btn btn-primary" id="modal-edit-btn" style="display:none;">Edit</button>
 	                                            </div>
 	                                        </div>
 	                                    </div>
 	                                </div>
 	                            </div>
 	                        </div>
+	                        <div class="ibox-content">
+								<div class="input-group"><input type="text" class="form-control" id="toSearchTxt" name="toSearchTxt" value="" placeholder="eNB Id or eNB Name" />
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-primary" onclick="javascript:searchToeNB();" id="toSearchBtn">Search to eNB</button>
+									</span>
+								</div>
+							</div>
 	                    	<div class="hr-line-dashed"></div>
 	                    
 							<div class="table-responsive">

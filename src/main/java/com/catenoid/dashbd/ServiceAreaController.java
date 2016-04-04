@@ -893,6 +893,7 @@ public class ServiceAreaController {
 			
 			String operatorIdToStr = (String) requestJson.get("operatorId");
 			String bmscIdToStr = (String) requestJson.get("bmscId");
+			String toSearchTxt = (String) requestJson.get("toSearchTxt") == null ? "" : URLDecoder.decode((String) requestJson.get("toSearchTxt"), "utf-8");
 			Integer operatorId = operatorIdToStr == null ? 0 : Integer.parseInt(operatorIdToStr);
 			Integer bmscId = bmscIdToStr == null ? 0 : Integer.parseInt(bmscIdToStr);
 			String sort = (String) requestJson.get("sort");
@@ -907,6 +908,7 @@ public class ServiceAreaController {
 			
 			HashMap<String, Object> searchParam = new HashMap();
 			searchParam.put("operatorId", operatorId);
+			searchParam.put("toSearchTxt", toSearchTxt);
 			searchParam.put("bmscId", bmscId);
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
@@ -1128,6 +1130,7 @@ public class ServiceAreaController {
 		try {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+			String toSearchTxt = request.getParameter("toSearchTxt") == null ? "" : URLDecoder.decode(request.getParameter("toSearchTxt"), "utf-8");
 			Integer perPage = 1000;
 			
 			if(request.getParameter("bmscId") == null) return;
@@ -1137,7 +1140,7 @@ public class ServiceAreaController {
 			searchParam.setPerPage(perPage);
 			searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
 			searchParam.setServiceAreaCity(URLDecoder.decode(request.getParameter("city"), "utf-8"));
-			searchParam.setToSearchTxt(URLDecoder.decode(request.getParameter("toSearchTxt"), "utf-8"));
+			searchParam.setToSearchTxt(toSearchTxt);
 			List<BmscServiceArea> datas = mapper.getSeviceAreaByBmScCity(searchParam);
 			
 			JSONArray array = new JSONArray();
@@ -1165,11 +1168,11 @@ public class ServiceAreaController {
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		//Integer perPage = 15;
-		
+		Integer activeContent = request.getParameter("activeContent") == null ? 1 : Integer.valueOf(request.getParameter("activeContent"));
 		ScheduleSummarySearchParam searchParam = new ScheduleSummarySearchParam();
 		searchParam.setServiceAreaId(Integer.valueOf(request.getParameter("serviceAreaId")));
 		searchParam.setMaxCount(contentMax);
-		searchParam.setActiveContent(Integer.valueOf(request.getParameter("activeContent")));
+		searchParam.setActiveContent(activeContent);
 		
 		List<ScheduleSummary> datas = mapper.getScheduleSummaryByServiceArea(searchParam);
 
@@ -1210,10 +1213,11 @@ public class ServiceAreaController {
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		//Integer perPage = 15;
+		Integer activeContent = request.getParameter("activeContent") == null ? 1 : Integer.valueOf(request.getParameter("activeContent"));
 		
 		HashMap<String, Object> searchParam = new HashMap();
 		searchParam.put("bmscId", Integer.valueOf(request.getParameter("bmscId")));
-		searchParam.put("activeContent", Integer.valueOf(request.getParameter("activeContent")));
+		searchParam.put("activeContent", activeContent);
 		searchParam.put("maxCount", contentMax);
 		
 		List<ScheduleSummary> datas = mapper.getScheduleSummaryByBmsc(searchParam);

@@ -472,7 +472,11 @@
 		enbApId, enbApName, longitude, latitude, plmn, circle, circleName, clusterId, ipaddress,
 		earfcn, mbsfn, mbmsServiceAreaId, createdAt, updatedAt,
 		city, bandwidth, operatorId, bmscId,
-		(select count(*) from enb_ap where operator_id = #{operatorId} and bmsc_id = #{bmscId}) as totalCount
+		(select count(*) from enb_ap where operator_id = #{operatorId} and bmsc_id = #{bmscId}
+			<if test="toSearchTxt != null and toSearchTxt != ''">
+				and (id LIKE CONCAT('%', #{toSearchTxt}, '%') or name LIKE CONCAT('%', #{toSearchTxt}, '%') )
+			</if>
+		) as totalCount
 	FROM 
 	( 
 		SELECT
@@ -492,6 +496,9 @@
 			WHERE 
 				operator_id = #{operatorId}
 				and bmsc_id = #{bmscId}
+			<if test="toSearchTxt != null and toSearchTxt != ''">
+				and (id LIKE CONCAT('%', #{toSearchTxt}, '%') or name LIKE CONCAT('%', #{toSearchTxt}, '%') )
+			</if>
 			ORDER BY 	<if test="sort == null">id</if>
 						<if test="sort != null">
 							<if test="sort == 'id'">id</if>

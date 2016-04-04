@@ -31,6 +31,10 @@ public class EnbAp {
     private Date createdAt;
 
     private Date updatedAt;
+    
+    private String city;
+    
+    private String bandwidth;
 
     public Integer getId() {
         return id;
@@ -143,4 +147,21 @@ public class EnbAp {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getBandwidth() {
+		return bandwidth;
+	}
+
+	public void setBandwidth(String bandwidth) {
+		this.bandwidth = bandwidth;
+	}
+    
 }

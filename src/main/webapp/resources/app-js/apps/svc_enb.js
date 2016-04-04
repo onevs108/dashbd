@@ -3,18 +3,20 @@ $(document).ready(function()
 	//getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
     $('#operator').change(function() {
         //alert( $('#operator option:selected').val() );
+    	$('#toSearchTxt').val("");
         getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
     });
     
     $('#bmsc').change(function() {
     	//alert( $('#bmsc option:selected').val() );
-    	getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val());
+    	$('#toSearchTxt').val("");
+    	getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val(), "");
     });
 
     $('#enb-excel-mgmt-btn').click(moveToExcelMgmt);
     
     // default bm-sc setting
-    getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val());
+    getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val(), "");
     
     $('#form-modal').on('hidden.bs.modal', function (e) {
 		$('#form-modal').find('input').val('');
@@ -77,7 +79,13 @@ function openModal() {
 	$('#form-operator-id').val($('#operator').val());
 	$('#form-bmsc-id').val($('#bmsc').val());
 	$('#modal-title').html('Create New eNB');
+	$('#modal-add-btn').show();
+	$('#modal-edit-btn').hide();
 	$('#form-modal').modal('show');
+}
+
+function searchToeNB(){
+	getEnbList($('#form-operator-id').val(), $('#bmsc').val(), $('#toSearchTxt').val());
 }
 
 var bmscId = null;
@@ -125,29 +133,70 @@ function doModalCancel() {
 }
 
 function openEditModal(id, name, ipaddress, circle) {
-	bmscId = id;
-	
-	$('#form-operator-id').val($('#search-operator-id').val());
-	$('#modal-title').html('Edit BMSC');
-	$('#form-bmsc-name').val(name);
-	$('#form-bmsc-ipaddress').val(ipaddress);
-	$('#form-bmsc-circle').val(circle);
-	$('#form-modal').modal('show');
+	$('#modal-add-btn').hide();
+	$('#modal-edit-btn').show();
+	$.ajax({
+		url: '/dashbd/api/enb.do',
+		method: 'POST',
+		dataType: 'json',
+		data: {
+			request_type: "read",
+			enb_id: id,
+			id: id
+		},
+		success: function(data, textStatus, jqXHR) {
+			if (data.result) { // 성공
+				$('#modal-title').html('Edit eNB');
+				$('#form-operator-id').val($('#operator').val());
+				$('#form-bmsc-id').val($('#bmsc').val());
+				$('#form-enb-id').val(data.result.id);
+				$('#form-enb-name').val(data.result.name);
+				$('#form-enb-longitude').val(data.result.longitude);
+				$('#form-enb-latitude').val(data.result.latitude);
+				$('#form-enb-plmn').val(data.result.plmn);
+				$('#form-enb-circle').val(data.result.circle);
+				$('#form-enb-circle-name').val(data.result.circle_name);
+				$('#form-enb-cluster-id').val(data.result.cluster_id);
+				$('#form-enb-ipaddress').val(data.result.ipaddress);
+				$('#form-enb-earfcn').val(data.result.earfcn);
+				$('#form-enb-mbsfn').val(data.result.mbsfn);
+				$('#form-enb-mbms-service-area-id').val(data.result.mbms_service_area_id);
+				$('#form-enb-city').val(data.result.city);
+				$('#form-enb-bandwidth').val(data.result.bandwidth);
+				$('#form-modal').modal('show');
+			}
+			else { // 실패
+				alert('Failed!! Please you report to admin!');
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
 }
 
-function doDelete(bmscId, name) {
-	if (confirm('Do you really want to delete the BMSC "' + name + '"?')) {
+function doDelete(id, name) {
+	if (confirm('Do you really want to delete the eNB "' + name + '"?')) {
 		$.ajax({
-			url: '/dashbd/api/bmsc/delete.do',
+			url: '/dashbd/api/enb.do',
 			method: 'POST',
 			dataType: 'json',
 			data: {
-				bmscId: bmscId
+				request_type: "delete",
+				enb_id: id,
+				id: id
 			},
 			success: function(data, textStatus, jqXHR) {
-				if (data.result) { // 성공
-					$('#table').bootstrapTable('destroy');
-					getBmscList();
+				var successMessage = "";
+				if(data.message == null){
+					successMessage += "eNB Main " + data.code + "건";
+					if(data.subcode > 0){
+						successMessage += "\nService Area에 포함된 eNB " + data.subcode + "건";
+					}
+					successMessage += "\n이 정상적으로 삭제 처리되었습니다.";
+					alert(successMessage);
+					getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val(), "");
 				}
 				else { // 실패
 					alert('Failed!! Please you report to admin!');
@@ -171,6 +220,7 @@ function callInsert(data) {
 		success: function(data, textStatus, jqXHR) {
 				closeModal();
 				alert('Success!! Please reload the page!');
+				getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val(), "");
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert(errorThrown + textStatus);
@@ -179,7 +229,25 @@ function callInsert(data) {
 	});
 }
 
-function getEnbList(operatorId, bmscId) {
+function callUpdate(data) {
+	$.ajax({
+		url: '/dashbd/api/uploadENBs.do',
+		method: 'POST',
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		dateType : 'json',
+		data: data,
+		success: function(data, textStatus, jqXHR) {
+				closeModal();
+				alert('Success!! Please reload the page!');
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
+function getEnbList(operatorId, bmscId, toSearchTxt) {
 	
 	$('#table').bootstrapTable('destroy');
 	
@@ -192,6 +260,7 @@ function getEnbList(operatorId, bmscId) {
 		queryParams: function(params) {
 			params['operatorId'] = operatorId;
 			params['bmscId'] = bmscId;
+			params['toSearchTxt'] = encodeURIComponent(toSearchTxt);
 			return params;
 		},
 		cache: false,
@@ -266,9 +335,8 @@ function getEnbList(operatorId, bmscId) {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				//var html = '<button type="button" onclick="openEditModal(\'' + row.id + '\', \'' + row.name + '\', \'' + row.ipaddress + '\', \'' + row.circle + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
-						//+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
-				var html = ''
+				var html = '<button type="button" onclick="openEditModal(\'' + row.id + '\', \'' + row.name + '\', \'' + row.ipaddress + '\', \'' + row.circle + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+						 + '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
 		}]

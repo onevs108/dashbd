@@ -43,7 +43,7 @@ public class EnbApController {
 	private SqlSession sqlSession;	
 		
 		
-	@RequestMapping(value = "api/enb.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value = "/api/enb.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	@ResponseBody
 	public ResponseEntity<String> doEnb(HttpServletRequest request) {
 		String request_type = request.getParameter("request_type"); 
@@ -97,6 +97,8 @@ public class EnbApController {
 			obj.put("mbms_service_area_id", data.getMbmsServiceAreaId());
 			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("city", data.getCity());
+			obj.put("bandwidth", data.getBandwidth());
 			root.put("result", obj);
 			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
@@ -221,10 +223,14 @@ public class EnbApController {
 			
 			EnbApMapper mapper = sqlSession.getMapper(EnbApMapper.class);	
 			int res = mapper.deleteByPrimaryKey(Integer.parseInt(request.getParameter("id")));
+			int subres = 0;
 			logger.info("DELETE RESULT: " + res);
-			
+			if(res > 0){
+				subres = mapper.deleteByPrimaryKeyService(Integer.parseInt(request.getParameter("id")));
+			}
 			JSONObject root = new JSONObject();
 			root.put("code", res);
+			root.put("subcode", subres);
 			if(res == 0) root.put("message", "Not found delete record");
 			else root.put("message", null);
 			
