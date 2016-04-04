@@ -340,7 +340,7 @@
 	</select>
 	
 	<update id="updateEmbms" parameterType="java.util.Map">
-		UPDATE embms SET session = #{sessionCnt} 
+		UPDATE embms SET session = #{sessionCnt} , updated_at = now() 
 		WHERE 1=1
 		AND id = #{id}
 	</update>
