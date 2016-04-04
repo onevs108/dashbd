@@ -229,24 +229,24 @@
                                                         <div class="col-sm-9"><input type="text" class="form-control" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}"></div>
                                                     </div>
                                                     <div class="form-group"><label class="col-sm-3 control-label">ARP</label>
-                                                        <div class="col-sm-9" style="padding:10px; margin-left:75px; background:#eee">
-                                                            <div class="form-group"><label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Level</label>
-                                                                <div class="col-sm-8"><input type="text" class="form-control" id="level" name="level" required="required" value="${mapSchedule.level}"></div>
+                                                        <div class="col-sm-8" style="padding:10px;margin-left:14px;background:#eee">
+                                                            <div class="form-group"><label class="col-sm-6 control-label"><i class="fa fa-check text-importance"></i> Level</label>
+                                                                <div class="col-sm-6"><input type="text" class="form-control" id="level" name="level" required="required" value="${mapSchedule.level}"></div>
                                                             </div>
-                                                            <label>PreEmptionCapabiity</label>
-                                                     			<div class="swich">
-                                                                     <div class="onoffswitch">
-                                                                         <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" <c:if test="${mapSchedule.preEmptionCapabiity == 'on'}">checked</c:if>>
-                                                                         <label class="onoffswitch-label" for="preEmptionCapabiity">
-                                                                             <span class="onoffswitch-inner"></span>
-                                                                             <span class="onoffswitch-switch"></span>
-                                                                         </label>
-                                                                     </div>
-                                                                 </div>
+                                                            <label class="col-sm-6 control-label">PreEmptionCapabiity</label>
+                                                   			<div class="col-sm-6 swich">
+                                                                  <div class="onoffswitch" style="margin-left: 84px;">
+                                                                      <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" <c:if test="${mapSchedule.preEmptionCapabiity == 'on'}">checked</c:if>>
+                                                                      <label class="onoffswitch-label" for="preEmptionCapabiity">
+                                                                          <span class="onoffswitch-inner"></span>
+                                                                          <span class="onoffswitch-switch"></span>
+                                                                      </label>
+                                                                  </div>
+                                                            </div>
 <br>
-                                                            <label>PreEmptionVulnerability</label>
-                                                            <div class="swich">
-                                                              <div class="onoffswitch">
+                                                            <label class="col-sm-6 control-label">PreEmptionVulnerability</label>
+                                                            <div class="col-sm-6 swich">
+                                                              <div class="onoffswitch" style="margin-left: 84px;">
                                                                      <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability" <c:if test="${mapSchedule.preEmptionVulnerability == 'on'}">checked</c:if>>
                                                                      <label class="onoffswitch-label" for="preEmptionVulnerability">
                                                                          <span class="onoffswitch-inner"></span>
@@ -266,8 +266,8 @@
                                                 <h3><i class="fa fa-check text-success"> FEC</i></h3>
                                             </div>
                                             <div class="panel-body">
-                                                <div class="form-group"><label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Type</label>
-                                                    <div class="col-sm-10">
+                                                <div class="form-group"><label class="col-sm-6 control-label"><i class="fa fa-check text-importance"></i> Type</label>
+                                                    <div class="col-sm-6">
                                                       <select class="input form-control"  id="fecType" name="fecType">
                                                                 <option value="NoFEC" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> selected</c:if>>NoFEC</option>
                                                                 
@@ -275,13 +275,13 @@
                                                             </select>
                                                     </div>
                                                 </div>
-                                                <div class="form-group"><label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Ratio</label>
-                                                    <div class="col-sm-10"><input type="text" class="form-control" id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> disabled</c:if>>
+                                                <div class="form-group"><label class="col-sm-6 control-label"><i class="fa fa-check text-importance"></i> Ratio</label>
+                                                    <div class="col-sm-6"><input type="text" class="form-control" id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> disabled</c:if>>
                                                     </div>
                                                 </div>
                                                 <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
-                                                	<label class="col-sm-12" style="padding-bottom:6px"><i class="fa fa-check text-importance"></i> Segmentation Available Offset</label>
-                                                    <div class="col-sm-12"><input type="text" class="form-control" id="SegmentAvailableOffset" name="SegmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
+                                                	<label class="col-sm-6" style="padding-bottom:6px"><i class="fa fa-check text-importance"></i> Segmentation Available Offset</label>
+                                                    <div class="col-sm-6"><input type="text" class="form-control" id="SegmentAvailableOffset" name="SegmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
                                                 </div>
                                             </div>
                                         </div>
