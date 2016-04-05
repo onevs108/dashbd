@@ -308,7 +308,7 @@
 						</div>
 					</div>
 					<!-- Bandwidth -->
-					<div class="col-md-4">
+					<div class="col-md-4" id="divBandWidth" style="display:none;">
 						<div class="ibox float-e-margins">
 							<div class="ibox-title">
 								<h3>Bandwidth</h3>
@@ -397,22 +397,36 @@
            </div>
            <div class="modal-body">
                <form method="get" class="form-horizontal">
-               	<div class="form-group"><label class="col-sm-3 control-label">Server Name</label>
-                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_serer_name"></div>
+				   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Server Name</label>
+                       <div class="col-sm-9">
+							<select name="frm_md_serer_name" id="frm_md_serer_name" class="form-control">
+								<option value="">--SELECT--</option>
+								<option value="MBMS-GW">MBMS-GW</option>
+								<option value="MCE">MCE</option>
+								<option value="MME">MME</option>
+								<option value="eNB">eNB</option>
+							</select>
+                       </div>
                    </div>
-                   <div class="form-group"><label class="col-sm-3 control-label">Protocol</label>
-                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_protocol"></div>
-                   </div>
-                   <div class="form-group"><label class="col-sm-3 control-label">IPAddress</label>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> IP Address</label>
                        <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_IPAddress"></div>
                    </div>
-                   <div class="form-group"><label class="col-sm-3 control-label">Login Id</label>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Protocol</label>
+                       <div class="col-sm-9">
+							<select name="frm_md_protocol" id="frm_md_protocol" class="form-control">
+								<option value="">--SELECT--</option>
+								<option value="SSH">SSH</option>
+								<option value="TELNET">TELNET</option>
+							</select>
+					   </div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Login Id</label>
                        <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_loginId"></div>
                    </div>
-                   <div class="form-group"><label class="col-sm-3 control-label">Password</label>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Password</label>
                        <div class="col-sm-9"><input type="password" class="form-control" id="frm_md_password"></div>
                    </div>
-                   <div class="form-group"><label class="col-sm-3 control-label">eMBMS session Command</label>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> eMBMS session Command</label>
                        <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_command" style="height:200px"></div>
                    </div>
                </form>
@@ -420,6 +434,59 @@
            <div class="modal-footer">
                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
                <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
+           </div>
+       </div>
+   </div>
+</div>
+
+<div class="modal inmodal" id="form-edit-modal" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal-dialog">
+       <div class="modal-content animated fadeIn">
+           <div class="modal-header">
+               <button type="button" class="close" id="modal-edit-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+               <i class="fa fa-folder-open-o modal-icon"></i>
+               <h4 class="modal-title" id="modal-edit-title">Edit Server</h4>
+           </div>
+           <div class="modal-body">
+               <form method="get" class="form-horizontal">
+               	   <input type="hidden" class="form-control" id="embmsId">
+				   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Server Name</label>
+                       <div class="col-sm-9">
+							<select name="frm_md_edit_serer_name" id="frm_md_edit_serer_name" class="form-control">
+								<option value="">--SELECT--</option>
+								<option value="MBMS-GW">MBMS-GW</option>
+								<option value="MCE">MCE</option>
+								<option value="MME">MME</option>
+								<option value="eNB">eNB</option>
+							</select>
+                       </div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> IP Address</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_edit_IPAddress"></div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Protocol</label>
+                       <div class="col-sm-9">
+							<select name="frm_md_edit_protocol" id="frm_md_edit_protocol" class="form-control">
+								<option value="">--SELECT--</option>
+								<option value="SSH">SSH</option>
+								<option value="TELNET">TELNET</option>
+							</select>
+					   </div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Login Id</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_edit_loginId"></div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Password</label>
+                       <div class="col-sm-9"><input type="password" class="form-control" id="frm_md_edit_password"></div>
+                   </div>
+                   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> eMBMS session Command</label>
+                       <div class="col-sm-9"><input type="text" class="form-control" id="frm_md_edit_command" style="height:200px"></div>
+                   </div>
+               </form>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-white" id="modal-edit-cancel-btn">Cancel</button>
+               <button type="button" class="btn btn-primary" id="modal-edit-btn">Edit</button>
            </div>
        </div>
    </div>

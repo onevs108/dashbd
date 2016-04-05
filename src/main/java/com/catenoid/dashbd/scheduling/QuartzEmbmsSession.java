@@ -26,7 +26,7 @@ public class QuartzEmbmsSession extends QuartzJobBean{
 	private SqlSession sqlSession;
 	
 	@Override
-	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
+	public void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 		logger.info("QuartzEmbmsSession START");
 		
 		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
@@ -36,7 +36,7 @@ public class QuartzEmbmsSession extends QuartzJobBean{
 		for(Map map : list){
 			Long id = (Long)map.get("id");
 			String serverName = (String)map.get("serverName");
-			//String protocol = (String)map.get("protocol");
+			String protocol = (String)map.get("protocol");
 			String IPAddress = (String)map.get("IPAddress");
 			String loginId = (String)map.get("loginId");
 			String password = (String)map.get("password");
@@ -44,7 +44,7 @@ public class QuartzEmbmsSession extends QuartzJobBean{
 			
 			//ex> getSession.sh ServerName IPAddress UserID Password
 			//return> Session_Cnt:3
-			String exeCommand = String.format("%s %s %s %s", command, serverName, IPAddress,loginId, password);
+			String exeCommand = String.format("%s %s %s %s %s %s", command, serverName, protocol, IPAddress, loginId, password);
 			try{
 				  Runtime runtime = Runtime.getRuntime();
 	              Process process = runtime.exec(exeCommand);

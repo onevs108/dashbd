@@ -1337,11 +1337,19 @@ function addToServiceAreaManually() {
 	            datas = JSON.parse( responseData );
 
 	        	$('#toAddENBs').val( '' );
+	        	var title = "";
+	        	var successMsg = "";
 	        	var successCnt = datas[0].enbCnt - datas[0].NEnbCnt ;
-	        	var successMsg = "총 " + datas[0].enbCnt + "건 중 " + successCnt + " 건 등록이 완료 되었습니다.";
+	        	if(successCnt == 0){
+	        		title = "Fail";
+	        		successMsg = "존재하지 않는 eNB ID입니다.";
+	        	}else{
+	        		title = "Success !";
+		        	successMsg = "총 " + datas[0].enbCnt + "건 중 " + successCnt + " 건 등록이 완료 되었습니다.";
+	        	}
 
 	        	swal({
-	                title: "Success !",
+	                title: title,
 	                text: successMsg
 	            });
 	        	

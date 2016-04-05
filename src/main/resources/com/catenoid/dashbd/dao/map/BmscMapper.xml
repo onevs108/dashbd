@@ -330,6 +330,16 @@
 		serverName = #{serverName}, protocol = #{protocol}, loginId = #{loginId}, password = #{password}, command = #{command}, updated_at = NOW()
 	</insert>
 	
+	<update id="postEmbmsUpdate" parameterType="com.catenoid.dashbd.dao.model.Embms">
+		UPDATE embms
+		SET serverName = #{serverName}, IPAddress = #{IPAddress},
+			protocol = #{protocol}, loginId = #{loginId},
+			password = #{password}, command = #{command},
+			updated_at = NOW()
+		WHERE 1=1
+		AND id = #{id}
+	</update>
+	
 	<select id="selectEmbms" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT id, bmscId, serverName, protocol, IPAddress, loginId, password, command, session 
 		FROM embms
@@ -349,5 +359,14 @@
 		DELETE FROM embms
 		WHERE id = #{embmsId}
 	</delete>
+	
+	<select id="selectEmbmsView" parameterType="java.util.Map" resultType= "java.util.Map">
+		SELECT id, bmscId, serverName, protocol, IPAddress, loginId, password, command, session 
+		FROM embms
+		WHERE 1=1
+		<if test="embmsId != null and embmsId != ''">
+			AND id = #{embmsId}
+		</if>
+	</select>
 
 </mapper>

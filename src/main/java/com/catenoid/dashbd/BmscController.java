@@ -165,12 +165,9 @@ public class BmscController {
 		return jsonResult.toString();
 	}
 
-
-
-	
 	
 	/**
-	 * embms 등록 및 수정
+	 * embms 등록
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/bmsc/embmsInsert.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
@@ -186,7 +183,24 @@ public class BmscController {
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
 	}
-	
+
+	/**
+	 * embms 수정
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/bmsc/embmsUpdate.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String postEmbmsUpdate(@ModelAttribute Embms embms) {
+		
+		logger.info("-> [operator = {}]", embms.toString());
+		
+		JSONObject jsonResult = new JSONObject();
+		jsonResult.put("result", bmscServiceImpl.postEmbmsUpdate(embms));
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
+
 	/**
 	 * embms 삭제
 	 */
@@ -212,6 +226,26 @@ public class BmscController {
 		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
 		
 		List<Map> list = mapper.selectEmbms(params);
+		
+        Map< String, Object > returnMap = new HashMap< String, Object >();
+        returnMap.put( "resultCode", "1000" );
+        returnMap.put( "resultMsg", "SUCCESS");
+        
+        Map< String, Object > resultMap = new HashMap< String, Object >();
+        resultMap.put( "resultInfo", returnMap );
+        resultMap.put( "contents", list );
+        
+		return (Map<String, Object>) resultMap;
+	}
+	
+	@RequestMapping( value = "embms/selectEmbmsView.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public Map< String, Object > selectEmbmsView( @RequestParam Map< String, Object > params,
+	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
+		
+		List<Map> list = mapper.selectEmbmsView(params);
 		
         Map< String, Object > returnMap = new HashMap< String, Object >();
         returnMap.put( "resultCode", "1000" );

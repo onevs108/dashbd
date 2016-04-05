@@ -146,6 +146,23 @@ public class BmscServiceImpl implements BmscService {
 	}
 
 	@Override
+	public boolean postEmbmsUpdate(Embms embms) {
+		try {
+			BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);
+			
+			if (bmscMapper.postEmbmsUpdate(embms) > 0) {
+				return true;
+			}
+				
+			return false;
+		} catch (Exception e) {
+			logger.error("~~ An error occurred!", e);
+			return false;
+		}
+	
+	}
+
+	@Override
 	public boolean deleteEmbms(Integer embmsId) {
 		try {
 			BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);

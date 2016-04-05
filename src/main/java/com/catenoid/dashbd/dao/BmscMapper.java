@@ -53,7 +53,11 @@ public interface BmscMapper {
     
     int insertEmbms(Embms embms);
     
+    int postEmbmsUpdate(Embms embms);
+    
     List<Map> selectEmbms(Map map);
+    
+    List<Map> selectEmbmsView(Map map);
     
     int updateEmbms(Map map);
     

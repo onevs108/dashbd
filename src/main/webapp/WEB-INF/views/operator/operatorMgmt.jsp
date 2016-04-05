@@ -166,7 +166,7 @@
 					                                    		<input type="text" id="form-operator-name" class="form-control">
 														    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn" type="button">Check</button></span>
 					                                    	</div>
-													    </div>
+													    </div> 
 	                                                    <div class="form-group">
 	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
 	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description" style="height:200px"></div>

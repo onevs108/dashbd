@@ -20,6 +20,7 @@ public interface BmscService {
 	public boolean deleteBmsc(Integer bmscId);
 	
 	public boolean insertEmbms(Embms bmsc);
+	public boolean postEmbmsUpdate(Embms bmsc);
 	public boolean deleteEmbms(Integer embmsId);
 	
 }

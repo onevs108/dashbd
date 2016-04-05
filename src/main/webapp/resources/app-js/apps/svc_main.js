@@ -27,6 +27,7 @@ $(document).ready(function()
     });
     
     $('#bmsc').change(function(){
+    	$("#divBandWidth").hide();
     	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '');
     	refreshEmbms();
     	callScheduleTable($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
@@ -38,6 +39,9 @@ $(document).ready(function()
     $('#modal-add-btn').click(doAdd);
 	$('#modal-cancel-btn').click(doModalCancel);
 	$('#modal-cancel-icon-btn').click(doModalCancel);
+	$('#modal-edit-cancel-btn').click(doModalEditCancel);
+	$('#modal-edit-cancel-icon-btn').click(doModalEditCancel);
+    $('#modal-edit-btn').click(doEdit);
 });
 
 function moveToEnb2(bmscId, serviceAreaId)
@@ -51,6 +55,7 @@ function moveToEnb2(bmscId, serviceAreaId)
 	setWaitContents(bmscId, serviceAreaId);
 	
 	console.log("moveToEnb 3");
+	$("#divBandWidth").show();
 	$("#bandwidth").empty();
 	bandWidth(bmscId, serviceAreaId);
 }
@@ -508,6 +513,85 @@ function doAdd() {
 	insertEmbms(data);
 }
 
+
+
+function doEdit() {
+
+	var embmsId = $('#embmsId').val();
+	var serverName = $('#frm_md_edit_serer_name').val();
+	var protocol = $('#frm_md_edit_protocol').val();
+	var IPAddress = $('#frm_md_edit_IPAddress').val();
+	var loginId = $('#frm_md_edit_loginId').val();
+	var password = $('#frm_md_edit_password').val();
+	var command = $('#frm_md_edit_command').val();
+	
+	if (serverName == null || serverName.length == 0) {
+		alert('Please input the serverName');
+		return false;
+	}
+	
+	if (protocol == null || protocol.length == 0) {
+		alert('Please input protocol');
+		return false;
+	}
+	if (IPAddress == null || IPAddress.length == 0) {
+		alert('Please input IPAddress');
+		return false;
+	}
+	
+	
+	if (loginId == null || loginId.length == 0) {
+		alert('Please input the loginId');
+		return false;
+	}
+	
+	if (password == null || password.length == 0) {
+		alert('Please input the password');
+		return false;
+	}
+	
+	if (command == null || command.length == 0) {
+		alert('Please input the command');
+		return false;
+	}
+	
+	var data = {
+		id: embmsId,
+		serverName: serverName,
+		IPAddress: IPAddress,
+		protocol: protocol,
+		loginId: loginId,
+		password: password,
+		command: command
+	}
+	
+	updateEmbms(data);
+}
+
+function updateEmbms(data) {
+	$.ajax({
+		url: '/dashbd/api/bmsc/embmsUpdate.do',
+		method: 'POST',
+		dataType: 'json',
+		data: data,
+		success: function(data, textStatus, jqXHR) {
+			if (data.result) { // 성공
+				alert('SUCCESS !.');
+				refreshEmbms();	//함수만들어야 함.
+				closeEditModal();
+				
+			}
+			else { // 실패
+				alert('Failed!! Please you report to admin!');
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
 function insertEmbms(data) {
 	$.ajax({
 		url: '/dashbd/api/bmsc/embmsInsert.do',
@@ -516,7 +600,7 @@ function insertEmbms(data) {
 		data: data,
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공
-				//$('#table').bootstrapTable('destroy');
+				alert('SUCCESS !.');
 				refreshEmbms();	//함수만들어야 함.
 				closeModal();
 				
@@ -546,6 +630,7 @@ function delEmbms(embmsId) {
 		data: param,
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공
+				alert('SUCCESS !.');
 				refreshEmbms();	//함수만들어야 함.
 			}
 			else { // 실패
@@ -559,38 +644,65 @@ function delEmbms(embmsId) {
 	});
 }
 
+function editEmbms(embmsId){
+	var param = {
+			embmsId :  embmsId
+		};
+	$.ajax({
+		type : "POST",
+		url : "/dashbd/embms/selectEmbmsView.do",
+		data : param,
+		async : false,
+		dataType : "json",
+		success : function( data ) {
+			$('#embmsId').val(data.contents[0].id);
+			$('#frm_md_edit_serer_name').val(data.contents[0].serverName);
+			$('#frm_md_edit_IPAddress').val(data.contents[0].IPAddress);
+			$('#frm_md_edit_protocol').val(data.contents[0].protocol);
+			$('#frm_md_edit_loginId').val(data.contents[0].loginId);
+			$('#frm_md_edit_password').val(data.contents[0].password);
+			$('#frm_md_edit_command').val(data.contents[0].command);
+			$('#modal-edit-title').html('Edit Server');
+			$('#form-edit-modal').modal('show');
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
 function doModalCancel() {
 	g_bmscId = null;
 	closeModal();
+}
+
+function doModalEditCancel() {
+	g_bmscId = null;
+	closeEditModal();
 }
 
 function refreshEmbms(){
 	var size = $('#bmsc option').size();
 	$("#embmsList").empty();
 	
-	for (var i = 0 ; i< size; i++){
-		var bmscId = $('#bmsc option:eq(' + i + ')').val();
-		var bmscName = $('#bmsc option:eq(' + i + ')').text();
-		
-		//console.log('bmscId=' + bmscId + ', bmscName=' + bmscName);
-		
-		var param = {
-				bmscId :  bmscId
-			};
-		$.ajax({
-			type : "POST",
-			url : "/dashbd/api/bmsc/embmsList.do",
-			data : param,
-			async : false,
-			dataType : "json",
-			success : function( data ) {
-				embmsList(data.contents, bmscId, bmscName);
-			},
-			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
-			}
-		});
-	}
+	var bmscId = $('#bmsc').val();
+	var bmscName = $("#bmsc option:selected").text();
+	
+	var param = {
+			bmscId :  bmscId
+		};
+	$.ajax({
+		type : "POST",
+		url : "/dashbd/api/bmsc/embmsList.do",
+		data : param,
+		async : false,
+		dataType : "json",
+		success : function( data ) {
+			embmsList(data.contents, bmscId, bmscName);
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
 }
 
 function embmsList(data, bmscId, bmscName){
@@ -636,6 +748,8 @@ function embmsList(data, bmscId, bmscName){
 		var $h4 = $("<h4/>");
 		var $i = $("<i/>");
 		var $img = $("<img/>");
+		var $btnEdit = $("<button/>");
+		var $iEdit = $("<i/>");
 		
 		var embmsId = data[i].id;
 		var serverName = data[i].serverName;
@@ -651,6 +765,12 @@ function embmsList(data, bmscId, bmscName){
 		$btn.attr("type","button");
 		$btn.attr("onclick","delEmbms(" + embmsId +")");
 		$i.attr("class","fa fa-close");
+
+		$btnEdit.attr("class","btn btn-sm button-edit");
+		$btnEdit.attr("type","button");
+		$btnEdit.attr("onclick","editEmbms(" + embmsId +")");
+		$iEdit.attr("class","fa fa-edit");
+		
 		$img.attr("src","img/server_network.png");
 		$img.attr("width","50px");
 		$h4.attr("class","text-center");
@@ -661,6 +781,8 @@ function embmsList(data, bmscId, bmscName){
 		
 		$btn.append($i);
 		$td.append($btn);
+		$btnEdit.append($iEdit);
+		$td.append($btnEdit);
 		$td.append($("<br/>"));
 		$td.append($img);
 		$td.append($h4);
@@ -688,6 +810,15 @@ function closeModal() {
 	$('#frm_md_password').val('');
 	$('#frm_md_command').val('');
 	$('#form-modal').modal('hide');
+}
+
+function closeEditModal() {
+	$('#frm_md_edit_serer_name').val('');
+	$('#frm_md_edit_protocol').val('');
+	$('#frm_md_edit_loginId').val('');
+	$('#frm_md_edit_password').val('');
+	$('#frm_md_edit_command').val('');
+	$('#form-edit-modal').modal('hide');
 }
 
 var perPage = 15;
