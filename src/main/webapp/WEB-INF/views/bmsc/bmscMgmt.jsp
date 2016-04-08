@@ -201,7 +201,10 @@
 															</div>
 	                                                    </div>
 	                                                    <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> BM-SC Name</label>
-	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-name"></div>
+					                                    	<div class="input-group" id="form-bmsc-name-input-area">
+					                                    		<input type="text" id="form-bmsc-name" class="form-control">
+														    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn" type="button">Check</button></span>
+					                                    	</div>
 	                                                    </div>
 	                                                    <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> IP Address</label>
 	                                                        <div class="col-sm-9"><input type="text" class="form-control" id="form-bmsc-ipaddress"></div>

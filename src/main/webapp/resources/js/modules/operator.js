@@ -154,20 +154,21 @@ function callInsert(data) {
 
 function getOperatorList() {
 	// 테이블 생성
+	var pageNumber = 1;
 	var table = $('#table').bootstrapTable({
 		method: 'post',
 		url: '/dashbd/api/operator/list.do',
 		contentType: 'application/json',
 		dataType: 'json',
-//		queryParams: function(params) {
-//			location.href = '#';
-//			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
-//			return params;
-//		},
+		queryParams: function(params) {
+			location.href = '#';
+			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+			return params;
+		},
 		cache: false,
 		pagination: true,
 		sidePagination: 'server',
-		pageNumber: 1,
+		pageNumber: pageNumber,
 		pageSize: 10,
 		search: false,
 		showHeader: true,
@@ -189,14 +190,14 @@ function getOperatorList() {
 			width: '30%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
 			field: 'description',
 			title: 'Description',
 			width: '50%',
 			align: 'left',
 			valign: 'middle',
-			sortable: false
+			sortable: true
 		}, {
 			field: 'command',
 			title: 'Command',

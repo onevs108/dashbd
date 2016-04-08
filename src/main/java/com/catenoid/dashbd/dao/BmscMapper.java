@@ -63,4 +63,6 @@ public interface BmscMapper {
     
     int deleteEmbms(Integer embmsId);
     
+    Bmsc checkBmscName(Map<String, Object> map);
+    
 }

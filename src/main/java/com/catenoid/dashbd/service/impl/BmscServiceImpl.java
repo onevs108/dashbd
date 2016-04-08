@@ -38,7 +38,7 @@ public class BmscServiceImpl implements BmscService {
 		map.put("operatorId", operatorId);
 		map.put("sort", sort);
 		map.put("order", order);
-		map.put("start", offset);
+		map.put("start", offset+1);
 		map.put("end", offset + limit);
 		
 		List<Bmsc> bmscList = new ArrayList<Bmsc>();

@@ -137,35 +137,45 @@ function setElements(user) {
 	$('#form-registered-date').val(user.createdAt);
 	$('#form-modified-date').val(user.updatedAt);
 	$('#form-grade').val(user.grade);
-	
-	for (var inx = 0; inx < user.permissions.length; inx++) {
-		switch (user.permissions[inx].id) {
-		case PERMISSION_ID_USER:
-			$('#checkbox-permission-user').attr("checked", true);
-			break;
-		case PERMISSION_ID_PERMISSION:
-			$('#checkbox-permission-permission').attr("checked", true);
-			break;
-		case PERMISSION_ID_CONTENTS:
-			$('#checkbox-permission-contents').attr("checked", true);
-			break;
-		case PERMISSION_ID_OPERATOR:
-			$('#checkbox-permission-operator').attr("checked", true);
-			break;
-		case PERMISSION_ID_BMSC:
-			$('#checkbox-permission-bmsc').attr("checked", true);
-			break;
-		case PERMISSION_ID_SERVICE_AREA:
-			$('#checkbox-permission-service-area').attr("checked", true);
-			break;
-		case PERMISSION_ID_ENB:
-			$('#checkbox-permission-enb').attr("checked", true);
-			break;
-		case PERMISSION_ID_SCHEDULE:
-			$('#checkbox-permission-schedule').attr("checked", true);
-			break;
-		default:
-			break;
+	if(user.grade == 0){
+		$('#checkbox-permission-user').attr("checked", true);
+		$('#checkbox-permission-permission').attr("checked", true);
+		$('#checkbox-permission-contents').attr("checked", true);
+		$('#checkbox-permission-operator').attr("checked", true);
+		$('#checkbox-permission-bmsc').attr("checked", true);
+		$('#checkbox-permission-service-area').attr("checked", true);
+		$('#checkbox-permission-enb').attr("checked", true);
+		$('#checkbox-permission-schedule').attr("checked", true);
+	}else{
+		for (var inx = 0; inx < user.permissions.length; inx++) {
+			switch (user.permissions[inx].id) {
+			case PERMISSION_ID_USER:
+				$('#checkbox-permission-user').attr("checked", true);
+				break;
+			case PERMISSION_ID_PERMISSION:
+				$('#checkbox-permission-permission').attr("checked", true);
+				break;
+			case PERMISSION_ID_CONTENTS:
+				$('#checkbox-permission-contents').attr("checked", true);
+				break;
+			case PERMISSION_ID_OPERATOR:
+				$('#checkbox-permission-operator').attr("checked", true);
+				break;
+			case PERMISSION_ID_BMSC:
+				$('#checkbox-permission-bmsc').attr("checked", true);
+				break;
+			case PERMISSION_ID_SERVICE_AREA:
+				$('#checkbox-permission-service-area').attr("checked", true);
+				break;
+			case PERMISSION_ID_ENB:
+				$('#checkbox-permission-enb').attr("checked", true);
+				break;
+			case PERMISSION_ID_SCHEDULE:
+				$('#checkbox-permission-schedule').attr("checked", true);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

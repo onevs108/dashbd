@@ -327,7 +327,28 @@ public class BmscController {
         
 		return (Map<String, Object>) resultMap;
 	}
-
+	
+	/**
+	 * BMSC Name 중복 체크
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/bmsc/check.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String postBmscCheck(
+			@RequestParam(value = "bmscName", required = true) String bmscName, @RequestParam(value = "operatorId", required = true) String operatorId) {
+		logger.info("-> [bmscName = {}]", bmscName);
+		logger.info("-> [operatorId = {}]", operatorId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+		map.put("bmscName", bmscName);
+		map.put("operatorId", operatorId);
+		jsonResult.put("result", mapper.checkBmscName(map) == null ? true : false);
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
 	
 }
 

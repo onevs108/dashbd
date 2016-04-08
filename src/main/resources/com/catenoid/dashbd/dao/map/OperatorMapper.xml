@@ -199,7 +199,7 @@
 		SELECT 
 			<include refid="Base_Column_List" />
 		FROM operator
-		ORDER BY name ASC
+		ORDER BY length(name) ASC, name ASC
 	</select>
 	
 	<select id="selectOperatorList" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
@@ -216,7 +216,15 @@
 					( SELECT
 						 id, name, description, created_at, updated_at
 					  FROM operator
-					  ORDER BY name ASC ) T
+					  ORDER BY <if test="sort == null">length(name) ASC, name ASC</if>
+					  		   <if test="sort != null">
+					  		       <if test="sort == 'name'">length(name)</if>
+					  		       <if test="sort == 'description'">length(description)</if>
+					  		       ${order}
+					  		       <if test="sort == 'name'">, name</if>
+					  		       <if test="sort == 'description'">, description</if>
+					  		       ${order}
+					  		   </if> ) T
 			 ) R
 		WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
@@ -225,7 +233,7 @@
 		SELECT
 			COUNT(*)
 		FROM operator
-		ORDER BY name ASC
+		ORDER BY length(name) ASC, name ASC
 	</select>
 	
 	<select id="selectByOperatorName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">

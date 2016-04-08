@@ -40,7 +40,7 @@ public class PermissionServiceImpl implements PermissionService {
 		map.put("searchUserId", searchUserId);
 		map.put("sort", sort);
 		map.put("order", order);
-		map.put("start", offset);
+		map.put("start", offset+1);
 		map.put("end", offset + limit);
 		
 		List<Users> userList = new ArrayList<Users>();

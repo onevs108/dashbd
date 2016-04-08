@@ -58,11 +58,13 @@ public class OperatorController {
 		
 		try {
 			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
-			
+
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
 			long limit = (Long) requestJson.get("limit");
 			
-			JSONArray rows = operatorServiceImpl.getOperatorListToJsonArray(offset, limit);
+			JSONArray rows = operatorServiceImpl.getOperatorListToJsonArray(sort, order, offset, limit);
 			jsonResult.put("rows", rows);
 			int total = operatorServiceImpl.getOperatorListCount();
 			jsonResult.put("total", total);

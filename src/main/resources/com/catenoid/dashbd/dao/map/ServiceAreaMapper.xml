@@ -412,7 +412,7 @@
 			bmsc_service_area
 		where 1 = 1 
 			and bmsc_id = #{bmscId,jdbcType=INTEGER}
-		order by service_area_id
+		order by length(service_area_id), service_area_id
 		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 	
@@ -423,7 +423,7 @@
 		from 
 			operator
 		where 1 = 1 
-		order by id
+		order by length(id), id
 		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 	
@@ -436,7 +436,7 @@
 		where 1 = 1 
 			and x.operator_id = #{operatorId,jdbcType=INTEGER}
 			and y.id = x.bmsc_id
-		order by y.id
+		order by length(y.id), y.id
 		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 
@@ -464,7 +464,7 @@
 		and t2.bmsc_id = #{bmscId,jdbcType=INTEGER}
 		</if>
 		and t1.service_area_id = t3.id
-	order by t1.enb_ap_id
+	order by length(t1.enb_ap_id), t1.enb_ap_id
 	</select>
 	
 	<select id="getEnbsList" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
@@ -499,11 +499,15 @@
 			<if test="toSearchTxt != null and toSearchTxt != ''">
 				and (id LIKE CONCAT('%', #{toSearchTxt}, '%') or name LIKE CONCAT('%', #{toSearchTxt}, '%') )
 			</if>
-			ORDER BY 	<if test="sort == null">id</if>
+			ORDER BY 	<if test="sort == null">length(id), id</if>
 						<if test="sort != null">
-							<if test="sort == 'id'">id</if>
-							<if test="sort == 'name'">name</if>
-							<if test="sort == 'city'">city</if>
+							<if test="sort == 'id'">length(id)</if>
+							<if test="sort == 'name'">length(name)</if>
+							<if test="sort == 'city'">length(city)</if>
+							${order}
+							<if test="sort == 'id'">, id</if>
+							<if test="sort == 'name'">, name</if>
+							<if test="sort == 'city'">, city</if>
 							${order}
 						</if> 
 		) T
@@ -744,7 +748,7 @@
 			and (a.service_area_id LIKE CONCAT('%', #{toSearchTxt}, '%') or d.name LIKE CONCAT('%', #{toSearchTxt}, '%') )
 		</if>
 	group by a.bmsc_id, a.service_area_id, d.name	
-	order by a.service_area_id
+	order by length(a.service_area_id), a.service_area_id
 	limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
 	
@@ -752,7 +756,7 @@
 	<select id="getScheduleSummaryByServiceArea" resultMap="ScheduleSummaryByServiceArea" parameterType="com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam" >
 		select 
 			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
-			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
+			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by length(id) desc, id desc limit 0, 1 ) as thumbnail 
 			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
 			, timediff(a.end_date,NOW())  AS left_time
 			, b.service as service_type
@@ -781,7 +785,7 @@
 	<select id="getScheduleSummaryByBmsc" resultMap="ScheduleSummaryByServiceArea" parameterType="java.util.HashMap" >
 		select 
 			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
-			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by id desc limit 0, 1 ) as thumbnail 
+			, (select path from contents_images b where 1 = 1 and b.content_id = a.content_id and type = 'thumbnail' order by length(id) desc, id desc limit 0, 1 ) as thumbnail 
 			, ( (now()-a.start_date) / (a.end_date-a.start_date) * 100 ) as progress_rate
 			, timediff(a.end_date,NOW())  AS left_time
 			, b.service as service_type
@@ -1028,7 +1032,7 @@
 	and a.bmsc_id = #{bmscId,jdbcType=INTEGER}
 	and b.id = a.service_area_id
 	and not exists ( select service_area_id from service_area_enb_ap where bmsc_id = a.bmsc_id  and service_area_id = a.service_area_id )
-	order by a.service_area_id asc
+	order by length(a.service_area_id), a.service_area_id asc
 	</select>
 	
 	<delete id="serviceAreaByDelete" parameterType="java.util.HashMap" >

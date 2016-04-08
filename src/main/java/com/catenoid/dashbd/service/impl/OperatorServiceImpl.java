@@ -39,9 +39,11 @@ public class OperatorServiceImpl implements OperatorService {
 	 * Operator 리스트 리턴
 	 */
 	@Override
-	public List<Operator> getOperatorList(long offset, long limit) {
+	public List<Operator> getOperatorList(String sort, String order, long offset, long limit) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("start", offset);
+		map.put("sort", sort);
+		map.put("order", order);
+		map.put("start", offset+1);
 		map.put("end", offset + limit);
 		
 		List<Operator> operatorList = new ArrayList<Operator>();
@@ -68,8 +70,8 @@ public class OperatorServiceImpl implements OperatorService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getOperatorListToJsonArray(long offset, long limit) {
-		List<Operator> operatorList = getOperatorList(offset, limit);
+	public JSONArray getOperatorListToJsonArray(String sort, String order, long offset, long limit) {
+		List<Operator> operatorList = getOperatorList(sort, order, offset, limit);
 		
 		JSONArray jsonArray = new JSONArray();
 		for (Operator operator : operatorList)

@@ -5,7 +5,7 @@ $(function() {
 	$('#modal-add-btn').click(doAdd);
 	$('#modal-cancel-btn').click(doModalCancel);
 	$('#modal-cancel-icon-btn').click(doModalCancel);
-	
+	$('#check-name-btn').click(doCheckName);
 	$('#search-operator-id').change(changeOperator);
 });
 
@@ -20,6 +20,40 @@ function openModal() {
 	$('#form-modal').modal('show');
 }
 
+function doCheckName() {
+	var bmscName = $('#form-bmsc-name').val();
+	if (bmscName == null || bmscName.length == 0) {
+		alert('Please input Bmsc Name');
+		return false;
+	}
+	$.ajax({
+		url: '/dashbd/api/bmsc/check.do',
+		method: 'POST',
+		dataType: 'json',
+		data: {
+			bmscName: bmscName,
+			id: $("#form-operator-id").val()
+		},
+		success: function(data, textStatus, jqXHR) {
+			if (data.result) { // 성공
+				checkBmscName = true;
+				$('#form-bmsc-name-input-area').attr('class', 'input-group has-success');
+				alert('Avaliable!');
+			}
+			else { // 실패
+				checkBmscName = false;
+				$('#form-bmsc-name-input-area').attr('class', 'input-group has-error');
+				alert('Already exist!');
+				$('#form-bmsc-name').focus();
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown);
+			checkUserId = false;
+			return false;
+		}
+	});
+}
 var bmscId = null;
 function doAdd() {
 	var bmscName = $('#form-bmsc-name').val();

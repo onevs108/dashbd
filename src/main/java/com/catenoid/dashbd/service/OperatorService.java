@@ -12,9 +12,9 @@ public interface OperatorService {
 	
 	public List<Operator> getOperatorListAll();
 	
-	public List<Operator> getOperatorList(long offset, long limit);
+	public List<Operator> getOperatorList(String sort, String order, long offset, long limit);
 	public int getOperatorListCount();
-	public JSONArray getOperatorListToJsonArray(long offset, long limit);
+	public JSONArray getOperatorListToJsonArray(String sort, String order, long offset, long limit);
 	public Operator getOperator(Integer operatorId);
 	public boolean checkOperatorName(String operatorName);
 	public boolean insertOperator(Operator operator);
