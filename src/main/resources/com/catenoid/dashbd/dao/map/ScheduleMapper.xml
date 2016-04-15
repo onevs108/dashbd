@@ -34,7 +34,16 @@
 				, start_comp 
  				, end_comp
  				, (SELECT count(*) FROM schedule WHERE
- 					<include refid="schedule_where" />
+				 	del_yn = 'N'
+			    	<if test="serviceAreaId != null and serviceAreaId !=''" >
+						AND service_area_id = #{serviceAreaId}
+					</if>
+					<if test="bmscId != null and bmscId !=''" >
+						AND service_area_id in (SELECT service_area_id FROM bmsc_service_area WHERE bmsc_id = #{bmscId})
+					</if>
+					<if test="searchDate != null and searchDate !=''" >
+						AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
+					</if> 
 				<![CDATA[
  					AND start_comp > DATE_FORMAT(start_date, '%H%i%s') 
 					AND start_comp < DATE_FORMAT(end_date, '%H%i%s')  
@@ -53,19 +62,30 @@
 				, DATE_FORMAT(end_date , '%d') end_day
 				, DATE_FORMAT(end_date , '%H') end_hour
 				, DATE_FORMAT(end_date , '%i') end_mins
+				, serviceId
 			FROM 
 			(
 			SELECT     
-		         DATE_FORMAT(start_date, '%H%i%s') start_comp,     
-		         DATE_FORMAT(end_date, '%H%i%s') end_comp,
-		         ID,
-				 NAME,
-				 BCID,
-				 start_date,
-		         end_date
-		      FROM schedule s
+		         DATE_FORMAT(s.start_date, '%H%i%s') start_comp,     
+		         DATE_FORMAT(s.end_date, '%H%i%s') end_comp,
+		         s.ID,
+				 s.NAME,
+				 s.BCID,
+				 s.start_date,
+		         s.end_date,
+		         b.serviceId
+		      FROM schedule s left join broadcast_info b on s.BCID = b.BCID
 		      WHERE
-				<include refid="schedule_where" />
+			 	s.del_yn = 'N'
+		    	<if test="serviceAreaId != null and serviceAreaId !=''" >
+					AND s.service_area_id = #{serviceAreaId}
+				</if>
+				<if test="bmscId != null and bmscId !=''" >
+					AND s.service_area_id in (SELECT service_area_id FROM bmsc_service_area WHERE bmsc_id = #{bmscId})
+				</if>
+				<if test="searchDate != null and searchDate !=''" >
+					AND DATE_FORMAT(s.start_date , '%Y-%m-%d') = #{searchDate}
+				</if> 
 			) x
  			order by start_date asc
 	</select>

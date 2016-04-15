@@ -158,7 +158,7 @@
                         <div class="ibox-content">
                             <form class="form-horizontal">
                             	<div class="form-group">
-                                    <label class="col-sm-3 control-label">Grade</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Grade</label>
                                     <div class="col-sm-9">
                                     	<select class="input-sm form-control input-s-sm" id="form-grade" <c:if test="${USER.grade != 0}">disabled="disabled"</c:if>>
                                     		<option value="1" selected="selected">User</option>
@@ -167,7 +167,7 @@
 	                                </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Operator</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Operator</label>
                                     <div class="col-sm-9">
                                     	<c:choose>
 											<c:when test="${USER.grade == 0}">
@@ -200,30 +200,30 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">User ID</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> User ID</label>
                                     <div class="input-group" id="form-user-id-input-area">
 									    <input type="text" id="form-user-id" class="form-control">
 									    <span class="input-group-btn"><button class="btn btn-default" id="check-id-btn" type="button">Check</button></span>
 								    </div>
                                 </div>
                                 <div class="form-group" id="form-password-area">
-                                    <label class="col-sm-3 control-label">Password</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Password</label>
                                     <div class="col-sm-9"><input type="password" id="form-password" class="form-control"></div>
                                 </div>
                                 <div class="form-group" id="form-confirm-password-area">
-                                    <label class="col-sm-3 control-label">Confirm Password</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Confirm Password</label>
                                     <div class="col-sm-9"><input type="password" id="form-confirm-password" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">First Name</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> First Name</label>
                                     <div class="col-sm-9"><input type="text" id="form-first-name" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Last Name</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Last Name</label>
                                     <div class="col-sm-9"><input type="text" id="form-last-name" class="form-control"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Department</label>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Department</label>
                                     <div class="col-sm-9"><input type="text" id="form-department" class="form-control"></div>
                                 </div>
                                 <div class="form-group" id="form-registered-date-area">

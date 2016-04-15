@@ -76,16 +76,15 @@ function setTimeTable(data ){
 		end_mins = contents[i].end_mins;
 		
 		var position = contents[i].depthPosition;
-		
 		if (position == beforPosition && position != 0 )
 			position--;
-		
+		var serviceId = contents[i].serviceId;
 		beforPosition = position;
 		console.log('idx=', i ,', position =' , position);
 		timetable.addEvent(contents[i].NAME, 'position' + position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
 				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
-				 					'');
+				 					'', contents[i].serviceId);
 	}
 	
 	var renderer = new Timetable.Renderer(timetable);

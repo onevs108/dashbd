@@ -190,7 +190,7 @@ var ctrl = {
 							   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Age Restriction</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
+							   <div class="form-group"><label class="col-sm-3 control-label">Running Time(sec)</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required"></div>
 							   </div>
 						<!--        <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>

@@ -266,15 +266,11 @@
 					  FROM bmsc B, operator_bmsc OB
 		              WHERE B.id = OB.bmsc_id
 		                AND OB.operator_id = #{operatorId}
-					  ORDER BY <if test="sort == null">length(B.name) ASC, B.name ASC</if>
+					  ORDER BY <if test="sort == null">B.name ASC</if>
 					  		   <if test="sort != null">
-								   <if test="sort == 'name'">length(B.name)</if>
-								   <if test="sort == 'ipaddress'">length(B.ipaddress)</if>
-								   <if test="sort == 'circle'">length(B.circle)</if>
-								   ${order}
-								   <if test="sort == 'name'">, B.name</if>
-								   <if test="sort == 'ipaddress'">, B.ipaddress</if>
-								   <if test="sort == 'circle'">, B.circle</if>
+								   <if test="sort == 'name'">B.name</if>
+								   <if test="sort == 'ipaddress'">B.ipaddress</if>
+								   <if test="sort == 'circle'">B.circle</if>
 								   ${order}
 						       </if> ) T
 			 ) R

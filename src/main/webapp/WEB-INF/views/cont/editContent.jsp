@@ -210,15 +210,12 @@ function delContentImage(id, target){
 							   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Category</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="category" name="category" required="required"  value="${mapContent.category}"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Age Restriction</label>
-							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}"></div>
-							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
+							   <div class="form-group"><label class="col-sm-3 control-label">Running Time(sec)</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required" value="${mapContent.duration}"></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
-							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required" value="${mapContent.bitrate}"></div>
-							   </div>
+						<!--        <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
+							   	<div class="col-sm-9"><input type="text" id="bitrate" name="bitrate" class="form-control" required="required"></div>
+							   </div>  -->
 							   <div class="form-group"><label class="col-sm-3 control-label">Director</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="director" name="director" value="${mapContent.director}"></div>
 							   </div>

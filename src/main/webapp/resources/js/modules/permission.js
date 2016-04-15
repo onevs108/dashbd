@@ -146,7 +146,7 @@ function getUserList() {
 
 function getUserPermissions() {
 	initPermissionBox();
-	
+	$("#divPerGrant").show();
 	// permission box 타이틀 변경
 	$('#permission-box-title').html('Permission Granted for ' + curUser.userId);
 	

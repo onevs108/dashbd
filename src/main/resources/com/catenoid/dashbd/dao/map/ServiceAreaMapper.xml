@@ -499,15 +499,11 @@
 			<if test="toSearchTxt != null and toSearchTxt != ''">
 				and (id LIKE CONCAT('%', #{toSearchTxt}, '%') or name LIKE CONCAT('%', #{toSearchTxt}, '%') )
 			</if>
-			ORDER BY 	<if test="sort == null">length(id), id</if>
+			ORDER BY 	<if test="sort == null">id</if>
 						<if test="sort != null">
-							<if test="sort == 'id'">length(id)</if>
-							<if test="sort == 'name'">length(name)</if>
-							<if test="sort == 'city'">length(city)</if>
-							${order}
-							<if test="sort == 'id'">, id</if>
-							<if test="sort == 'name'">, name</if>
-							<if test="sort == 'city'">, city</if>
+							<if test="sort == 'id'">id</if>
+							<if test="sort == 'name'">name</if>
+							<if test="sort == 'city'">city</if>
 							${order}
 						</if> 
 		) T
@@ -920,6 +916,26 @@
 			id = #{id,jdbcType=INTEGER} 
 		)
 	</insert>
+	
+	<!-- eNB 수정 -->
+	<update id="updateENBs" parameterType="java.util.HashMap" >
+	update enb_ap 
+	set name = #{name},
+		longitude = #{longitude},
+		latitude = #{latitude}
+		plmn = #{plmn}
+		circle = #{circle}
+		circle_name = #{circleName}
+		cluster_id = #{clusterId,jdbcType=INTEGER}
+		ipaddress = #{ipAddress}
+		earfcn = #{earfcn}
+		mbsfn = #{mbsfn}
+		mbms_service_area_id = #{mbmsServiceAreaId,jdbcType=INTEGER}
+		updated_at = now()
+		city = #{city}
+		bandwidth = #{bandwidth}
+	where id = #{id,jdbcType=INTEGER}
+	</update>
 
 	<select id="getSeviceAreaByBmScId" resultMap="ServiceAreaByBmScId" parameterType="com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam" >
 	select a.bmsc_id, a.service_area_id, d.name as service_area_name, d.description

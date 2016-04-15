@@ -216,13 +216,10 @@
 					( SELECT
 						 id, name, description, created_at, updated_at
 					  FROM operator
-					  ORDER BY <if test="sort == null">length(name) ASC, name ASC</if>
+					  ORDER BY <if test="sort == null">name ASC</if>
 					  		   <if test="sort != null">
-					  		       <if test="sort == 'name'">length(name)</if>
-					  		       <if test="sort == 'description'">length(description)</if>
-					  		       ${order}
-					  		       <if test="sort == 'name'">, name</if>
-					  		       <if test="sort == 'description'">, description</if>
+					  		       <if test="sort == 'name'">name</if>
+					  		       <if test="sort == 'description'">description</if>
 					  		       ${order}
 					  		   </if> ) T
 			 ) R

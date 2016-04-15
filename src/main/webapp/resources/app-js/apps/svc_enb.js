@@ -64,6 +64,8 @@ $(function() {
 	// button click event in list
 	$('#modal-open-btn').click(openModal);
 	$('#modal-add-btn').click(doAdd);
+	$('#modal-edit-btn').click(doUpdate);
+	
 	$('#modal-cancel-btn').click(doModalCancel);
 	$('#modal-cancel-icon-btn').click(doModalCancel);
 	
@@ -127,6 +129,54 @@ function doAdd() {
 	callInsert(data);
 }
 
+function doUpdate() {
+	var enbIpaddress = $('#form-enb-ipaddress').val();
+	if ($('#form-enb-name').val() == null || $('#form-enb-name').val().length == 0) {
+		alert('Please input the Name');
+		return false;
+	}
+	
+	var data = {
+		id: $('#form-bmsc-id').val(),
+		operatorId: $('#form-operator-id').val(),
+		id: $('#form-enb-id').val(),
+		name: $('#form-enb-name').val(),
+		longitude: $('#form-enb-longitude').val(),
+		latitude: $('#form-enb-latitude').val(),
+		plmn: $('#form-enb-plmn').val(),
+		circle: $('#form-enb-circle').val(),
+		circleName: $('#form-enb-circle-name').val(),
+		clusterId: $('#form-enb-cluster-id').val(),
+		ipaddress: $('#form-enb-ipaddress').val(),
+		earfcn: $('#form-enb-earfcn').val(),
+		mbsfn: $('#form-enb-mbsfn').val(),
+		mbmsServiceAreaId: $('#form-enb-mbms-service-area-id').val(),
+		city: $('#form-enb-city').val(),
+		bandwidth: $('#form-enb-bandwidth').val(),
+		operator: $('#form-operator-id').val(),
+		bmsc: $('#form-bmsc-id').val()
+	}
+	enbUpdate(data);
+}
+
+function enbUpdate(data) {
+	$.ajax({
+		url: '/dashbd/api/updateENB.do',
+		method: 'POST',
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		dateType : 'json',
+		data: data,
+		success: function(data, textStatus, jqXHR) {
+				closeModal();
+				alert('Success!! Please reload the page!');
+				getEnbList($('#operator option:selected').val(), $('#bmsc option:selected').val(), "");
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
 function doModalCancel() {
 	bmscId = null;
 	closeModal();

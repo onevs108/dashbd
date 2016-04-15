@@ -196,7 +196,7 @@ function setTimeTable(data ){
 	var contents = data.contents;
 	var events = [];
 	var schedule;
-	var now = moment();
+	var now = moment(); 
 	var clrBackPassSchd = '#dddddd'		,clrTxtPassSchd 	= '#787A7C'		,clrBrdPassSchd = '#bbbbbb';
 	var clrBackPassSchdBMSC='#888888'	,clrTxtPassSchdBMSC	= '#787A7C'	,clrBrdPassSchdBMSC	= '#bbbbbb'; 
 	
@@ -220,30 +220,31 @@ function setTimeTable(data ){
 		var now4compare = replaceAll4Time(now.format());
 		var start4compare = replaceAll4Time(start_date);
 		var end4compare = replaceAll4Time(end_date);
+		var serviceId = contents[i].serviceId;
 		//console.log('current=', now4compare , ', start_date=', start4compare, ', end_date=', end4compare);
 		if (broadcast_info_id == null || broadcast_info_id == ""){
 			if (now4compare < start4compare ){
 				//미래
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackNextSchd, textColor: clrTxtNextSchd, borderColor:clrBrdNextSchd};
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackNextSchd, textColor: clrTxtNextSchd, borderColor:clrBrdNextSchd, serviceId:serviceId};
 			}else if (now4compare > end4compare ){
 				//과거
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackPassSchd, textColor: clrTxtPassSchd, borderColor:clrBrdPassSchd};
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackPassSchd, textColor: clrTxtPassSchd, borderColor:clrBrdPassSchd, serviceId:serviceId};
 			}else{
 				//현재
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchd, textColor: clrTxtCurrSchd, borderColor:clrBrdCurrSchd};
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchd, textColor: clrTxtCurrSchd, borderColor:clrBrdCurrSchd, serviceId:serviceId};
 			}
 				
 		}else{
 			
 			if (now4compare < start4compare ){
 				//미래
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackNextSchdBMSC, textColor: clrTxtNextSchdBMSC, borderColor:clrBrdNextSchdBMSC};
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackNextSchdBMSC, textColor: clrTxtNextSchdBMSC, borderColor:clrBrdNextSchdBMSC, serviceId:serviceId};
 			}else if (now4compare > end4compare ){
 				//과거
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackPassSchdBMSC, textColor: clrTxtPassSchdBMSC, borderColor:clrBrdPassSchdBMSC};
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackPassSchdBMSC, textColor: clrTxtPassSchdBMSC, borderColor:clrBrdPassSchdBMSC, serviceId:serviceId};
 			}else{
 				//현재
-				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchdBMSC, textColor: clrTxtCurrSchdBMSC, borderColor:clrBrdCurrSchdBMSC};
+				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchdBMSC, textColor: clrTxtCurrSchdBMSC, borderColor:clrBrdCurrSchdBMSC, serviceId:serviceId};
 			}
 			
 			//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#23C6C8", textColor: "#ecf0f1", borderColor:"#1AB394"};

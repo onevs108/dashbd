@@ -175,7 +175,7 @@ $(document).ready(function() {
 							   <div class="form-group"><label class="col-sm-3 control-label">Age restriction</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="age_restriction" name="age_restriction" required="required" value="${mapContent.age_restriction}" disabled></div>
 							   </div>
-							   <div class="form-group"><label class="col-sm-3 control-label">Running Time</label>
+							   <div class="form-group"><label class="col-sm-3 control-label">Running Time(sec)</label>
 							   	<div class="col-sm-9"><input type="text" class="form-control" id="duration" name="duration" required="required" value="${mapContent.duration}" disabled></div>
 							   </div>
 						<!-- 	   <div class="form-group"><label class="col-sm-3 control-label">bitrate</label>
@@ -284,7 +284,6 @@ $(document).ready(function() {
 					    <div class="row">
 					    		<div class="col-md-12 text-center" style="padding:10px 0 30px;">
 								<button type="button" class="btn btn-w-m btn-primary" id="btnList">LIST</button>
-								<button type="button" class="btn btn-w-m btn-default" id="btnCancel">Cancel</button>
 							</div>
 					    </div>
 			 </div><!-- end Previews col-lg-12 -->

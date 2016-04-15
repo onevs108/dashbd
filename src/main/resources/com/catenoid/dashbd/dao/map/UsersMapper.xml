@@ -174,19 +174,13 @@
 					          </if>
 					      </otherwise>
 					  </choose>
-					  ORDER BY <if test="sort == null">length(user_id) ASC, user_id ASC</if>
+					  ORDER BY <if test="sort == null">operator_id ASC</if>
 					  		   <if test="sort != null">
-					  		       <if test="sort == 'operatorName'">length(O.name)</if>
-					  		       <if test="sort == 'userId'">length(U.user_id)</if>
-					  		       <if test="sort == 'firstName'">length(U.first_name)</if>
-					  		       <if test="sort == 'lastName'">length(U.last_name)</if>
-					  		       <if test="sort == 'department'">length(U.department)</if>
-					  		       ${order}
-					  		       <if test="sort == 'operatorName'">, O.name</if>
-					  		       <if test="sort == 'userId'">, U.user_id</if>
-					  		       <if test="sort == 'firstName'">, U.first_name</if>
-					  		       <if test="sort == 'lastName'">, U.last_name</if>
-					  		       <if test="sort == 'department'">, U.department</if>
+					  		       <if test="sort == 'operatorName'">O.name</if>
+					  		       <if test="sort == 'userId'">U.user_id</if>
+					  		       <if test="sort == 'firstName'">U.first_name</if>
+					  		       <if test="sort == 'lastName'">U.last_name</if>
+					  		       <if test="sort == 'department'">U.department</if>
 					  		       ${order}
 					  		   </if> ) T
 			  ) R
@@ -469,17 +463,12 @@
 					  <if test="searchOperatorId != null">
 					      AND operator_id = #{searchOperatorId}
 					  </if>
-				   	  ORDER BY <if test="sort == null">length(user_id) ASC, user_id ASC</if>
+				   	  ORDER BY <if test="sort == null">user_id ASC</if>
 					  		   <if test="sort != null">
-								   <if test="sort == 'userId'">length(user_id)</if>
-								   <if test="sort == 'firstName'">length(first_name)</if>
-								   <if test="sort == 'lastName'">length(last_name)</if>
-								   <if test="sort == 'department'">length(department)</if>
-								   ${order}
-								   <if test="sort == 'userId'">, user_id</if>
-								   <if test="sort == 'firstName'">, first_name</if>
-								   <if test="sort == 'lastName'">, last_name</if>
-								   <if test="sort == 'department'">, department</if>
+								   <if test="sort == 'userId'">user_id</if>
+								   <if test="sort == 'firstName'">first_name</if>
+								   <if test="sort == 'lastName'">last_name</if>
+								   <if test="sort == 'department'">department</if>
 								   ${order}
 						       </if> ) T
 			  ) R

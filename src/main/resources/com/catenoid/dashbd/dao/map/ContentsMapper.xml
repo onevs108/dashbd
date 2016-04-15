@@ -252,6 +252,8 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
     from contents
     <if test="_parameter != null" >
       <include refid="Where_Clause" />

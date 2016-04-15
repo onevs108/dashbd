@@ -211,7 +211,7 @@
 		            
 		            <!-- Permission Mgmt2 -->
 		            <div class="col-lg-4">
-		                <div class="ibox float-e-margins">
+		                <div class="ibox float-e-margins" id="divPerGrant" name="divPerGrant" style="display:none;" >
 		                    <div class="ibox-title"><h3 id="permission-box-title">Permission Granted</h3></div>
 							<div class="ibox-content">
 			                    <div class="row">

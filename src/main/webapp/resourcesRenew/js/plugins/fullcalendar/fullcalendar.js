@@ -566,7 +566,6 @@ function intersectRanges(subjectRange, constraintRange) {
 	var constraintEnd = constraintRange.end;
 	var segStart, segEnd;
 	var isStart, isEnd;
-
 	if (subjectEnd > constraintStart && subjectStart < constraintEnd) { // in bounds at all?
 
 		if (subjectStart >= constraintStart) {
@@ -6800,6 +6799,7 @@ TimeGrid.mixin({
 						' data-full="' + htmlEscape(fullTimeText) + '"' +
 						'>' +
 							'<span>' + htmlEscape(timeText) + '</span>' +
+							(event.serviceId ? '&nbsp;('+htmlEscape(event.serviceId)+')' : '') +
 						'</div>' :
 						''
 						) +

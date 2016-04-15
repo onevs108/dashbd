@@ -11,7 +11,7 @@ define([
 			toastr.error('not authorized or have no permission.');
 		},
 		404: function() {
-			toastr.warning('record not found.');
+			toastr.warning('record not found.@@@@@');
 		}
 	};
 });

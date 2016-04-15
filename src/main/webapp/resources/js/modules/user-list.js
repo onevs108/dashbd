@@ -23,7 +23,6 @@ function doEdit(userId) {
 }
 
 function doDelete(userId, operatorId, firstName, lastName) {
-	alert(operatorId);
 	if (confirm('Do you really want to delete the user "' + firstName + ' ' + lastName + '"?')) {
 		$.ajax({
 			url: '/dashbd/api/user/delete.do',

@@ -1597,6 +1597,76 @@ public class ServiceAreaController {
 	        e.printStackTrace();
 	    }
 	}
+	@RequestMapping(value = "/api/updateENB.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void updateENB(HttpServletRequest request, HttpServletResponse response) {
+
+		try {
+			Integer operator = Integer.valueOf( request.getParameter( "operator" ) );
+			Integer bmsc = Integer.valueOf( request.getParameter( "bmsc" ) );
+			Integer id = Integer.valueOf( request.getParameter( "id" ) );
+			String name = request.getParameter( "name" );
+			Double longitude = 0.0;
+			if( request.getParameter( "longitude" ) != null && request.getParameter( "longitude" ).length() > 0 ) {
+				longitude = Double.valueOf( request.getParameter( "longitude" ) );
+			}
+			Double latitude = 0.0;
+			if( request.getParameter( "latitude" ) != null && request.getParameter( "latitude" ).length() > 0 ) {
+				latitude = Double.valueOf( request.getParameter( "latitude" ) );
+			}
+			String plmn = request.getParameter( "plmn" );
+			String circle = request.getParameter( "circle" );
+			String circleName = request.getParameter( "circleName" );
+			Integer clusterId = 0;
+			if( request.getParameter( "clusterId" ) != null && request.getParameter( "clusterId" ).length() > 0 ) {
+				clusterId = Integer.valueOf( request.getParameter( "clusterId" ) );
+			}
+			String ipAddress = request.getParameter( "ipaddress" );
+			String earfcn = request.getParameter( "earfcn" );
+			String mbsfn = request.getParameter( "mbsfn" );
+			Integer mbmsServiceAreaId = 0;
+			if( request.getParameter( "mbmsServiceAreaId" ) != null && request.getParameter( "mbmsServiceAreaId" ).length() > 0 ) {
+				mbmsServiceAreaId = Integer.valueOf( request.getParameter( "mbmsServiceAreaId" ) );
+			}
+			String city = request.getParameter( "city" );
+			Integer bandwidth = 0;
+			if( request.getParameter( "bandwidth" ) != null && request.getParameter( "bandwidth" ).length() > 0 ) {
+				bandwidth = Integer.valueOf( request.getParameter( "bandwidth" ) );
+			}
+			
+			//System.out.println( operator );
+			//System.out.println( bmsc );
+			
+			int rst = 0;
+			ServiceAreaMapper mapper = sqlSession.getMapper( ServiceAreaMapper.class );
+			
+			HashMap< String, Object > searchParam = new HashMap< String, Object >();
+			searchParam.put( "id", id );
+			searchParam.put( "name", name );
+			searchParam.put( "longitude", longitude );
+			searchParam.put( "latitude", latitude );
+			searchParam.put( "plmn", plmn );
+			searchParam.put( "circle", circle );
+			searchParam.put( "circleName", circleName );
+			searchParam.put( "clusterId", clusterId );
+			searchParam.put( "ipAddress", ipAddress );
+			searchParam.put( "earfcn", earfcn );
+			searchParam.put( "mbsfn", mbsfn );
+			searchParam.put( "mbmsServiceAreaId", mbmsServiceAreaId );
+			searchParam.put( "city", city );
+			searchParam.put( "bandwidth", bandwidth );
+			searchParam.put( "operator", operator );
+			searchParam.put( "bmsc", bmsc );
+			
+			rst += mapper.updateENBs( searchParam );
+			
+			JSONObject obj = new JSONObject();
+			obj.put( "count", rst );
+
+	        response.getWriter().print(obj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 	
 	@RequestMapping(value = "/api/uploadENBs.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void uploadENBs(MultipartHttpServletRequest request, HttpServletResponse response) {

@@ -56,7 +56,8 @@ $(document).ready(function()
 	$("#btnCancel").click(function() {
 		var tmpServiceAreaId = $("#serviceAreaId").val();
 		var searchDate = $("#searchDate").val();
-		location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
+		var bmscId= $("#bmscId").val();
+		location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId;
 	});
 		
 	$("#btnDelete").click(function() {
@@ -64,6 +65,7 @@ $(document).ready(function()
 			return;
 		var tmpServiceAreaId = $("#serviceAreaId").val();
 		var searchDate = $("#searchDate").val();
+		var bmscId= $("#bmscId").val();
 		
 		var param = {
 				id : $("#id").val(),
@@ -77,7 +79,7 @@ $(document).ready(function()
 			dataType : "json",
 			success : function( data ) {
 				outMsgForAjax(data);
-				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
+				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId;
 			},
 			error : function(request, status, error) {
 				alert("request=" +request +",status=" + status + ",error=" + error);
@@ -100,7 +102,8 @@ $(document).ready(function()
 			outMsgForAjax(result);
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
-			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
+			var bmscId= $("#bmscId").val();
+			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId;
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
