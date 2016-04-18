@@ -315,9 +315,10 @@
                                     <div class="form-group"><label class="col-sm-2 control-label">Schedule</label>
                                         <div class="col-sm-8">
                                             <label class="col-sm-1 control-label">Start</label>
-                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.start_date}"></div>
+                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.schedule_start}"></div>
                                             <label class="col-sm-1 control-label">Stop</label>
-                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.end_date}"></div>
+                                            
+                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.schedule_stop}"></div>
                                         </div>
                                         <div class="col-sm-1">
                                             <div class="form-group"><button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px"><i class="fa fa-plus"></i></button>
