@@ -116,6 +116,27 @@ function valadationCheck(){
 		alert('0 is not allowed for ratio.')
 		return false;
 	}
+	
+	var s_start = $("#schedule_start").val().replace(/[^0-9]/g,'');
+	var s_stop = $("#schedule_stop").val().replace(/[^0-9]/g,'');
+	
+	var d_start = $("#deliveryInfo_start").val().replace(/[^0-9]/g,'');
+	var d_end = $("#deliveryInfo_end").val().replace(/[^0-9]/g,'');
+	
+	console.log(s_start, '+', s_stop, '+',d_start, '+',d_end, '+');
+	
+	
+	
+	if (d_start > s_start ){
+		alert("It can not be 'content start time' over than 'schedule start time' ");
+		return false;
+	}
+	
+	if (d_end > s_stop ){
+		alert("It can not be 'content start stop time' over than 'schedule Stop time' ");
+		return false;
+	}
+	
 	return true;
 	
 }
