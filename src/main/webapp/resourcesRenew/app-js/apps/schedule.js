@@ -119,13 +119,10 @@ function valadationCheck(){
 	
 	var s_start = $("#schedule_start").val().replace(/[^0-9]/g,'');
 	var s_stop = $("#schedule_stop").val().replace(/[^0-9]/g,'');
-	
 	var d_start = $("#deliveryInfo_start").val().replace(/[^0-9]/g,'');
 	var d_end = $("#deliveryInfo_end").val().replace(/[^0-9]/g,'');
 	
-	console.log(s_start, '+', s_stop, '+',d_start, '+',d_end, '+');
-	
-	
+	//console.log(s_start, '+', s_stop, '+',d_start, '+',d_end, '+');
 	
 	if (d_start > s_start ){
 		alert("It can not be 'content start time' over than 'schedule start time' ");
@@ -138,7 +135,6 @@ function valadationCheck(){
 	}
 	
 	return true;
-	
 }
 function validation( from ) {
 	var $form = from;
