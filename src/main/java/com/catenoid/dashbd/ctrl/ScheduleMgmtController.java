@@ -294,8 +294,8 @@ public class ScheduleMgmtController {
 			mapSchedule.put("QCI", "1");
 			mapSchedule.put("FileRepair", "off");
 			mapSchedule.put("receptionReport", "off");
-			 
-			
+			mapSchedule.put("schedule_start", mapSchedule.get("temp_start"));
+			mapSchedule.put("schedule_stop", mapSchedule.get("temp_end"));
 		}
 		mv.addObject( "mapContentUrl", mapContentUrl );
 		mv.addObject( "mapSchedule", mapSchedule );
