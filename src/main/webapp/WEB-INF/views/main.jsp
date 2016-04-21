@@ -37,6 +37,10 @@
 	<script src="js/common.js"></script>
 	<script src="js/dash.all.min.js"></script>
 	
+	<link href="css/plugins/c3/c3.min.css" rel="stylesheet">
+	<script src="js/plugins/d3/d3.min.js"></script>
+	<script src="js/plugins/c3/c3.min.js"></script>
+	
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
@@ -44,6 +48,7 @@
 			$('.footable2').footable();
 			
 			getMenuList('MAIN');
+
 		});
 	</script>
     	
@@ -323,14 +328,9 @@
 								</div>
 							</div><!-- end ibox-title -->
 							<div class="ibox-content">
-								<div class="row">
-									<div class="col-xs-12" id="bandwidth">
-										<h2>0% is being used</h2>
-										<div class="progress progress-big">
-											<div style="width:0%;" class="progress-bar"></div>
-										</div>
-									</div>
-								</div>
+								<div>
+	                                <div id="bandwidth"></div>
+	                            </div>
 							</div><!-- end ibox-content -->
 						</div>
 					</div>

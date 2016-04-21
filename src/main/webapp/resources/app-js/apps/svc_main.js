@@ -131,13 +131,26 @@ function bandWidth(bmscId, serviceAreaId){
 			console.log('here1');
 			var bandwidth_data = JSON.parse(responseData);
 			console.log('here2');		
-			var content = "<h2>" + bandwidth_data.GBRSum + " % is being used</h2>";
-			content += "<div class=\"progress progress-big\">";
-			content += "<div style=\"width:" + bandwidth_data.GBRSum + "%;\" class=\"progress-bar\"></div>";
-			content += "</div>";
-			console.log('here3');	
-			
-            $("#bandwidth").append(content);
+			//var content = "<h2>" + bandwidth_data.GBRSum + " % is being used</h2>";
+			//content += "<div class=\"progress progress-big\">";
+			//content += "<div style=\"width:" + bandwidth_data.GBRSum + "%;\" class=\"progress-bar\"></div>";
+			//content += "</div>";
+			//console.log('here3');	
+
+			c3.generate({
+                bindto: '#bandwidth',
+                data:{
+                    columns: [
+                        ['data', bandwidth_data.GBRSum]
+                    ],
+
+                    type: 'gauge'
+                },
+                color:{
+                    pattern: ['#1ab394', '#BABABA']
+
+                }
+            });
             console.log('here4');	
 		},
 		error : function(request, status, error) {
