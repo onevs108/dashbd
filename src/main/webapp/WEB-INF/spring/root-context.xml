@@ -33,12 +33,12 @@
 	<bean id="cronTriggerSessionEMBMS" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="sessionEMBMS"/>
 	    <!-- 매 10초마다 (for test) 
-		-->
-	    <property name="cronExpression" value="*/10 * * * * ?"/> 
-	    <!-- 매 5분 마다
+	    <property name="cronExpression" value="*/10 * * * * ?"/>
+	    	매 5분 마다
 	    <property name="cronExpression" value="0 */5 * * * ?"/> 
 	   	-->
 
+	    <property name="cronExpression" value="0 */10 * * * ?"/> 
 	</bean>
 	
 		<!-- 3. Cron 실행 -->

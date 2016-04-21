@@ -922,17 +922,17 @@
 	update enb_ap 
 	set name = #{name},
 		longitude = #{longitude},
-		latitude = #{latitude}
-		plmn = #{plmn}
-		circle = #{circle}
-		circle_name = #{circleName}
-		cluster_id = #{clusterId,jdbcType=INTEGER}
-		ipaddress = #{ipAddress}
-		earfcn = #{earfcn}
-		mbsfn = #{mbsfn}
-		mbms_service_area_id = #{mbmsServiceAreaId,jdbcType=INTEGER}
-		updated_at = now()
-		city = #{city}
+		latitude = #{latitude},
+		plmn = #{plmn},
+		circle = #{circle},
+		circle_name = #{circleName},
+		cluster_id = #{clusterId,jdbcType=INTEGER},
+		ipaddress = #{ipAddress},
+		earfcn = #{earfcn},
+		mbsfn = #{mbsfn},
+		mbms_service_area_id = #{mbmsServiceAreaId,jdbcType=INTEGER},
+		updated_at = now(),
+		city = #{city},
 		bandwidth = #{bandwidth}
 	where id = #{id,jdbcType=INTEGER}
 	</update>

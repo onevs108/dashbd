@@ -253,11 +253,16 @@
 											<a class="close-link"><i class="fa fa-times"></i></a-->
 										</div>
 									</div><!-- end ibox-title -->
-									
-									
-									
 									<div class="col-sm-4">
 										<div class="ibox float-e-margins" id="service_area">
+											<div class="ibox-content">
+												<div class="input-group">
+													<input type="text" class="form-control" id="toSearchTxt" name="toSearchTxt" value="" placeholder="SA_ID or SA_NAME">
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-primary" onclick="javascript:searchToServiceArea('75', '서울');" id="toSearchBtn">Search to Service</button>
+													</span>
+												</div>
+											</div>
 											<div class="ibox-content">
 												<table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
 													<thead>

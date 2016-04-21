@@ -21,14 +21,14 @@ default_service_area += "</div>";
 
 $(document).ready(function()
 {
-	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '');
+	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '', '');
     $('#operator').change(function(){
         getServiceAreaBmSc(1, $('#operator option:selected').val());
     });
     
     $('#bmsc').change(function(){
     	$("#divBandWidth").hide();
-    	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '');
+    	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '', '');
     	refreshEmbms();
     	callScheduleTable($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
     });
@@ -202,14 +202,14 @@ function setWaitContents(bmscId, serviceAreaId){
 }
 
 
-function getServiceAreaByBmScCity(page, bmscId, city)
+function getServiceAreaByBmScCity(page, bmscId, city, toSearchTxt)
 {
 	var selectedCity = encodeURIComponent(city);
 
 	$.ajax({
         url : "/dashbd/api/serviceAreaByBmScCity.do",
         type: "get",
-        data : { "page" : page, "bmscId" : bmscId, "city" : selectedCity },
+        data : { "page" : page, "bmscId" : bmscId, "city" : selectedCity, "toSearchTxt" : encodeURIComponent(toSearchTxt) },
         contentType: "application/x-www-form-urlencoded; charset=UTF-8",
         success : function(responseData){
             //$("#ajax").remove();
@@ -221,8 +221,15 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             
             //메인페이지 Service Areas for BM-SC 영역
 			options += "<div class=\"ibox-content\">";
+			options += "<div class=\"input-group\"><input type=\"text\" class=\"form-control\" id=\"toSearchTxt\" name=\"toSearchTxt\" value=\""+toSearchTxt+"\" placeholder=\"SA_ID or SA_NAME\" />";
+			options += "<span class=\"input-group-btn\">";
+			options += '<button type="button" class="btn btn-primary" onclick="javascript:searchToServiceArea(\'' + bmscId + '\', \'' + city + '\');" id="toSearchBtn">Search to Service</button>';
+			options += "</span>";
+			options += "</div>";
+			options += "</div>";
+			options += "<div class=\"ibox-content\">";
 			options += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th></tr></thead>";
+			options += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID<span class='footable-sort-indicator'></span></th><th class=\"footable-sortable\">SA_NAME<span class='footable-sort-indicator'></span></th></tr></thead>";
 			options += "<tbody>";
 
             for(var i = 0; i < dataLen; i++ ) {
@@ -317,6 +324,10 @@ function getServiceAreaByBmScCity(page, bmscId, city)
             */
         }
     });
+}
+
+function searchToServiceArea(bmscId, city){
+	getServiceAreaByBmScCity("1", bmscId, city, $("#toSearchTxt").val());
 }
 
 function callScheduleTable(bmscId, bmscName){

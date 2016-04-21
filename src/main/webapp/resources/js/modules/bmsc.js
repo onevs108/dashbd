@@ -32,7 +32,7 @@ function doCheckName() {
 		dataType: 'json',
 		data: {
 			bmscName: bmscName,
-			id: $("#form-operator-id").val()
+			operatorId: $("#form-operator-id").val()
 		},
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공

@@ -15,16 +15,20 @@
     <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
 	<link href="../resources/css/custom.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link href="css/plugins/footable/footable.core.css" rel="stylesheet">
 
 	<script src="js/jquery-2.1.1.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="js/plugins/footable/footable.all.min.js"></script>
 	
 	<script src="js/common.js"></script>
 	
 	<script type="text/javascript">
 		$(document).ready(function() {
+			$('.footable').footable();
+			$('.footable2').footable();
 			getMenuList('CONTENTS_MGMT');
 		});
 	</script>
@@ -166,21 +170,22 @@
                                     <button type="button" class="btn btn-primary btn-sm" id="btn-add-content">Contents Add</button>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="footable table table-bordered" data-page-size="10" id="content-table">
+                            <div class="ibox-content">
+                                <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10" id="content-table">
                                     <thead>
                                     <tr>
-                                        <th>Title</th>
-                                        <th>Category</th>
-                                        <th>Running time</th>
-                                        <th>Description</th>
+                                        <th class="footable-sortable footable-sorted">Title1<span class='footable-sort-indicator'></span></th>
+                                        <th class="footable-sortable footable-sorted">Category<span class='footable-sort-indicator'></span></th>
+                                        <th class="footable-sortable footable-sorted">Running time<span class='footable-sort-indicator'></span></th>
+                                        <th class="footable-sortable footable-sorted">File Format<span class='footable-sort-indicator'></span></th>
+                                        <th class="footable-sortable footable-sorted">Description<span class='footable-sort-indicator'></span></th>
                                         <th class="text-right" data-sort-ignore="true">Command</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
                                     <tfoot>
                                     <tr>
-                                        <td colspan="6">
+                                        <td colspan="7">
                                             <ul class="pagination pull-right">
                                             </ul>
                                         </td>
@@ -202,6 +207,7 @@
 	<td><%= title %></td>
 	<td><%= category %></td>
 	<td><%= running_time %></td>
+	<td><%= file_format %></td>
 	<td><%= description %></td>
 	<td class="text-right">
 		<button type="button" class="btn btn-default btn-xs button-info">Info</button>
