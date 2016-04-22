@@ -31,7 +31,15 @@
 	padding:25px 10px 0;
 }
 
-
+.nav-metismenu-second{
+	display:none
+}
+.nav-metismenu-second>li{
+	list-style: none;
+}
+.nav-metismenu-second.open{
+	display:block
+}
 
 
 
@@ -269,7 +277,7 @@ h5 {
 }
 .nav-second-level li a {
   padding: 7px 10px 7px 10px;
-  padding-left: 52px;
+  padding-left: 40px;
 }
 .nav-third-level li a {
   padding-left: 62px;

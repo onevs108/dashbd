@@ -877,7 +877,7 @@ public class ServiceAreaController {
 	}
 	
 	/**
-	 * ENB 由ъ뒪�듃 由ы꽩
+	 * ENB List
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/getEnbsList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")

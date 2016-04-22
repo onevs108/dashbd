@@ -14,6 +14,7 @@ import com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
+import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.Users;
 
@@ -97,6 +98,8 @@ public interface ServiceAreaMapper {
     List<HashMap<String, Object>> getSeviceAreaNotMapped(HashMap<String, Integer> searchParm);
     
     List<ServiceAreaEnbAp> getEnbsList(HashMap<String, Object> example);
+    
+    List<ServiceAreaPermissionAp> getPermissionList(HashMap<String, Object> example);
     
     int selectServiceAreaCnt(HashMap< String, Object > searchParm);
     

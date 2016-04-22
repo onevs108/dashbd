@@ -21,6 +21,7 @@
 	
 	<!-- Sweet Alert -->
     <link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    
 
     <!-- Mainly scripts -->
     <script src="js/jquery-2.1.1.js"></script>
@@ -40,8 +41,10 @@
 	<link href="css/plugins/c3/c3.min.css" rel="stylesheet">
 	<script src="js/plugins/d3/d3.min.js"></script>
 	<script src="js/plugins/c3/c3.min.js"></script>
-	
 	<!-- Page-Level Scripts -->
+	
+    <link href="css/plugins/chartist/chartist.min.css" rel="stylesheet">
+    <script src="js/plugins/chartist/chartist.min.js"></script>
 	<script>
 		$(document).ready(function() {
 			$('.footable').footable();
@@ -332,6 +335,14 @@
 	                                <div id="bandwidth"></div>
 	                            </div>
 							</div><!-- end ibox-content -->
+							<div class="ibox float-e-margins">
+		                        <div class="ibox-title">
+		                            <h5>Horizontal bar chart </h5>
+		                        </div>
+		                        <div class="ibox-content">
+		                            <div id="ct-chart4" class="ct-perfect-fourth"></div>
+		                        </div>
+		                    </div>
 						</div>
 					</div>
 					<!-- end Bandwidth -->

@@ -60,3 +60,25 @@ function getMenuList(currentMenu) {
 		}
 	});
 }
+
+function goSystemMgmt(){
+	$.post( "/dashbd/resources/systemMgmt.do", function( data ) {
+		$("#page-wrapper").html( data );
+	});
+}
+///dashbd/resources/systemMgmt.do
+$(document).on('click', '.nav.metismenu li',function(e){
+	if($(e.target).closest('li').find('ul').length > 0){
+		if($(e.target).closest('li').hasClass('active')){
+			$(e.target).closest('li').removeClass('active');
+			$(e.target).closest('li').find('ul').removeClass('collapse in');
+			$(e.target).closest('li').find('ul').addClass('collapsing');
+			$(e.target).closest('li').find('ul').addClass('collapse');
+		}else{
+			$(e.target).closest('li').addClass('active');
+			$(e.target).closest('li').find('ul').addClass('collapse in');
+			$(e.target).closest('li').find('ul').removeClass('collapsing');
+			$(e.target).closest('li').find('ul').removeClass('collapse');
+		}
+	}
+});

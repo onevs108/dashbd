@@ -67,6 +67,13 @@
 		<result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
+
+	<resultMap id="ServiceAreaPermissionAp" type="com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp" >
+		<id column="permissionId" property="permissionId" jdbcType="INTEGER" />
+		<result column="permissionName" property="permissionName" jdbcType="VARCHAR" />
+		<result column="permissionCount" property="permissionCount" jdbcType="INTEGER" />
+		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
+	</resultMap>
 	
 	<resultMap id="ServiceAreaCount" type="com.catenoid.dashbd.dao.model.ServiceAreaCount" >
 		<result column="bmsc_id" property="bmscId" jdbcType="INTEGER" />
@@ -1065,5 +1072,49 @@
 	    SELECT COUNT(*)
 		FROM enb_ap
 	    WHERE id = #{enbApId}
+	</select>
+	
+	<select id="getPermissionList" resultMap="ServiceAreaPermissionAp" parameterType="java.util.HashMap" >
+	SELECT
+		permissionId, permissionName, permissionCount,
+		(
+			select count(*) from
+			(
+				select A.id AS permissionId, A.NAME AS permissionName, COUNT(B.permission_id) AS permissionCount			
+				from permission A left outer join users_permission B on A.id=B.permission_id			                  
+				left outer join users C on B.user_id = C.user_id			                  
+				left outer join operator D on C.operator_id=D.id			where 1=1	
+				<if test="operatorId != null and operatorId != ''">
+					and D.id = #{operatorId}
+				</if>		 			
+				group by A.id, A.NAME
+			) K
+		) as totalCount
+	FROM 
+	( 
+		SELECT
+			@ROWNUM := @ROWNUM + 1 AS rownum,
+			permissionId, permissionName, permissionCount
+		FROM 
+		( SELECT @ROWNUM := 0 AS rownum ) R,
+		( 	
+			select A.id AS permissionId, A.NAME AS permissionName, COUNT(B.permission_id) AS permissionCount
+			from permission A left outer join users_permission B on A.id=B.permission_id
+			                  left outer join users C on B.user_id = C.user_id
+			                  left outer join operator D on C.operator_id=D.id
+			where 1=1
+			<if test="operatorId != null and operatorId != ''">
+				and D.id = #{operatorId}
+			</if>
+			group by A.id, A.NAME
+			ORDER BY 	<if test="sort == null">permissionId</if>
+						<if test="sort != null">
+							<if test="sort == 'permissionName'">permissionName</if>
+							<if test="sort == 'permissionCount'">permissionCount</if>
+							${order}
+						</if> 
+		) T
+	) R
+	WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
 </mapper>

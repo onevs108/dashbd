@@ -155,6 +155,7 @@ public class HomeController {
 				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area  Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\" onclick=\"javascript:goSystemMgmt();return false;\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span><span class=\"fa arrow\"></span></a><ul class=\"nav nav-second-level collapse\"><li class=\"\"><a href=\"#\"><i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li><li><a href=\"#\"><i class=\"fa fa-gear\"></i> <span class=\"nav-label\">System Configuration</span></a></li><li><a href=\"#\"><i class=\"fa fa-database\"></i> <span class=\"nav-label\">DB Backup/Restore</span></a></li></ul></li>");
 			}
 			else {
 				for (Permission permission : permissions) {
