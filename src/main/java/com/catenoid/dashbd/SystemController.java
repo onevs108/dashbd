@@ -56,6 +56,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
 import com.catenoid.dashbd.dao.ServiceAreaScheduleMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.BmscServiceArea;
@@ -73,6 +74,7 @@ import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaSchedule;
 import com.catenoid.dashbd.dao.model.ServiceAreaScheduleExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
+import com.catenoid.dashbd.dao.model.SystemIncomingLog;
 import com.catenoid.dashbd.dao.model.Users;
 
 /**
@@ -130,7 +132,9 @@ public class SystemController {
 	@ResponseBody
 	public String getPermissionList(@RequestBody String body) {
 		logger.info("-> [body = {}]", body);
-		
+
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject jsonResult = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
 		
@@ -153,7 +157,7 @@ public class SystemController {
 			searchParam.put("operatorId", operatorId);
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
-			searchParam.put("start", offset);
+			searchParam.put("start", offset+1);
 			searchParam.put("end", offset + limit);
 			
 			List<ServiceAreaPermissionAp> datas = mapper.getPermissionList(searchParam);
@@ -162,8 +166,11 @@ public class SystemController {
 			for(int i = 0; i < datas.size(); i++) {
 				ServiceAreaPermissionAp data = datas.get(i);
 				JSONObject obj = new JSONObject();
+				obj.put("rownum", data.getRownum());
+				obj.put("permissionId", data.getPermissionId());
 				obj.put("permissionName", data.getPermissionName());
 				obj.put("permissionCount", data.getPermissionCount());
+				obj.put("totalCount", data.getTotalCount());
 				rows.add(obj);
 				
 				if( i == 0 ) {
@@ -172,8 +179,88 @@ public class SystemController {
 			}
 			
 			jsonResult.put("rows", rows);
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getPermissionList");
+			syslogMap.put("reqUrl", "api/getPermissionList.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 
 		} catch (Exception e) {
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getPermissionList");
+			syslogMap.put("reqUrl", "api/getPermissionList.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			logger.error("~~ [An error occurred!]", e);
+		}
+		return jsonResult.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/getIncomingTrafficList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getIncomingTrafficList(@RequestBody String body) {
+		logger.info("-> [body = {}]", body);
+
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		JSONObject jsonResult = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
+			
+			String operatorIdToStr = (String) requestJson.get("operatorId");
+			Integer operatorId = operatorIdToStr == null ? 0 : Integer.parseInt(operatorIdToStr);
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
+			long offset = (Long) requestJson.get("offset");
+			long limit = (Long) requestJson.get("limit");
+			
+			if (sort == null || sort.isEmpty()) sort = null;
+			if (order == null || order.isEmpty()) order = null;
+			
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			HashMap<String, Object> searchParam = new HashMap();
+			searchParam.put("operatorId", operatorId);
+			searchParam.put("sort", sort);
+			searchParam.put("order", order);
+			searchParam.put("start", offset+1);
+			searchParam.put("end", offset + limit);
+			
+			List<SystemIncomingLog> datas = mapper.getIncomingTrafficList(searchParam);
+
+			JSONArray rows = new JSONArray();
+			for(int i = 0; i < datas.size(); i++) {
+				SystemIncomingLog data = datas.get(i);
+				JSONObject obj = new JSONObject();
+				obj.put("rownum", data.getRownum());
+				obj.put("reqType", data.getReqType());
+				obj.put("successCount", data.getSuccessCount());
+				obj.put("failCount", data.getFailCount());
+				obj.put("totPercentage", Math.round((float)(((double)data.getSuccessCount()/(double)(data.getSuccessCount()+data.getFailCount()))*100)));
+				rows.add(obj);
+			}
+			
+			jsonResult.put("total", datas.size());
+			jsonResult.put("rows", rows);
+
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getIncomingTrafficList");
+			syslogMap.put("reqUrl", "api/getIncomingTrafficList.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		} catch (Exception e) {
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getIncomingTrafficList");
+			syslogMap.put("reqUrl", "api/getIncomingTrafficList.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ [An error occurred!]", e);
 		}
 		return jsonResult.toString();

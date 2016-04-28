@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.OperatorBmscMapper;
 import com.catenoid.dashbd.dao.OperatorMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.service.OperatorService;
 
@@ -40,6 +41,8 @@ public class OperatorServiceImpl implements OperatorService {
 	 */
 	@Override
 	public List<Operator> getOperatorList(String sort, String order, long offset, long limit) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sort", sort);
 		map.put("order", order);
@@ -49,8 +52,20 @@ public class OperatorServiceImpl implements OperatorService {
 		List<Operator> operatorList = new ArrayList<Operator>();
 		try {
 			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "getOperatorList");
+			syslogMap.put("reqUrl", "operator/list.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			operatorList = operatorMapper.selectOperatorList(map);
 		} catch (Exception e) {
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "getOperatorList");
+			syslogMap.put("reqUrl", "operator/list.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ [An error occurred]", e);
 		}
 		return operatorList;
@@ -99,10 +114,24 @@ public class OperatorServiceImpl implements OperatorService {
 	 */
 	@Override
 	public boolean checkOperatorName(String operatorName) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
 			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "check");
+			syslogMap.put("reqUrl", "operator/check.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.selectByOperatorName(operatorName) == null ? true : false;
 		} catch (Exception e) {
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "check");
+			syslogMap.put("reqUrl", "operator/check.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -113,10 +142,24 @@ public class OperatorServiceImpl implements OperatorService {
 	 */
 	@Override
 	public boolean insertOperator(Operator operator) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
 			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "insertOperator");
+			syslogMap.put("reqUrl", "operator/insert.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.insertOperator(operator) > 0;
 		} catch (Exception e) {
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "insertOperator");
+			syslogMap.put("reqUrl", "operator/insert.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -127,6 +170,8 @@ public class OperatorServiceImpl implements OperatorService {
 	 */
 	@Override
 	public boolean deleteOperator(Integer operatorId) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
 			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 			OperatorBmscMapper operatorBmscMapper = sqlSession.getMapper(OperatorBmscMapper.class);
@@ -141,9 +186,21 @@ public class OperatorServiceImpl implements OperatorService {
 				map.put("bmscIdList", bmscIdList);
 				bmscMapper.deleteBmscs(map);
 			}
-			
+
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "deleteOperator");
+			syslogMap.put("reqUrl", "operator/delete.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.deleteByPrimaryKey(operatorId) > 0;
 		} catch (Exception e) {
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "deleteOperator");
+			syslogMap.put("reqUrl", "operator/delete.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}

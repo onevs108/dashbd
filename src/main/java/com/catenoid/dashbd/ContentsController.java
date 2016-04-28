@@ -38,6 +38,7 @@ import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ContentsImagesMapper;
 import com.catenoid.dashbd.dao.ContentsMapper;
 import com.catenoid.dashbd.dao.ScheduleContentsMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ContentsExample;
 import com.catenoid.dashbd.dao.model.ContentsExample.Criteria;
@@ -88,6 +89,8 @@ public class ContentsController {
 	}
 	
 	private ResponseEntity<String> readContents(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {			
 			ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
 			ContentsExample exm = new ContentsExample();
@@ -166,11 +169,23 @@ public class ContentsController {
 				obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 				obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 				root.put("result", obj);
-			}		
+			}
 			
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "readContents");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "readContents");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -178,6 +193,8 @@ public class ContentsController {
 	}
 	
 	private ResponseEntity<String> getTotalCount(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
@@ -196,10 +213,22 @@ public class ContentsController {
 			JSONObject obj = new JSONObject();
 			obj.put("count", count);
 			root.put("result", obj);
-			
+
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "getTotalCount");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK); 
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "getTotalCount");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -207,6 +236,8 @@ public class ContentsController {
 	}
 	
 	private ResponseEntity<String> creatContents(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {	
 			if(!valueCheck(request.getParameter("type"))) {
@@ -253,15 +284,33 @@ public class ContentsController {
 			JSONObject obj = new JSONObject();
 			obj.put("id", record.getId());
 			root.put("result", obj);
-			
+
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "creatContents");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "creatContents");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "creatContents");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
@@ -274,6 +323,8 @@ public class ContentsController {
 	}
 	
 	private ResponseEntity<String> updateContentsByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(request.getParameter("id") == null) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -301,19 +352,44 @@ public class ContentsController {
 			root.put("code", 1);
 			root.put("message", null);
 			
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "updateContentsByID");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "updateContentsByID");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "updateContentsByID");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "updateContentsByID");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -321,6 +397,8 @@ public class ContentsController {
 	}
 	
 	private ResponseEntity<String> deleteContentsByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(request.getParameter("id") == null) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -378,15 +456,33 @@ public class ContentsController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "deleteContentsByID");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "deleteContentsByID");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Contents Mgmt");
+			syslogMap.put("reqSubType", "deleteContentsByID");
+			syslogMap.put("reqUrl", "api/content.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}

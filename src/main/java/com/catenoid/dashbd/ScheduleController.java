@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceScheduleMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ContentsMapper;
@@ -96,6 +97,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> readSchedule(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -116,9 +119,22 @@ public class ScheduleController {
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			root.put("result", obj);
 			
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "readSchedule");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "readSchedule");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -126,6 +142,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> readScheduleContents(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -190,10 +208,22 @@ public class ScheduleController {
 				obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 				obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 				root.put("result", obj);
-			}	
+			}
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "readScheduleContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "readScheduleContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -201,6 +231,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> readScheduleContentsByServiceAreaId(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("service_area_id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -270,9 +302,21 @@ public class ScheduleController {
 				obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 				root.put("result", obj);
 			}	
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "readScheduleContentsByServiceAreaId");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "readScheduleContentsByServiceAreaId");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
@@ -280,6 +324,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> creatSchedule(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {			
 			if(!valueCheck(request.getParameter("start_date"))) {
@@ -308,19 +354,44 @@ public class ScheduleController {
 			else obj.put("id", record.getId());
 			root.put("result", obj);
 			
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "creatSchedule");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "creatSchedule");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "creatSchedule");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "creatSchedule");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -328,6 +399,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> updateScheduleByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -345,20 +418,44 @@ public class ScheduleController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "updateScheduleByID");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "updateScheduleByID");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "updateScheduleByID");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "updateScheduleByID");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -366,6 +463,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> deleteScheduleByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -393,14 +492,33 @@ public class ScheduleController {
 			root.put("code", 1);
 			root.put("message", null);
 			
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "deleteScheduleByID");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "deleteScheduleByID");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "deleteScheduleByID");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -408,6 +526,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> addScheduleAtContents(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -470,19 +590,44 @@ public class ScheduleController {
 			root.put("code", 1);
 			root.put("message", null);
 			
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "addScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "addScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "addScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "addScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -490,6 +635,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> changeScheduleAtContents(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -514,15 +661,33 @@ public class ScheduleController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "changeScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "changeScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "changeScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -530,6 +695,8 @@ public class ScheduleController {
 	}
 	
 	private ResponseEntity<String> removeScheduleAtContents(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -546,15 +713,33 @@ public class ScheduleController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "removeScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "removeScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Schedule Mgmt");
+			syslogMap.put("reqSubType", "removeScheduleAtContents");
+			syslogMap.put("reqUrl", "api/schedule.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}

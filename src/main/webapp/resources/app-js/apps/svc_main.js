@@ -151,21 +151,6 @@ function bandWidth(bmscId, serviceAreaId){
 
                 }
             });
-			
-            new Chartist.Bar('#ct-chart4', {
-                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                series: [
-                    [5, 4, 3, 7, 5, 10, 3]
-                ]
-            }, {
-                seriesBarDistance: 10,
-                reverseData: true,
-                horizontalBars: true,
-                axisY: {
-                    offset: 70
-                }
-            });
-
             console.log('here4');	
 		},
 		error : function(request, status, error) {

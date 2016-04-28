@@ -44,14 +44,28 @@ public class PermissionServiceImpl implements PermissionService {
 		map.put("end", offset + limit);
 		
 		List<Users> userList = new ArrayList<Users>();
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
-			UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 			userList = usersMapper.selectUserListInPermission(map);
 			
-			for (Users user : userList)
+			for (Users user : userList){
 				user.setPermissions(usersMapper.selectPermissionsByUserId(user.getUserId()));
-			
+			}
+
+			syslogMap.put("reqType", "Permission Mgmt");
+			syslogMap.put("reqSubType", "userlist");
+			syslogMap.put("reqUrl", "permission/userlist.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 		} catch (Exception e) {
+			syslogMap.put("reqType", "Permission Mgmt");
+			syslogMap.put("reqSubType", "userlist");
+			syslogMap.put("reqUrl", "permission/userlist.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ [An error occurred]", e);
 		}
 		return userList;
@@ -96,15 +110,28 @@ public class PermissionServiceImpl implements PermissionService {
 	@Override
 	public List<Permission> getPermissionList(String userId) {
 		if (userId == null || userId.isEmpty()) userId = null;
-		
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		List<Permission> permissionList = new ArrayList<Permission>();
 		try {
-			UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 			if (userId == null)
 				permissionList = usersMapper.selectPermissionAll();
 			else
 				permissionList = usersMapper.selectPermissionsByUserId(userId);
+
+			syslogMap.put("reqType", "Permission Mgmt");
+			syslogMap.put("reqSubType", "permission");
+			syslogMap.put("reqUrl", "resources/permission.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 		} catch (Exception e) {
+			syslogMap.put("reqType", "Permission Mgmt");
+			syslogMap.put("reqSubType", "permission");
+			syslogMap.put("reqUrl", "resources/permission.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 		}
 		
@@ -125,8 +152,9 @@ public class PermissionServiceImpl implements PermissionService {
 
 	@Override
 	public boolean insertUserPermission(String userId, List<String> permissions) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
-			UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 			usersMapper.deletePermissionOfUser(userId);
 			
 			if (permissions != null && !permissions.isEmpty()) {
@@ -142,11 +170,25 @@ public class PermissionServiceImpl implements PermissionService {
 				}
 				
 				map.put("itemList", itemList);
+
+				syslogMap.put("reqType", "Permission Mgmt");
+				syslogMap.put("reqSubType", "insert");
+				syslogMap.put("reqUrl", "permission/insert.do");
+				syslogMap.put("reqCode", "SUCCESS");
+				syslogMap.put("reqMsg", "");
+				usersMapper.insertSystemAjaxLog(syslogMap);
+
 				return usersMapper.insertPermissionOfUser(map) > 0;
 			}
 			
 			return true;
 		} catch (Exception e) {
+			syslogMap.put("reqType", "Permission Mgmt");
+			syslogMap.put("reqSubType", "insert");
+			syslogMap.put("reqUrl", "permission/insert.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}

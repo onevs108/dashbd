@@ -147,4 +147,23 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 	}
+
+	@Override
+	public void insertSystemAjaxLog(String reqType, String reqSubType, String reqUrl, String reqCode, String reqMsg) {
+		try {
+			UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+			
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("reqType", reqType);
+			map.put("reqSubType", reqSubType);
+			map.put("reqUrl", reqUrl);
+			map.put("reqCode", reqCode);
+			map.put("reqMsg", reqMsg);
+			
+			usersMapper.insertSystemAjaxLog(map);
+			
+		} catch (Exception e) {
+			logger.error("~~ An error occurred!", e);
+		}
+	}
 }

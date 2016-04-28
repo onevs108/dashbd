@@ -9,6 +9,13 @@
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
+
+  <resultMap id="SystemIncomingLog" type="com.catenoid.dashbd.dao.model.SystemIncomingLog" >
+	<result column="rownum" property="rownum" jdbcType="INTEGER" />
+	<result column="req_type" property="reqType" jdbcType="VARCHAR" />
+	<result column="success_count" property="successCount" jdbcType="INTEGER" />
+	<result column="fail_count" property="failCount" jdbcType="INTEGER" />
+  </resultMap>
   <resultMap id="ServiceAreaEnbApMap" type="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
   	<id column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
   	<result column="service_area_bandwidth" property="serviceAreaBandwidth" jdbcType="BIGINT" />
@@ -70,6 +77,7 @@
 
 	<resultMap id="ServiceAreaPermissionAp" type="com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp" >
 		<id column="permissionId" property="permissionId" jdbcType="INTEGER" />
+		<result column="rownum" property="rownum" jdbcType="INTEGER" />
 		<result column="permissionName" property="permissionName" jdbcType="VARCHAR" />
 		<result column="permissionCount" property="permissionCount" jdbcType="INTEGER" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
@@ -1076,7 +1084,7 @@
 	
 	<select id="getPermissionList" resultMap="ServiceAreaPermissionAp" parameterType="java.util.HashMap" >
 	SELECT
-		permissionId, permissionName, permissionCount,
+		rownum, permissionId, permissionName, permissionCount,
 		(
 			select count(*) from
 			(
@@ -1117,4 +1125,53 @@
 	) R
 	WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
+	
+	<select id="countByEnbsCount" parameterType="java.util.HashMap" resultType="java.lang.Long" >
+		select	case when count(bandwidth)=0 then 0 else sum(bandwidth) end as eNBsCount
+		from	enb_ap
+		where	1=1
+		<if test="operatorId != null and operatorId != ''">
+			and operator_id = #{operatorId}
+		</if>
+		<if test="bmscId != null and bmscId != ''">
+			and bmsc_id = #{bmscId}
+		</if>
+	</select>
+	
+	<select id="countByServiceAreaCount" parameterType="java.util.HashMap" resultType="java.lang.Long" >
+		select count(name) from
+		(	select	c.name
+			from	bmsc_service_area a, service_area_enb_ap b, enb_ap c				
+			where	1=1 and b.service_area_id = a.service_area_id and c.id = b.enb_ap_id and c.bmsc_id = a.bmsc_id
+			<if test="operatorId != null and operatorId != ''">
+				and c.operator_id = #{operatorId}
+			</if>
+			<if test="bmscId != null and bmscId != ''">
+				and c.bmsc_id = #{bmscId}
+			</if>
+			group by c.name
+		) K
+	</select>
+	
+	<select id="getIncomingTrafficList" resultMap="SystemIncomingLog" parameterType="java.util.HashMap">
+    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
+	from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+			(
+	        select
+	            K.req_type,
+	            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
+	            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
+	        from (select  req_type, req_code, count(req_code) as reqCount
+	              from    system_ajax_log
+	              where   1=1
+	             		  <if test="searchYear != null and searchYear != ''">
+	              		  	and left(insert_at, 4) = #{searchYear}
+						  </if>
+						  <if test="searchMonth != null and searchMonth != ''">
+	              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+						  </if>
+	              group by req_type, req_code) K
+	        ) Z
+	group by Z.req_type
+  </select>
 </mapper>

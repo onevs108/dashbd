@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.EnbApMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.EnbAp;
 
 /**
@@ -68,6 +71,8 @@ public class EnbApController {
 	}
 		
 	private ResponseEntity<String> readEnbApByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {			
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 			
@@ -100,10 +105,22 @@ public class EnbApController {
 			obj.put("city", data.getCity());
 			obj.put("bandwidth", data.getBandwidth());
 			root.put("result", obj);
-			
+
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "readEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "readEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -112,6 +129,8 @@ public class EnbApController {
 	}
 	
 	private ResponseEntity<String> createEnbAp(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			logger.info("name: " + request.getParameter("name") + ", latitude: " + request.getParameter("latitude") + ", longitude: " + request.getParameter("longitude"));			
@@ -150,19 +169,43 @@ public class EnbApController {
 			else obj.put("id", record.getId());
 			root.put("result", obj);
 			
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "createEnbAp");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "createEnbAp");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "createEnbAp");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "createEnbAp");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -170,6 +213,8 @@ public class EnbApController {
 	}
 	
 	private ResponseEntity<String> updateEnbApByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
 			logger.info("ID: " + request.getParameter("id") + ", name: " + request.getParameter("name") + ", latitude: " + request.getParameter("latitude") + ", longitude: " + request.getParameter("longitude"));
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);			
@@ -202,14 +247,32 @@ public class EnbApController {
 			if(res == 0) root.put("message", "Not found update record");
 			else root.put("message", null);
 			
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "updateEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "updateEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "updateEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -217,6 +280,8 @@ public class EnbApController {
 	}
 	
 	private ResponseEntity<String> deleteEnbApByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
 			logger.info("ID: " + request.getParameter("id"));
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -234,14 +299,32 @@ public class EnbApController {
 			if(res == 0) root.put("message", "Not found delete record");
 			else root.put("message", null);
 			
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "deleteEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "deleteEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "deleteEnbApByID");
+			syslogMap.put("reqUrl", "api/enb.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}

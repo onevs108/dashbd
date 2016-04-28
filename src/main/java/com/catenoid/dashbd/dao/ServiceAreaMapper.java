@@ -16,6 +16,7 @@ import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
+import com.catenoid.dashbd.dao.model.SystemIncomingLog;
 import com.catenoid.dashbd.dao.model.Users;
 
 import java.util.HashMap;
@@ -56,6 +57,10 @@ public interface ServiceAreaMapper {
     List<BmscServiceArea> getSeviceAreaByBmSc(BmscServiceAreaSearchParam searchParm);
     
     List<Bmsc> getSeviceAreaBmSc(OperatorSearchParam searchParm);
+    
+    long countByEnbsCount(HashMap<String, Object> searchParm);
+    
+    long countByServiceAreaCount(HashMap<String, Object> searchParm);
     
     List<ServiceAreaEnbAp> getServiceAreaEnbAp(HashMap<String, Object> example);
     
@@ -108,4 +113,6 @@ public interface ServiceAreaMapper {
     int serviceAreaByENBDelete(HashMap< String, Object > serviceParam);
 
     int selectEnbListCount(HashMap<String, Integer> searchParam);
+    
+    List<SystemIncomingLog> getIncomingTrafficList(HashMap<String, Object> example);
 }

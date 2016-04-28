@@ -55,4 +55,6 @@ public interface UsersMapper {
     int insertPermissionOfUser(Map<String, Object> map);
     
     int deletePermissionOfUser(String userId);
+    
+    int insertSystemAjaxLog(Map<String, Object> map);
 }

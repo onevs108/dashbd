@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.ContentsMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.Embms;
 import com.catenoid.dashbd.dao.model.Operator;
@@ -63,12 +64,28 @@ public class BmscController {
 	 */
 	@RequestMapping(value = "/resources/bmsc.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public String getBmscMgmt(ModelMap modelMap) {
-		logger.info("-> []");
-		
-		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
-		modelMap.addAttribute("operatorList", operatorList);
-		
-		logger.info("<- [operatorListSize = {}]", operatorList.size());
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		try {
+			logger.info("-> []");
+			
+			List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
+			modelMap.addAttribute("operatorList", operatorList);
+			syslogMap.put("reqType", "BM-SC Mgmt");
+			syslogMap.put("reqSubType", "getBmscMgmt");
+			syslogMap.put("reqUrl", "resources/bmsc.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			logger.info("<- [operatorListSize = {}]", operatorList.size());
+		} catch (Exception e) {
+			syslogMap.put("reqType", "BM-SC Mgmt");
+			syslogMap.put("reqSubType", "getBmscMgmt");
+			syslogMap.put("reqUrl", "resources/bmsc.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		}
 		return "bmsc/bmscMgmt";
 	}
 	
@@ -84,6 +101,8 @@ public class BmscController {
 		
 		JSONObject jsonResult = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		
 		try {
 			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
@@ -99,9 +118,21 @@ public class BmscController {
 			jsonResult.put("rows", rows);
 			int total = bmscServiceImpl.getBmscListCount(operatorId);
 			jsonResult.put("total", total);
-			
+
+			syslogMap.put("reqType", "BM-SC Mgmt");
+			syslogMap.put("reqSubType", "postBmscList");
+			syslogMap.put("reqUrl", "bmsc/list.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
 		} catch (ParseException e) {
+			syslogMap.put("reqType", "BM-SC Mgmt");
+			syslogMap.put("reqSubType", "postBmscList");
+			syslogMap.put("reqUrl", "bmsc/list.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ [An error occurred!]", e);
 		}
 		return jsonResult.toString();

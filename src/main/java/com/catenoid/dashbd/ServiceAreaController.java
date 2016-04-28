@@ -56,6 +56,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
 import com.catenoid.dashbd.dao.ServiceAreaScheduleMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.BmscServiceArea;
@@ -140,6 +141,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> readServiceAreaByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {			
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 			
@@ -160,10 +163,22 @@ public class ServiceAreaController {
 			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			root.put("result", obj);
-			
+
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -171,6 +186,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> readEnbAp(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -239,10 +256,22 @@ public class ServiceAreaController {
 				
 				root.put("result", obj);
 			}
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -250,6 +279,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> readRangeEnbAp(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("lt_longitude"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -322,10 +353,21 @@ public class ServiceAreaController {
 				
 				root.put("result", obj);
 			}
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readRangeEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readRangeEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -333,6 +375,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> readServiceAreaSchedule(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {			
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -388,9 +432,21 @@ public class ServiceAreaController {
 //			final HttpHeaders httpHeaders= new HttpHeaders();
 //		    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 //			return new ResponseEntity<String>(root.toJSONString(), httpHeaders, HttpStatus.OK);
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readServiceAreaSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "readServiceAreaSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -398,6 +454,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> createServiceArea(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("bandwidth"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -419,20 +477,43 @@ public class ServiceAreaController {
 			if(valueCheck(request.getParameter("id"))) obj.put("id", Integer.parseInt(request.getParameter("id")));
 			obj.put("id", record.getId());
 			root.put("result", obj);
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "createServiceArea");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "createServiceArea");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "createServiceArea");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "createServiceArea");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -440,6 +521,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> updateServiceAreaByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -456,20 +539,43 @@ public class ServiceAreaController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "updateServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "updateServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "updateServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "updateServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -477,6 +583,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> deleteServiceAreaByID(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -487,15 +595,33 @@ public class ServiceAreaController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "deleteServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "deleteServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "deleteServiceAreaByID");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -503,6 +629,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> addServiceAreaAtEnbAp(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -533,20 +661,43 @@ public class ServiceAreaController {
 			JSONObject obj = new JSONObject();
 			obj.put("id", Integer.parseInt(request.getParameter("id")));
 			root.put("result", obj);
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}		
@@ -554,6 +705,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> removeServiceAreaAtEnbAp(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -568,15 +721,32 @@ public class ServiceAreaController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "removeServiceAreaAtEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "removeServiceAreaAtEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "removeServiceAreaAtEnbAp");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}		
@@ -584,6 +754,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> addServiceAreaAtSchedule(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -602,20 +774,43 @@ public class ServiceAreaController {
 			JSONObject obj = new JSONObject();
 			obj.put("id", Integer.parseInt(request.getParameter("id")));
 			root.put("result", obj);
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (DuplicateKeyException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "addServiceAreaAtSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -623,6 +818,8 @@ public class ServiceAreaController {
 	}
 	
 	private ResponseEntity<String> removeServiceAreaAtSchedule(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		JSONObject root = new JSONObject();
 		try {
 			if(!valueCheck(request.getParameter("id"))) return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -637,15 +834,32 @@ public class ServiceAreaController {
 			
 			root.put("code", 1);
 			root.put("message", null);
-			
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "removeServiceAreaAtSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "removeServiceAreaAtSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "removeServiceAreaAtSchedule");
+			syslogMap.put("reqUrl", "api/service_area.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}		
@@ -740,7 +954,9 @@ public class ServiceAreaController {
 	
 	@RequestMapping(value = "/api/serviceAreaBmScByOperator.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getServiceAreaBmScByOperator(HttpServletRequest request, HttpServletResponse response) {
-		
+
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		Integer perPage = 15;
@@ -767,16 +983,120 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaBmScByOperator");
+			syslogMap.put("reqUrl", "api/serviceAreaBmScByOperator.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaBmScByOperator");
+			syslogMap.put("reqUrl", "api/serviceAreaBmScByOperator.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 	        e.printStackTrace();
 	    }
+	}
+	
+	@RequestMapping(value = "/api/serviceAreaBmScByEnbsCount.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ResponseEntity<String> getServiceAreaBmScByEnbsCount(HttpServletRequest request, HttpServletResponse response) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		JSONObject root = new JSONObject();
+		try {
+
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			String strOperatorId = request.getParameter("operatorId") == null ? "" : request.getParameter("operatorId");
+			String strBmscId = request.getParameter("bmscId") == null ? "" : request.getParameter("bmscId");
+			
+			HashMap<String, Object> searchParam = new HashMap();
+			searchParam.put("operatorId", strOperatorId);
+			searchParam.put("bmscId", strBmscId);
+			
+			long count = mapper.countByEnbsCount(searchParam);
+			
+			root.put("code", 1);
+			root.put("message", null);
+			
+			JSONObject obj = new JSONObject();
+			obj.put("count", count);
+			root.put("result", obj);
+
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaBmScByEnbsCount");
+			syslogMap.put("reqUrl", "api/serviceAreaBmScByEnbsCount.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK); 
+		}
+		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaBmScByEnbsCount");
+			syslogMap.put("reqUrl", "api/serviceAreaBmScByEnbsCount.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@RequestMapping(value = "/api/serviceAreaBmScByServiceAreaCount.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ResponseEntity<String> getServiceAreaBmScByServiceAreaCount(HttpServletRequest request, HttpServletResponse response) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		JSONObject root = new JSONObject();
+		try {
+
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			String strOperatorId = request.getParameter("operatorId") == null ? "" : request.getParameter("operatorId");
+			String strBmscId = request.getParameter("bmscId") == null ? "" : request.getParameter("bmscId");
+			
+			HashMap<String, Object> searchParam = new HashMap();
+			searchParam.put("operatorId", strOperatorId);
+			searchParam.put("bmscId", strBmscId);
+			
+			long count = mapper.countByServiceAreaCount(searchParam);
+			
+			root.put("code", 1);
+			root.put("message", null);
+			
+			JSONObject obj = new JSONObject();
+			obj.put("count", count);
+			root.put("result", obj);
+
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaBmScByServiceAreaCount");
+			syslogMap.put("reqUrl", "api/serviceAreaBmScByServiceAreaCount.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK); 
+		}
+		catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaBmScByServiceAreaCount");
+			syslogMap.put("reqUrl", "api/serviceAreaBmScByServiceAreaCount.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			e.printStackTrace();
+			logger.error(e.toString());
+		}
+		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@RequestMapping(value = "/api/serviceAreaByBmSc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getServiceAreaMainBmSc(HttpServletRequest request, HttpServletResponse response) {
 		
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		Integer perPage = 50;
@@ -803,9 +1123,21 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaByBmSc");
+			syslogMap.put("reqUrl", "api/serviceAreaByBmSc.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
+			syslogMap.put("reqType", "Service Area Mgmt");
+			syslogMap.put("reqSubType", "serviceAreaByBmSc");
+			syslogMap.put("reqUrl", "api/serviceAreaByBmSc.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 	        e.printStackTrace();
 	    }
 	}
@@ -1100,6 +1432,8 @@ public class ServiceAreaController {
 	public void getServiceAreaCountByBmSc(HttpServletRequest request, HttpServletResponse response) {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		
 		BmscServiceAreaSearchParam searchParam = new BmscServiceAreaSearchParam();
 		searchParam.setBmscId(Integer.valueOf(request.getParameter("bmscId")));
@@ -1117,9 +1451,21 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getServiceAreaCountByBmSc");
+			syslogMap.put("reqUrl", "api/getServiceAreaCountByBmSc.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
+	    	syslogMap.put("reqType", "System Mgmt");
+	    	syslogMap.put("reqSubType", "getServiceAreaCountByBmSc");
+	    	syslogMap.put("reqUrl", "api/getServiceAreaCountByBmSc.do");
+	    	syslogMap.put("reqCode", "Fail");
+	    	syslogMap.put("reqMsg", e.toString());
+	    	usersMapper.insertSystemAjaxLog(syslogMap);
 	        e.printStackTrace();
 	    }
 	}
@@ -1127,6 +1473,8 @@ public class ServiceAreaController {
 	
 	@RequestMapping(value = "/api/serviceAreaByBmScCity.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getServiceAreaByBmscCity(HttpServletRequest request, HttpServletResponse response) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
@@ -1154,10 +1502,21 @@ public class ServiceAreaController {
 				obj.put("totalCount", data.getTotalCount());
 				array.add(obj);
 			}
-
+			syslogMap.put("reqType", "Main");
+			syslogMap.put("reqSubType", "serviceAreaByBmScCity");
+			syslogMap.put("reqUrl", "api/serviceAreaByBmScCity.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
+	    	syslogMap.put("reqType", "Main");
+			syslogMap.put("reqSubType", "serviceAreaByBmScCity");
+			syslogMap.put("reqUrl", "api/serviceAreaByBmScCity.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
 	        e.printStackTrace();
 	    }
 	}
@@ -1166,6 +1525,8 @@ public class ServiceAreaController {
 	public void getScheduleSummaryByServiceArea(HttpServletRequest request, HttpServletResponse response) {
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> map = new HashMap<String, Object>();
 		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		//Integer perPage = 15;
 		Integer activeContent = request.getParameter("activeContent") == null ? 1 : Integer.valueOf(request.getParameter("activeContent"));
@@ -1200,16 +1561,29 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			map.put("reqType", "Main");
+			map.put("reqSubType", "scheduleSummaryByServiceArea");
+			map.put("reqUrl", "api/scheduleSummaryByServiceArea");
+			map.put("reqCode", "SUCCESS");
+			map.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(map);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
+			map.put("reqType", "Main");
+			map.put("reqSubType", "scheduleSummaryByServiceArea");
+			map.put("reqUrl", "api/scheduleSummaryByServiceArea");
+			map.put("reqCode", "Fail");
+			map.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(map);
 	        e.printStackTrace();
 	    }
 	}
 	
 	@RequestMapping(value = "/api/scheduleSummaryByBmsc.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void getScheduleSummaryByBmsc(HttpServletRequest request, HttpServletResponse response) {
-		
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		//Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		//Integer perPage = 15;
@@ -1246,9 +1620,21 @@ public class ServiceAreaController {
 		}
 		
 		try {
+			syslogMap.put("reqType", "Main");
+			syslogMap.put("reqSubType", "scheduleSummaryByBmsc");
+			syslogMap.put("reqUrl", "api/scheduleSummaryByBmsc.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(array.toJSONString());
 	    } catch (Exception e) {
+	    	syslogMap.put("reqType", "Main");
+	    	syslogMap.put("reqSubType", "scheduleSummaryByBmsc");
+	    	syslogMap.put("reqUrl", "api/scheduleSummaryByBmsc.do");
+	    	syslogMap.put("reqCode", "Fail");
+	    	syslogMap.put("reqMsg", e.toString());
+	    	usersMapper.insertSystemAjaxLog(syslogMap);
 	        e.printStackTrace();
 	    }
 	}
@@ -1260,6 +1646,8 @@ public class ServiceAreaController {
 		 */
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> map = new HashMap<String, Object>();
 		
 		HashMap< String, Integer > searchParam = new HashMap();
 		if( request.getParameter("bmscId") != null ) {
@@ -1278,8 +1666,20 @@ public class ServiceAreaController {
 		}
 
 		try {
+			map.put("reqType", "Main");
+			map.put("reqSubType", "bandwidthByServiceArea");
+			map.put("reqUrl", "api/bandwidthByServiceArea");
+			map.put("reqCode", "SUCCESS");
+			map.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(map);
 	        response.getWriter().print(obj.toJSONString());
 	    } catch (Exception e) {
+			map.put("reqType", "Main");
+			map.put("reqSubType", "bandwidthByServiceArea");
+			map.put("reqUrl", "api/bandwidthByServiceArea");
+			map.put("reqCode", "Fail");
+			map.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(map);
 	        e.printStackTrace();
 	    }
 	}

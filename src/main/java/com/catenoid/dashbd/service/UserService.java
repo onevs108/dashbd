@@ -17,5 +17,5 @@ public interface UserService {
 	public boolean checkUserId(String userId);
 	public boolean insertUser(Users user);
 	public boolean deleteUser(Users user);
-	
+	public void insertSystemAjaxLog(String reqType, String reqSubType, String reqUrl, String reqCode, String reqMsg);
 }

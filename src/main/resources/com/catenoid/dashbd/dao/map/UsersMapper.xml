@@ -526,4 +526,9 @@
       WHERE user_id = #{userId}
   </delete>
   
+  <insert id="insertSystemAjaxLog" parameterType="Map">
+      INSERT INTO system_ajax_log (req_type, req_sub_type, req_url, req_code, req_msg, insert_at, created_at)
+      VALUES (#{reqType}, #{reqSubType}, #{reqUrl}, #{reqCode}, #{reqMsg}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW())
+  </insert>
+  
 </mapper>

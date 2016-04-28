@@ -1,6 +1,8 @@
 package com.catenoid.dashbd.security;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,15 +12,20 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Users;
+import com.catenoid.dashbd.service.UserService;
 
 public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
-
+	
+	@Autowired
+	private UserService userService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationSuccessHandlerImpl.class);
 	
 	// TODO @Autowired 적용이 안된다... 추후 원인파악할 것
@@ -46,7 +53,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 		
 		UsersMapper mapper = sqlSession.getMapper(UsersMapper.class);
 		Users user = mapper.selectByUserId(userId);
-		
+		Map<String, Object> map = new HashMap<String, Object>();
 		// Super Admin은 operatorId가 null 이다
 		if (user.getOperatorId() == null || user.getOperatorId() == operatorId) {
 			user.setPermissions(mapper.selectPermissionsByUserId(userId));
@@ -55,10 +62,25 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			session.setAttribute("USER", user);
 			
 			logger.info("<- [redirect = {}]", "/dashbd/resources/main.do");
+
+			map.put("reqType", "Login");
+			map.put("reqSubType", "login");
+			map.put("reqUrl", "login.do");
+			map.put("reqCode", "SUCCESS");
+			map.put("reqMsg", "");
+			mapper.insertSystemAjaxLog(map);
+			
 			response.sendRedirect("/dashbd/resources/main.do");
 		}
 		else { // 선택한 operator와 실제 operator가 다른 경우
 			logger.info("<- [redirect = {}] [cause = {}]", "/dashbd/loginfail.do", Const.LOGIN_FAIL_MISMATCH);
+
+			map.put("reqType", "Login");
+			map.put("reqSubType", "login");
+			map.put("reqUrl", "login.do");
+			map.put("reqCode", "Fail");
+			map.put("reqMsg", Const.LOGIN_FAIL_MISMATCH);
+			mapper.insertSystemAjaxLog(map);
 			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_MISMATCH);
 		}
 	}

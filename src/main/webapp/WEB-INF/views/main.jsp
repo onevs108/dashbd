@@ -335,14 +335,6 @@
 	                                <div id="bandwidth"></div>
 	                            </div>
 							</div><!-- end ibox-content -->
-							<div class="ibox float-e-margins">
-		                        <div class="ibox-title">
-		                            <h5>Horizontal bar chart </h5>
-		                        </div>
-		                        <div class="ibox-content">
-		                            <div id="ct-chart4" class="ct-perfect-fourth"></div>
-		                        </div>
-		                    </div>
 						</div>
 					</div>
 					<!-- end Bandwidth -->
