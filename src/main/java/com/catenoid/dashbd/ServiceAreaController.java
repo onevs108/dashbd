@@ -1797,30 +1797,46 @@ public class ServiceAreaController {
 	
 	@RequestMapping(value = "/resources/eNBMgmt.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public ModelAndView eNBMgmtView(HttpServletRequest request) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		ModelAndView mv = new ModelAndView("eNBMgmt");
-		
-		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
-		Integer perPage = 50;
-		
-		OperatorSearchParam searchParam = new OperatorSearchParam();
-		searchParam.setPage((page-1) * perPage);
-		searchParam.setPerPage(perPage);
-		
-		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
-		
-		Operator initOperator = result.get(0);
-		
-		searchParam = new OperatorSearchParam();
-		searchParam.setPage((page-1) * perPage);
-		searchParam.setPerPage(perPage);
-		searchParam.setOperatorId(initOperator.getId());
-		
-		List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
-		
-		mv.addObject("OperatorList", result);
-		mv.addObject("BmscList", bmscs);
-		
+		try {
+			
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
+			Integer perPage = 50;
+			
+			OperatorSearchParam searchParam = new OperatorSearchParam();
+			searchParam.setPage((page-1) * perPage);
+			searchParam.setPerPage(perPage);
+			
+			List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+			
+			Operator initOperator = result.get(0);
+			
+			searchParam = new OperatorSearchParam();
+			searchParam.setPage((page-1) * perPage);
+			searchParam.setPerPage(perPage);
+			searchParam.setOperatorId(initOperator.getId());
+			
+			List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
+			
+			mv.addObject("OperatorList", result);
+			mv.addObject("BmscList", bmscs);
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "eNBMgmtView");
+			syslogMap.put("reqUrl", "resources/eNBMgmt.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		} catch (Exception e) {
+			syslogMap.put("reqType", "eNB Mgmt");
+			syslogMap.put("reqSubType", "eNBMgmtView");
+			syslogMap.put("reqUrl", "resources/eNBMgmt.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		}
 		return mv;
 	}
 

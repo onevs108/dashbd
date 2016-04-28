@@ -144,7 +144,7 @@
 				, b.fecType
 				, b.fecRatio
 				, b.said
-				, DATE_FORMAT(DATE_ADD(start_date, INTERVAL -15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_start
+				, DATE_FORMAT(DATE_ADD(start_date, INTERVAL 15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_start
 				, DATE_FORMAT(DATE_ADD(end_date, INTERVAL 15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_end
 				, DATE_FORMAT(schedule_start, '%Y-%m-%d %H:%i:%s') schedule_start
 				, DATE_FORMAT(schedule_stop, '%Y-%m-%d %H:%i:%s') schedule_stop

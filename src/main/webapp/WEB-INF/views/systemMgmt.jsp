@@ -303,7 +303,11 @@
 													var myDate = new Date();
 													var year = myDate.getFullYear();
 													for(var i = 1; i < 13; i++){
-													 	$("#monthContent").append('<option value="'+i+'">'+i+'</option>');
+														if(i < 10){
+														 	$("#monthContent").append('<option value="0'+i+'">'+i+'</option>');
+														}else{
+														 	$("#monthContent").append('<option value="'+i+'">'+i+'</option>');
+														}
 													}
 												</script>
 											</select>
@@ -558,7 +562,11 @@
 													var myDate = new Date();
 													var year = myDate.getFullYear();
 													for(var i = 1; i < 13; i++){
-													 	$("#monthInterTff").append('<option value="'+i+'">'+i+'</option>');
+														if(i < 10){
+														 	$("#monthInterTff").append('<option value="0'+i+'">'+i+'</option>');
+														}else{
+														 	$("#monthInterTff").append('<option value="'+i+'">'+i+'</option>');
+														}
 													}
 												</script>
 											</select>
@@ -580,7 +588,7 @@
 				<div class="col-lg-6">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
-					        <h5>Incoming Traffic</h5>
+					        <h5>Incoming Traffic (Total Page Access Log)</h5>
 					        <div class="ibox-tools">
 					            <a class="collapse-link">
 					                <i class="fa fa-chevron-up"></i>
@@ -613,14 +621,18 @@
 													var myDate = new Date();
 													var year = myDate.getFullYear();
 													for(var i = 1; i < 13; i++){
-													 	$("#monthIncomTff").append('<option value="'+i+'">'+i+'</option>');
+														if(i < 10){
+														 	$("#monthIncomTff").append('<option value="0'+i+'">'+i+'</option>');
+														}else{
+														 	$("#monthIncomTff").append('<option value="'+i+'">'+i+'</option>');
+														}
 													}
 												</script>
 											</select>
 										</div>
 									</div>	
 								</div>
-							</div>	
+							</div>
 					    	<div class="row">
 								<div class="col-sm-12">
 									<div class="table-responsive">

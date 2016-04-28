@@ -115,4 +115,6 @@ public interface ServiceAreaMapper {
     int selectEnbListCount(HashMap<String, Integer> searchParam);
     
     List<SystemIncomingLog> getIncomingTrafficList(HashMap<String, Object> example);
+    
+    List<SystemIncomingLog> getInterTrafficList(HashMap<String, Object> example);
 }

@@ -42,25 +42,59 @@ $(document).ready(function()
     
     $('#operatorInterTff').change(function() {
         getServiceAreaBmSc(1, $('#operatorInterTff option:selected').val(), true, "bmscInterTff");
-
-    	if($('#operatorInterTff option:selected').val() == ""){
-        	getInterTffList(null);
-    	}else{
-    		getInterTffList($('#operatorInterTff option:selected').val());
+        getInterTffList();
+    });
+    
+    $('#bmscInterTff').change(function() {
+    	getInterTffList();
+    });
+    
+    $('#yearInterTff').change(function() {
+    	if($("#yearInterTff").val() == ""){
+    		$('#monthInterTff').val("");
+    	}    	
+    	getInterTffList();
+    });
+    
+    $('#monthInterTff').change(function() {
+    	if($("#yearInterTff").val() == ""){
+    		alert("Please Month Selected.")
+    		$("#monthInterTff").val("");
+    		return false;
     	}
+    	getInterTffList();
     });
     
     $('#monthContent').change(function(){
-        updateNumberOfDays(); 
-    	$('#dayContent').val("");
+    	if($("#yearContent").val() == ""){
+    		alert("Please Month Selected.")
+    		$("#monthContent").val("");
+    		return false;
+    	}else{
+            updateNumberOfDays(); 
+        	$('#dayContent').val("");
+    	}    	
+    });
+    
+    $('#yearIncomTff').change(function(){
+    	getIncomTffList();
+    });
+    
+    $('#monthIncomTff').change(function(){
+    	if($("#yearIncomTff").val() == ""){
+    		alert("Please Month Selected.")
+    		return false;
+    	}else{
+    		getIncomTffList();
+    	}    	
     });
     
     getPermissionList(null);
     getServiceAreaBmScEnbsCount("", "", "eNbsCount");
     getServiceAreaBmScServiceAreaCount("", "", "serviceAreaCount");
     
-    getInterTffList(null);
-    getIncomTffList(null);
+    getInterTffList();
+    getIncomTffList();
     
     $("#contentChart").height(50*6)
     new Chartist.Bar('#contentChart', {
@@ -78,23 +112,26 @@ $(document).ready(function()
     });
 });
 
-function getInterTffList(operatorId) {
+function getInterTffList() {
 	$('#interTffTable').bootstrapTable('destroy');
 	// 테이블 생성
 	var table = $('#interTffTable').bootstrapTable({
 		method: 'post',
-		url: '/dashbd/api/getPermissionList.do',
+		url: '/dashbd/api/getInterTrafficList.do',
 		contentType: 'application/json',
 		dataType: 'json',
 		queryParams: function(params) {
-			params['operatorId'] = operatorId
+			params['searchOperator'] = $('#operatorInterTff').val();
+			params['searchBmsc'] = $('#bmscInterTff').val();
+			params['searchYear'] = $('#yearInterTff').val();
+			params['searchMonth'] = $('#monthInterTff').val();
 			return params;
 		},
 		cache: false,
 		pagination: true,
 		sidePagination: 'server',
 		pageNumber: 1,
-		pageSize: 10,
+		pageSize: 100,
 		search: false,
 		showHeader: true,
 		showColumns: false,
@@ -109,38 +146,41 @@ function getInterTffList(operatorId) {
 			valign: 'middle',
 			sortable: true,
 		}, {
-			field: 'permissionId',
+			field: 'reqType',
 			title: '#Req',
-			width: '15%',
+			width: '35%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
-			field: 'permissionName',
+			field: 'successCount',
 			title: 'Success',
-			width: '30%',
-			align: 'center',
-			valign: 'middle',
-			sortable: true,
-		}, {
-			field: 'permissionCount',
-			title: 'Error',
-			width: '30%',
-			align: 'center',
-			valign: 'middle',
-			sortable: true,
-		}, {
-			field: 'totalCount',
-			title: 'Percent(%)',
 			width: '20%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
+		}, {
+			field: 'failCount',
+			title: 'Error',
+			width: '20%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true,
+		}, {
+			field: 'totPercentage',
+			title: '',
+			width: '20%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true,
+			formatter: function(value, row, index) {
+				return value+"%";
+			}
 		}]
 	});
 }
 
-function getIncomTffList(operatorId) {
+function getIncomTffList() {
 	$('#incomTffTable').bootstrapTable('destroy');
 	// 테이블 생성
 	var table = $('#incomTffTable').bootstrapTable({
@@ -149,7 +189,8 @@ function getIncomTffList(operatorId) {
 		contentType: 'application/json',
 		dataType: 'json',
 		queryParams: function(params) {
-			params['operatorId'] = operatorId
+			params['searchYear'] = $('#yearIncomTff').val();
+			params['searchMonth'] = $('#monthIncomTff').val();
 			return params;
 		},
 		cache: false,

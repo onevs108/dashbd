@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
+import org.apache.ibatis.session.SqlSession;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -21,10 +22,12 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.catenoid.dashbd.ctrl.ScheduleMgmtController;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.HttpNetAgent;
 import com.catenoid.dashbd.util.HttpNetAgentException;
@@ -43,15 +46,19 @@ public class XmlManager {
 	
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
-	
+
+	@Autowired
+	private SqlSession sqlSession;
 //	@Value("#{config['b2.server.ipaddress']}")
 //	private String b2serverIpaddress;
 	
 	
 	public String sendBroadcast(Map<String, String> params, int mode){
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		String respBody = "SUCCESS";
 		String reqBody = "";
 		String bmscIp = params.get("bmscIp");
+		params.put("methodMode", String.valueOf(mode));
 		if (agentKey == null)
 			agentKey = Base64Coder.encode(bmscIp);
 		
@@ -69,8 +76,14 @@ public class XmlManager {
 			logger.info("[returnXML=" + respBody + "]");
 			if (BMSC_XML_RETRIEVE == mode)
 				respBody = tmpRespRETRIEVE_Body();
-			
+
+			params.put("methodCode", "SUCCESS");
+			params.put("methodMsg", "");			
+			usersMapper.insertSystemInterFaceLog(params);
 		} catch (Exception e) {
+			params.put("methodCode", "Fail");
+			params.put("methodMsg", e.getMessage());		
+			usersMapper.insertSystemInterFaceLog(params);
 			logger.error("", e);
 			respBody = e.getMessage();
 		}

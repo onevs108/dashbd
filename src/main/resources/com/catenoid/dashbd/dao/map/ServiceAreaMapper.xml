@@ -1154,24 +1154,52 @@
 	</select>
 	
 	<select id="getIncomingTrafficList" resultMap="SystemIncomingLog" parameterType="java.util.HashMap">
-    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
-	from    ( SELECT @ROWNUM := 0 AS rownum ) R,
-			(
-	        select
-	            K.req_type,
-	            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
-	            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
-	        from (select  req_type, req_code, count(req_code) as reqCount
-	              from    system_ajax_log
-	              where   1=1
-	             		  <if test="searchYear != null and searchYear != ''">
-	              		  	and left(insert_at, 4) = #{searchYear}
-						  </if>
-						  <if test="searchMonth != null and searchMonth != ''">
-	              		  	and substring(insert_at, 6, 2) = #{searchMonth}
-						  </if>
-	              group by req_type, req_code) K
-	        ) Z
-	group by Z.req_type
-  </select>
+	    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
+		from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+				(
+		        select
+		            K.req_type,
+		            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
+		            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
+		        from (select  req_type, req_code, count(req_code) as reqCount
+		              from    system_ajax_log
+		              where   1=1
+		             		  <if test="searchYear != null and searchYear != ''">
+		              		  	and left(insert_at, 4) = #{searchYear}
+							  </if>
+							  <if test="searchMonth != null and searchMonth != ''">
+		              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+							  </if>
+		              group by req_type, req_code) K
+		        ) Z
+		group by Z.req_type
+	</select>
+	
+	<select id="getInterTrafficList" resultMap="SystemIncomingLog" parameterType="java.util.HashMap">
+	    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
+		from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+				(
+		        select
+		            K.req_type,
+		            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
+		            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
+	            from (select  method_name as req_type, method_code as req_code, count(method_code) as reqCount
+	            	  from    system_interface_log
+		              where   1=1
+		             		  <if test="searchOperator != null and searchOperator != ''">
+		              		  	and method_bmsc_id in (select bmsc_id from operator_bmsc where operator_id=#{searchOperator})
+							  </if>
+		             		  <if test="searchBmsc != null and searchBmsc != ''">
+		              		  	and method_bmsc_id = #{searchBmsc}
+							  </if>
+		             		  <if test="searchYear != null and searchYear != ''">
+		              		  	and left(insert_at, 4) = #{searchYear}
+							  </if>
+							  <if test="searchMonth != null and searchMonth != ''">
+		              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+							  </if>
+		              group by method_name, method_code) K
+		        ) Z
+		group by Z.req_type
+	</select>
 </mapper>

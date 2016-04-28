@@ -211,9 +211,8 @@ public class SystemController {
 		
 		try {
 			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
-			
-			String operatorIdToStr = (String) requestJson.get("operatorId");
-			Integer operatorId = operatorIdToStr == null ? 0 : Integer.parseInt(operatorIdToStr);
+			String searchYear = (String) requestJson.get("searchYear");
+			String searchMonth = (String) requestJson.get("searchMonth");
 			String sort = (String) requestJson.get("sort");
 			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
@@ -225,7 +224,8 @@ public class SystemController {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			
 			HashMap<String, Object> searchParam = new HashMap();
-			searchParam.put("operatorId", operatorId);
+			searchParam.put("searchYear", searchYear);
+			searchParam.put("searchMonth", searchMonth);
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
 			searchParam.put("start", offset+1);
@@ -258,6 +258,78 @@ public class SystemController {
 			syslogMap.put("reqType", "System Mgmt");
 			syslogMap.put("reqSubType", "getIncomingTrafficList");
 			syslogMap.put("reqUrl", "api/getIncomingTrafficList.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			logger.error("~~ [An error occurred!]", e);
+		}
+		return jsonResult.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/getInterTrafficList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getInterTrafficList(@RequestBody String body) {
+		logger.info("-> [body = {}]", body);
+
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		JSONObject jsonResult = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
+			String searchOperator = (String) requestJson.get("searchOperator");
+			String searchBmsc = (String) requestJson.get("searchBmsc");
+			String searchYear = (String) requestJson.get("searchYear");
+			String searchMonth = (String) requestJson.get("searchMonth");
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
+			long offset = (Long) requestJson.get("offset");
+			long limit = (Long) requestJson.get("limit");
+			
+			if (sort == null || sort.isEmpty()) sort = null;
+			if (order == null || order.isEmpty()) order = null;
+			
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			HashMap<String, Object> searchParam = new HashMap();
+			searchParam.put("searchOperator", searchOperator);
+			searchParam.put("searchBmsc", searchBmsc);
+			searchParam.put("searchYear", searchYear);
+			searchParam.put("searchMonth", searchMonth);
+			searchParam.put("sort", sort);
+			searchParam.put("order", order);
+			searchParam.put("start", offset+1);
+			searchParam.put("end", offset + limit);
+			
+			List<SystemIncomingLog> datas = mapper.getInterTrafficList(searchParam);
+
+			JSONArray rows = new JSONArray();
+			for(int i = 0; i < datas.size(); i++) {
+				SystemIncomingLog data = datas.get(i);
+				JSONObject obj = new JSONObject();
+				obj.put("rownum", data.getRownum());
+				obj.put("reqType", data.getReqType());
+				obj.put("successCount", data.getSuccessCount());
+				obj.put("failCount", data.getFailCount());
+				obj.put("totPercentage", Math.round((float)(((double)data.getSuccessCount()/(double)(data.getSuccessCount()+data.getFailCount()))*100)));
+				rows.add(obj);
+			}
+			
+			jsonResult.put("total", datas.size());
+			jsonResult.put("rows", rows);
+
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getInterTrafficList");
+			syslogMap.put("reqUrl", "api/getInterTrafficList.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		} catch (Exception e) {
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getInterTrafficList");
+			syslogMap.put("reqUrl", "api/getInterTrafficList.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
 			usersMapper.insertSystemAjaxLog(syslogMap);
