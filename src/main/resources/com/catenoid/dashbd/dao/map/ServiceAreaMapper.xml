@@ -15,6 +15,7 @@
 	<result column="req_type" property="reqType" jdbcType="VARCHAR" />
 	<result column="success_count" property="successCount" jdbcType="INTEGER" />
 	<result column="fail_count" property="failCount" jdbcType="INTEGER" />
+	<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="ServiceAreaEnbApMap" type="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
   	<id column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
@@ -1127,7 +1128,7 @@
 	</select>
 	
 	<select id="countByEnbsCount" parameterType="java.util.HashMap" resultType="java.lang.Long" >
-		select	case when count(bandwidth)=0 then 0 else sum(bandwidth) end as eNBsCount
+		select	count(*) as eNBsCount
 		from	enb_ap
 		where	1=1
 		<if test="operatorId != null and operatorId != ''">
@@ -1139,67 +1140,143 @@
 	</select>
 	
 	<select id="countByServiceAreaCount" parameterType="java.util.HashMap" resultType="java.lang.Long" >
-		select count(name) from
-		(	select	c.name
-			from	bmsc_service_area a, service_area_enb_ap b, enb_ap c				
-			where	1=1 and b.service_area_id = a.service_area_id and c.id = b.enb_ap_id and c.bmsc_id = a.bmsc_id
-			<if test="operatorId != null and operatorId != ''">
-				and c.operator_id = #{operatorId}
-			</if>
-			<if test="bmscId != null and bmscId != ''">
-				and c.bmsc_id = #{bmscId}
-			</if>
-			group by c.name
-		) K
+		select	count(*)
+		from	bmsc_service_area a left outer join operator_bmsc b on a.bmsc_id=b.bmsc_id			
+		where	1=1 
+		<if test="operatorId != null and operatorId != ''">
+			and b.operator_id = #{operatorId}
+		</if>
+		<if test="bmscId != null and bmscId != ''">
+			and a.bmsc_id = #{bmscId}
+		</if>
 	</select>
 	
 	<select id="getIncomingTrafficList" resultMap="SystemIncomingLog" parameterType="java.util.HashMap">
-	    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
-		from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+		select rownum, req_type, success_count, fail_count,
 				(
-		        select
-		            K.req_type,
-		            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
-		            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
-		        from (select  req_type, req_code, count(req_code) as reqCount
-		              from    system_ajax_log
-		              where   1=1
-		             		  <if test="searchYear != null and searchYear != ''">
-		              		  	and left(insert_at, 4) = #{searchYear}
-							  </if>
-							  <if test="searchMonth != null and searchMonth != ''">
-		              		  	and substring(insert_at, 6, 2) = #{searchMonth}
-							  </if>
-		              group by req_type, req_code) K
-		        ) Z
-		group by Z.req_type
-	</select>
+			      select count(*) from 
+			      (
+			          select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
+			          from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+			    				      (
+			        		        select
+			        		            K.req_type,
+			        		            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
+			        		            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
+			        		        from (select  req_type, req_code, count(req_code) as reqCount
+			        		              from    system_ajax_log
+			        		              where   1=1
+					             		  <if test="searchYear != null and searchYear != ''">
+					              		  	and left(insert_at, 4) = #{searchYear}
+										  </if>
+										  <if test="searchMonth != null and searchMonth != ''">
+					              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+										  </if>
+			      		                group by req_type, req_code) K
+			    		          ) Z
+			    		          group by Z.req_type
+			      ) T    
+				) as totalCount
+		from (
+		    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
+			from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+					(
+			        select
+			            K.req_type,
+			            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
+			            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
+			        from (select  req_type, req_code, count(req_code) as reqCount
+			              from    system_ajax_log
+			              where   1=1
+			             		  <if test="searchYear != null and searchYear != ''">
+			              		  	and left(insert_at, 4) = #{searchYear}
+								  </if>
+								  <if test="searchMonth != null and searchMonth != ''">
+			              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+								  </if>
+			              group by req_type, req_code) K
+			        ) Z
+			group by Z.req_type
+		) R		
+		WHERE rownum BETWEEN  #{start} AND #{end}
+		ORDER BY 	<if test="sort == null">req_type</if>
+						<if test="sort != null">
+							<if test="sort == 'rownum'">rownum</if>
+							<if test="sort == 'reqType'">req_type</if>
+							<if test="sort == 'successCount'">success_count</if>
+							<if test="sort == 'failCount'">fail_count</if>
+							<if test="sort == 'totPercentage'">success_count/(success_count+fail_count)</if>
+							${order}
+						</if> 
+		</select>
 	
 	<select id="getInterTrafficList" resultMap="SystemIncomingLog" parameterType="java.util.HashMap">
-	    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
-		from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+		select rownum, req_type, success_count, fail_count,
 				(
-		        select
-		            K.req_type,
-		            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
-		            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
-	            from (select  method_name as req_type, method_code as req_code, count(method_code) as reqCount
-	            	  from    system_interface_log
-		              where   1=1
-		             		  <if test="searchOperator != null and searchOperator != ''">
-		              		  	and method_bmsc_id in (select bmsc_id from operator_bmsc where operator_id=#{searchOperator})
-							  </if>
-		             		  <if test="searchBmsc != null and searchBmsc != ''">
-		              		  	and method_bmsc_id = #{searchBmsc}
-							  </if>
-		             		  <if test="searchYear != null and searchYear != ''">
-		              		  	and left(insert_at, 4) = #{searchYear}
-							  </if>
-							  <if test="searchMonth != null and searchMonth != ''">
-		              		  	and substring(insert_at, 6, 2) = #{searchMonth}
-							  </if>
-		              group by method_name, method_code) K
-		        ) Z
-		group by Z.req_type
+			      select count(*) from 
+			      (
+			          select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
+					  from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+								(
+						        select
+						            K.req_type,
+						            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
+						            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
+					            from (select  method_service_type as req_type, method_code as req_code, count(method_code) as reqCount
+					            	  from    system_interface_log
+						              where   1=1
+						             		  <if test="searchOperator != null and searchOperator != ''">
+						              		  	and method_bmsc_id in (select bmsc_id from operator_bmsc where operator_id=#{searchOperator})
+											  </if>
+						             		  <if test="searchBmsc != null and searchBmsc != ''">
+						              		  	and method_bmsc_id = #{searchBmsc}
+											  </if>
+						             		  <if test="searchYear != null and searchYear != ''">
+						              		  	and left(insert_at, 4) = #{searchYear}
+											  </if>
+											  <if test="searchMonth != null and searchMonth != ''">
+						              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+											  </if>
+						              group by method_service_type, method_code) K
+						        ) Z
+					  group by Z.req_type
+			      ) T    
+				) as totalCount
+		from (
+		    select  @ROWNUM := @ROWNUM + 1 AS rownum, Z.req_type, sum(Z.SuccessCount) as success_count, sum(Z.FailCount) as fail_count
+			from    ( SELECT @ROWNUM := 0 AS rownum ) R,
+					(
+			        select
+			            K.req_type,
+			            IFNULL(case when K.req_code = 'SUCCESS' then K.reqCount end, 0) as SuccessCount,
+			            IFNULL(case when K.req_code = 'Fail' then K.reqCount end, 0) as FailCount
+		            from (select  method_service_type as req_type, method_code as req_code, count(method_code) as reqCount
+		            	  from    system_interface_log
+			              where   1=1
+			             		  <if test="searchOperator != null and searchOperator != ''">
+			              		  	and method_bmsc_id in (select bmsc_id from operator_bmsc where operator_id=#{searchOperator})
+								  </if>
+			             		  <if test="searchBmsc != null and searchBmsc != ''">
+			              		  	and method_bmsc_id = #{searchBmsc}
+								  </if>
+			             		  <if test="searchYear != null and searchYear != ''">
+			              		  	and left(insert_at, 4) = #{searchYear}
+								  </if>
+								  <if test="searchMonth != null and searchMonth != ''">
+			              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+								  </if>
+			              group by method_service_type, method_code) K
+			        ) Z
+			group by Z.req_type
+		) R
+		ORDER BY 	<if test="sort == null">req_type</if>
+						<if test="sort != null">
+							<if test="sort == 'rownum'">rownum</if>
+							<if test="sort == 'reqType'">req_type</if>
+							<if test="sort == 'successCount'">success_count</if>
+							<if test="sort == 'failCount'">fail_count</if>
+							<if test="sort == 'totPercentage'">success_count/(success_count+fail_count)</if>
+							${order}
+						</if> 
 	</select>
 </mapper>

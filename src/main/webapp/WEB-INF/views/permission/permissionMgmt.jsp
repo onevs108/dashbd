@@ -266,6 +266,18 @@
 														<label for="checkbox8"> Schedule Management</label>
 													</div>
 												</c:if>
+												<c:if test="${permission.id == 9}">
+													<div class="checkbox checkbox-primary">
+														<input id="checkbox-permission-system" type="checkbox" name="permissions" value="${permission.id}">
+														<label for="checkbox9"> System Management</label>
+													</div>
+												</c:if>
+												<c:if test="${permission.id == 10}">
+													<div class="checkbox checkbox-primary">
+														<input id="checkbox-permission-statistic" type="checkbox" name="permissions" value="${permission.id}">
+														<label for="checkbox10"> System Statistic</label>
+													</div>
+												</c:if>
 											</c:forEach>
 										</fieldset>
 									</div>

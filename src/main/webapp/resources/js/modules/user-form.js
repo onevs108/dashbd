@@ -173,6 +173,12 @@ function setElements(user) {
 			case PERMISSION_ID_SCHEDULE:
 				$('#checkbox-permission-schedule').attr("checked", true);
 				break;
+			case PERMISSION_ID_SYSTEM:
+				$('#checkbox-permission-system').attr("checked", true);
+				break;
+			case PERMISSION_ID_STATICTIS:
+				$('#checkbox-permission-statictis').attr("checked", true);
+				break;
 			default:
 				break;
 			}

@@ -242,10 +242,14 @@ public class SystemController {
 				obj.put("successCount", data.getSuccessCount());
 				obj.put("failCount", data.getFailCount());
 				obj.put("totPercentage", Math.round((float)(((double)data.getSuccessCount()/(double)(data.getSuccessCount()+data.getFailCount()))*100)));
+				obj.put("totalCount", data.getTotalCount());
 				rows.add(obj);
+				
+				if( i == 0 ) {
+					jsonResult.put("total", data.getTotalCount());
+				}
 			}
 			
-			jsonResult.put("total", datas.size());
 			jsonResult.put("rows", rows);
 
 			syslogMap.put("reqType", "System Mgmt");

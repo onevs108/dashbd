@@ -401,6 +401,8 @@ public class ScheduleMgmtController {
 				BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
 				Bmsc bmsc = mapperBmsc.selectBmsc(Integer.parseInt(params.get("bmscId")));
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
+				mapBroadcast.put("bmscId", params.get("bmscId"));
+				mapBroadcast.put("serviceType", params.get("serviceType"));
 				
 				//@ xmlMake & Send, recv
 				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_DELETE);

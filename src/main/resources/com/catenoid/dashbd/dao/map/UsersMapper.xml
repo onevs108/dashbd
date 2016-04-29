@@ -533,10 +533,10 @@
   
   <insert id="insertSystemInterFaceLog" parameterType="Map">
       INSERT INTO system_interface_log 
-      	(method_bcid, method_bmsc_id, method_mode, method_transaction_id, method_fec_type, method_mpd_uri, method_file_uri, 
+      	(method_bcid, method_bmsc_id, method_mode, method_transaction_id, method_service_type, method_fec_type, method_mpd_uri, method_file_uri, 
       	 method_bmsc_ip, method_name, method_service_id, method_said, method_code, method_msg, insert_at, created_at)
       VALUES
-      	(#{BCID}, #{bmscId}, #{methodMode}, #{transactionId}, #{fecType}, #{mpdURI}, #{fileURI}, 
+      	(#{BCID}, #{bmscId}, #{methodMode}, #{transactionId}, #{serviceType}, #{fecType}, #{mpdURI}, #{fileURI}, 
       	 #{bmscIp}, #{name}, #{serviceId}, #{said}, #{methodCode}, #{methodMsg}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW())
   </insert>
   

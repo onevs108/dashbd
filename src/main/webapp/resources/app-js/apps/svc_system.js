@@ -90,8 +90,20 @@ $(document).ready(function()
     });
     
     getPermissionList(null);
-    getServiceAreaBmScEnbsCount("", "", "eNbsCount");
-    getServiceAreaBmScServiceAreaCount("", "", "serviceAreaCount");
+    
+    if($('#operatorEnbs option:selected').val() != ""){
+        getServiceAreaBmSc(1, $('#operatorEnbs option:selected').val(), true, "bmscEnbs");
+        getServiceAreaBmScEnbsCount($('#operatorEnbs option:selected').val(), "", "eNbsCount");
+    }else{
+    	getServiceAreaBmScEnbsCount("", "", "eNbsCount");
+    }
+
+    if($('#operatorEnbs option:selected').val() != ""){
+        getServiceAreaBmSc(1, $('#operatorServiceArea option:selected').val(), true, "bmscServiceArea");
+        getServiceAreaBmScServiceAreaCount($('#operatorServiceArea option:selected').val(), "", "serviceAreaCount");
+    }else{
+        getServiceAreaBmScServiceAreaCount("", "", "serviceAreaCount");
+    }
     
     getInterTffList();
     getIncomTffList();
@@ -131,7 +143,7 @@ function getInterTffList() {
 		pagination: true,
 		sidePagination: 'server',
 		pageNumber: 1,
-		pageSize: 100,
+		pageSize: 10,
 		search: false,
 		showHeader: true,
 		showColumns: false,
@@ -141,35 +153,35 @@ function getInterTffList() {
 		columns: [{
 			field: 'rownum',
 			title: 'No',
-			width: '5%',
+			width: '13%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'reqType',
-			title: '#Req',
-			width: '35%',
+			title: 'Service Type',
+			width: '28%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'successCount',
 			title: 'Success',
-			width: '20%',
+			width: '19%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'failCount',
 			title: 'Error',
-			width: '20%',
+			width: '16%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'totPercentage',
-			title: '',
-			width: '20%',
+			title: 'Percentage',
+			width: '24%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
@@ -197,7 +209,7 @@ function getIncomTffList() {
 		pagination: true,
 		sidePagination: 'server',
 		pageNumber: 1,
-		pageSize: 100,
+		pageSize: 10,
 		search: false,
 		showHeader: true,
 		showColumns: false,
@@ -207,35 +219,35 @@ function getIncomTffList() {
 		columns: [{
 			field: 'rownum',
 			title: 'No',
-			width: '5%',
+			width: '13%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'reqType',
 			title: '#Req',
-			width: '35%',
+			width: '28%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'successCount',
 			title: 'Success',
-			width: '20%',
+			width: '19%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'failCount',
 			title: 'Error',
-			width: '20%',
+			width: '16%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,
 		}, {
 			field: 'totPercentage',
-			title: '',
-			width: '20%',
+			title: 'Percentag',
+			width: '24%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true,

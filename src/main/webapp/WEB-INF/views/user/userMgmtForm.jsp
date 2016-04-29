@@ -289,6 +289,18 @@
 					                                            Schedule Management
 					                                        </label>
 					                                    </div>
+					                                    <div class="checkbox checkbox-primary">
+					                                        <input id="checkbox-permission-system" type="checkbox" disabled="disabled">
+					                                        <label for="checkbox9">
+					                                            System Management
+					                                        </label>
+					                                    </div>
+					                                    <div class="checkbox checkbox-primary">
+					                                        <input id="checkbox-permission-statistic" type="checkbox" disabled="disabled">
+					                                        <label for="checkbox10">
+					                                            System Statistic
+					                                        </label>
+					                                    </div>
 					                                </fieldset>
 					                            </div>
 											</div>

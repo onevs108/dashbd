@@ -70,7 +70,8 @@ $(document).ready(function()
 		var param = {
 				id : $("#id").val(),
 				BCID : $("#BCID").val(),
-				bmscId : $("#bmscId").val()
+				bmscId : $("#bmscId").val(),
+				serviceType : $( "input[name='serviceType']" ).val()
 			};
 		$.ajax({
 			type : "POST",
@@ -124,7 +125,7 @@ function valadationCheck(){
 	
 	//console.log(s_start, '+', s_stop, '+',d_start, '+',d_end, '+');
 	
-	if (d_start > s_start ){
+	if (d_start < s_start ){
 		alert("It can not be 'content start time' over than 'schedule start time' ");
 		return false;
 	}
