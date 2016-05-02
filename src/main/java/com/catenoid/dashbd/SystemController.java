@@ -1,36 +1,17 @@
 package com.catenoid.dashbd;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -40,50 +21,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.catenoid.dashbd.util.ErrorCodes;
-import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
-import com.catenoid.dashbd.dao.ServiceAreaScheduleMapper;
-import com.catenoid.dashbd.dao.UsersMapper;
+import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
-import com.catenoid.dashbd.dao.model.BmscServiceArea;
-import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
-import com.catenoid.dashbd.dao.model.ScheduleSummary;
-import com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam;
-import com.catenoid.dashbd.dao.model.ServiceArea;
-import com.catenoid.dashbd.dao.model.ServiceAreaCount;
-import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
-import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
-import com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
-import com.catenoid.dashbd.dao.model.ServiceAreaSchedule;
-import com.catenoid.dashbd.dao.model.ServiceAreaScheduleExample;
-import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.SystemIncomingLog;
-import com.catenoid.dashbd.dao.model.Users;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
 @PropertySource("classpath:/config.properties")
-public class SystemController {
-	
+public class SystemController{
+
 	private static final Logger logger = LoggerFactory.getLogger(SystemController.class);
 	
 	@Resource
@@ -97,7 +57,43 @@ public class SystemController {
 	
 	@Value("#{config['main.contents.max']}")
 	private Integer contentMax;
-		
+	
+	@Value("#{config['b2.server.hostName']}")
+	private String serverHostName;
+	
+	@Value("#{config['b2.server.status']}")
+	private String serverStatus;
+	
+	@Value("#{config['b2.server.start']}")
+	private String serverStart;
+	
+	@Value("#{config['b2.server.stop']}")
+	private String serverStop;
+	
+	@Value("#{config['b2.server.move']}")
+	private String serverMove;
+	
+	@Value("#{config['b2.database.status']}")
+	private String databaseStatus;
+	
+	@Value("#{config['b2.database.start']}")
+	private String databaseStart;
+	
+	@Value("#{config['b2.database.stop']}")
+	private String databaseStop;
+	
+	@Value("#{config['b2.database.backup']}")
+	private String databaseBackup;
+	
+	@Value("#{config['b2.database.backupprog']}")
+	private String databaseBackupprog;
+	
+	@Value("#{config['b2.database.restore']}")
+	private String databaseRestore;
+	
+	@Value("#{config['b2.database.restoreprog']}")
+	private String databaseRestoreprog;
+	
 	@RequestMapping(value = "/resources/systemMgmt.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public ModelAndView systemMgmtView(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("systemMgmt");
@@ -340,5 +336,37 @@ public class SystemController {
 			logger.error("~~ [An error occurred!]", e);
 		}
 		return jsonResult.toString();
+	}
+	
+	@RequestMapping(value = "/resources/systemConfMgmt.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView systemConfMgmt(HttpServletRequest request){
+		ModelAndView mv = new ModelAndView("systemConfMgmt");
+		Map<String, Object> params = new HashMap<String, Object>();
+		
+		logger.info("QuartzEmbmsSession START");
+		String RETURN_SHELL = "Session_Cnt:";
+
+		String exeCommand = String.format("%s", serverHostName);
+		try{
+			  Runtime runtime = Runtime.getRuntime();
+              Process process = runtime.exec(exeCommand);
+              InputStream is = process.getInputStream();
+              InputStreamReader isr = new InputStreamReader(is);
+              BufferedReader br = new BufferedReader(isr);
+              String line;
+              StringBuffer sb = new StringBuffer();
+              while((line = br.readLine()) != null) {
+            	  sb.append(line);
+              }
+            
+			String sessionCnt = sb.substring(RETURN_SHELL.length());
+			params.put("sessionCnt", sessionCnt);
+              
+	        System.out.println("DONE");
+	    }catch(Exception e){
+	    	logger.error("",e);
+	    	params.put("sessionCnt", "-1");
+	    }
+		return mv;
 	}
 }
