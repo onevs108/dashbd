@@ -17,6 +17,17 @@
 	<result column="fail_count" property="failCount" jdbcType="INTEGER" />
 	<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
   </resultMap>
+
+  <resultMap id="SystemDatabaseBackup" type="com.catenoid.dashbd.dao.model.SystemDatabaseBackup" >
+	<result column="rownum" property="rownum" jdbcType="INTEGER" />
+	<result column="backupId" property="backupId" jdbcType="INTEGER" />
+	<result column="backupFileName" property="backupFileName" jdbcType="VARCHAR" />
+	<result column="backupFilePath" property="backupFilePath" jdbcType="VARCHAR" />
+	<result column="backupCreatedId" property="backupCreatedId" jdbcType="VARCHAR" />
+	<result column="backupCreatedAt" property="backupCreatedAt" jdbcType="TIMESTAMP" />
+	<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
+  </resultMap>
+  
   <resultMap id="ServiceAreaEnbApMap" type="com.catenoid.dashbd.dao.model.ServiceAreaEnbAp" >
   	<id column="service_area_id" property="serviceAreaId" jdbcType="INTEGER" />
   	<result column="service_area_bandwidth" property="serviceAreaBandwidth" jdbcType="BIGINT" />
@@ -1279,4 +1290,67 @@
 							${order}
 						</if> 
 	</select>
+	
+	<select id="getSystemDblist" resultMap="SystemDatabaseBackup" parameterType="java.util.HashMap">
+		SELECT
+			rownum, backupId, backupFileName, backupFilePath, backupCreatedId, backupCreatedAt,
+			(
+				select count(*) from
+				(
+					select	id AS backupId, backup_file_name AS backupFileName, backup_file_path AS backupFilePath
+	             			, backup_created_id AS backupCreatedId, backup_created_at AS backupCreatedAt
+					from database_backup
+					where 1=1
+					<if test="backupId != null and backupId != ''">
+						and  id = #{backupId}
+					</if>
+					<if test="searchYear != null and searchYear != ''">
+						and  left(DATE_FORMAT(backup_created_at, '%Y-%m-%d'), 4) = #{searchYear}
+					</if>
+					<if test="searchMonth != null and searchMonth != ''">
+						and substring(DATE_FORMAT(backup_created_at, '%Y-%m-%d'), 6, 2) = #{searchMonth}
+					</if>
+				) K
+			) as totalCount
+		FROM 
+		( 
+			SELECT
+				@ROWNUM := @ROWNUM + 1 AS rownum,
+				backupId, backupFileName, backupFilePath, backupCreatedId, backupCreatedAt
+			FROM 
+			( SELECT @ROWNUM := 0 AS rownum ) R,
+			( 	
+				select	id AS backupId, backup_file_name AS backupFileName, backup_file_path AS backupFilePath
+	             		, backup_created_id AS backupCreatedId, backup_created_at AS backupCreatedAt
+				from database_backup
+				where 1=1
+				<if test="backupId != null and backupId != ''">
+					and  id = #{backupId}
+				</if>
+				<if test="searchYear != null and searchYear != ''">
+					and  left(DATE_FORMAT(backup_created_at, '%Y-%m-%d'), 4) = #{searchYear}
+				</if>
+				<if test="searchMonth != null and searchMonth != ''">
+					and substring(DATE_FORMAT(backup_created_at, '%Y-%m-%d'), 6, 2) = #{searchMonth}
+				</if>
+				ORDER BY 	<if test="sort == null">backup_created_at desc</if>
+							<if test="sort != null">
+								<if test="sort == 'backupFileName'">backup_file_name</if>
+								<if test="sort == 'backupFilePath'">backup_file_path</if>
+								<if test="sort == 'backupCreatedId'">backup_created_id</if>
+								<if test="sort == 'backupCreatedAt'">backup_created_at</if>
+								${order}
+							</if> 
+			) T
+		) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<!-- DB Backup log 생성 -->
+	<insert id="insertSystemDbBackup" parameterType="java.util.HashMap">
+	insert into database_backup 
+	( backup_file_name, backup_file_path, backup_created_id, backup_created_at )
+	values
+	( #{fileName}, #{filePath}, #{createdId}, now() )
+	</insert>
 </mapper>

@@ -190,6 +190,12 @@ function getUserPermissions() {
 				case PERMISSION_ID_STATISTIC:
 					$('#checkbox-permission-statistic').prop("checked", true);
 					break;
+				case PERMISSION_ID_SYSTEM_CONFIG:
+					$('#checkbox-permission-system-config').prop("checked", true);
+					break;
+				case PERMISSION_ID_DB_CONFIG:
+					$('#checkbox-permission-db-config').prop("checked", true);
+					break;
 				default:
 					break;
 				}
@@ -216,6 +222,7 @@ function initPermissionBox() {
 	$('#checkbox-permission-schedule').prop("checked", false);
 	$('#checkbox-permission-system').prop("checked", false);
 	$('#checkbox-permission-statistic').prop("checked", false);
+	$('#checkbox-permission-system-config').prop("checked", false);
 }
 
 function initTableRow() {

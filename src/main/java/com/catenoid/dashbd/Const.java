@@ -35,6 +35,7 @@ public class Const {
 	public static final String ROLE_SYSTEM_MGMT 		= "ROLE_SYSTEM_MGMT";
 	public static final String ROLE_SYSTEM_STAT_MGMT	= "ROLE_SYSTEM_STAT_MGMT";
 	public static final String ROLE_SYSTEM_CONF_MGMT	= "ROLE_SYSTEM_CONF_MGMT";
+	public static final String ROLE_SYSTEM_DB_MGMT		= "ROLE_SYSTEM_DB_MGMT";
 	
 	/**
 	 * menu
@@ -50,5 +51,6 @@ public class Const {
 	public static final String MENU_SYSTEM_MGMT 		= "SYSTEM_MGMT";
 	public static final String MENU_SYSTEM_STAT_MGMT	= "SYSTEM_STAT_MGMT";
 	public static final String MENU_SYSTEM_CONF_MGMT	= "SYSTEM_CONF_MGMT";
+	public static final String MENU_SYSTEM_DB_MGMT		= "SYSTEM_DB_MGMT";
 	
 }

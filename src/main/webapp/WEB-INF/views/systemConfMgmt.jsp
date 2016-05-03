@@ -47,9 +47,25 @@
 		$(document).ready(function() {
 			$('.footable').footable();
 			$('.footable2').footable();
-			
 			getMenuList('SYSTEM_CONF_MGMT');
+			
+			if('${sessionCntsessionHostNameCnt}' != '-1'){
+				$("#viewApp1").show();
+				$("#appView1").css("background-color", "00EAFF");
+				$("#appView2").css("background-color", "");
+				
+				$('#tomCheck1').prop("checked", true);
+				$('#dbCheck1').prop("checked", true);
+				$('#tomCheck1').removeAttr("disabled");
+				$('#dbCheck1').removeAttr("disabled");
+				
+				$('#tomCheck2').attr("disabled", true);
+				$('#dbCheck2').attr("disabled", true);
+			}else{
+				alert("연결 가능한 서버가 없습니다.");
+			}
 		});
+		
 	</script>
 	<style type="text/css">
 	.labels {
@@ -177,38 +193,26 @@
 												<td width="30%" id="appView1" style="text-align:right;">
 													<img src="img/server_network.png" width="50px">
 													<h4 class="text-right" style="height:20px;">Tomcat Status 
-													<button class="btn btn-sm button-edit" type="button" onclick="editTomcat('1')">
-														<i class="fa fa-edit"></i>
-													</button>
-													<input type="radio" id="tomRadio" name="tomRadio" value="1" checked="checked" /></h4>
+													<input type="checkbox" id="tomCheck1" name="tomCheck1" value="1" onclick="checkTomcat(1);" disabled/></h4>
 													<h4 class="text-right" style="height:20px;">MySQL Status 
-													<button class="btn btn-sm button-edit" type="button" onclick="editDbStatus('1')">
-														<i class="fa fa-edit"></i>
-													</button>
-													<input type="radio" id="dbRadio" name="dbRadio" value="1" checked="checked" /></h4>
+													<input type="checkbox" id="dbCheck1" name="dbCheck1" value="1" onclick="checkDatabase(1);" disabled/></h4>
 												</td>
 												<td width="20%">
-													<div id="viewApp1">
+													<div id="viewApp1" style="display:none;">
 														Move the Activer Server to APP#2 <br><br>
-														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer('2', '1')">▷▶</button>
+														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(2, 1)">▷▶</button>
 													</div>
 													<div id="viewApp2" style="display:none;">
 														Move the Activer Server to APP#1 <br><br>
-														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer('1', '2')">◀◁</button>
+														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(1, 2)">◀◁</button>
 													</div>
 												</td>
 												<td width="30%" id="appView2" style="text-align:left;">
 													<img src="img/server_network.png" width="50px">
 													<h4 class="text-left" style="height:20px;">Tomcat Status 
-													<button class="btn btn-sm button-edit" type="button" onclick="editTomcat('2')">
-														<i class="fa fa-edit"></i>
-													</button>
-													<input type="radio" id="tomRadio" name="tomRadio" value="2" /></h4>
+													<input type="checkbox" id="tomCheck2" name="tomCheck2" value="2" onclick="checkTomcat(2);" disabled/></h4>
 													<h4 class="text-left" style="height:20px;">MySQL Status 
-													<button class="btn btn-sm button-edit" type="button" onclick="editDbStatus('1')">
-														<i class="fa fa-edit"></i>
-													</button>
-													<input type="radio" id="dbRadio" name="dbRadio" value="2" /></h4>
+													<input type="checkbox" id="dbCheck2" name="dbCheck2" value="2" onclick="checkDatabase(2);" disabled/></h4>
 												</td>
 											</tr>
 										</tbody>

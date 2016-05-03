@@ -158,6 +158,7 @@ public class HomeController {
 				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_STAT_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_CONF_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_DB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Database Config</span></a></li>");
 				//menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\" onclick=\"javascript:goSystemMgmt();return false;\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span><span class=\"fa arrow\"></span></a><ul class=\"nav nav-second-level collapse\"><li class=\"\"><a href=\"#\" onclick=\"javascript:goSystemMgmt();return false;\"><i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li><li><a href=\"#\"><i class=\"fa fa-gear\"></i> <span class=\"nav-label\">System Configuration</span></a></li><li><a href=\"#\"><i class=\"fa fa-database\"></i> <span class=\"nav-label\">DB Backup/Restore</span></a></li></ul></li>");
 			}
 			else {
@@ -183,7 +184,10 @@ public class HomeController {
 						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_SYSTEM_STAT_MGMT))
 						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_STAT_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
-					
+					else if (permission.getRole().equals(Const.ROLE_SYSTEM_CONF_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_CONF_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
+					else if (permission.getRole().equals(Const.ROLE_SYSTEM_DB_MGMT))
+						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_DB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Database Config</span></a></li>");
 				}
 			}
 			

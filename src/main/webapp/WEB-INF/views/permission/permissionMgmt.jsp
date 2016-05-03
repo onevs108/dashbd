@@ -278,6 +278,18 @@
 														<label for="checkbox10"> System Statistic</label>
 													</div>
 												</c:if>
+												<c:if test="${permission.id == 11}">
+													<div class="checkbox checkbox-primary">
+														<input id="checkbox-permission-system-config" type="checkbox" name="permissions" value="${permission.id}">
+														<label for="checkbox11"> System Config</label>
+													</div>
+												</c:if>
+												<c:if test="${permission.id == 12}">
+													<div class="checkbox checkbox-primary">
+														<input id="checkbox-permission-db-config" type="checkbox" name="permissions" value="${permission.id}">
+														<label for="checkbox12"> Database Config</label>
+													</div>
+												</c:if>
 											</c:forEach>
 										</fieldset>
 									</div>
