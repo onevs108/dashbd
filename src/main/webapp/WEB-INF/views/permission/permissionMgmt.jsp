@@ -287,7 +287,7 @@
 												<c:if test="${permission.id == 12}">
 													<div class="checkbox checkbox-primary">
 														<input id="checkbox-permission-db-config" type="checkbox" name="permissions" value="${permission.id}">
-														<label for="checkbox12"> Database Config</label>
+														<label for="checkbox12"> DB Backup & Restore</label>
 													</div>
 												</c:if>
 											</c:forEach>
