@@ -190,12 +190,13 @@
 					            <div class="col-sm-12" style="width:100%">
 					                <table class="table2" style="text-align: center;width:100%;">
 										<tbody>
-											<tr>												
-												<td width="30%" id="appView1" style="text-align:right;">
+											<tr>
+												<td width="20%"></td>
+												<td width="10%" id="appView1" style="text-align:center;">
 													<img src="img/server_network.png" width="50px">
-													<h4 class="text-right" style="height:20px;">Tomcat Status 
+													<h4 class="text-center" style="height:20px;">Tomcat Status 
 													<input type="checkbox" id="tomCheck1" name="tomCheck1" value="1" onclick="checkTomcat(1);" disabled/></h4>
-													<h4 class="text-right" style="height:20px;">MySQL Status 
+													<h4 class="text-center" style="height:20px;">MySQL Status 
 													<input type="checkbox" id="dbCheck1" name="dbCheck1" value="1" onclick="checkDatabase(1);" disabled/></h4>
 												</td>
 												<td width="20%">
@@ -208,13 +209,14 @@
 														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(1, 2)">◀◁</button>
 													</div>
 												</td>
-												<td width="30%" id="appView2" style="text-align:left;">
+												<td width="10%" id="appView2" style="text-align:center;">
 													<img src="img/server_network.png" width="50px">
-													<h4 class="text-left" style="height:20px;">Tomcat Status 
+													<h4 class="text-center" style="height:20px;">Tomcat Status 
 													<input type="checkbox" id="tomCheck2" name="tomCheck2" value="2" onclick="checkTomcat(2);" disabled/></h4>
-													<h4 class="text-left" style="height:20px;">MySQL Status 
+													<h4 class="text-center" style="height:20px;">MySQL Status 
 													<input type="checkbox" id="dbCheck2" name="dbCheck2" value="2" onclick="checkDatabase(2);" disabled/></h4>
 												</td>
+												<td width="20%"></td>
 											</tr>
 										</tbody>
 									</table>
