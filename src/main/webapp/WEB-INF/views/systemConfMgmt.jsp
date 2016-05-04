@@ -49,7 +49,8 @@
 			$('.footable2').footable();
 			getMenuList('SYSTEM_CONF_MGMT');
 			
-			if('${sessionCntsessionHostNameCnt}' != '-1'){
+			//if('${sessionCntsessionHostNameCnt}' != '-1'){
+			if('${sessionCntsessionHostNameCnt}' == '-1'){
 				$("#viewApp1").show();
 				$("#appView1").css("background-color", "00EAFF");
 				$("#appView2").css("background-color", "");
