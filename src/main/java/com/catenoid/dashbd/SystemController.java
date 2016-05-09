@@ -224,6 +224,7 @@ public class SystemController{
 			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
 			String searchYear = (String) requestJson.get("searchYear");
 			String searchMonth = (String) requestJson.get("searchMonth");
+			String searchDay = (String) requestJson.get("searchDay");
 			String sort = (String) requestJson.get("sort");
 			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
@@ -237,6 +238,7 @@ public class SystemController{
 			HashMap<String, Object> searchParam = new HashMap();
 			searchParam.put("searchYear", searchYear);
 			searchParam.put("searchMonth", searchMonth);
+			searchParam.put("searchDay", searchDay);
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
 			searchParam.put("start", offset+1);
@@ -298,6 +300,7 @@ public class SystemController{
 			String searchBmsc = (String) requestJson.get("searchBmsc");
 			String searchYear = (String) requestJson.get("searchYear");
 			String searchMonth = (String) requestJson.get("searchMonth");
+			String searchDay = (String) requestJson.get("searchDay");
 			String sort = (String) requestJson.get("sort");
 			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
@@ -313,6 +316,7 @@ public class SystemController{
 			searchParam.put("searchBmsc", searchBmsc);
 			searchParam.put("searchYear", searchYear);
 			searchParam.put("searchMonth", searchMonth);
+			searchParam.put("searchDay", searchDay);
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
 			searchParam.put("start", offset+1);

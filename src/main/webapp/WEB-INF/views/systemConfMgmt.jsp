@@ -195,9 +195,9 @@
 												<td width="10%" id="appView1" style="text-align:center;">
 													<img src="img/server_network.png" width="50px">
 													<h4 class="text-center" style="height:20px;">Tomcat Status 
-													<input type="checkbox" id="tomCheck1" name="tomCheck1" value="1" onclick="checkTomcat(1);" disabled/></h4>
+													<input type="radio" id="tomCheck1" name="tomCheck1" value="1" onclick="checkTomcat(1);" disabled/></h4>
 													<h4 class="text-center" style="height:20px;">MySQL Status 
-													<input type="checkbox" id="dbCheck1" name="dbCheck1" value="1" onclick="checkDatabase(1);" disabled/></h4>
+													<input type="radio" id="dbCheck1" name="dbCheck1" value="1" onclick="checkDatabase(1);" disabled/></h4>
 												</td>
 												<td width="20%">
 													<div id="viewApp1" style="display:none;">
@@ -212,9 +212,9 @@
 												<td width="10%" id="appView2" style="text-align:center;">
 													<img src="img/server_network.png" width="50px">
 													<h4 class="text-center" style="height:20px;">Tomcat Status 
-													<input type="checkbox" id="tomCheck2" name="tomCheck2" value="2" onclick="checkTomcat(2);" disabled/></h4>
+													<input type="radio" id="tomCheck2" name="tomCheck2" value="2" onclick="checkTomcat(2);" disabled/></h4>
 													<h4 class="text-center" style="height:20px;">MySQL Status 
-													<input type="checkbox" id="dbCheck2" name="dbCheck2" value="2" onclick="checkDatabase(2);" disabled/></h4>
+													<input type="radio" id="dbCheck2" name="dbCheck2" value="2" onclick="checkDatabase(2);" disabled/></h4>
 												</td>
 												<td width="20%"></td>
 											</tr>

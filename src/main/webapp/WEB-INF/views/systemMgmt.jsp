@@ -8,11 +8,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>System Mgmt</title>
 	
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-	<link href="css/plugins/iCheck/custom.css" rel="stylesheet">
-	<link href="css/animate.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 	<link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 	
 	<!-- FooTable -->
@@ -501,11 +502,11 @@
 					    	<div class="row">
 					            <div class="col-sm-12">
 									<div class="form-group">
-										<label class="col-sm-3 control-label" for="status">Operator</label>
-										<div class="col-sm-3">
+										<label class="col-sm-2 control-label" for="status">Operator</label>
+										<div class="col-sm-2">
 											<c:choose>
 												<c:when test="${USER.grade == 0}">
-													<select name="status" id="operatorInterTff" class="form-control">
+													<select name="status" id="operatorInterTff" class="form-control" style="width:100px;">
 														<option value="">--ALL--</option>
 													<c:forEach items="${OperatorList}" var="operator">
 														<option value="${operator.id}">${operator.name}</option>
@@ -513,7 +514,7 @@
 													</select>
 												</c:when>
 												<c:otherwise>
-													<select name="status" id="operatorInterTff" class="form-control" disabled="disabled">
+													<select name="status" id="operatorInterTff" class="form-control" style="width:100px;" disabled="disabled">
 														<option value="">--Select--</option>
 														<c:forEach items="${OperatorList}" var="operator">
 															<c:choose>
@@ -529,9 +530,9 @@
 												</c:otherwise>
 											</c:choose>
 										</div>
-										<label class="col-sm-3 control-label" for="status">BM-SC</label>
-										<div class="col-sm-3">
-											<select name="status" id="bmscInterTff" class="form-control">
+										<label class="col-sm-2 control-label" for="status" style="width:98px;">BM-SC</label>
+										<div class="col-sm-6">
+											<select name="status" id="bmscInterTff" class="form-control" style="width:100px;">
 												<option value="">--ALL--</option>
 											</select>
 										</div>
@@ -541,9 +542,9 @@
 					    	<div class="row">
 								<div class="col-sm-12">
 									<div class="form-group">
-										<label class="col-sm-3 control-label" for="status">Year</label>
-										<div class="col-sm-3">
-											<select name="status" id="yearInterTff" class="form-control">
+										<label class="col-sm-2 control-label" for="status">Year</label>
+										<div class="col-sm-2">
+											<select name="status" id="yearInterTff" class="form-control" style="width:100px;">
 												<option value="">--ALL--</option>
 				                                <script>
 													var myDate = new Date();
@@ -554,9 +555,9 @@
 												</script>
 											</select>
 										</div>
-										<label class="col-sm-3 control-label" for="status">Month</label>
-										<div class="col-sm-3">
-											<select name="status" id="monthInterTff" class="form-control">
+										<label class="col-sm-2 control-label" for="status" style="width:98px;">Month</label>
+										<div class="col-sm-2">
+											<select name="status" id="monthInterTff" class="form-control" style="width:100px;">
 												<option value="">--ALL--</option>
 				                                <script>
 													var myDate = new Date();
@@ -569,6 +570,12 @@
 														}
 													}
 												</script>
+											</select>
+										</div>
+										<label class="col-sm-2 control-label" for="status" style="width:88px;">Day</label>
+										<div class="col-sm-2">
+											<select name="status" id="dayInterTff" class="form-control" style="width:100px;">
+												<option value="">--ALL--</option>
 											</select>
 										</div>
 									</div>	
@@ -600,9 +607,9 @@
 					    	<div class="row">
 								<div class="col-sm-12">
 									<div class="form-group">
-										<label class="col-sm-3 control-label" for="status">Year</label>
-										<div class="col-sm-3">
-											<select name="status" id="yearIncomTff" class="form-control">
+										<label class="col-sm-2 control-label" for="status">Year</label>
+										<div class="col-sm-2">
+											<select name="status" id="yearIncomTff" class="form-control" style="width:100px;">
 												<option value="">--ALL--</option>
 				                                <script>
 													var myDate = new Date();
@@ -613,9 +620,9 @@
 												</script>
 											</select>
 										</div>
-										<label class="col-sm-3 control-label" for="status">Month</label>
-										<div class="col-sm-3">
-											<select name="status" id="monthIncomTff" class="form-control">
+										<label class="col-sm-2 control-label" for="status" style="width:98px;">Month</label>
+										<div class="col-sm-2">
+											<select name="status" id="monthIncomTff" class="form-control" style="width:100px;">
 												<option value="">--ALL--</option>
 				                                <script>
 													var myDate = new Date();
@@ -628,6 +635,12 @@
 														}
 													}
 												</script>
+											</select>
+										</div>
+										<label class="col-sm-2 control-label" for="status" style="width:88px;">Day</label>
+										<div class="col-sm-2">
+											<select name="status" id="dayIncomTff" class="form-control" style="width:100px;">
+												<option value="">--ALL--</option>
 											</select>
 										</div>
 									</div>	

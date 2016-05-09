@@ -1183,6 +1183,9 @@
 										  <if test="searchMonth != null and searchMonth != ''">
 					              		  	and substring(insert_at, 6, 2) = #{searchMonth}
 										  </if>
+										  <if test="searchDay != null and searchDay != ''">
+					              		  	and substring(insert_at, 9, 2) = #{searchDay}
+										  </if>
 			      		                group by req_type, req_code) K
 			    		          ) Z
 			    		          group by Z.req_type
@@ -1204,6 +1207,9 @@
 								  </if>
 								  <if test="searchMonth != null and searchMonth != ''">
 			              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+								  </if>
+								  <if test="searchDay != null and searchDay != ''">
+			              		  	and substring(insert_at, 9, 2) = #{searchDay}
 								  </if>
 			              group by req_type, req_code) K
 			        ) Z
@@ -1248,6 +1254,9 @@
 											  <if test="searchMonth != null and searchMonth != ''">
 						              		  	and substring(insert_at, 6, 2) = #{searchMonth}
 											  </if>
+											  <if test="searchDay != null and searchDay != ''">
+						              		  	and substring(insert_at, 9, 2) = #{searchDay}
+											  </if>
 						              group by method_service_type, method_code) K
 						        ) Z
 					  group by Z.req_type
@@ -1275,6 +1284,9 @@
 								  </if>
 								  <if test="searchMonth != null and searchMonth != ''">
 			              		  	and substring(insert_at, 6, 2) = #{searchMonth}
+								  </if>
+								  <if test="searchDay != null and searchDay != ''">
+			              		  	and substring(insert_at, 9, 2) = #{searchDay}
 								  </if>
 			              group by method_service_type, method_code) K
 			        ) Z

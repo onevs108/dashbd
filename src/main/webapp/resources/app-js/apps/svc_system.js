@@ -52,6 +52,7 @@ $(document).ready(function()
     $('#yearInterTff').change(function() {
     	if($("#yearInterTff").val() == ""){
     		$('#monthInterTff').val("");
+        	$('#dayInterTff').html('<option value="">--ALL--</option>');
     	}    	
     	getInterTffList();
     });
@@ -60,6 +61,23 @@ $(document).ready(function()
     	if($("#yearInterTff").val() == ""){
     		alert("Please Month Selected.")
     		$("#monthInterTff").val("");
+    		return false;
+    	}
+    	if($("#monthInterTff").val() == ""){
+    		$('#dayInterTff').html('<option value="">--ALL--</option>');
+    		return false;
+    	}
+    	updateNumberTrafficOfDays();
+    	getInterTffList();
+    });
+    
+    $('#dayInterTff').change(function() {
+    	if($("#yearInterTff").val() == ""){
+    		alert("Please Year Selected.")
+    		return false;
+    	}
+    	if($("#monthInterTff").val() == ""){
+    		alert("Please Month Selected.")
     		return false;
     	}
     	getInterTffList();
@@ -77,6 +95,10 @@ $(document).ready(function()
     });
     
     $('#yearIncomTff').change(function(){
+    	if($("#yearIncomTff").val() == ""){
+    		$('#monthIncomTff').val("");
+        	$('#dayIncomTff').html('<option value="">--ALL--</option>');
+    	}
     	getIncomTffList();
     });
     
@@ -84,9 +106,25 @@ $(document).ready(function()
     	if($("#yearIncomTff").val() == ""){
     		alert("Please Month Selected.")
     		return false;
-    	}else{
-    		getIncomTffList();
-    	}    	
+    	}
+    	if($("#monthIncomTff").val() == ""){
+    		$('#dayIncomTff').html('<option value="">--ALL--</option>');
+    		return false;
+    	}
+		updateNumberIncomTffOfDays(); 
+		getIncomTffList();
+    });
+    
+    $('#dayIncomTff').change(function() {
+    	if($("#yearIncomTff").val() == ""){
+    		alert("Please Year Selected.")
+    		return false;
+    	}
+    	if($("#monthIncomTff").val() == ""){
+    		alert("Please Month Selected.")
+    		return false;
+    	}
+    	getIncomTffList();
     });
     
     getPermissionList(null);
@@ -137,6 +175,7 @@ function getInterTffList() {
 			params['searchBmsc'] = $('#bmscInterTff').val();
 			params['searchYear'] = $('#yearInterTff').val();
 			params['searchMonth'] = $('#monthInterTff').val();
+			params['searchDay'] = $('#dayInterTff').val();
 			return params;
 		},
 		cache: false,
@@ -203,6 +242,7 @@ function getIncomTffList() {
 		queryParams: function(params) {
 			params['searchYear'] = $('#yearIncomTff').val();
 			params['searchMonth'] = $('#monthIncomTff').val();
+			params['searchDay'] = $('#dayIncomTff').val();
 			return params;
 		},
 		cache: false,
@@ -266,6 +306,36 @@ function updateNumberOfDays(){
 
     for(i=1; i < days+1 ; i++){
             $('#dayContent').append($('<option />').val(i).html(i));
+    }
+}
+
+function updateNumberTrafficOfDays(){
+    $('#dayInterTff').html('<option value="">--ALL--</option>');
+    month = $('#monthInterTff').val();
+    year = $('#yearInterTff').val();
+    days = daysInMonth(month, year);
+
+    for(i=1; i < days+1 ; i++){
+    	if(i < 10){
+    		$('#dayInterTff').append($('<option />').val("0"+i).html(i));
+    	}else{
+    		$('#dayInterTff').append($('<option />').val(i).html(i));
+    	}
+    }
+}
+
+function updateNumberIncomTffOfDays(){
+    $('#dayIncomTff').html('<option value="">--ALL--</option>');
+    month = $('#monthIncomTff').val();
+    year = $('#yearIncomTff').val();
+    days = daysInMonth(month, year);
+
+    for(i=1; i < days+1 ; i++){
+    	if(i < 10){
+    		$('#dayIncomTff').append($('<option />').val("0"+i).html(i));
+    	}else{
+    		$('#dayIncomTff').append($('<option />').val(i).html(i));
+    	}
     }
 }
 
