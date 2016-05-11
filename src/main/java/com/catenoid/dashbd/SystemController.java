@@ -368,17 +368,17 @@ public class SystemController{
 		String exeServerStatus = String.format("%s", serverStatus);
 		String exeDatabaseStatus = String.format("%s", databaseStatus);
 		try{
-			  Runtime runtimeHostName = Runtime.getRuntime();
-              Process processHostName = runtimeHostName.exec(exeHostName);
-              InputStream isHostName = processHostName.getInputStream();
-              InputStreamReader isrHostName = new InputStreamReader(isHostName);
-              BufferedReader brHostName = new BufferedReader(isrHostName);
-              String lineHostName;
-              StringBuffer sbHostName = new StringBuffer();
-              while((lineHostName = brHostName.readLine()) != null) {
-            	  sbHostName.append(lineHostName);
-              }
-            
+			Runtime runtimeHostName = Runtime.getRuntime();
+			Process processHostName = runtimeHostName.exec(exeHostName);
+			InputStream isHostName = processHostName.getInputStream();
+			InputStreamReader isrHostName = new InputStreamReader(isHostName);
+			BufferedReader brHostName = new BufferedReader(isrHostName);
+			String lineHostName;
+			StringBuffer sbHostName = new StringBuffer();
+			while((lineHostName = brHostName.readLine()) != null) {
+				sbHostName.append(lineHostName);
+			}
+			System.out.println("serverHostName   >>  " + sbHostName);
 			String sessionHostNameCnt = sbHostName.substring(RETURN_SHELL.length());
 			mv.addObject("sessionCntsessionHostNameCnt", sessionHostNameCnt);
 
@@ -410,7 +410,8 @@ public class SystemController{
             while((lineServerStatus = brServerStatus.readLine()) != null) {
           	  sbServerStatus.append(lineServerStatus);
             }
-          
+
+			System.out.println("exeServerStatus   >>  " + sbServerStatus);
 			String sessionServerStatuseCnt = sbServerStatus.substring(RETURN_SHELL.length());
 			mv.addObject("sessionServerStatuseCnt", sessionServerStatuseCnt);
 
@@ -441,7 +442,9 @@ public class SystemController{
             while((lineDatabaseStatus = brDatabaseStatus.readLine()) != null) {
           	  sbDatabaseStatus.append(lineDatabaseStatus);
             }
-          
+
+			System.out.println("exeDatabaseStatus   >>  " + sbDatabaseStatus);
+			
 			String sessionDatabaseStatuseCnt = sbDatabaseStatus.substring(RETURN_SHELL.length());
 			mv.addObject("sessionDatabaseStatuseCnt", sessionDatabaseStatuseCnt);
 
@@ -495,6 +498,9 @@ public class SystemController{
             while((line = br.readLine()) != null) {
           	  sb.append(line);
             }
+            
+            System.out.println("exeTargetURI   >>  " + exeTargetURI);
+            System.out.println("exeTargetURI SB   >>  " + sb);
           
 			String sessionCnt = sb.substring(RETURN_SHELL.length());
 			
@@ -655,7 +661,6 @@ public class SystemController{
 		searchParam.put("order", null);
 		searchParam.put("start", 1);
 		searchParam.put("end", 10);
-		
 
 		String backupFileNam = "";
 		List<SystemDatabaseBackup> datas = mapper.getSystemDblist(searchParam);
@@ -681,6 +686,9 @@ public class SystemController{
 			while((line = br.readLine()) != null) {
 				sb.append(line);
 			}
+
+            System.out.println("exeDatabaseRestore   >>  " + sb);
+            
 			String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
   			jsonResult.put("result", sessionHostNameCnt);
   			
@@ -755,6 +763,9 @@ public class SystemController{
 			while((line = br.readLine()) != null) {
 				sb.append(line);
 			}
+
+            System.out.println("exeDatabaseBackup   >>  " + sb);
+            
 			String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
   			jsonResult.put("result", sessionHostNameCnt);
   			
