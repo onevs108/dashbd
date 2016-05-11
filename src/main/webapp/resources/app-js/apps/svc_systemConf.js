@@ -28,11 +28,11 @@ function moveActiveServer(targetServer, selfServer){
 }
 
 function moveActiveMsg(targetServer, selfServer){
-	
+
 	$("#viewApp" + targetServer).show();
 	$("#viewApp" + selfServer).hide();
-	$("#appView" + targetServer).css("background-color", "00EAFF");
-	$("#appView" + selfServer).css("background-color", "");
+	$("#appView" + targetServer).css("opacity", "1");
+	$("#appView" + selfServer).css("opacity", ".7");
 
 	$("#tomCheck" + targetServer).prop("checked",true);
 	$("#dbCheck" + targetServer).prop("checked",true);
@@ -69,6 +69,8 @@ function checkTomcat(serverType){
 					alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
+		}else{
+			$("#tomCheck" + serverType).prop("checked",true);
 		}
 	}else{
 		if(confirm("Are you sure you want to stop the Tomcat Server?")){
@@ -93,6 +95,8 @@ function checkTomcat(serverType){
 					alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
+		}else{
+			$("#tomCheck" + serverType).prop("checked",true);
 		}
 	}
 }
@@ -121,6 +125,8 @@ function checkDatabase(serverType){
 					alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
+		}else{
+			$("#dbCheck" + serverType).prop("checked",true);
 		}
 	}else{
 		if(confirm("Are you sure you want to stop the Database Server?")){
@@ -145,6 +151,8 @@ function checkDatabase(serverType){
 					alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
+		}else{
+			$("#dbCheck" + serverType).prop("checked",true);
 		}
 	}
 }

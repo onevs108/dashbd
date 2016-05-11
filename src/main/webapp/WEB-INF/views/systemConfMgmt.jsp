@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
 <html>
 <head>
 	<meta charset="utf-8">
@@ -52,8 +51,8 @@
 			//if('${sessionCntsessionHostNameCnt}' != '-1'){
 			if('${sessionCntsessionHostNameCnt}' == '-1'){
 				$("#viewApp1").show();
-				$("#appView1").css("background-color", "00EAFF");
-				$("#appView2").css("background-color", "");
+				$("#appView1").css("opacity", "1");
+				$("#appView2").css("opacity", "0.7");
 				
 				$('#tomCheck1').prop("checked", true);
 				$('#dbCheck1').prop("checked", true);
@@ -62,11 +61,12 @@
 				
 				$('#tomCheck2').attr("disabled", true);
 				$('#dbCheck2').attr("disabled", true);
+				$("#tomCheck2").prop("checked",false);
+				$("#dbCheck2").prop("checked",false);
 			}else{
 				alert("연결 가능한 서버가 없습니다.");
 			}
 		});
-		
 	</script>
 	<style type="text/css">
 	.labels {
@@ -80,8 +80,7 @@
 		border: 1px solid red;
 		white-space: nowrap;
 	}
-	
-	 .timeline {
+	.timeline {
 	     position: absolute;    
 	     border: 2px dotted blue;
 	     width: 1px;
@@ -90,8 +89,66 @@
 	     z-index: 9;
 	     height: auto;
  	}
-	
-	</style>
+ 	.custom-table{
+ 	}
+ 	.custom-table .checkbox label::before {
+	    content: "";
+	    display: inline-block;
+	    position: absolute;
+	    width: 17px;
+	    height: 17px;
+	    left: 0;
+	    margin-left: -20px;
+	    border: 1px solid #cccccc;
+	    border-radius: 50%;
+	    background-color: #fff;
+	    -webkit-transition: border 0.15s ease-in-out;
+	    -o-transition: border 0.15s ease-in-out;
+	    transition: border 0.15s ease-in-out;
+	}
+	.custom-table .checkbox label::after {
+	    display: inline-block;
+	    position: absolute;
+	    content: " ";
+	    width: 11px;
+	    height: 11px;
+	    left: 3px;
+	    top: 3px;
+	    margin-left: -20px;
+	    border-radius: 50%;
+	    background-color: #555555;
+		-webkit-transform: scale(.6, .6);
+		-ms-transform: scale(.6, .6);
+		-o-transform: scale(.6, .6);
+		transform: scale(.6, .6);
+		-webkit-transition: -webkit-transform border-radius 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+		-moz-transition: -moz-transform border-radius 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+		-o-transition: -o-transform border-radius 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+		transition: transform border-radius 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+	}
+	.custom-table input[type="checkbox"] + label::after {
+	    background-color: #d9534f;
+
+	    border-radius:0;
+	}
+	.custom-table input[type="checkbox"]:checked + label::after {
+		background-color: #0066FF;
+		border-radius:50%;
+		-webkit-transform: scale(1, 1);
+		-ms-transform: scale(1, 1);
+		-o-transform: scale(1, 1);
+		transform: scale(1, 1);
+	}
+	.checkbox input[type="checkbox"]:checked + label::after {
+		content:"";
+	}
+	.checkbox input[type="checkbox"]:checked + label::after, .checkbox input[type="radio"]:checked + label::after {
+	    font-family: "FontAwesome";
+	    content: "";
+	}
+ 	.checkbox input[type="checkbox"]:checked + label::after, .checkbox input[type="radio"]:checked + label::after{
+ 	}
+    </style>
 </head>
 <body>
 <div id="wrapper">
@@ -188,19 +245,29 @@
 					    <div class="ibox-content">
 					    	<div class="row">
 					            <div class="col-sm-12" style="width:100%">
-					                <table class="table2" style="text-align: center;width:100%;">
+					                <table class="table2 custom-table" style="text-align: center;width:100%;">
 										<tbody>
 											<tr>
 												<td width="20%"></td>
 												<td width="10%" id="appView1" style="text-align:center;">
 													<img src="img/server_network.png" width="50px">
 													<h4 class="text-center" style="height:20px;">Tomcat Status 
-													<input type="radio" id="tomCheck1" name="tomCheck1" value="1" onclick="checkTomcat(1);" disabled/></h4>
+													<div class="checkbox checkbox-inline">
+														<input type="checkbox" id="tomCheck1" name="tomCheck1" value="1" onclick="checkTomcat(1);" disabled/>
+														<label></label>
+													</div>
+													</h4>
+													<br /><br />
+													<img src="img/mysql2.png" width="50px">
 													<h4 class="text-center" style="height:20px;">MySQL Status 
-													<input type="radio" id="dbCheck1" name="dbCheck1" value="1" onclick="checkDatabase(1);" disabled/></h4>
+													<div class="checkbox checkbox-inline">
+														<input type="checkbox" id="dbCheck1" name="dbCheck1" value="1" onclick="checkDatabase(1);" disabled/>
+														<label></label>
+													</div>
+													</h4>
 												</td>
 												<td width="20%">
-													<div id="viewApp1" style="display:none;">
+													<div id="viewApp1" style="display:nchone;">
 														Move the Activer Server to APP#2 <br><br>
 														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(2, 1)">▷▶</button>
 													</div>
@@ -211,10 +278,20 @@
 												</td>
 												<td width="10%" id="appView2" style="text-align:center;">
 													<img src="img/server_network.png" width="50px">
-													<h4 class="text-center" style="height:20px;">Tomcat Status 
-													<input type="radio" id="tomCheck2" name="tomCheck2" value="2" onclick="checkTomcat(2);" disabled/></h4>
+													<h4 class="text-center" style="height:20px;">Tomcat Status
+													<div class="checkbox checkbox-inline">
+														<input type="checkbox" id="tomCheck2" name="tomCheck2" value="2" onclick="checkTomcat(2);" disabled/>
+														<label></label>
+													</div> 
+													</h4>
+													<br /><br />
+													<img src="img/mysql2.png" width="50px">
 													<h4 class="text-center" style="height:20px;">MySQL Status 
-													<input type="radio" id="dbCheck2" name="dbCheck2" value="2" onclick="checkDatabase(2);" disabled/></h4>
+													<div class="checkbox checkbox-inline">
+														<input type="checkbox" id="dbCheck2" name="dbCheck2" value="2" onclick="checkDatabase(2);" disabled/>
+														<label></label>
+													</div>
+													</h4>
 												</td>
 												<td width="20%"></td>
 											</tr>
