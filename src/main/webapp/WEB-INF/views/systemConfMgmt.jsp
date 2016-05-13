@@ -48,8 +48,7 @@
 			$('.footable2').footable();
 			getMenuList('SYSTEM_CONF_MGMT');
 			
-			//if('${sessionCntsessionHostNameCnt}' != '-1'){
-			if('${sessionCntsessionHostNameCnt}' == '-1'){
+			if('${sessionCntsessionHostNameCnt}' == 'nexdream'){
 				$("#viewApp1").show();
 				$("#appView1").css("opacity", "1");
 				$("#appView2").css("opacity", "0.7");

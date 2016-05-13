@@ -379,7 +379,8 @@ public class SystemController{
 				sbHostName.append(lineHostName);
 			}
 			System.out.println("serverHostName   >>  " + sbHostName);
-			String sessionHostNameCnt = sbHostName.substring(RETURN_SHELL.length());
+			//String sessionHostNameCnt = sbHostName.substring(RETURN_SHELL.length());
+			String sessionHostNameCnt = sbHostName.toString();
 			mv.addObject("sessionCntsessionHostNameCnt", sessionHostNameCnt);
 
 			syslogMap.put("reqType", "system Conf Mgmt");
@@ -412,7 +413,8 @@ public class SystemController{
             }
 
 			System.out.println("exeServerStatus   >>  " + sbServerStatus);
-			String sessionServerStatuseCnt = sbServerStatus.substring(RETURN_SHELL.length());
+			//String sessionServerStatuseCnt = sbServerStatus.substring(RETURN_SHELL.length());
+			String sessionServerStatuseCnt = sbServerStatus.toString();
 			mv.addObject("sessionServerStatuseCnt", sessionServerStatuseCnt);
 
 			syslogMap.put("reqType", "system Conf Mgmt");
@@ -445,7 +447,8 @@ public class SystemController{
 
 			System.out.println("exeDatabaseStatus   >>  " + sbDatabaseStatus);
 			
-			String sessionDatabaseStatuseCnt = sbDatabaseStatus.substring(RETURN_SHELL.length());
+			//String sessionDatabaseStatuseCnt = sbDatabaseStatus.substring(RETURN_SHELL.length());
+			String sessionDatabaseStatuseCnt = sbDatabaseStatus.toString();
 			mv.addObject("sessionDatabaseStatuseCnt", sessionDatabaseStatuseCnt);
 
 			syslogMap.put("reqType", "system Conf Mgmt");
@@ -502,7 +505,8 @@ public class SystemController{
             System.out.println("exeTargetURI   >>  " + exeTargetURI);
             System.out.println("exeTargetURI SB   >>  " + sb);
           
-			String sessionCnt = sb.substring(RETURN_SHELL.length());
+			//String sessionCnt = sb.substring(RETURN_SHELL.length());
+			String sessionCnt = sb.toString();
 			
 			Map< String, Object > returnMap = new HashMap< String, Object >();
 			returnMap.put("sessionCnt", sessionCnt);
@@ -689,7 +693,8 @@ public class SystemController{
 
             System.out.println("exeDatabaseRestore   >>  " + sb);
             
-			String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
+			//String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
+            String sessionHostNameCnt = sb.toString();
   			jsonResult.put("result", sessionHostNameCnt);
   			
 			syslogMap.put("reqType", "Database Config");
@@ -766,7 +771,8 @@ public class SystemController{
 
             System.out.println("exeDatabaseBackup   >>  " + sb);
             
-			String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
+			//String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
+            String sessionHostNameCnt = sb.toString();
   			jsonResult.put("result", sessionHostNameCnt);
   			
 			syslogMap.put("reqType", "Database Config");
