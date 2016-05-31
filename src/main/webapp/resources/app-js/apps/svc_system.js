@@ -269,12 +269,24 @@ $(document).ready(function()
 });
 
 function doSearch() {
-	if($('#yearBroadContentS option:selected').val() == "" || $('#monthBroadContentS option:selected').val() == "" || $('#dayBroadContentS option:selected').val() == ""){
-		alert("Please Search Start Year/Month/Day Selected.")
+	if($('#yearBroadContentS option:selected').val() == ""){
+		alert("Please Search Start Year Selected.")
 		return false;
 	}
-	if($('#yearBroadContentE option:selected').val() == "" || $('#monthBroadContentE option:selected').val() == "" || $('#dayBroadContentE option:selected').val() == ""){
-		alert("Please Search End Year/Month/Day Selected.")
+	if($('#yearBroadContentE option:selected').val() == ""){
+		alert("Please Search End Year Selected.")
+		return false;
+	}
+	if($('#yearBroadContentS option:selected').val() > $('#yearBroadContentE option:selected').val()){
+		alert("Search Start Year End Year is greater than.")
+		return false;
+	}
+	if($('#monthBroadContentS option:selected').val() > $('#monthBroadContentE option:selected').val()){
+		alert("Search Start Month End Month is greater than.")
+		return false;
+	}
+	if($('#dayBroadContentS option:selected').val() > $('#dayBroadContentE option:selected').val()){
+		alert("Search Start Day End Day is greater than.")
 		return false;
 	}
 

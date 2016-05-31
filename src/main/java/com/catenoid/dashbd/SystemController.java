@@ -823,6 +823,36 @@ public class SystemController{
 			String searchEMonth = (String) requestJson.get("searchEMonth");
 			String searchEDay = (String) requestJson.get("searchEDay");
 			
+			String searchSDate = "";
+			String searchEDate = "";
+			
+			if(searchSDay.equals("")){
+				if(searchSMonth.equals("")){
+					if(searchSYear.equals("")){
+						searchSDate = "";
+					}else{
+						searchSDate = searchSYear+"-01-01";
+					}
+				}else{
+					searchSDate = searchSYear+"-"+searchSMonth+"-01";
+				}
+			}else{
+				searchSDate = searchSYear+"-"+searchSMonth+"-"+searchSDay;
+			}
+			if(searchEDay.equals("")){
+				if(searchEMonth.equals("")){
+					if(searchEYear.equals("")){
+						searchEDate = "";
+					}else{
+						searchEDate = searchEYear+"-12-31";
+					}
+				}else{
+					searchEDate = searchEYear+"-"+searchEMonth+"-31";
+				}
+			}else{
+				searchEDate = searchEYear+"-"+searchEMonth+"-"+searchEDay;
+			}
+			
 			String sort = (String) requestJson.get("sort");
 			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
@@ -836,8 +866,8 @@ public class SystemController{
 			HashMap<String, Object> searchParam = new HashMap();
 			searchParam.put("searchOperator", searchOperator);
 			searchParam.put("searchBmsc", searchBmsc);
-			searchParam.put("searchSDate", searchSYear+"-"+searchSMonth+"-"+searchSDay);
-			searchParam.put("searchEDate", searchEYear+"-"+searchEMonth+"-"+searchEDay);
+			searchParam.put("searchSDate", searchSDate);
+			searchParam.put("searchEDate", searchEDate);
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
 			searchParam.put("start", offset+1);
