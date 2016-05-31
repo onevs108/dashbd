@@ -281,13 +281,17 @@ function doSearch() {
 		alert("Search Start Year End Year is greater than.")
 		return false;
 	}
-	if($('#monthBroadContentS option:selected').val() > $('#monthBroadContentE option:selected').val()){
-		alert("Search Start Month End Month is greater than.")
-		return false;
+	if($('#yearBroadContentS option:selected').val() == $('#yearBroadContentE option:selected').val()){
+		if($('#monthBroadContentS option:selected').val() > $('#monthBroadContentE option:selected').val()){
+			alert("Search Start Month End Month is greater than.")
+			return false;
+		}
 	}
-	if($('#dayBroadContentS option:selected').val() > $('#dayBroadContentE option:selected').val()){
-		alert("Search Start Day End Day is greater than.")
-		return false;
+	if($('#yearBroadContentS option:selected').val() == $('#yearBroadContentE option:selected').val() && $('#monthBroadContentS option:selected').val() == $('#monthBroadContentE option:selected').val()){
+		if($('#dayBroadContentS option:selected').val() > $('#dayBroadContentE option:selected').val()){
+			alert("Search Start Day End Day is greater than.")
+			return false;
+		}
 	}
 
 	getBroadCastList();
