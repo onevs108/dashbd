@@ -16,6 +16,7 @@ import com.catenoid.dashbd.dao.model.ServiceAreaCount;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
 import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
+import com.catenoid.dashbd.dao.model.SystemBroadCastContents;
 import com.catenoid.dashbd.dao.model.SystemDatabaseBackup;
 import com.catenoid.dashbd.dao.model.SystemIncomingLog;
 import com.catenoid.dashbd.dao.model.Users;
@@ -122,4 +123,6 @@ public interface ServiceAreaMapper {
     List<SystemDatabaseBackup> getSystemDblist(HashMap<String, Object> example);
     
     int insertSystemDbBackup(HashMap< String, Object > searchParm);
+    
+    List<SystemBroadCastContents> getSystemBCContentsList(HashMap<String, Object> example);
 }

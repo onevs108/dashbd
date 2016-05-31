@@ -44,6 +44,7 @@ import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
+import com.catenoid.dashbd.dao.model.SystemBroadCastContents;
 import com.catenoid.dashbd.dao.model.SystemDatabaseBackup;
 import com.catenoid.dashbd.dao.model.SystemIncomingLog;
 import com.catenoid.dashbd.dao.model.Users;
@@ -795,6 +796,101 @@ public class SystemController{
 	    }
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/getBroadCastList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getBroadCastList(@RequestBody String body) {
+		logger.info("-> [body = {}]", body);
+
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		JSONObject jsonResult = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
+			
+
+			String searchOperator = (String) requestJson.get("searchOperator");
+			String searchBmsc = (String) requestJson.get("searchBmsc");
+			String searchSYear = (String) requestJson.get("searchSYear");
+			String searchSMonth = (String) requestJson.get("searchSMonth");
+			String searchSDay = (String) requestJson.get("searchSDay");
+			String searchEYear = (String) requestJson.get("searchEYear");
+			String searchEMonth = (String) requestJson.get("searchEMonth");
+			String searchEDay = (String) requestJson.get("searchEDay");
+			
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
+			long offset = (Long) requestJson.get("offset");
+			long limit = (Long) requestJson.get("limit");
+			
+			if (sort == null || sort.isEmpty()) sort = null;
+			if (order == null || order.isEmpty()) order = null;
+			
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			HashMap<String, Object> searchParam = new HashMap();
+			searchParam.put("searchOperator", searchOperator);
+			searchParam.put("searchBmsc", searchBmsc);
+			searchParam.put("searchSDate", searchSYear+"-"+searchSMonth+"-"+searchSDay);
+			searchParam.put("searchEDate", searchEYear+"-"+searchEMonth+"-"+searchEDay);
+			searchParam.put("sort", sort);
+			searchParam.put("order", order);
+			searchParam.put("start", offset+1);
+			searchParam.put("end", offset + limit);
+			
+			List<SystemBroadCastContents> datas = mapper.getSystemBCContentsList(searchParam);
+			SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+			
+			JSONArray rows = new JSONArray();
+			for(int i = 0; i < datas.size(); i++) {
+				SystemBroadCastContents data = datas.get(i);
+				JSONObject obj = new JSONObject();
+				obj.put("rownum", data.getRownum());
+				obj.put("schId", data.getSchId());
+				obj.put("bmscid", data.getBmscid());
+				obj.put("bmscName", data.getBmscName());
+				obj.put("serviceAreaId", data.getServiceAreaId());
+				obj.put("serviceAreaName", data.getServiceAreaName());
+				obj.put("contentId", data.getContentId());
+				obj.put("contentName", data.getContentName());
+				obj.put("operatorId", data.getOperatorId());
+				obj.put("operatorName", data.getOperatorName());
+				obj.put("serviceCategory", data.getServiceCategory());
+				obj.put("fileType", data.getFileType());
+				obj.put("fileFormat", data.getFileFormat());
+				obj.put("serviceType", data.getServiceType());
+				obj.put("startDate", sdfTo.format(data.getStartDate()));
+				obj.put("endDate", sdfTo.format(data.getEndDate()));
+				obj.put("totalCount", data.getTotalCount());
+				rows.add(obj);
+				
+				if( i == 0 ) {
+					jsonResult.put("total", data.getTotalCount());
+				}
+			}
+			
+			jsonResult.put("rows", rows);
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getBroadCastList");
+			syslogMap.put("reqUrl", "api/getBroadCastList.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+
+		} catch (Exception e) {
+			syslogMap.put("reqType", "System Mgmt");
+			syslogMap.put("reqSubType", "getBroadCastList");
+			syslogMap.put("reqUrl", "api/getBroadCastList.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			logger.error("~~ [An error occurred!]", e);
+		}
 		return jsonResult.toString();
 	}
 }

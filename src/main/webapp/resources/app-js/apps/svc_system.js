@@ -18,6 +18,11 @@ $(document).ready(function()
         getServiceAreaBmScEnbsCount($('#operatorEnbs option:selected').val(), "", "eNbsCount");
     });
     
+    $('#operatorBroadContent').change(function() {
+        getServiceAreaBmSc(1, $('#operatorBroadContent option:selected').val(), true, "bmscBroadContent");
+    });
+
+    
     $('#bmscEnbs').change(function() {
     	getServiceAreaBmScEnbsCount($('#operatorEnbs option:selected').val(), $('#bmscEnbs option:selected').val(), "eNbsCount");
     });
@@ -39,6 +44,103 @@ $(document).ready(function()
     	$('#monthContent').val("");
     	$('#dayContent').html('<option value="">--ALL--</option>');
     });
+    
+    $('#yearBroadContentS').change(function(){
+    	$('#monthBroadContentS').val("");
+    	$('#dayBroadContentS').html('<option value="">--ALL--</option>');
+    });
+    
+    $('#yearBroadContentE').change(function(){
+    	$('#monthBroadContentE').val("");
+    	$('#dayBroadContentE').html('<option value="">--ALL--</option>');
+    });
+    
+    $('#monthBroadContentS').change(function(){
+    	if($("#yearBroadContentS").val() == ""){
+    		alert("Please Month Selected.")
+    		$("#monthBroadContentS").val("");
+    		return false;
+    	}else{
+    		updateNumberOfBroadContentSDays(); 
+        	$('#dayBroadContentS').val("");
+    	}    	
+    });
+    
+    $('#monthBroadContentE').change(function(){
+    	if($("#yearBroadContentE").val() == ""){
+    		alert("Please Month Selected.")
+    		$("#monthBroadContentE").val("");
+    		return false;
+    	}else{
+    		updateNumberOfBroadContentEDays(); 
+        	$('#dayBroadContentE').val("");
+    	}    	
+    });
+    
+    var checkDate = new Date();
+    updateNumberOfBroadContentSDays("F");
+    updateNumberOfBroadContentEDays("F");
+    
+    function updateNumberOfBroadContentSDays(type){
+        $('#dayBroadContentS').html('<option value="">--ALL--</option>');
+        month = $('#monthBroadContentS').val();
+        year = $('#yearBroadContentS').val();
+        days = daysInMonth(month, year);
+        for(i=1; i < days+1 ; i++){
+        	if(type == "F"){
+        		if(i == checkDate.getDate()){
+        			if(i < 10){
+        				$('#dayBroadContentS').append('<option value="0'+i+'" selected>'+i+'</option>');
+        			}else{
+        				$('#dayBroadContentS').append('<option value="'+i+'" selected>'+i+'</option>');
+        			}
+        		}else{
+        			if(i < 10){
+        				$('#dayBroadContentS').append('<option value="0'+i+'">'+i+'</option>');
+        			}else{
+        				$('#dayBroadContentS').append('<option value="'+i+'">'+i+'</option>');
+        			}
+        		}
+        	}else{
+    			if(i < 10){
+    				$('#dayBroadContentS').append('<option value="0'+i+'">'+i+'</option>');
+    			}else{
+    				$('#dayBroadContentS').append('<option value="'+i+'">'+i+'</option>');
+    			}
+        	}
+        }
+    }
+
+    function updateNumberOfBroadContentEDays(type){
+        $('#dayBroadContentE').html('<option value="">--ALL--</option>');
+        month = $('#monthBroadContentE').val();
+        year = $('#yearBroadContentE').val();
+        days = daysInMonth(month, year);
+
+        for(i=1; i < days+1 ; i++){
+        	if(type == "F"){
+        		if(i == checkDate.getDate()){
+        			if(i < 10){
+        				$('#dayBroadContentE').append('<option value="0'+i+'" selected>'+i+'</option>');
+        			}else{
+        				$('#dayBroadContentE').append('<option value="'+i+'" selected>'+i+'</option>');
+        			}
+        		}else{
+        			if(i < 10){
+        				$('#dayBroadContentE').append('<option value="0'+i+'">'+i+'</option>');
+        			}else{
+        				$('#dayBroadContentE').append('<option value="'+i+'">'+i+'</option>');
+        			}
+        		}
+        	}else{
+    			if(i < 10){
+    				$('#dayBroadContentE').append('<option value="0'+i+'">'+i+'</option>');
+    			}else{
+    				$('#dayBroadContentE').append('<option value="'+i+'">'+i+'</option>');
+    			}
+        	}
+        }
+    }
     
     $('#operatorInterTff').change(function() {
         getServiceAreaBmSc(1, $('#operatorInterTff option:selected').val(), true, "bmscInterTff");
@@ -160,7 +262,24 @@ $(document).ready(function()
             offset: 70
         }
     });
+
+	$('#go-search').click(doSearch);
+
+	$('.pagination-detail').hide();
 });
+
+function doSearch() {
+	if($('#yearBroadContentS option:selected').val() == "" || $('#monthBroadContentS option:selected').val() == "" || $('#dayBroadContentS option:selected').val() == ""){
+		alert("Please Search Start Year/Month/Day Selected.")
+		return false;
+	}
+	if($('#yearBroadContentE option:selected').val() == "" || $('#monthBroadContentE option:selected').val() == "" || $('#dayBroadContentE option:selected').val() == ""){
+		alert("Please Search End Year/Month/Day Selected.")
+		return false;
+	}
+
+	getBroadCastList();
+}
 
 function getInterTffList() {
 	$('#interTffTable').bootstrapTable('destroy');
@@ -513,4 +632,163 @@ function getServiceAreaByBmSc(bmscId, isUpload) {
 
 function isEmpty(value) {
     return (value === undefined || value == null || value.length <= 0) ? true : false;
+}
+
+
+function getBroadCastList() {
+	$('#broadCastTable').bootstrapTable('destroy');
+	// 테이블 생성
+	var table = $('#broadCastTable').bootstrapTable({
+		method: 'post',
+		url: '/dashbd/api/getBroadCastList.do',
+		contentType: 'application/json',
+		dataType: 'json',
+		queryParams: function(params) {
+			params['searchOperator'] = $('#operatorBroadContent').val();
+			params['searchBmsc'] = $('#bmscBroadContent').val();
+			params['searchSYear'] = $('#yearBroadContentS').val();
+			params['searchSMonth'] = $('#monthBroadContentS').val();
+			params['searchSDay'] = $('#dayBroadContentS').val();
+			params['searchEYear'] = $('#yearBroadContentE').val();
+			params['searchEMonth'] = $('#monthBroadContentE').val();
+			params['searchEDay'] = $('#dayBroadContentE').val();
+			return params;
+		},
+		cache: false,
+		pagination: true,
+		sidePagination: 'server',
+		pageNumber: 1,
+		pageSize: 10,
+		search: false,
+		showHeader: true,
+		showColumns: false,
+		showRefresh: false,
+		minimumCountColumns: 10,
+		clickToSelect: false,
+		columns: [
+	                [
+	                    {
+	                        title: 'Title',
+	            			field: 'contentName',
+	                        rowspan: 2,
+	                        align: 'center',
+	                        valign: 'middle',
+	                        sortable: true,
+	            			formatter: function(value, row, index) {
+	            				return "<a href=/dashbd/view/viewContent.do?id="+row.contentId+">"+value+"</a>";
+	            			}
+	                    }, {
+	                        title: 'Category',
+	                        field: 'serviceCategory',
+	                        rowspan: 2,
+	                        align: 'center',
+	                        valign: 'middle',
+	                        sortable: true
+	                    }, {
+	                        title: 'ServiceTime',
+	                        colspan: 2,
+	                        align: 'center',
+		                    valign: 'middle'
+	                    }, {
+	                        title: 'Type',
+	                        field: 'serviceType',
+	                        rowspan: 2,
+	                        align: 'center',
+		                    valign: 'middle',
+		                    sortable: true
+	                    }, {
+	                        title: 'BM-SC',
+	                        field: 'bmscName',
+	                        rowspan: 2,
+	                        align: 'center',
+		                    valign: 'middle',
+		                    sortable: true
+	                    }, {
+	                        title: 'Service Area',
+	                        field: 'serviceAreaName',
+	                        rowspan: 2,
+	                        align: 'center',
+		                    valign: 'middle',
+		                    sortable: true
+	                    }
+	                ],
+	                [
+	                    {
+	                        title: 'Start',
+	                        field: 'startDate',
+	                        align: 'center',
+		                    valign: 'middle',
+		                    sortable: true
+	                    }, {
+	                        title: 'End',
+	                        field: 'endDate',
+	                        align: 'center',
+		                    valign: 'middle',
+		                    sortable: true
+	                    }
+	                ]
+	            ]
+	});
+}
+
+$(function () {
+    var scripts = [
+            location.search.substring(1) || '../resources/app-js/apps/bootstrap-table/bootstrap-table.js'
+            ,'../resources/js/plugins/footable/footable.all.min.js'
+            //,'../resources/app-js/apps/bootstrap-table/tableExport.js'
+            //,'../resources/app-js/apps/bootstrap-table/bootstrap-table-editable.js'
+            //,'../resources/app-js/apps/bootstrap-table/bootstrap-editable.js'
+        ],
+        eachSeries = function (arr, iterator, callback) {
+            callback = callback || function () {};
+            if (!arr.length) {
+                return callback();
+            }
+            var completed = 0;
+            var iterate = function () {
+                iterator(arr[completed], function (err) {
+                    if (err) {
+                        callback(err);
+                        callback = function () {};
+                    }
+                    else {
+                        completed += 1;
+                        if (completed >= arr.length) {
+                            callback(null);
+                        }
+                        else {
+                            iterate();
+                        }
+                    }
+                });
+            };
+            iterate();
+        };
+
+    eachSeries(scripts, getScript, getBroadCastList);
+});
+
+function getScript(url, callback) {
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.src = url;
+
+    var done = false;
+    // Attach handlers for all browsers
+    script.onload = script.onreadystatechange = function() {
+        if (!done && (!this.readyState ||
+                this.readyState == 'loaded' || this.readyState == 'complete')) {
+            done = true;
+            if (callback)
+                callback();
+
+            // Handle memory leak in IE
+            script.onload = script.onreadystatechange = null;
+        }
+    };
+
+    head.appendChild(script);
+
+    // We handle everything using the script element injection
+    return undefined;
 }

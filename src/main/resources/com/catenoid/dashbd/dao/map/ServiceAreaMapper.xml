@@ -137,6 +137,30 @@
 		<result column="description" property="description" jdbcType="VARCHAR" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>	
+	
+
+	<resultMap id="SystemBroadCastContents" type="com.catenoid.dashbd.dao.model.SystemBroadCastContents" >
+		<result column="rownum" property="rownum" jdbcType="INTEGER" />
+		<result column="schId" property="schId" jdbcType="INTEGER" />
+		<result column="bmscid" property="bmscid" jdbcType="INTEGER" />
+		<result column="bmscName" property="bmscName" jdbcType="VARCHAR" />
+		<result column="serviceAreaId" property="serviceAreaId" jdbcType="INTEGER" />
+		<result column="serviceAreaName" property="serviceAreaName" jdbcType="VARCHAR" />
+		<result column="contentId" property="contentId" jdbcType="INTEGER" />
+		<result column="contentName" property="contentName" jdbcType="VARCHAR" />
+		<result column="operatorId" property="operatorId" jdbcType="INTEGER" />
+		<result column="operatorName" property="operatorName" jdbcType="VARCHAR" />
+		<result column="serviceCategory" property="serviceCategory" jdbcType="VARCHAR" />
+		<result column="fileType" property="fileType" jdbcType="VARCHAR" />
+		<result column="fileFormat" property="fileFormat" jdbcType="VARCHAR" />
+		<result column="serviceType" property="serviceType" jdbcType="VARCHAR" />
+		<result column="fileFormat" property="fileFormat" jdbcType="VARCHAR" />
+		<result column="startDate" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="endDate" property="endDate" jdbcType="TIMESTAMP" />
+		<result column="createdAt" property="createdAt" jdbcType="TIMESTAMP" />
+		<result column="updatedAt" property="updatedAt" jdbcType="TIMESTAMP" />
+		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
+	</resultMap>
 		
   <sql id="Example_Where_Clause" >
     <where >
@@ -1365,4 +1389,70 @@
 	values
 	( #{fileName}, #{filePath}, #{createdId}, now() )
 	</insert>
+	
+	<select id="getSystemBCContentsList" resultMap="SystemBroadCastContents" parameterType="java.util.HashMap">
+		SELECT
+			rownum, schId, bmscId, bmscName, serviceAreaId, serviceAreaName, contentId, contentName, operatorId, operatorName,
+		    serviceCategory, fileType, fileFormat, serviceType, startDate, endDate, createdAt, updatedAt,
+			(
+				select count(*) from
+				(
+					select  a.id as schId, a.bmscid as bmscId, c.name as bmscName, a.service_area_id as serviceAreaId, b.name as serviceAreaName, 
+					        a.content_id as contentId, d.title as contentName, f.operator_id as operatorId, g.name as operatorName,
+					        d.category as serviceCategory, d.type as fileType, d.file_format as fileFormat, e.service as serviceType,
+					        a.start_date as startDate, a.end_date as endDate, a.created_at as createdAt, a.updated_at as updatedAt
+					from    schedule a, service_area b, bmsc c, contents d, broadcast_info e, operator_bmsc f, operator g
+					where   a.service_area_id=b.id and a.bmscId=c.id and a.content_id=d.id and a.BCID=e.BCID and a.bmscId = f.bmsc_id and f.operator_id = g.id
+					<if test="searchOperator != null and searchOperator != ''">
+						and  f.operator_id = #{searchOperator}
+					</if>
+					<if test="searchBmsc != null and searchBmsc != ''">
+						and  a.bmscid = #{searchBmsc}
+					</if>
+					<if test="searchSDate != null and searchSDate != '' and searchEDate != null and searchEDate != ''">
+						and ( DATE_FORMAT(a.start_date, '%Y-%m-%d') between #{searchSDate} and #{searchEDate}
+						or DATE_FORMAT(a.end_date, '%Y-%m-%d') between #{searchSDate} and #{searchEDate} )
+					</if>
+				) K
+			) as totalCount
+		FROM 
+		( 
+			SELECT
+				@ROWNUM := @ROWNUM + 1 AS rownum,
+				schId, bmscId, bmscName, serviceAreaId, serviceAreaName, contentId, contentName, operatorId, operatorName,
+		        serviceCategory, fileType, fileFormat, serviceType, startDate, endDate, createdAt, updatedAt
+			FROM 
+			( SELECT @ROWNUM := 0 AS rownum ) R,
+			( 	
+				select  a.id as schId, a.bmscid as bmscId, c.name as bmscName, a.service_area_id as serviceAreaId, b.name as serviceAreaName, 
+				        a.content_id as contentId, d.title as contentName, f.operator_id as operatorId, g.name as operatorName,
+				        d.category as serviceCategory, d.type as fileType, d.file_format as fileFormat, e.service as serviceType,
+				        a.start_date as startDate, a.end_date as endDate, a.created_at as createdAt, a.updated_at as updatedAt
+				from    schedule a, service_area b, bmsc c, contents d, broadcast_info e, operator_bmsc f, operator g
+				where   a.service_area_id=b.id and a.bmscId=c.id and a.content_id=d.id and a.BCID=e.BCID and a.bmscId = f.bmsc_id and f.operator_id = g.id
+				<if test="searchOperator != null and searchOperator != ''">
+					and  f.operator_id = #{searchOperator}
+				</if>
+				<if test="searchBmsc != null and searchBmsc != ''">
+					and  a.bmscid = #{searchBmsc}
+				</if>
+				<if test="searchSDate != null and searchSDate != '' and searchEDate != null and searchEDate != ''">
+					and ( DATE_FORMAT(a.start_date, '%Y-%m-%d') between #{searchSDate} and #{searchEDate}
+					or DATE_FORMAT(a.end_date, '%Y-%m-%d') between #{searchSDate} and #{searchEDate} )
+				</if>
+				ORDER BY 	<if test="sort == null">a.created_at desc</if>
+							<if test="sort != null">
+								<if test="sort == 'contentName'">d.title</if>
+								<if test="sort == 'serviceCategory'">d.category</if>
+								<if test="sort == 'startDate'">a.start_date</if>
+								<if test="sort == 'endDate'">a.end_date</if>
+								<if test="sort == 'serviceType'">e.service</if>
+								<if test="sort == 'bmscName'">c.name</if>
+								<if test="sort == 'serviceAreaName'">b.name</if>
+								${order}
+							</if> 
+			) T
+		) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
 </mapper>
