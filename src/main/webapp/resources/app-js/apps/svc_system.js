@@ -704,12 +704,15 @@ function getBroadCastList() {
 		                    valign: 'middle',
 		                    sortable: true
 	                    }, {
-	                        title: 'Service Area',
+	                        title: 'Service Area Name [Id]',
 	                        field: 'serviceAreaName',
 	                        rowspan: 2,
 	                        align: 'center',
 		                    valign: 'middle',
-		                    sortable: true
+		                    sortable: true,
+	            			formatter: function(value, row, index) {
+	            				return value+" ["+row.serviceAreaId+"]";
+	            			}
 	                    }
 	                ],
 	                [
