@@ -441,7 +441,7 @@
            </div>
            <div class="modal-footer">
                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
-               <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
+               <button type="button" class="btn btn-primary" id="modal-add-btn">OK</button>
            </div>
        </div>
    </div>
@@ -494,7 +494,7 @@
            </div>
            <div class="modal-footer">
                <button type="button" class="btn btn-white" id="modal-edit-cancel-btn">Cancel</button>
-               <button type="button" class="btn btn-primary" id="modal-edit-btn">Edit</button>
+               <button type="button" class="btn btn-primary" id="modal-edit-btn">OK</button>
            </div>
        </div>
    </div>
