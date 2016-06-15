@@ -190,12 +190,12 @@
                                 </div>
                                 <div class="col-sm-3" id="search-keyword-area">
                                     <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control" id="search-keyword"> <span class="input-group-btn">
-                                            <button type="button" class="btn btn-sm btn-primary" id="go-search"> Go!</button>
+                                            <button type="button" class="btn btn-sm btn-primary" id="go-search"> Search</button>
                                         </span>
                                     </div>
                                 </div>
                                 <div class="col-sm-3 pull-right text-right">
-                                    <button type="button" class="btn btn-primary btn-sm" id="btn-add-user">User Add</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="btn-add-user">Add</button>
                                 </div>
                             </div>
                             <div class="table-responsive">

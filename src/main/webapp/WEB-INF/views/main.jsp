@@ -267,7 +267,7 @@
 												<div class="input-group">
 													<input type="text" class="form-control" id="toSearchTxt" name="toSearchTxt" value="" placeholder="SA_ID or SA_NAME">
 													<span class="input-group-btn">
-														<button type="button" class="btn btn-primary" onclick="javascript:searchToServiceArea('75', '서울');" id="toSearchBtn">Search to Service</button>
+														<button type="button" class="btn btn-primary" onclick="javascript:searchToServiceArea('75', '서울');" id="toSearchBtn">Search</button>
 													</span>
 												</div>
 											</div>

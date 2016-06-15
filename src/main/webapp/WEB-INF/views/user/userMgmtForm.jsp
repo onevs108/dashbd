@@ -310,7 +310,7 @@
                                 <div class="form-group action-btn-group">
                                     <div class="col-sm-4 col-sm-offset-8 text-right">
                                     	<input class="btn btn-white" type="button" id="cancel-btn" value="Cancel">
-                                    	<input class="btn btn-success" type="button" id="save-btn" value="Save">
+                                    	<input class="btn btn-success" type="button" id="save-btn" value="OK">
                                     	<input class="btn btn-success" type="button" id="list-btn" value="List">
                                     </div>
                                 </div>

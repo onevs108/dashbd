@@ -192,7 +192,7 @@
 		                    	<div class="row" style="padding-top:30px">
 		                            <div class="col-md-10 col-md-offset-1">
 		                                <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control" id="search-keyword"> <span class="input-group-btn">
-		                                    <button type="button" class="btn btn-sm btn-primary" id="go-search"> search</button> </span>
+		                                    <button type="button" class="btn btn-sm btn-primary" id="go-search"> Search</button> </span>
 		                                </div>
 		                            </div>
 		                        </div>
@@ -297,12 +297,12 @@
 								<div class="row">
 									<div class="hr-line-dashed"></div>
 									<div class="col-md-6">
-<!-- 										<input class="btn btn-success" type="button" id="save-btn" value="Save"> -->
-										<button class="btn btn-block btn-sm btn-primary" type="submit" id="save-btn">Save</button>
-									</div>
-									<div class="col-md-6">
 <!-- 										<input class="btn btn-white" type="button" id="cancel-btn" value="Cancel"> -->
 										<button class="btn btn-block btn-sm btn-default" type="submit" id="cancel-btn">Cancel</button>
+									</div>
+									<div class="col-md-6">
+<!-- 										<input class="btn btn-success" type="button" id="save-btn" value="Save"> -->
+										<button class="btn btn-block btn-sm btn-primary" type="submit" id="save-btn">OK</button>
 									</div>
 								</div>
 							</div><!-- end ibox-content -->

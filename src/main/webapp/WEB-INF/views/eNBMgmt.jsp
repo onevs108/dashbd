@@ -195,7 +195,7 @@
 						  		<div class="form-group">
                                         <label class="control-label" for="status"></label>
                                         <p style="margin-top:5px">
-                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="modal-open-btn">Create New eNB</button>
+                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="modal-open-btn">Add</button>
                                         </p>
                                         <p style="margin-top:5px">
                                         <button type="button" class="btn btn-block btn-default btn-sm demo1" id="enb-excel-mgmt-btn">Excel Upload / Download</button>
@@ -277,8 +277,8 @@
 	                                            </div>
 	                                            <div class="modal-footer">
 	                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
-	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
-	                                                <button type="button" class="btn btn-primary" id="modal-edit-btn" style="display:none;">Edit</button>
+	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">OK</button>
+	                                                <button type="button" class="btn btn-primary" id="modal-edit-btn" style="display:none;">OK</button>
 	                                            </div>
 	                                        </div>
 	                                    </div>
@@ -288,7 +288,7 @@
 	                        <div class="ibox-content">
 								<div class="input-group"><input type="text" class="form-control" id="toSearchTxt" name="toSearchTxt" value="" placeholder="eNB Id or eNB Name" />
 									<span class="input-group-btn">
-										<button type="button" class="btn btn-primary" onclick="javascript:searchToeNB();" id="toSearchBtn">Search to eNB</button>
+										<button type="button" class="btn btn-primary" onclick="javascript:searchToeNB();" id="toSearchBtn">Search</button>
 									</span>
 								</div>
 							</div>

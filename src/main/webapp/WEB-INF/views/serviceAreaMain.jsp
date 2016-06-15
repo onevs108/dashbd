@@ -231,7 +231,7 @@
 						  		<div class="form-group">
                                         <label class="control-label" for="status"></label>
                                         <p style="margin-top:5px">
-                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="btn-add-service-area">Create New Service Area</button>
+                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="btn-add-service-area">Add</button>
                                         </p>
                                         <p style="margin-top:5px">
                                         <button type="button" class="btn btn-block btn-default btn-sm demo1" id="btn-not-mapped-service-area">Not Mapped Service Area</button>
@@ -291,7 +291,7 @@
 										<input type="hidden" class="form-control" id="toAddENBsBmscId" name="toAddENBsBmscId" value="">
 										<input type="hidden" class="form-control" id="toAddENBsServiceAreaId" name="toAddENBsServiceAreaId" value="">
 											<span class="input-group-btn">
-												<button type="button" class="btn btn-primary" onclick="javascript:addToServiceAreaManually();" id="toAddENBsBtn">ADD to Service Area</button>
+												<button type="button" class="btn btn-primary" onclick="javascript:addToServiceAreaManually();" id="toAddENBsBtn">Add</button>
 											</span>
 										</div>
 									 </div>
@@ -442,8 +442,8 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary btn-sm btn-white" id="createSvcAreaBtn">Create Service Area</button>
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
+				<button type="button" class="btn btn-primary btn-sm btn-white" id="createSvcAreaBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -475,8 +475,8 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary btn-sm btn-white" id="editSvcAreaBtn">Edit Service Area</button>
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
+				<button type="button" class="btn btn-primary btn-sm btn-white" id="editSvcAreaBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

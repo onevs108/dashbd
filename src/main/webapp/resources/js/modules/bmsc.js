@@ -1,3 +1,4 @@
+var bmscCheck = false;
 
 $(function() {
 	// button click event in list
@@ -21,6 +22,7 @@ function openModal() {
 }
 
 function doCheckName() {
+	bmscCheck = false;
 	var bmscName = $('#form-bmsc-name').val();
 	if (bmscName == null || bmscName.length == 0) {
 		alert('Please input Bmsc Name');
@@ -39,11 +41,13 @@ function doCheckName() {
 				checkBmscName = true;
 				$('#form-bmsc-name-input-area').attr('class', 'input-group has-success');
 				alert('Avaliable!');
+				bmscCheck = true;
 			}
 			else { // 실패
 				checkBmscName = false;
 				$('#form-bmsc-name-input-area').attr('class', 'input-group has-error');
 				alert('Already exist!');
+				bmscCheck = false;
 				$('#form-bmsc-name').focus();
 			}
 		},
@@ -56,6 +60,12 @@ function doCheckName() {
 }
 var bmscId = null;
 function doAdd() {
+	if(!bmscCheck){
+		alert("Please Duplication Checked.");
+		return;
+	}else{
+		bmscCheck = false;
+	}
 	var bmscName = $('#form-bmsc-name').val();
 	var bmscCircle = $('#form-bmsc-circle').val();
 	var bmscIpaddress = $('#form-bmsc-ipaddress').val();

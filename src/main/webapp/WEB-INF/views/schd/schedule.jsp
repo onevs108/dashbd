@@ -297,7 +297,7 @@
 	                                     -->
                                     </div>
                                     <div class="col-sm-4">
-                                        <button type="button" class="btn btn-block btn-default">Add more Service Area</button>
+                                        <button type="button" class="btn btn-block btn-default">Add</button>
                                     </div>
                                 </div>
                             </form>

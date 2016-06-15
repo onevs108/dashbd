@@ -494,7 +494,7 @@ function moveToEnb(bmscId, serviceAreaId)
 				
 				var menuContent = '<ul>' +
 				//'<li><a href="#" class="more_info">More info</span></a></li>' +
-				'<li><a href="javascript:addToServiceArea(' + bmscId + ', ' + serviceAreaId + ');" class="add_to_service_area">Add To Service Area</a></li>' +
+				'<li><a href="javascript:addToServiceArea(' + bmscId + ', ' + serviceAreaId + ');" class="add_to_service_area">Add</a></li>' +
 				'<li><a href="javascript:deleteFromServiceArea(' + bmscId + ', ' +  serviceAreaId + ');" class="delete_from_service_area">Delete From Service Area</a></li>' +
 				'</ul>';
 				

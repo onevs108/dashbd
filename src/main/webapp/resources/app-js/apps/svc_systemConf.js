@@ -1,7 +1,7 @@
 
 function moveActiveServer(targetServer, selfServer){
-	moveActiveMsg(targetServer, selfServer);
-	return;
+	//moveActiveMsg(targetServer, selfServer);
+	//return;
 	if(confirm("APP #"+targetServer + " 서버로 변경하시겠습니까?")){
 		var param = {
 				serverTarget : "moveServer",

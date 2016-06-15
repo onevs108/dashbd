@@ -148,7 +148,7 @@
 	                    	<div class="row" style="padding-top:20px">
 	                            <div class="col-md-12 pull-right">
 	                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn">
-										Create New Operator
+										Add
 	                                </button>
 	                                <div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
 	                                    <div class="modal-dialog">
@@ -175,7 +175,7 @@
 	                                            </div>
 	                                            <div class="modal-footer">
 	                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
-	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">Save</button>
+	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">OK</button>
 	                                            </div>
 	                                        </div>
 	                                    </div>

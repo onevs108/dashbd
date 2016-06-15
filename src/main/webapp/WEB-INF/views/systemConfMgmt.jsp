@@ -63,6 +63,7 @@
 				$("#tomCheck2").prop("checked",false);
 				$("#dbCheck2").prop("checked",false);
 			}else{
+				$("#viewApp1").hide();
 				alert("연결 가능한 서버가 없습니다.");
 			}
 		});

@@ -710,18 +710,21 @@ function refreshEmbms(){
 	
 	var bmscId = $('#bmsc').val();
 	var bmscName = $("#bmsc option:selected").text();
-	
 	var param = {
 			bmscId :  bmscId
 		};
 	$.ajax({
 		type : "POST",
-		url : "/dashbd/api/bmsc/embmsList.do",
+		url : "/dashbd/resources/mainembmsList.do",
 		data : param,
 		async : false,
 		dataType : "json",
 		success : function( data ) {
-			embmsList(data.contents, bmscId, bmscName);
+			if(data.permissionembs == "OK"){
+				embmsList(data.contents, bmscId, bmscName);
+			}else{
+				embmsListView(data.contents, bmscId, bmscName);
+			}
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -823,8 +826,72 @@ function embmsList(data, bmscId, bmscName){
 	
 	$tr.append( $td_desc );
 	$list.append( $tr );
+}
 
 
+function embmsListView(data, bmscId, bmscName){
+
+	var $list = $("#embmsList");
+	
+	var $tr = $("<tr/>");
+	
+	var $td_header = $("<td width='20%'/>");
+	var $h4_header = $("<h4/>");
+	var $i_header = $("<i/>");
+	
+	var $i_plus= $("<i/>");
+	
+	$td_header.attr("style", "text-align:center;")
+	$h4_header.attr("class","text-center");
+	$h4_header.html(bmscName );
+	
+	$td_header.append($h4_header);
+	
+	$tr.append( $td_header );
+		
+	var tmpSession ="";
+	var diffSession = false;
+	for ( var i=0; i < data.length; i++) {
+		var $td = $("<td width='10%'/>");
+		var $h4 = $("<h4/>");
+		var $i = $("<i/>");
+		var $img = $("<img/>");
+		var $iEdit = $("<i/>");
+		
+		var embmsId = data[i].id;
+		var serverName = data[i].serverName;
+		var session = data[i].session;
+		
+		if (i > 0){
+			if (session != tmpSession || session == '-1')
+				diffSession = true;
+		}
+		tmpSession = session;
+		
+		$img.attr("src","img/server_network.png");
+		$img.attr("width","50px");
+		$h4.attr("class","text-center");
+		$h4.attr("style","height:20px;");
+		$h4.html(serverName + '(' + session + ')');
+		
+		$td.attr("style", "text-align:center;")
+		
+		$td.append($("<br/>"));
+		$td.append($img);
+		$td.append($h4);
+		$tr.append( $td );
+	}
+	
+	var $td_desc = $("<td/>");
+	
+	if (diffSession){
+		$td_desc.html("Error Different Session[" + tmpSession +"]")
+	}else{
+		$td_desc.html("eMBMS Session[" + tmpSession +"]")
+	}
+	
+	$tr.append( $td_desc );
+	$list.append( $tr );
 }
 
 function closeModal() {

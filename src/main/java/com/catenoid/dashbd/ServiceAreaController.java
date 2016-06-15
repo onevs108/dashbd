@@ -17,6 +17,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -31,6 +32,8 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -48,12 +51,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.util.ErrorCodes;
+import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
 import com.catenoid.dashbd.dao.ServiceAreaScheduleMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
@@ -63,6 +68,7 @@ import com.catenoid.dashbd.dao.model.BmscServiceArea;
 import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
+import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.ScheduleSummary;
 import com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
@@ -1391,6 +1397,44 @@ public class ServiceAreaController {
 		mv.addObject("BmscList", bmscs);
 		
 		return mv;
+	}
+	
+	@RequestMapping( value = "/resources/mainembmsList.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public Map< String, Object > mainembmsList( @RequestParam Map< String, Object > params,
+	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
+		
+		BmscMapper mapper = sqlSession.getMapper(BmscMapper.class);
+		
+		List<Map> list = mapper.selectEmbms(params);
+		
+        Map< String, Object > returnMap = new HashMap< String, Object >();
+        returnMap.put( "resultCode", "1000" );
+        returnMap.put( "resultMsg", "SUCCESS");
+        
+        Map< String, Object > resultMap = new HashMap< String, Object >();
+        resultMap.put( "resultInfo", returnMap );
+        resultMap.put( "contents", list );
+
+		Users user = (Users) req.getSession(false).getAttribute("USER");
+		List<Permission> permissions = user.getPermissions();
+		
+		String embPermission = "NOT";
+		
+		if (user.getGrade() == Const.USER_GRADE_ADMIN) {
+			embPermission = "OK";
+		}
+		else {
+			for (Permission permission : permissions) {
+				if (permission.getRole().equals(Const.ROLE_ENB_MGMT)){
+					embPermission = "OK";
+					break;
+				}
+			}
+		}
+		resultMap.put( "permissionembs", embPermission );
+        
+		return (Map<String, Object>) resultMap;
 	}
 	
 	@RequestMapping(value = "/api/serviceAreaByLatLng.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")

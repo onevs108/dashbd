@@ -264,8 +264,8 @@ var ctrl = {
                     </div>
 					    <div class="row">
 					    		<div class="col-md-12 text-center" style="padding:10px 0 30px;">
-								<button type="submit" class="btn btn-w-m btn-primary">OK</button>
 								<button type="button" class="btn btn-w-m btn-default" id="btnCancel">Cancel</button>
+								<button type="submit" class="btn btn-w-m btn-primary">OK</button>
 							</div>
 					    </div>
 			 </div><!-- end Previews col-lg-12 -->
