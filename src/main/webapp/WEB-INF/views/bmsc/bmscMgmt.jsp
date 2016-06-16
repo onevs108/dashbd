@@ -202,6 +202,7 @@
 	                                                    </div>
 	                                                    <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> BM-SC Name</label>
 					                                    	<div class="input-group" id="form-bmsc-name-input-area">
+					                                    		<input type="hidden" id="form-bmsc-name-origin" class="form-control">
 					                                    		<input type="text" id="form-bmsc-name" class="form-control">
 														    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn" type="button">Check</button></span>
 					                                    	</div>

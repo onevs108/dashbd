@@ -1,5 +1,5 @@
 var bmscCheck = false;
-
+var bmscMode = "Write";
 $(function() {
 	// button click event in list
 	$('#modal-open-btn').click(openModal);
@@ -61,11 +61,17 @@ function doCheckName() {
 var bmscId = null;
 function doAdd() {
 	if(!bmscCheck){
-		alert("Please Duplication Checked.");
-		return;
+		if(bmscMode == "Edit" && $('#form-bmsc-name').val() == $('#form-bmsc-name-origin').val()){
+			
+		}else{
+			alert("Please Duplication Checked.");
+			bmscCheck = false;
+			return;
+		}
 	}else{
 		bmscCheck = false;
 	}
+	
 	var bmscName = $('#form-bmsc-name').val();
 	var bmscCircle = $('#form-bmsc-circle').val();
 	var bmscIpaddress = $('#form-bmsc-ipaddress').val();
@@ -100,11 +106,12 @@ function doModalCancel() {
 	closeModal();
 }
 
-function openEditModal(id, name, ipaddress, circle) {
+function openEditModal(id, name, ipaddress, circle, mode) {
 	bmscId = id;
-	
+	bmscMode = mode;
 	$('#form-operator-id').val($('#search-operator-id').val());
 	$('#modal-title').html('Edit BM-SC');
+	$('#form-bmsc-name-origin').val(name);
 	$('#form-bmsc-name').val(name);
 	$('#form-bmsc-ipaddress').val(ipaddress);
 	$('#form-bmsc-circle').val(circle);
@@ -217,7 +224,7 @@ function getBmscList() {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" onclick="openEditModal(\'' + row.id + '\', \'' + row.name + '\', \'' + row.ipaddress + '\', \'' + row.circle + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+				var html = '<button type="button" onclick="openEditModal(\'' + row.id + '\', \'' + row.name + '\', \'' + row.ipaddress + '\', \'' + row.circle + '\', \'Edit\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 						+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
