@@ -1250,7 +1250,7 @@ public class ServiceAreaController {
 			searchParam.put("bmscId", bmscId);
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
-			searchParam.put("start", offset);
+			searchParam.put("start", offset+1);
 			searchParam.put("end", offset + limit);
 			
 			List<ServiceAreaEnbAp> datas = mapper.getEnbsList(searchParam);
