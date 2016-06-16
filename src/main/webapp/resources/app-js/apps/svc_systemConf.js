@@ -21,7 +21,7 @@ function moveActiveServer(targetServer, selfServer){
 				}
 			},
 			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
+				//alert("request=" +request +",status=" + status + ",error=" + error);
 			}
 		});
 	}
@@ -66,7 +66,7 @@ function checkTomcat(serverType){
 					}
 				},
 				error : function(request, status, error) {
-					alert("request=" +request +",status=" + status + ",error=" + error);
+					//alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
 		}else{
@@ -92,7 +92,7 @@ function checkTomcat(serverType){
 					}
 				},
 				error : function(request, status, error) {
-					alert("request=" +request +",status=" + status + ",error=" + error);
+					//alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
 		}else{
@@ -122,7 +122,7 @@ function checkDatabase(serverType){
 					}
 				},
 				error : function(request, status, error) {
-					alert("request=" +request +",status=" + status + ",error=" + error);
+					//alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
 		}else{
@@ -148,7 +148,7 @@ function checkDatabase(serverType){
 					}
 				},
 				error : function(request, status, error) {
-					alert("request=" +request +",status=" + status + ",error=" + error);
+					//alert("request=" +request +",status=" + status + ",error=" + error);
 				}
 			});
 		}else{

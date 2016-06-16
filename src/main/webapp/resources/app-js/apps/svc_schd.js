@@ -35,7 +35,7 @@ function callTimetable(bmscId, serviceAreaId_val){
 		
 			},
 			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
+				//alert("request=" +request +",status=" + status + ",error=" + error);
 			}
 		});
 }
