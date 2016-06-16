@@ -154,7 +154,7 @@ function bandWidth(bmscId, serviceAreaId){
             console.log('here4');	
 		},
 		error : function(request, status, error) {
-			alert("request=" +request +",status=" + status + ",error=" + error);
+			//alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
 	
@@ -463,7 +463,7 @@ function callTimetable(bmscId, serviceAreaId_val){
 				setContents(data);
 			},
 			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
+				//alert("request=" +request +",status=" + status + ",error=" + error);
 			}
 		});
 }
@@ -690,7 +690,7 @@ function editEmbms(embmsId){
 			$('#form-edit-modal').modal('show');
 		},
 		error : function(request, status, error) {
-			alert("request=" +request +",status=" + status + ",error=" + error);
+			//alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
 }
@@ -727,7 +727,7 @@ function refreshEmbms(){
 			}
 		},
 		error : function(request, status, error) {
-			alert("request=" +request +",status=" + status + ",error=" + error);
+			embmsListView("", bmscId, bmscName);
 		}
 	});
 }
