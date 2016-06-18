@@ -434,7 +434,7 @@ function editServiceArea( operatorId, bmscId ) {
 	});
 }
 function getSeviceAreaNotMapped( bmscId ) {
-	/*
+	
 	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
 	clearEnbMarkers();
@@ -449,7 +449,7 @@ function getSeviceAreaNotMapped( bmscId ) {
 	
     map.setZoom(12);
     map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
-    */
+    
 	$.ajax({
         url : "/dashbd/api/getSeviceAreaNotMapped.do",
         type: "get",
@@ -469,7 +469,7 @@ function getSeviceAreaNotMapped( bmscId ) {
 			options += "<tbody>";
 			
             for( var i = 0; i < dataLen; i++ ) {
-             	options += "<tr id=\"" + datas[i].serviceAreaId + "\" class=\"footable-even\" style=\"display: table-row;cursor:pointer;\" onclick=\"javascript:map.setZoom( 12 );moveToEnbNotMappedSA(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + default_center_lat + ", " + default_center_lng + ");\"><td>";
+             	options += "<tr id=\"" + datas[i].serviceAreaId + "\" class=\"footable-even\" style=\"display: table-row;cursor:pointer;\" onclick=\"javascript:map.setZoom( 12 );clearMarkers();clearEnbMarkers();clearDatas();moveToEnbNotMappedSA(" + datas[i].bmscId + ", " + datas[i].serviceAreaId + ", " + default_center_lat + ", " + default_center_lng + ");\"><td>";
              	var html = '<button type="button" onclick="doEditService(\'N\',\'' + datas[i].serviceAreaId + '\', \'' + datas[i].serviceAreaName + '\', \'' + datas[i].description + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 				+ '<button type="button" onclick="doDeleteService(\'N\',\'' + datas[i].serviceAreaId + '\', \'0\', \'' + bmscId + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				
@@ -831,6 +831,9 @@ function moveToEnbNotMappedSA( bmscId, serviceAreaId, lat, lng )
 {
 	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
+	clearEnbMarkers();
+	//clearDatas();
+	
 	$('#toAddENBsServiceAreaId').val(serviceAreaId);
 
 	$("#"+serviceAreaId).siblings().removeClass("tr-highlighted");
