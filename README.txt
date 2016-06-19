@@ -21,13 +21,7 @@
    * src/main/webapp/WEB-INF/spring/root-context.xml
     - "2. Cron 시간설정" 찾아서 변경 
 
-3. 개발디비 서버 정보
-   * 182.252.178.75
-   * 콘솔 접속 - ssh2 port : 2222
-   * id/pwd : nexdream/nexdream!@#
-   * root pwd : nexdream!@#
-   * tomcat BASE PATH : /usr/local/server/dashdb_tomcat-7.0.65/
-   
+ 
 4.  작업내용
   * [16.03.20] 
     1) bmsc  연동시 HOST 정보를 DB에 저장된 데이타고 함. 							=>  OK
