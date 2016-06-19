@@ -41,12 +41,12 @@ $(document).ready(function() {
 	
 	$("#btnList").click(function(){
 		
-		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+		document.location = "/dashbd/view/content.do";
 	})
 	
 	
 	$("#btnCancel").click(function(){
-		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+		document.location = "/dashbd/view/content.do";
 	})
 	
 })

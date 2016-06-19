@@ -38,7 +38,7 @@ $(document).ready(function() {
 	
 	ctrl.initialize();
 	$("#btnCancel").click(function(){
-		document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+		document.location = "/dashbd/view/content.do";
 	})
 })
 
@@ -54,7 +54,7 @@ var ctrl = {
 			},
 			success : function(result) {
 				if (outMsgForAjax(result))
-					document.location = "/dashbd/resources/contents_mgmt.html#page/1";
+					document.location = "/dashbd/view/content.do";
 				else
 					;
 			},

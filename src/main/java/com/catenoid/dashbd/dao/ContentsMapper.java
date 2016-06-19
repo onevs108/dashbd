@@ -2,6 +2,7 @@ package com.catenoid.dashbd.dao;
 
 import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ContentsExample;
+import com.catenoid.dashbd.dao.model.Users;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,11 @@ public interface ContentsMapper {
 	int updateContent(Map map);
 	int insertContent(Map map);
 	int deleteContentImage(Map map);
+	
+	
+	List<Contents> selectContentList(Map<String, Object> map);
+	
+	int selectContentListCount(Map<String, Object> map);
 	/* inbo coding END*/
 	
     int countByExample(ContentsExample example);

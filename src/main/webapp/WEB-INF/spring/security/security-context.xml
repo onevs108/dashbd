@@ -15,7 +15,7 @@
 		<intercept-url pattern="/api/user/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_MGMT')" />
 		<intercept-url pattern="/resources/permission.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_PERMISSION_MGMT')" />
 		<intercept-url pattern="/api/permission/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_PERMISSION_MGMT')" />
-		<intercept-url pattern="/resources/contents_mgmt.html" access="hasAnyRole('ROLE_ADMIN', 'ROLE_CONTENTS_MGMT')" />
+		<intercept-url pattern="/view/content.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_CONTENTS_MGMT')" />
 		<intercept-url pattern="/resources/operator.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR_MGMT')" />
 		<intercept-url pattern="/api/operator/*" access="hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR_MGMT')" />
 		<intercept-url pattern="/resources/bmsc.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_BMSC_MGMT')" />

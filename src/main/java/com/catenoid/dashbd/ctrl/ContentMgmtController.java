@@ -16,7 +16,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +44,10 @@ import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ContentsImages;
 import com.catenoid.dashbd.dao.model.FileDTO;
+import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.Users;
+import com.catenoid.dashbd.service.ContentService;
+import com.catenoid.dashbd.service.UserService;
 
 @Controller
 public class ContentMgmtController {
@@ -48,8 +57,72 @@ public class ContentMgmtController {
 	@Autowired
 	private SqlSession sqlSession;
 	
+	@Autowired
+	private ContentService contentServiceImpl;
+	
 	@Value("#{config['file.upload.path']}")
 	private String fileUploadPath;
+	
+	@RequestMapping(value = "/view/content.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+	public String getContentMgmt(
+			@RequestParam(value = "isBack", required = false) Boolean isBack,
+			ModelMap modelMap) {
+		logger.info("-> [isBack = {}]", isBack);
+	
+		modelMap.addAttribute("isBack", isBack == null ? false : isBack);
+		
+//		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
+//		modelMap.addAttribute("operatorList", operatorList);
+//		
+//		logger.info("<- [operatorListSize = {}]", operatorList.size());
+		return "cont/contentMgmt";
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/content/list.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String postUserList(
+			@RequestBody String body,
+			HttpServletRequest request) {
+		logger.info("-> [body = {}]", body);
+		
+		JSONObject jsonResult = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
+			
+			String searchOperatorId = (String) requestJson.get("searchOperatorId");
+			String searchKeyword = (String) requestJson.get("searchKeyword");
+			String searchColumn = (String) requestJson.get("searchColumn");
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
+			long offset = (Long) requestJson.get("offset");
+			long limit = (Long) requestJson.get("limit");
+			
+			HttpSession session = request.getSession(false);
+			if (session != null) {
+				Users user = (Users) session.getAttribute("USER");
+				if (user != null) {
+					Integer operatorId = searchOperatorId == null || searchOperatorId.isEmpty() ? null : Integer.parseInt(searchOperatorId);
+					JSONArray rows = contentServiceImpl.getContentListToJsonArray(searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
+					jsonResult.put("rows", rows);
+					int total = contentServiceImpl.getContentListCount(searchColumn, searchKeyword, operatorId);
+					jsonResult.put("total", total);
+					
+					logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
+				}
+			}
+			else {
+				logger.info("<- [Session is null!!]");
+			}
+		} catch (ParseException e) {
+			logger.error("~~ [An error occurred!]", e);
+		}
+		return jsonResult.toString();
+	}
+	
 	
 	@RequestMapping( value = "/view/getContents.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody

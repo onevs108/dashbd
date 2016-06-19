@@ -2,6 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.catenoid.dashbd.dao.ContentsMapper" >
 
+
+	<select id="selectContentListCount" resultType="Integer" parameterType="Map">
+	    SELECT COUNT(*)
+		FROM 
+			contents
+		WHERE 1=1
+		  <if test="searchColumn.equals('title') and searchKeyword != null">
+			  AND title LIKE concat('%',#{searchKeyword} , '%')
+		  </if>
+		  <if test="searchColumn.equals('category') and searchKeyword != null">
+		  	  AND category LIKE CONCAT('%', #{searchKeyword}, '%')
+		  </if>
+	</select>
+
+	<select id="selectContentList" resultMap="BaseResultMap" parameterType="Map">
+	    SELECT
+			<include refid="Base_Column_List" />
+			,
+			<include refid="Blob_Column_List" />
+    	FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   <include refid="Base_Column_List" />
+				   ,
+			 	 <include refid="Blob_Column_List" />
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( 	SELECT 
+						<include refid="Base_Column_List" />
+						,
+						<include refid="Blob_Column_List" /> 
+					FROM 
+						contents
+					WHERE 1=1
+					  <if test="searchColumn.equals('title') and searchKeyword != null">
+ 					  	  AND title LIKE concat('%',#{searchKeyword} , '%')
+					  </if>
+					  <if test="searchColumn.equals('category') and searchKeyword != null">
+					  	  AND category LIKE CONCAT('%', #{searchKeyword}, '%')
+					  </if>
+					  ORDER BY <if test="sort == null">title ASC</if>
+					  		   <if test="sort != null">
+					  		       <if test="sort == 'title'">title</if>
+					  		       <if test="sort == 'category'">category</if>
+					  		       <if test="sort == 'duration'">duration</if>
+					  		       <if test="sort == 'fileFormat'">file_format</if>
+					  		       <if test="sort == 'description'">description</if>
+					  		       ${order}
+					  		   </if> ) T
+			  ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	
 	<select id="selectContents" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT cid, title, category, duration , 
 				(select path from contents_images where cid = content_id and type = 'thumbnail' order by id desc limit 1) path

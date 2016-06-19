@@ -2,6 +2,11 @@ package com.catenoid.dashbd.dao.model;
 
 import java.util.Date;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.catenoid.dashbd.util.Utils;
+
 public class Contents {
     private Integer id;
     
@@ -152,4 +157,25 @@ public class Contents {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+    @SuppressWarnings("unchecked")    
+    public JSONObject toJSONObject() {
+    	JSONObject jsonResult = new JSONObject();
+    	jsonResult.put("id", id);
+    	jsonResult.put("title", title);
+    	jsonResult.put("category", category);
+    	jsonResult.put("duration", duration);
+    	jsonResult.put("fileFormat", fileFormat);
+    	jsonResult.put("description", description);
+    	
+    	/*
+    	JSONArray jsonArray = new JSONArray();
+    	for (Permission perms : permissions)
+    		jsonArray.add(perms.toJSONObject());
+    	jsonResult.put("permissions", jsonArray);
+    	*/
+    	jsonResult.put("createdAt", Utils.getFormatDateTime(createdAt, "yyyy-MM-dd HH:mm:ss"));
+    	jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
+    	return jsonResult;
+    }
 }
