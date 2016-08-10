@@ -35,7 +35,6 @@
 	
 	<link href="../resources/css/sampleVideo.css" rel="stylesheet" />
 	<script src="../resources/js/sampleVideo.js"></script>
-
 <script>
 
 $(document).ready(function() {
