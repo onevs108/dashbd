@@ -33,6 +33,9 @@
 	 -->
 	<script src="../resources/js/dash.all.debug.js"></script>
 	
+	<link href="../resources/css/sampleVideo.css" rel="stylesheet" />
+	<script src="../resources/js/sampleVideo.js"></script>
+
 <script>
 
 $(document).ready(function() {
@@ -198,7 +201,15 @@ $(document).ready(function() {
 						   <!-- 
 						<iframe src="${mapContent.url}" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>
 						    -->
-						<div><video data-dashjs-player src="${mapContent.url}" controls></video></div>
+						    <div align="center">
+						    	<c:forEach items="${previews}" var="preview" varStatus="idx">
+								    <video width="500" height="360" controls="controls" class="video-js vjs-default-skin" data-setup="{}" autoplay>
+									    <source src="${preview.path }" type="video/mp4" />
+									</video>
+								</c:forEach>
+							 </div>
+							
+<%-- 						<div><video data-dashjs-player src="${mapContent.url}" controls></video></div> --%>
 						   </div>
 					    </div>
 					</div>
@@ -265,19 +276,17 @@ $(document).ready(function() {
 					 	     	<c:if test="${idx.index mod 4 == 0 }">
 									<div class="row">	    
 							    </c:if>
-							    <div class="col-md-3">
+							    
+							    <div class="col-md-1">
 								   <div class="product-imitation">
-									  <img src="${preview.path}" width="80%">
+								   	  <i class="fa fa-file-movie-o" style="font-size:50px"></i>
 								   </div>
 							    </div>
 							</c:forEach>
 							<c:if test="${fn:length(previews) > 0}">
 								</div>
 							</c:if>
-							
 					    <br>
-					    
-					    
 				    </div><!-- end Previews ibox-content -->
                         </div><!-- end centents ibox-content -->
                     </div>

@@ -304,17 +304,9 @@ function delContentImage(id, target){
 					 	     	<c:if test="${idx.index mod 4 == 0 }">
 									<div class="row">	    
 							    </c:if>
-							    <div class="col-md-3">
+							    <div class="col-md-1">
 								   <div class="product-imitation">
-									  <img src="${preview.path}" width="80%">
-								   </div>
-								   
-								   <div class="product-desc">
-									  <a href="javascript:delContentImage('${thumnail.id}','preview')">
-									  	<span class="product-close">
-										 <i class="fa fa-close"></i>
-									  	</span>
-									  </a>
+								   	  <a href="javascript:delContentImage('${preview.id}','preview')"><i class="fa fa-file-movie-o" style="font-size:50px"></i></a>
 								   </div>
 							    </div>
 							</c:forEach>
