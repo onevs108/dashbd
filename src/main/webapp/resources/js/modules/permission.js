@@ -142,6 +142,21 @@ function getUserList() {
 			sortable: true
 		}]
 	});
+
+	$('#table').on('load-success.bs.table', function (e, data) {
+		curUser = data.rows[0];
+		
+		// 선택한 row의 background 색깔 변경
+		$tds = $("#table tbody>tr").eq(0).find('td');
+		for (var inx = 0; inx < $tds.length; inx++)
+			$tds[inx].removeAttribute('style');
+		
+		$td = $('>td', $("#table tbody>tr").eq(0));
+		$td.attr('style', 'background:#1c84c6; color:#fff; font-weight: bold;');
+		
+		getUserPermissions();
+        
+    });
 }
 
 function getUserPermissions() {

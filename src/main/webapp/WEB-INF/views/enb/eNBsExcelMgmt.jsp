@@ -50,7 +50,15 @@
 			getMenuList('ENB_MGMT');
 		});
 	</script>
-    
+    <style>
+	.btn-primary1 {
+	  background-color: #1ab394;
+	  border-color: #1ab394;
+	  color: #FFFFFF;
+	  width:45%;
+	  margin-left: 20px;
+	}
+    </style>
 </head>
 
 <body>
@@ -219,7 +227,7 @@
 						<button class="btn btn-block btn-sm btn-primary" id="uploadExcel"><strong>Upload</strong></button>
 						</div>
 				    </div>
-                    </div><!-- end ibox-content -->z
+                    </div><!-- end ibox-content -->
                 </div>
             </div>
             <!-- end eEPG for ESPN upload -->
@@ -300,10 +308,8 @@
                             </table>
 						<div class="row ">
 							<div class="col-md-12">
-							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadSA" onclick="javascript:downloadENBsByServiceAreaId( document.downloadForm );"><strong>Download eNB for Selected SA</strong></button>
-							</div>
-							<div class="col-md-12">
-							<button class="btn btn-block btn-sm btn-default" type="submit" id="downloadBmsc" onclick="javascript:downloadENBs( document.downloadForm );"><strong>Download eNB for BMSC</strong></button>
+							<button class="btn btn-sm btn-primary1" type="submit" id="downloadSA" onclick="javascript:downloadENBsByServiceAreaId( document.downloadForm );"><strong>Download eNB for Selected SA</strong></button>
+							<button class="btn btn-sm btn-primary1" type="submit" id="downloadBmsc" onclick="javascript:downloadENBs( document.downloadForm );"><strong>Download eNB for BMSC</strong></button>
 							</div>
 						</div>
 						</form>

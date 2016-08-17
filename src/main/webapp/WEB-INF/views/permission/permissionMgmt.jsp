@@ -197,7 +197,6 @@
 		                            </div>
 		                        </div>
 		                        <div class="hr-line-dashed"></div>
-		                        <h3 class="text-center" style="padding-bottom:10px;">Search Result</h3>
 		                        <div class="row">
 							    <div class="col-md-10 col-md-offset-1">
 							    	<div class="table-responsive">

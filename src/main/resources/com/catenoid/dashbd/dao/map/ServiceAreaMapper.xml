@@ -828,7 +828,7 @@
 		limit 0, #{maxCount}
 	</select>
 	
-	<!-- BMSC 로 방송 스케쥴 요약 정보 조회 -->
+	<!-- BMSC 로 방송 스케쥴 요약 정보 조회 김범길 contents_images 테이블 조인 추가 임시-->
 	<select id="getScheduleSummaryByBmsc" resultMap="ScheduleSummaryByServiceArea" parameterType="java.util.HashMap" >
 		select 
 			a.id, a.service_area_id, a.content_id, a.bcid, a.name, a.start_date, a.end_date, a.created_at, a.updated_at, a.del_yn
@@ -837,9 +837,9 @@
 			, timediff(a.end_date,NOW())  AS left_time
 			, b.service as service_type
 			, c.category
-			, c.url
-		from schedule a, broadcast_info b, contents c
-			where 1 = 1
+			, case when d.type='preview' then d.path else c.url end url
+		from schedule a, broadcast_info b, contents c, contents_images d
+			where 1 = 1 and c.id=d.content_id
 			and a.service_area_id in (select b.service_area_id from bmsc_service_area b where b.bmsc_id = #{bmscId,jdbcType=INTEGER})
 			and a.del_yn = 'N'
 			<if test="activeContent == 1">

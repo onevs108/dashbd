@@ -1,7 +1,7 @@
 $(document).ready(function()
 {
-	getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
-	getServiceAreaBmSc(1, $('#operator_down option:selected').val(), false);
+	getServiceAreaBmSc(1, $('#operator option:selected').val(), true, "F");
+	getServiceAreaBmSc(1, $('#operator_down option:selected').val(), false, "F");
     $('#operator').change(function(){
         //alert( $('#operator option:selected').val() );
         getServiceAreaBmSc(1, $('#operator option:selected').val(), true);
@@ -68,11 +68,10 @@ $(document).ready(function()
     	}
     	
    });
-
 });
 
 //BmSc 조회 by operator id
-function getServiceAreaBmSc(page, operatorId, isUpload)
+function getServiceAreaBmSc(page, operatorId, isUpload, type)
 {	
 	$.ajax({
         url : "/dashbd/api/serviceAreaBmScByOperator.do",
@@ -86,13 +85,19 @@ function getServiceAreaBmSc(page, operatorId, isUpload)
             for(var i=0; i<dataLen; i++){
             	options += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
             }
-            
             if( isUpload ) {
             	$("#bmsc").empty();
                 $("#bmsc").append(options);
+                if(type == "F"){
+        			$("#bmsc option:eq(1)").attr("selected", "selected");
+                }
             } else {
             	$("#bmsc_down").empty();
                 $("#bmsc_down").append(options);
+                if(type == "F"){
+        			$("#bmsc_down option:eq(1)").attr("selected", "selected");
+        			getServiceAreaByBmScId($('#bmsc_down option:selected').val());
+                }
             }
             
         }
@@ -140,10 +145,8 @@ function getServiceAreaByBmScId(bmscId) {
 			options += "</table>";
 			options += "<div class=\"row \">";
 			options += "<div class=\"col-md-12\">";
-			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadSA\" onclick=\"javascript:downloadENBsByServiceAreaId( document.downloadForm );\"><strong>Download eNB for Selected SA</strong></button>";
-			options += "</div>";
-			options += "<div class=\"col-md-12\">";
-			options += "<button class=\"btn btn-block btn-sm btn-default\" type=\"submit\" id=\"downloadBmsc\" onclick=\"javascript:downloadENBs( document.downloadForm );\"><strong>Download eNB for BMSC</strong></button>";
+			options += "<button class=\"btn btn-sm btn-primary1\" type=\"submit\" id=\"downloadSA\" onclick=\"javascript:downloadENBsByServiceAreaId( document.downloadForm );\"><strong>Download eNB for Selected SA</strong></button>";
+			options += "<button class=\"btn btn-sm btn-primary1\" type=\"submit\" id=\"downloadBmsc\" onclick=\"javascript:downloadENBs( document.downloadForm );\"><strong>Download eNB for BMSC</strong></button>";
 			options += "</div>";
 			options += "</div>";
             

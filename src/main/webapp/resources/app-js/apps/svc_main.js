@@ -103,7 +103,7 @@ function setActiveContents(bmscId, serviceAreaId){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -197,7 +197,7 @@ function setWaitContents(bmscId, serviceAreaId){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -271,7 +271,7 @@ function getServiceAreaByBmScCity(page, bmscId, city, toSearchTxt)
             
             if(dataLen > 10) {
             	//alert(dataLen);
-            	options += "<tfoot><tr><td colspan=\"2\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
+            	options += "<tfoot><tr><td colspan=\"2\" style=\"padding-top: 20px;\"><ul class=\"pagination pull-right\"></ul></td></tr></tfoot>";
             }
             
             options += "</table></div>";
@@ -344,7 +344,6 @@ function searchToServiceArea(bmscId, city){
 }
 
 function callScheduleTable(bmscId, bmscName){
-
 	$.ajax({
 		url : "/dashbd/api/scheduleSummaryByBmsc.do",
 		type: "get",
@@ -357,16 +356,17 @@ function callScheduleTable(bmscId, bmscName){
 			var content = "";
 			for (var i = 0; i < datas.length; i++) {
 				content += "<div class=\"file-box\">";
-				content += "<div class=\"file\">";
-				content += "<span class=\"corner\"></span>";
+				//김범길 제거 임시 : content += "<div class=\"file\">";
+				//김범길 제거 임시 : content += "<span class=\"corner\"></span>";
 				//content += "<div class=\"image\">";
 				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
 				//content += '</div>';
 				//content += "<div class=\"progress progress-mini\">";
 				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
-				content += "</div>";
+				//김범길 제거 임시 : content += "</div>";
 				//content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
-				content += "<div><video id=\"video_" + i +"\" controls></video></div>"
+				//김범길 제거 하단 추가함 임시 : content += "<div><video id=\"video_" + i +"\" controls></video></div>"
+				content += "<div><video id=\"video_" + i +"\" controls><source src=\"" + datas[i].url + "\" type=\"video/mp4\" /></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -380,7 +380,7 @@ function callScheduleTable(bmscId, bmscName){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -392,9 +392,10 @@ function callScheduleTable(bmscId, bmscName){
 			$("#schedule_summary").empty();
             $("#schedule_summary").append(content);
             
-        	for (var i = 0; i < datas.length; i++) {
-        		playVideo(i, datas[i].url);
-        	}
+           //김범길 제거 하단 임시 : 
+//        	for (var i = 0; i < datas.length; i++) {
+//        		playVideo(i, datas[i].url);
+//        	}
 		}
 	});
 	
@@ -410,15 +411,16 @@ function callScheduleTable(bmscId, bmscName){
 			var content = "";
 			for (var i = 0; i < datas.length; i++) {
 				content += "<div class=\"file-box\">";
-				content += "<div class=\"file\">";
-				content += "<span class=\"corner\"></span>";
+				//김범길 제거 임시 : content += "<div class=\"file\">";
+				//김범길 제거 임시 : content += "<span class=\"corner\"></span>";
 				//content += "<div class=\"image\">";
 				//content += "<img alt=\"image\" class=\"img-responsive\" src=\""+ datas[i].thumbnail + "\">";
 				//content += '</div>';
 				//content += "<div class=\"progress progress-mini\">";
 				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
-				content += "</div>";
-				content += "<div><video id=\"video_w" + i +"\" controls></video></div>"
+				//김범길 제거 임시 : content += "</div>";
+				//김범길 제거 임시  하단 추가: content += "<div><video id=\"video_w" + i +"\" controls></video></div>"
+				content += "<div><video id=\"video_w" + i +"\" controls><source src=\"" + datas[i].url + "\" type=\"video/mp4\" /></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -432,7 +434,7 @@ function callScheduleTable(bmscId, bmscName){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Service is available<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -442,9 +444,10 @@ function callScheduleTable(bmscId, bmscName){
 			$("#schedule_waiting_summary").empty();
             $("#schedule_waiting_summary").append(content);
             
-            for (var i = 0; i < datas.length; i++) {
-        		playVideo('w'+i, datas[i].url);
-        	}
+            //김범길 제거 임시 : 
+//          for (var i = 0; i < datas.length; i++) {
+//        		playVideo('w'+i, datas[i].url);
+//        	}
 		}
 	});
 }
@@ -819,7 +822,7 @@ function embmsList(data, bmscId, bmscName){
 	var $td_desc = $("<td/>");
 	
 	if (diffSession){
-		$td_desc.html("Error Different Session[" + tmpSession +"]")
+		$td_desc.html("<font style='font-size: 25px;color: red;'><b>[Error] [" + tmpSession +"]</b></font>")
 	}else{
 		$td_desc.html("eMBMS Session[" + tmpSession +"]")
 	}
@@ -885,7 +888,7 @@ function embmsListView(data, bmscId, bmscName){
 	var $td_desc = $("<td/>");
 	
 	if (diffSession){
-		$td_desc.html("Error Different Session[" + tmpSession +"]")
+		$td_desc.html("<font style='font-size: 25px;color: red;'><b>[Error] [" + tmpSession +"]</b></font>")
 	}else{
 		$td_desc.html("eMBMS Session[" + tmpSession +"]")
 	}

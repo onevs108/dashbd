@@ -197,8 +197,9 @@ h5 {
   font-size: 12px;
 }
 .nav-header {
-  padding: 33px 25px;
+  padding: 15px 25px;
   background: url("patterns/header-profile.png") no-repeat;
+  text-align: center;
 }
 .pace-done .nav-header {
   transition: all 0.5s;

@@ -30,6 +30,38 @@
 			//getBmscList();
 		});
 	</script>
+	<style>
+	.btn-primary1 {
+	  background-color: #1ab394;
+	  border-color: #1ab394;
+	  color: #FFFFFF;
+	  width:40%;
+	}
+	.btn-primary2 {
+	  background-color: #1ab394;
+	  border-color: #1ab394;
+	  color: #FFFFFF;
+	  width:50%;
+	}
+	.form-group4{
+	  text-align: center; 
+	  vertical-align: middle;
+	  margin-top: 22px;
+	}
+	.ibox-content2 {
+	    background-color: #ffffff;
+	    color: inherit;
+	    border-color: #e7eaec;
+	    border-image: none;
+	    border-style: solid solid none;
+	    border-width: 1px 0px;
+	    padding-top: 20px;
+	}
+	.ibox-content2 .input-group {
+	    padding-right: 15px;
+	    padding-left: 0px;
+	}
+	</style>
 </head>
 
 <body>
@@ -192,14 +224,9 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-						  		<div class="form-group">
-                                        <label class="control-label" for="status"></label>
-                                        <p style="margin-top:5px">
-                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="modal-open-btn">Add</button>
-                                        </p>
-                                        <p style="margin-top:5px">
-                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="enb-excel-mgmt-btn">Excel Upload / Download</button>
-                                        </p>
+						  			<div class="form-group4">
+                                        <button type="button" class="btn btn-primary1 btn-sm demo1" id="modal-open-btn">Add</button>
+                                        <button type="button" class="btn btn-primary2 btn-sm demo1" id="enb-excel-mgmt-btn">Excel Upload / Download</button>
                                     </div>
                                 </div>
 	                            <div class="col-lg-4">
@@ -285,7 +312,7 @@
 	                                </div>
 	                            </div>
 	                        </div>
-	                        <div class="ibox-content">
+	                        <div class="ibox-content2">
 								<div class="input-group"><input type="text" class="form-control" id="toSearchTxt" name="toSearchTxt" value="" placeholder="eNB Id or eNB Name" />
 									<span class="input-group-btn">
 										<button type="button" class="btn btn-primary" onclick="javascript:searchToeNB();" id="toSearchBtn">Search</button>

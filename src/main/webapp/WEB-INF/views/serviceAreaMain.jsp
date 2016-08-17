@@ -68,6 +68,26 @@
 		border: 1px solid red;
 		white-space: nowrap;
 	}
+	.btn-primary {
+	  background-color: #1ab394;
+	  border-color: #1ab394;
+	  color: #FFFFFF;
+	  width:40%;
+	}
+	.btn-primary2 {
+	  background-color: #1ab394;
+	  border-color: #1ab394;
+	  color: #FFFFFF;
+	  width:50%;
+	}
+	.form-group{
+	  text-align: center; 
+	  vertical-align: middle;
+	}
+	.float-e-margins .btn {
+	    margin-bottom: 5px;
+	    margin-top: 22px;
+	}
 	</style>
 	  
 </head>
@@ -228,14 +248,9 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-						  		<div class="form-group">
-                                        <label class="control-label" for="status"></label>
-                                        <p style="margin-top:5px">
-                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="btn-add-service-area">Add</button>
-                                        </p>
-                                        <p style="margin-top:5px">
-                                        <button type="button" class="btn btn-block btn-default btn-sm demo1" id="btn-not-mapped-service-area">Not Mapped Service Area</button>
-                                        </p>
+						  			<div class="form-group">
+                                        <button type="button" class="btn btn-primary btn-sm demo1" id="btn-add-service-area">Add</button>
+                                        <button type="button" class="btn btn-primary2 btn-sm demo1" id="btn-not-mapped-service-area">Not Mapped Service Area</button>
                                     </div>
                                 </div>
 						</div>
