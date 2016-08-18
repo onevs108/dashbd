@@ -69,7 +69,8 @@
 <body>
 
 	<div id="wrapper">
-		<img id="loginTitle" align="middle" src="/dashbd/resources/img/logo_small.png">
+<!-- 		<img id="loginTitle" align="middle" src="/dashbd/resources/img/logo_small.png"> -->
+		<h3 style="text-align: center;">Sign-in</h3>
 		<form class="form-signin" id="loginForm" action="/dashbd/authentication" method="post" autocomplete="off">
 			<label for="inputEmail" class="sr-only">ID</label>
 			<input type="text" id="userId" name="userId" class="form-control" placeholder="ID" value="" autofocus>

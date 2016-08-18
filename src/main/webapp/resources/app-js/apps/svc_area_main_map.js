@@ -1128,7 +1128,7 @@ function getServiceAreaByBmScCity(page, bmscId, city, toSearchTxt)
 			options += "<div class=\"ibox-content\">";
 			options += "<div class=\"input-group\"><input type=\"text\" class=\"form-control\" id=\"toSearchTxt\" name=\"toSearchTxt\" value=\""+toSearchTxt+"\" placeholder=\"SA_ID or SA_NAME\" />";
 			options += "<span class=\"input-group-btn\">";
-			options += '<button type="button" class="btn btn-primary" onclick="javascript:searchToServiceArea(\'' + bmscId + '\', \'' + city + '\');" id="toSearchBtn">Search</button>';
+			options += '<button type="button" class="btn btn-primary4" onclick="javascript:searchToServiceArea(\'' + bmscId + '\', \'' + city + '\');" id="toSearchBtn">Search</button>';
 			options += "</span>";
 			options += "</div>";
 			options += "</div>";

@@ -80,13 +80,21 @@
 	  color: #FFFFFF;
 	  width:50%;
 	}
-	.form-group{
+	.btn-primary4 {
+	  background-color: #1ab394;
+	  border-color: #1ab394;
+	  color: #FFFFFF;
+	  width:100%;
+	}
+	.btn-primary0 {
+	  background-color: #1ab394;
+	  border-color: #1ab394;
+	  color: #FFFFFF;
+	}
+	.form-group4{
 	  text-align: center; 
 	  vertical-align: middle;
-	}
-	.float-e-margins .btn {
-	    margin-bottom: 5px;
-	    margin-top: 22px;
+	  margin-top: 22px;
 	}
 	</style>
 	  
@@ -248,7 +256,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-						  			<div class="form-group">
+						  			<div class="form-group4">
                                         <button type="button" class="btn btn-primary btn-sm demo1" id="btn-add-service-area">Add</button>
                                         <button type="button" class="btn btn-primary2 btn-sm demo1" id="btn-not-mapped-service-area">Not Mapped Service Area</button>
                                     </div>
@@ -306,7 +314,7 @@
 										<input type="hidden" class="form-control" id="toAddENBsBmscId" name="toAddENBsBmscId" value="">
 										<input type="hidden" class="form-control" id="toAddENBsServiceAreaId" name="toAddENBsServiceAreaId" value="">
 											<span class="input-group-btn">
-												<button type="button" class="btn btn-primary" onclick="javascript:addToServiceAreaManually();" id="toAddENBsBtn">Add</button>
+												<button type="button" class="btn btn-primary4" onclick="javascript:addToServiceAreaManually();" id="toAddENBsBtn">Add</button>
 											</span>
 										</div>
 									 </div>
@@ -458,7 +466,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary btn-sm btn-white" id="createSvcAreaBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="createSvcAreaBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -491,7 +499,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary btn-sm btn-white" id="editSvcAreaBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editSvcAreaBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
