@@ -203,11 +203,10 @@ $(document).ready(function() {
 						    <div align="center">
 						    	<c:forEach items="${previews}" var="preview" varStatus="idx">
 								    <video width="500" height="360" controls="controls" class="video-js vjs-default-skin" data-setup="{}" autoplay>
-									    <source src="schedule_summary" type="video/mp4" />
+									    <source src="${preview.path }" type="video/mp4" />
 									</video>
 								</c:forEach>
 							 </div>
-							
 <%-- 						<div><video data-dashjs-player src="${mapContent.url}" controls></video></div> --%>
 						   </div>
 					    </div>
