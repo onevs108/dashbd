@@ -202,7 +202,7 @@ $(document).ready(function() {
 						    -->
 						    <div align="center">
 						    	<c:forEach items="${previews}" var="preview" varStatus="idx">
-								    <video width="500" height="360" controls="controls" class="video-js vjs-default-skin" data-setup="{}" autoplay>
+								    <video width="500" height="360" controls="controls" autoplay>
 									    <source src="${preview.path }" type="video/mp4" />
 									</video>
 								</c:forEach>
