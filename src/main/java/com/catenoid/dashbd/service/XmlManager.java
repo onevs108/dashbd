@@ -42,7 +42,6 @@ public class XmlManager {
 	public final int BMSC_XML_UPDATE = 3;
 	public final int BMSC_XML_DELETE = 4;
 	public final String SERVICE_TYPE_FILE_DOWNLOAD = "fileDownload";
-	public String agentKey = null;
 	
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
@@ -59,8 +58,8 @@ public class XmlManager {
 		String reqBody = "";
 		String bmscIp = params.get("bmscIp");
 		params.put("methodMode", String.valueOf(mode));
-		if (agentKey == null)
-			agentKey = Base64Coder.encode(bmscIp);
+		String agentKey = Base64Coder.encode(bmscIp);
+		params.put("agentKey", agentKey);
 		
 		try {
 			//@set param to XML
@@ -156,7 +155,7 @@ public class XmlManager {
 		
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(agentKey));		//key ??
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));		//key ??
 		
 		doc.getRootElement().addContent(transaction);
 		return outString(doc);
@@ -171,7 +170,7 @@ public class XmlManager {
 		
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(agentKey));		
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));		
 		doc.getRootElement().addContent(transaction);
 		
 		
@@ -199,7 +198,7 @@ public class XmlManager {
 		//common- depth one
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(agentKey));		//key ??
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));		//key ??
 		
 		doc.getRootElement().addContent(transaction);
 
@@ -366,7 +365,7 @@ public class XmlManager {
 
 			Element transaction = new Element("transaction");
 			transaction.setAttribute(new Attribute("id", "1"));
-			transaction.addContent(new Element("agentKey").setText(agentKey));
+			transaction.addContent(new Element("agentKey").setText("agentKey"));
 			
 			doc.getRootElement().addContent(transaction);
 
