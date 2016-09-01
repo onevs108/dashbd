@@ -103,7 +103,7 @@ function setActiveContents(bmscId, serviceAreaId){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Acailable<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -197,7 +197,7 @@ function setWaitContents(bmscId, serviceAreaId){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Acailable<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -366,7 +366,7 @@ function callScheduleTable(bmscId, bmscName){
 				//김범길 제거 임시 : content += "</div>";
 				//content += "<iframe src=\"" + datas[i].url +"\" width='90%' height='120px' frameborder='0' allowfullscreen></iframe>"
 				//김범길 제거 하단 추가함 임시 : content += "<div><video id=\"video_" + i +"\" controls></video></div>"
-				content += "<div><video id=\"video_" + i +"\" controls><source src=\"" + datas[i].url + "\" type=\"video/mp4\" /></video></div>"
+				content += "<div><video id=\"video_" + i +"\" controls><source src=\"/dashbd" + datas[i].url + "\" type=\"video/mp4\" /></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -380,7 +380,7 @@ function callScheduleTable(bmscId, bmscName){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Acailable<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -420,7 +420,7 @@ function callScheduleTable(bmscId, bmscName){
 				//content += "<div style=\"width: " + datas[i].progressRate + "%;\" class=\"progress-bar\"></div>";
 				//김범길 제거 임시 : content += "</div>";
 				//김범길 제거 임시  하단 추가: content += "<div><video id=\"video_w" + i +"\" controls></video></div>"
-				content += "<div><video id=\"video_w" + i +"\" controls><source src=\"" + datas[i].url + "\" type=\"video/mp4\" /></video></div>"
+				content += "<div><video id=\"video_w" + i +"\" controls><source src=\"/dashbd" + datas[i].url + "\" type=\"video/mp4\" /></video></div>"
 				content += "<small>[" + datas[i].category + "]</small> ";
 				content += datas[i].scheduleName;
 				content += "<div class=\"file-name\">";
@@ -434,7 +434,7 @@ function callScheduleTable(bmscId, bmscName){
 			if(datas.length == 0) {
 				content += "<div class=\"nothumbnail\">";
 				content += "<p>";
-				content += "<i class=\"fa fa-search\"></i> No Content is Service Currently<br/>";
+				content += "<i class=\"fa fa-search\"></i> No Content is Acailable<br/>";
 				content += "</p>";
 				content += "<small></small>";
 				content += "</div>";
@@ -799,7 +799,7 @@ function embmsList(data, bmscId, bmscName){
 		$btnEdit.attr("class","btn btn-sm button-edit");
 		$btnEdit.attr("type","button");
 		$btnEdit.attr("onclick","editEmbms(" + embmsId +")");
-		$iEdit.attr("class","fa fa-edit");
+		$iEdit.attr("class","fa fa-cog");
 		
 		$img.attr("src","img/server_network.png");
 		$img.attr("width","50px");
@@ -814,7 +814,8 @@ function embmsList(data, bmscId, bmscName){
 		$btnEdit.append($iEdit);
 		$td.append($btnEdit);
 		$td.append($("<br/>"));
-		$td.append($img);
+		$td.append("<i class='fa fa-desktop' style='font-size: 4rem;' />");
+		//$td.append($img);
 		$td.append($h4);
 		$tr.append( $td );
 	}
