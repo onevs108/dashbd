@@ -248,7 +248,7 @@ $(document).ready(function() {
 							    </c:if>
 							    <div class="col-md-3">
 								   <div class="product-imitation">
-									  <img src="${thumnail.path}" width="80%">
+									  <img src="/dashbd/${thumnail.path}" width="80%">
 								   </div>
 							    </div>
 							</c:forEach>
