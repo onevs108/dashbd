@@ -316,12 +316,12 @@ public class ContentMgmtController {
 			logger.info("OS: " + System.getProperty("os.name"));
 			if(System.getProperty("os.name").toUpperCase().startsWith("WINDOWS")) {
 				rootPath = "";
-            	storePath = String.format("%s/%s/%s/", fileUploadPath, (String)params.get("id"), params.get("type"));
+            	storePath = String.format("%s/%s/%s/", fileUploadPath, String.valueOf(params.get("id")), params.get("type"));
 			}
 			else {
 				HttpSession session  = request.getSession();
             	rootPath = session.getServletContext().getRealPath("/");	
-            	storePath = String.format("%s/%s/%s/", fileUploadPath, (String)params.get("id"), params.get("type"));
+            	storePath = String.format("%s/%s/%s/", fileUploadPath, String.valueOf(params.get("id")), params.get("type"));
 			}
 			
         	logger.info("UploadDirectory : " + rootPath + storePath);
@@ -337,7 +337,7 @@ public class ContentMgmtController {
             /// contents_images 테이블에 insert
             ContentsImagesMapper ciMapper = sqlSession.getMapper(ContentsImagesMapper.class);
 			ContentsImages ciRecord = new ContentsImages();
-			long id = Long.parseLong((String)params.get("id"));
+			long id = (Long)params.get("id");
 			ciRecord.setContentId((int)id);					
 			ciRecord.setType(typeName);	
             ciRecord.setPath(storePath + fileName);
