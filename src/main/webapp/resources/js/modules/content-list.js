@@ -33,7 +33,8 @@ function doDelete(id) {
 				id: id
 			},
 			success: function(data, textStatus, jqXHR) {
-				if (data.result) { // 성공
+				
+				if (data.code) { // 성공
 					$('#table').bootstrapTable('destroy');
 					getContentList(true, false);
 				}
