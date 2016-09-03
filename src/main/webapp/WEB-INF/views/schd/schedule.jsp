@@ -272,6 +272,8 @@
                                                                 <option value="NoFEC" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> selected</c:if>>NoFEC</option>
                                                                 
                                                                 <option value="Raptor" <c:if test="${mapSchedule.fecType eq 'Raptor'}"> selected</c:if>>Raptor</option>
+                                                                <option value="RaptorQ" <c:if test="${mapSchedule.fecType eq 'RaptorQ'}"> selected</c:if>>RaptorQ</option>
+                                                                <option value="RSLDPC" <c:if test="${mapSchedule.fecType eq 'RSLDPC'}"> selected</c:if>>RSLDPC</option>
                                                             </select>
                                                     </div>
                                                 </div>
