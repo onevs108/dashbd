@@ -291,17 +291,29 @@
                                 </div>
                                 </div>
                                 <div class="hr-line-dashed"></div>
-                                <div class="form-group"><label class="col-sm-2 control-label">Service Area</label>
+                                <div class="form-group">
+                                	<label class="col-sm-2 control-label">Service Area</label>
                                     <div class="col-sm-4">
+                                    	<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
                                     	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
-    	                                <!-- 
-                                    	<input type="text" class="form-control" id="said" name="said" required="required">
-	                                     -->
                                     </div>
-                                    <div class="col-sm-4">
-                                        <button type="button" class="btn btn-block btn-default">Add</button>
-                                    </div>
+                                    <c:if test="${empty mapSchedule.BCID}">
+	                                    <div class="col-sm-4">
+	                                        <button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
+	                                    </div>
+                                    </c:if>
                                 </div>
+                                <div class="form-group">
+                                 	<label class="col-sm-2 control-label"> </label>
+	                                 <div class="col-sm-2" id="saidListDiv">
+	                                 <!-- 
+	                                    	<input type="text" id="saidData" name="saidData" class="form-control" value = "123" readonly>
+	                                    	<input type="text" id="saidData" name="saidData" class="form-control" value = "122" readonly>
+	                                  -->
+	                                 </div>
+                                </div>
+                                
+                              
                             </form>
                         </div>
                     </div><!-- end ibox-content -->

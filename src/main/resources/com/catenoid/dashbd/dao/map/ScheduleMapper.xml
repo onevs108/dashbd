@@ -345,6 +345,14 @@
 			updated_at = now()
 		WHERE id = #{id}
 	</update>
+	
+	<insert id="insertAddSchedule" parameterType="java.util.Map">
+	
+		INSERT INTO schedule(bmscId, service_area_id, content_id, BCID, name, start_date, end_date)
+		SELECT bmscId, #{serviceAreaId}, content_id, BCID, name, start_date, end_date 
+		FROM  schedule 
+		WHERE id =#{id}
+	</insert>
 	<update id = "updateSchedule4Del" parameterType="java.util.Map">
 		UPDATE schedule	SET
 			del_yn = 'Y',

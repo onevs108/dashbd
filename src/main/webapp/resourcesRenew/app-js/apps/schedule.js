@@ -51,6 +51,31 @@ $(document).ready(function()
 		}
 	});
 	
+	var saidListDiv = $('#saidListDiv');
+	
+	$("#saidAdd").click(function() {
+		
+		var said = $("#said").val();
+		var saidDefault = $("#saidDefault").val();
+		
+		if (saidDefault == said){
+			alert ('this said is default.other said input.');
+			return;
+		}
+		
+		
+		//$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly><button class="cRemSaid" type="button" id="remSaid">del</button></p>').appendTo(saidListDiv);
+		$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly></p>').appendTo(saidListDiv);
+		
+		//<a class="close-link"><i class="fa fa-times"></i></a>	 
+
+		 $("#said").val(saidDefault);
+
+	});
+	
+	$("#saidListDiv").on('click', '.cRemSaid', function() {
+		$(this).parents('p').remove();
+	});
 	
 		
 	$("#btnCancel").click(function() {
@@ -59,6 +84,8 @@ $(document).ready(function()
 		var bmscId= $("#bmscId").val();
 		location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId;
 	});
+	
+
 		
 	$("#btnDelete").click(function() {
 		if (!confirm("It will be deleted. do you want this??"))

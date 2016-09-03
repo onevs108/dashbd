@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.ibatis.session.SqlSession;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -312,10 +313,12 @@ public class ScheduleMgmtController {
 	@RequestMapping(value = "view/scheduleReg.do")
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
+			@RequestParam(value="saidData", required=false) List<String> saidData,
             HttpServletRequest req, Locale locale ) {
 		
 		int ret;
 		logger.info("sending param{}", params);
+		logger.info("sending saidData{}", saidData);
 		
 		String tmp = params.get("preEmptionCapabiity");
 		
@@ -350,7 +353,7 @@ public class ScheduleMgmtController {
 			params.put("deliveryInfo_start", convertMysqlDateFormat(params.get("deliveryInfo_start"), false));
 			params.put("deliveryInfo_end", convertMysqlDateFormat(params.get("deliveryInfo_end"),false));
 			params.put("bmscIp", bmsc.getIpaddress());
-			String resStr = xmlManager.sendBroadcast(params, xmlMode);
+			String resStr = xmlManager.sendBroadcast(params, xmlMode, saidData);
 			
 			//@ check return XML success
 			if (!xmlManager.isSuccess(resStr))
@@ -362,8 +365,18 @@ public class ScheduleMgmtController {
 				//@ insert broadcast_info  with flag which createBroadcast is successed or not
 				ret = mapper.insertBroadcastInfo(params);
 				logger.info("insertBroadcastInfo ret{}", ret);
+				
 				//@ update schedule broadcast id
 				ret = mapper.updateSchedule(params);
+				
+				//@ insert schedule append said
+				if (saidData != null){
+					for( String said : saidData){
+						params.put("serviceAreaId", said);
+						ret = mapper.insertAddSchedule(params);
+						logger.info("insertAddSchedule ret{}", ret);
+					}
+				}
 				logger.info("updateSchedule ret{}", ret);
 			}else{
 				ret = mapper.updateBroadcastInfo(params);

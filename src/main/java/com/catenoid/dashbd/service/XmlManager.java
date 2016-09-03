@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
@@ -51,8 +52,11 @@ public class XmlManager {
 //	@Value("#{config['b2.server.ipaddress']}")
 //	private String b2serverIpaddress;
 	
-	
 	public String sendBroadcast(Map<String, String> params, int mode){
+		return sendBroadcast(params, mode, null);
+	}
+	
+	public String sendBroadcast(Map<String, String> params, int mode, List<String> saidData){
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		String respBody = "SUCCESS";
 		String reqBody = "";
@@ -66,7 +70,7 @@ public class XmlManager {
 			if (BMSC_XML_RETRIEVE == mode)
 				reqBody= makeXmlRetrieve(params);
 			else if (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)
-				reqBody= makeXmlCreate(params, mode);
+				reqBody= makeXmlCreate(params, mode, saidData);
 			else
 				reqBody= makeXmlDelete(params);
 			
@@ -184,7 +188,7 @@ public class XmlManager {
 		return outString(doc);
 	}
 	
-	public String makeXmlCreate(Map<String, String> params, int mode){
+	public String makeXmlCreate(Map<String, String> params, int mode, List<String> saidData){
 		Element message = new Element("message");
 		if (BMSC_XML_CREATE == mode)
 			message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
@@ -269,6 +273,11 @@ public class XmlManager {
 			
 			Element serviceArea = new Element("serviceArea");
 			serviceArea.addContent( new Element("said").setText(params.get("said")));
+			if (saidData != null){
+				for( String said : saidData){
+					serviceArea.addContent( new Element("said").setText(said));
+				}
+			}
 			
 			Element content = new Element("content");
 			content.setAttribute(new Attribute("contentId", params.get("contentId")));						//??

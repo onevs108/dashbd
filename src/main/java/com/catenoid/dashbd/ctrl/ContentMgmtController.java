@@ -337,7 +337,7 @@ public class ContentMgmtController {
             /// contents_images 테이블에 insert
             ContentsImagesMapper ciMapper = sqlSession.getMapper(ContentsImagesMapper.class);
 			ContentsImages ciRecord = new ContentsImages();
-			long id = (Long)params.get("id");
+			long id = Long.parseLong((String)params.get("id"));
 			ciRecord.setContentId((int)id);					
 			ciRecord.setType(typeName);	
             ciRecord.setPath(storePath + fileName);
