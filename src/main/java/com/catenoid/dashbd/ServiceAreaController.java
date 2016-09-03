@@ -1929,7 +1929,8 @@ public class ServiceAreaController {
 			JSONObject obj = new JSONObject();
 			if(selCnt == 0){
 				int rst = mapper.createServiceArea(searchParam);
-				
+
+				obj.put("selCount", rst);
 				if( rst == 1 ) {
 					searchParam = new HashMap();
 					searchParam.put("bmscId", bmscId);

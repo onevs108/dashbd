@@ -368,7 +368,7 @@ function createServiceArea( operatorId, bmscId ) {
 	        if( data.count == 1 ) {
 	        	swal({
 	                title: "Success !",
-	                text: "Service Area 등록이 완료되엇습니다.\n\neNB 정보를 등록하시기 바랍니다."
+	                text: "Please register eNB infomation."
 	            });
 	        	
 	        	getSeviceAreaNotMapped( bmscId );
@@ -377,21 +377,28 @@ function createServiceArea( operatorId, bmscId ) {
 	            moveToEnbNotMappedSA(bmscId, $('#serviceAreaId').val(), default_center_lat, default_center_lng);
 	            
 	    	} else if( data.count == 0 ) {
-	    		swal({
-	                title: "Info !",
-	                text: "이미 등록된 Service Area ID 입니다."
-	            });
+	    		if(data.selCount == 0){
+		    		swal({
+		                title: "Info !",
+		                text: "Already have a Service Area ID."
+		            });
+	    		}else{
+		    		swal({
+		                title: "Success !",
+		                text: "Please register eNB infomation."
+		            });
+	    		}
 	        } else if( data.count < 0 ) {
 	        	swal({
 	                title: "Fail !",
-	                text: "Service Area 등록을 실패하였습니다."
+	                text: "Service Area Registration failed."
 	            });
 	        }
 	    },
         error : function(xhr, status, error) {
         	swal({
                 title: "Fail !",
-                text: "Service Area 등록을 실패하였습니다."
+                text: "Service Area Registration failed."
             });
         }
 	});
