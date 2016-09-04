@@ -324,7 +324,7 @@ public class XmlManager {
 			if ( null != params.get("serviceClass") && !"".equals(params.get("serviceClass")))
 				streaming.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));
 			
-			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("SegmentAvailableOffset")));
+			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
 			
 			Element contentSet = new Element("contentSet");
 			contentSet.setAttribute(new Attribute("contentSetId", "1")); 					

@@ -239,6 +239,7 @@ public class ScheduleMgmtController {
 				//@ xml update �뿰�룞
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
+				
 				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
 	
 				//@ check return XML success

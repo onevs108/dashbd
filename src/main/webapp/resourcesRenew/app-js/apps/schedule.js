@@ -145,6 +145,11 @@ function valadationCheck(){
 		return false;
 	}
 	
+	if ($("#serviceType").val() == 'streaming' && $("#segmentAvailableOffset").val() == ""){
+		alert("plz, type in segmentAvailableOffset value");
+		return false;
+	}
+	
 	var s_start = $("#schedule_start").val().replace(/[^0-9]/g,'');
 	var s_stop = $("#schedule_stop").val().replace(/[^0-9]/g,'');
 	var d_start = $("#deliveryInfo_start").val().replace(/[^0-9]/g,'');
@@ -198,8 +203,8 @@ function setDefaultQCI_Level_SegmentAvailableOffset(){
 	if ($("#level").val() == '')
 		$("#level").val(1);
 
-	if ($("#SegmentAvailableOffset").val() == '')
-		$("#SegmentAvailableOffset").val(10);
+	if ($("#segmentAvailableOffset").val() == '')
+		$("#segmentAvailableOffset").val(10);
 }
 
 function changePercentage(){

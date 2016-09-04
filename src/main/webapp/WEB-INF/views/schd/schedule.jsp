@@ -283,7 +283,7 @@
                                                 </div>
                                                 <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
                                                 	<label class="col-sm-6" style="padding-bottom:6px"><i class="fa fa-check text-importance"></i> Segmentation Available Offset</label>
-                                                    <div class="col-sm-6"><input type="text" class="form-control" id="SegmentAvailableOffset" name="SegmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
+                                                    <div class="col-sm-6"><input type="text" class="form-control" id="segmentAvailableOffset" name="segmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
                                                 </div>
                                             </div>
                                         </div>
