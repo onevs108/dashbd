@@ -332,6 +332,11 @@ public class XmlManager {
 								
 			Element serviceArea = new Element("serviceArea");
 			serviceArea.addContent(new Element("said").setText(params.get("said")));
+			if (saidData != null){
+				for( String said : saidData){
+					serviceArea.addContent( new Element("said").setText(said));
+				}
+			}
 			
 			Element mpd = new Element("mpd");
 			mpd.setAttribute(new Attribute("changed", "false"));									
