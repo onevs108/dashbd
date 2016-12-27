@@ -28,6 +28,13 @@
 		$(document).ready(function() {
 			getMenuList('USER_MGMT');
 			initForm('${flag}', '${userId}');
+			$("#form-grade").on("change", function(e){
+				if(e.target.value == "3"){
+					$("#circleArea").show();
+				}else{
+					$("#circleArea").hide();
+				}
+			});
 		});
 	</script>
 </head>
@@ -159,25 +166,20 @@
                             <form class="form-horizontal">
                             	<div class="form-group">
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Grade</label>
-                                    <div class="col-sm-9">
+									<div class="col-sm-3">
                                     	<select class="input-sm form-control input-s-sm" id="form-grade" <c:if test="${USER.grade != 0}">disabled="disabled"</c:if>>
-                                    		<option value="1" selected="selected">User</option>
-                                    		<option value="0">Super Admin</option>
+                                    		<option value="0" selected="selected">Administrator Group</option>
+                                    		<option value="1">National Operator Group</option>
+                                    		<option value="2">System Operator Group</option>
+                                    		<option value="3">Circle Group</option>
 										</select>
 	                                </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Operator</label>
-                                    <div class="col-sm-9">
+                                <div id="circleArea" class="form-group" style="display: none;">
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Select Circle</label>
+                                    <div class="col-sm-3">
                                     	<c:choose>
-											<c:when test="${USER.grade == 0}">
-												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm">
-													<c:forEach items="${operatorList}" var="operator">
-														<option value="${operator.id}">${operator.name}</option>
-													</c:forEach>
-												</select>
-											</c:when>
-											<c:otherwise>
+											<c:when test="${USER.grade == 3}">
 												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm" disabled="disabled">
 													<c:forEach items="${operatorList}" var="operator">
 														<c:choose>
@@ -190,6 +192,13 @@
 														</c:choose>
 													</c:forEach>
 												</select>
+											</c:when>
+											<c:otherwise>
+												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm">
+													<c:forEach items="${operatorList}" var="operator">
+														<option value="${operator.id}">${operator.name}</option>
+													</c:forEach>
+												</select>
 											</c:otherwise>
 										</c:choose>
 <!-- 	                                    <select class="input-sm form-control input-s-sm" id="form-operator-id"> -->
@@ -198,38 +207,47 @@
 <%-- 											</c:forEach> --%>
 <!-- 	                                    </select> -->
                                     </div>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Circle Group</label>
+									<div class="col-sm-3">
+                                    	<select class="input-sm form-control input-s-sm" id="form-circle" <c:if test="${USER.grade != 0}">disabled="disabled"</c:if>>
+                                    		<option value="0" selected="selected">Administrator Group</option>
+                                    		<option value="1">National Operator Group</option>
+                                    		<option value="2">System Operator Group</option>
+                                    		<option value="3">Circle Group</option>
+										</select>
+	                                </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> User ID</label>
-                                    <div class="input-group" id="form-user-id-input-area">
+                                    <div class="col-sm-2" id="form-user-id-input-area">
 									    <input type="text" id="form-user-id" class="form-control">
+								    </div>
+								    <div class="col-sm-1" id="form-user-id-input-area">
 									    <span class="input-group-btn"><button class="btn btn-default" id="check-id-btn" type="button">Check</button></span>
 								    </div>
+								    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Last Name</label>
+                                    <div class="col-sm-3"><input type="text" id="form-last-name" class="form-control"></div>
                                 </div>
                                 <div class="form-group" id="form-password-area">
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Password</label>
-                                    <div class="col-sm-9"><input type="password" id="form-password" class="form-control"></div>
+                                    <div class="col-sm-3"><input type="password" id="form-password" class="form-control"></div>
+                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> First Name</label>
+                                    <div class="col-sm-3"><input type="text" id="form-first-name" class="form-control"></div>
                                 </div>
                                 <div class="form-group" id="form-confirm-password-area">
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Confirm Password</label>
-                                    <div class="col-sm-9"><input type="password" id="form-confirm-password" class="form-control"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> First Name</label>
-                                    <div class="col-sm-9"><input type="text" id="form-first-name" class="form-control"></div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Last Name</label>
-                                    <div class="col-sm-9"><input type="text" id="form-last-name" class="form-control"></div>
-                                </div>
-                                <div class="form-group">
+                                    <div class="col-sm-3"><input type="password" id="form-confirm-password" class="form-control"></div>
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Department</label>
-                                    <div class="col-sm-9"><input type="text" id="form-department" class="form-control"></div>
+                                    <div class="col-sm-3"><input type="text" id="form-department" class="form-control"></div>
+                                </div>
+                                <div class="form-group" id="form-password-area">
+                                    <label class="col-sm-3 control-label"><i class="fa text-importance"></i> Memo</label>
+                                    <div class="col-sm-9"><textarea id="form-memo" class="form-control"></textarea></div>
                                 </div>
                                 <div class="form-group" id="form-registered-date-area">
                                     <label class="col-sm-3 control-label">Registered Date</label>
                                     <div class="col-sm-9"><input type="text" id="form-registered-date" disabled="disabled" class="form-control"></div>
-                                </div>
+                                </div> 
                                 <div class="form-group" id="form-modified-date-area">
                                     <label class="col-sm-3 control-label">Modified Date</label>
                                     <div class="col-sm-9"><input type="text" id="form-modified-date" disabled="disabled" class="form-control"></div>

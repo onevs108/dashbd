@@ -9,8 +9,8 @@ $(function() {
 	
 	// id 입력 or 변경 checkUserId 초기화
 	$('#form-user-id').keypress(function() {
-		checkUserId = false;
-		$('#form-user-id-input-area').attr('class', 'input-group has-warning');
+//		checkUserId = false;
+//		$('#form-user-id-input-area').attr('class', 'input-group has-warning');
 	});
 });
 
@@ -90,12 +90,12 @@ function doCheckId() {
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공
 				checkUserId = true;
-				$('#form-user-id-input-area').attr('class', 'input-group has-success');
+//				$('#form-user-id-input-area').attr('class', 'input-group has-success');
 				alert('Avaliable!');
 			}
 			else { // 실패
 				checkUserId = false;
-				$('#form-user-id-input-area').attr('class', 'input-group has-error');
+//				$('#form-user-id-input-area').attr('class', 'input-group has-error');
 				alert('Already exist!');
 				$('#form-user-id').focus();
 			}
@@ -137,6 +137,7 @@ function setElements(user) {
 	$('#form-registered-date').val(user.createdAt);
 	$('#form-modified-date').val(user.updatedAt);
 	$('#form-grade').val(user.grade);
+	$('#form-memo').val(user.memo);
 	if(user.grade == 0){
 		$('#checkbox-permission-user').attr("checked", true);
 		$('#checkbox-permission-permission').attr("checked", true);
@@ -195,6 +196,7 @@ function doInsert() {
 	var lastName = $('#form-last-name').val();
 	var department = $('#form-department').val();
 	var grade = $('#form-grade').val();
+	var memo = $('#form-memo').val();
 	
 	if (userId == null || userId.length == 0) {
 		alert('Please input the ID');
@@ -250,7 +252,8 @@ function doInsert() {
 			firstName: firstName,
 			lastName: lastName,
 			department: department,
-			grade: grade
+			grade: grade,
+			memo: memo
 		},
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공

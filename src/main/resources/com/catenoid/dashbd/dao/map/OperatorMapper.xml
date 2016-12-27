@@ -69,6 +69,9 @@
   <sql id="Base_Column_List" >
     id, name, description, created_at, updated_at
   </sql>
+  <sql id="Circle_Column_List" >
+    id, circle_name, town_name, town_code, latitude, longitude, description, created_at, updated_at
+  </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.OperatorExample" >
     select
     <if test="distinct" >
@@ -193,13 +196,21 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-
-
-	<select id="selectOperatorListAll" resultType="com.catenoid.dashbd.dao.model.Operator">
-		SELECT 
-			<include refid="Base_Column_List" />
+	<select id="selectCircleListAll" resultType="com.catenoid.dashbd.dao.model.Circle">
+		SELECT distinct circle_name
 		FROM operator
-		ORDER BY length(name) ASC, name ASC
+		ORDER BY length(circle_name) ASC, circle_name ASC
+	</select>
+	
+	<select id="selectGradeListAll" resultType="com.catenoid.dashbd.dao.model.Operator">
+		SELECT 
+			id,
+			name,
+			description,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM grade
+		ORDER BY id ASC
 	</select>
 	
 	<select id="selectOperatorList" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
@@ -233,6 +244,24 @@
 		ORDER BY length(name) ASC, name ASC
 	</select>
 	
+	<select id="getGradeListCount" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM grade
+		ORDER BY length(name) ASC, name ASC
+	</select>
+	
+	<select id="selectByGradeName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
+	    SELECT
+	    	id,
+			name,
+			description,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM grade
+		WHERE name = #{operatorName}
+	</select>
+	
 	<select id="selectByOperatorName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
 	    SELECT
 	    	id,
@@ -246,6 +275,13 @@
 	
 	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
 		INSERT INTO operator(<if test="id != null">`id`,</if>`name`, `description`, `created_at`, `updated_at`)
+		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, NOW(), NOW())
+		ON DUPLICATE KEY UPDATE
+		name = #{name}, description = #{description}, updated_at = NOW()
+	</insert>
+	
+	<insert id="insertGrade" parameterType="com.catenoid.dashbd.dao.model.Operator">
+		INSERT INTO grade(<if test="id != null">`id`,</if>`name`, `description`, `created_at`, `updated_at`)
 		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
 		name = #{name}, description = #{description}, updated_at = NOW()

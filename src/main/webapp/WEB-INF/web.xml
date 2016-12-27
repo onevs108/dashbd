@@ -106,5 +106,10 @@
 		<exception-type>java.lang.Exception</exception-type>
 		<location>/WEB-INF/views/error.jsp</location>
 	</error-page>
+	
+	<!-- 분 단위 -->
+	<session-config>
+		<session-timeout>1440</session-timeout> <!-- 24시간 -->
+	</session-config>
 
 </web-app>

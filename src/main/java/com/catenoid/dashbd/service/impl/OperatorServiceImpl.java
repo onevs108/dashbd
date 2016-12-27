@@ -16,6 +16,7 @@ import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.OperatorBmscMapper;
 import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
+import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.service.OperatorService;
 
@@ -31,9 +32,9 @@ public class OperatorServiceImpl implements OperatorService {
 	 * 모든 Operator 리스트 리턴
 	 */
 	@Override
-	public List<Operator> getOperatorListAll() {
+	public List<Circle> getCircleListAll() {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
-		return operatorMapper.selectOperatorListAll();
+		return operatorMapper.selectCircleListAll();
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
 			usersMapper.insertSystemAjaxLog(syslogMap);
-			operatorList = operatorMapper.selectOperatorList(map);
+			operatorList = operatorMapper.selectGradeListAll();
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
 			syslogMap.put("reqSubType", "getOperatorList");
@@ -205,4 +206,80 @@ public class OperatorServiceImpl implements OperatorService {
 			return false;
 		}
 	}
+
+	@Override
+	public List<Circle> getCircleList() {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		List<Circle> circleList = operatorMapper.selectCircleListAll();
+		return circleList;
+	}
+
+	@Override
+	public int getGradeListCount() {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.getGradeListCount();
+	}
+
+	@Override
+	public boolean insertGrade(Operator operator) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		try {
+			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "insertGrade");
+			syslogMap.put("reqUrl", "grade/insert.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			return operatorMapper.insertGrade(operator) > 0;
+		} catch (Exception e) {
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "insertGrade");
+			syslogMap.put("reqUrl", "grade/insert.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			logger.error("~~ An error occurred!", e);
+			return false;
+		}
+	}
+
+	@Override
+	public boolean checkGradeName(String operatorName) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		try {
+			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "check");
+			syslogMap.put("reqUrl", "grade/check.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			return operatorMapper.selectByGradeName(operatorName) == null ? true : false;
+		} catch (Exception e) {
+			syslogMap.put("reqType", "Operator Mgmt");
+			syslogMap.put("reqSubType", "check");
+			syslogMap.put("reqUrl", "grade/check.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			logger.error("~~ An error occurred!", e);
+			return false;
+		}
+	}
+
+	@Override
+	public List<Operator> getOperatorListAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Circle> getOperatorList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

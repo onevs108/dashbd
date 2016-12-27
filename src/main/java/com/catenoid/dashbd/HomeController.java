@@ -30,9 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.StatusNotifyMapper;
-import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.StatusNotifyWithBLOBs;
 import com.catenoid.dashbd.dao.model.Users;
@@ -66,11 +64,11 @@ public class HomeController {
 	public String doLogin(ModelMap modelMap) {
 		logger.info("-> []");
 		
-		OperatorMapper mapper = sqlSession.getMapper(OperatorMapper.class);
-		List<Operator> operatorList = mapper.selectOperatorListAll();
-		modelMap.addAttribute("operatorList", operatorList);
-		
-		logger.info("<- [operatorListSize = {}]", operatorList.size());
+//		OperatorMapper mapper = sqlSession.getMapper(OperatorMapper.class);
+//		List<Operator> operatorList = mapper.selectOperatorListAll();
+//		modelMap.addAttribute("operatorList", operatorList);
+//		
+//		logger.info("<- [operatorListSize = {}]", operatorList.size());
 		return "login";
 	}
 	
@@ -150,7 +148,7 @@ public class HomeController {
 				menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Operator Mgmt</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Group Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/bmsc.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
@@ -171,7 +169,7 @@ public class HomeController {
 					else if (permission.getRole().equals(Const.ROLE_CONTENTS_MGMT))
 						menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_OPERATOR_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Operator Mgmt</span></a></li>");
+						menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Group Mgmt</span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_BMSC_MGMT))
 						menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/bmsc.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_SERVICE_AREA_MGMT))

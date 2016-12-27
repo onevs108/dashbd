@@ -18,7 +18,7 @@
 		
 	<!-- Application Loggers -->
 	<logger name="com.catenoid.dashbd">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->

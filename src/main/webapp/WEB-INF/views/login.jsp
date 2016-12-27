@@ -42,10 +42,10 @@
 				return false;
 			}
 			
-			if (operatorId == null || operatorId.length == 0) {
-				alert('Please select your operator.');
-				return false;
-			}
+// 			if (operatorId == null || operatorId.length == 0) {
+// 				alert('Please select your operator.');
+// 				return false;
+// 			}
 			
 			$('#loginForm').submit();
 		}
@@ -66,8 +66,7 @@
 	</script>
 </head>
 
-<body>
-
+<body> 
 	<div id="wrapper">
 <!-- 		<img id="loginTitle" align="middle" src="/dashbd/resources/img/logo_small.png"> -->
 		<h3 style="text-align: center;font-size: 30px;color: blue !important;">Sign-in</h3>
@@ -76,16 +75,15 @@
 			<input type="text" id="userId" name="userId" class="form-control" placeholder="ID" value="" autofocus>
 			<label for="inputPassword" class="sr-only">Password</label>
 			<input type="password" id="password" name="password" class="form-control" placeholder="Password" value="">
-			<select class="form-control" id="operatorId" name="operatorId">
-				<option value="">Please select your operator</option>
-				<option value="-1">Super Admin</option>
-				<c:forEach items="${operatorList}" var="operator">
-					<option value="${operator.id}">${operator.name}</option>
-				</c:forEach>
-			</select>
+<!-- 			<select class="form-control" id="operatorId" name="operatorId"> -->
+<!-- 				<option value="">Please select your operator</option> -->
+<!-- 				<option value="-1">Super Admin</option> -->
+<%-- 				<c:forEach items="${operatorList}" var="operator"> --%>
+<%-- 					<option value="${operator.id}">${operator.name}</option> --%>
+<%-- 				</c:forEach> --%>
+<!-- 			</select> -->
 			<button class="btn btn-lg btn-primary btn-block" type="button" id="loginBtn">Login</button>
 		</form>
 	</div><!-- end wrapper -->
-
 </body>
 </html>

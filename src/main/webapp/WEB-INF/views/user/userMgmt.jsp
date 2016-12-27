@@ -29,6 +29,7 @@
 			getMenuList('USER_MGMT');
 			getUserList('${isBack}' == 'true' ? true : false, false);
 		});
+		
 	</script>
 </head>
 

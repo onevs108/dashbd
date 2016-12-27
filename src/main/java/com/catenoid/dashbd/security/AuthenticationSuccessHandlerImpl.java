@@ -2,6 +2,7 @@ package com.catenoid.dashbd.security;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.UsersMapper;
+import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.UserService;
 
@@ -47,17 +49,18 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			Authentication authentication) throws IOException, ServletException {
 		
 		String userId = request.getParameter("userId");
-		Integer operatorId = Integer.parseInt(request.getParameter("operatorId"));
 		
-		logger.info("-> [userId = {}], [operatorId = {}]", userId, operatorId);
+//		Integer operatorId = Integer.parseInt(request.getParameter("operatorId"));
+//		logger.info("-> [userId = {}], [operatorId = {}]", userId, operatorId);
 		
 		UsersMapper mapper = sqlSession.getMapper(UsersMapper.class);
 		Users user = mapper.selectByUserId(userId);
+		List<Permission> permission = mapper.selectPermissionsByUserId(userId);
+		user.setPermissions(permission);
 		Map<String, Object> map = new HashMap<String, Object>();
-		// Super Admin은 operatorId가 null 이다
-		if (user.getOperatorId() == null || user.getOperatorId() == operatorId) {
-			user.setPermissions(mapper.selectPermissionsByUserId(userId));
-			
+		
+		// Super Admin일 경우
+		if (user.getPermissions().size() == 1 && user.getPermissions().get(0).getId() == 13) {
 			HttpSession session = request.getSession(false);
 			session.setAttribute("USER", user);
 			

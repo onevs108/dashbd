@@ -30,6 +30,10 @@ public class Users {
     
     private Integer grade;
 
+    private String gradeName;
+    
+    private String memo;
+
     private Date createdAt;
 
     private Date updatedAt;
@@ -52,7 +56,7 @@ public class Users {
     	return id;
     }
     
-    public void setId(Integer id) {
+	public void setId(Integer id) {
     	this.id = id;
     }
     
@@ -129,7 +133,23 @@ public class Users {
         this.grade = grade;
     }
 
-    public Date getCreatedAt() {
+    public String getGradeName() {
+		return gradeName;
+	}
+
+	public void setGradeName(String gradeName) {
+		this.gradeName = gradeName;
+	}
+    
+    public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public Date getCreatedAt() {
         return createdAt;
     }
 
@@ -165,6 +185,8 @@ public class Users {
     	jsonResult.put("lastName", lastName);
     	jsonResult.put("department", department);
     	jsonResult.put("grade", grade);
+    	jsonResult.put("gradeName", gradeName);
+    	jsonResult.put("memo", memo);
     	
     	JSONArray jsonArray = new JSONArray();
     	for (Permission perms : permissions)
@@ -186,6 +208,8 @@ public class Users {
 				+ ", lastName=" + lastName
 				+ ", department=" + department
 				+ ", grade=" + grade
+				+ ", gradeName=" + gradeName
+				+ ", memo=" + memo
 				+ ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt
 				+ ", permissionsSize=" + (permissions == null ? null : permissions.size())

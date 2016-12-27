@@ -11,6 +11,8 @@
     <result column="last_name" property="lastName" jdbcType="VARCHAR" />
     <result column="department" property="department" jdbcType="VARCHAR" />
     <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="grade_name" property="gradeName" jdbcType="VARCHAR" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -102,7 +104,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, user_id, operator_id, password, first_name, last_name, department, grade, created_at, updated_at
+    id, user_id, operator_id, password, first_name, last_name, department, grade, memo, created_at, updated_at
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.UsersExample" >
     select
@@ -130,14 +132,15 @@
   
 	<select id="selectUserList" resultMap="BaseResultMap" parameterType="Map">
 	    SELECT
-	    	id, user_id, ifnull(operator_id, '') as operator_id, ifnull(operator_name, '') as operator_name, password, first_name, last_name, department, grade, created_at, updated_at
+	    	id, user_id, ifnull(operator_id, '') as operator_id, ifnull(operator_name, '') as operator_name, password, first_name, last_name, department, 
+	    	grade, created_at, updated_at, (select grade_name from grade where id = grade) as grade_name
     	FROM ( SELECT
 				   @ROWNUM := @ROWNUM + 1 AS rownum,
 				   id, user_id, operator_id, operator_name, password, first_name, last_name, department, grade, created_at, updated_at
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( SELECT
 						 U.id, U.user_id, U.operator_id, U.password, U.first_name, U.last_name, U.department, U.grade, U.created_at, U.updated_at,
-						 O.name AS operator_name
+						 O.name AS operator_name, (select grade_name from grade where id = U.grade) as grade_name
 					  FROM users U LEFT JOIN operator O ON U.operator_id = O.id
 					  <choose>
 					      <when test="searchKeyword != null">
@@ -257,10 +260,11 @@
   </delete>
 	
 	<insert id="insertUser" parameterType="com.catenoid.dashbd.dao.model.Users">
-	    INSERT INTO users (user_id, operator_id, password, first_name, last_name, department, grade, created_at, updated_at)
-		VALUES (#{userId}, #{operatorId}, #{password}, #{firstName}, #{lastName}, #{department}, #{grade}, NOW(), NOW())
+	    INSERT INTO users (user_id, operator_id, password, first_name, last_name, department, grade, memo, created_at, updated_at)
+		VALUES (#{userId}, #{operatorId}, #{password}, #{firstName}, #{lastName}, #{department}, #{grade}, #{memo}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
-		operator_id = #{operatorId}, password = #{password}, first_name = #{firstName}, last_name = #{lastName}, department = #{department}, grade = #{grade}, updated_at = NOW()
+		operator_id = #{operatorId}, password = #{password}, first_name = #{firstName}, last_name = #{lastName}, department = #{department}, 
+		grade = #{grade}, memo = #{memo}, updated_at = NOW()
 	</insert>
   
   <insert id="insert" parameterType="com.catenoid.dashbd.dao.model.Users" >

@@ -102,37 +102,44 @@ function getUserList(isBack, isSearch) {
 		minimumCountColumns: 3,
 		clickToSelect: false,
 		columns: [{
+			field: 'gradeName',
+			title: 'Grade',
+			width: '17%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
+		}, {
 			field: 'operatorName',
-			title: 'Operator',
-			width: '15%',
+			title: 'OperatorName',
+			width: '13%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
 		}, {
 			field: 'userId',
 			title: 'ID',
-			width: '15%',
+			width: '13%',
 			align: 'center',
-			valign: 'middle',
+			valign: 'middle', 
 			sortable: true
 		}, {
 			field: 'firstName',
 			title: 'First Name',
-			width: '15%',
+			width: '13%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
 		}, {
 			field: 'lastName',
 			title: 'Last Name',
-			width: '15%',
+			width: '13%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
 		}, {
 			field: 'department',
 			title: 'Department',
-			width: '15%',
+			width: '13%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
