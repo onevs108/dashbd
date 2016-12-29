@@ -70,7 +70,7 @@
     id, name, description, created_at, updated_at
   </sql>
   <sql id="Circle_Column_List" >
-    id, circle_name, town_name, town_code, latitude, longitude, description, created_at, updated_at
+    id, circle_name, town_name, town_code, latitude, longitude, description, created_at as createdAt, updated_at as updatedAt
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.OperatorExample" >
     select
@@ -92,7 +92,11 @@
     from operator
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteGrade" parameterType="java.lang.Integer" >
+    delete from grade
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteCircle" parameterType="java.lang.Integer" >
     delete from operator
     where id = #{id,jdbcType=INTEGER}
   </delete>
@@ -202,15 +206,57 @@
 		ORDER BY length(circle_name) ASC, circle_name ASC
 	</select>
 	
-	<select id="selectGradeListAll" resultType="com.catenoid.dashbd.dao.model.Operator">
+	<select id="selectTownFromCircle" parameterType="HashMap" resultType="com.catenoid.dashbd.dao.model.Circle">
+		SELECT 
+			id, circle_name, town_name, town_code, latitude, longitude, description, created_at as createdAt, updated_at as updatedAt
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   id, circle_name, town_name, town_code, latitude, longitude, description, created_at, updated_at
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 id, circle_name, town_name, town_code, latitude, longitude, description, created_at, updated_at
+					  FROM operator
+					  WHERE circle_name = #{circleName}
+					  ORDER BY <if test="sort == null">id ASC</if>
+					  		   <if test="sort != null">
+					  		       <if test="sort == 'town_name'">town_name</if>
+					  		       <if test="sort == 'description'">description</if>
+					  		       ${order}
+					  		   </if> ) T
+			 ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectTownFromCircleCount" parameterType="Map" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM operator
+		WHERE circle_name = #{circleName}
+		ORDER BY length(circle_name) ASC, circle_name ASC
+	</select>
+	
+	<select id="selectGradeListAll" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
 		SELECT 
 			id,
 			name,
 			description,
 			created_at AS createdAt,
 			updated_at AS updatedAt
-		FROM grade
-		ORDER BY id ASC
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   id, name, description, created_at, updated_at
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 id, name, description, created_at, updated_at
+					  FROM grade
+					  ORDER BY <if test="sort == null">id ASC</if>
+					  		   <if test="sort != null">
+					  		       <if test="sort == 'name'">name</if>
+					  		       <if test="sort == 'description'">description</if>
+					  		       ${order}
+					  		   </if> ) T
+			 ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
 	
 	<select id="selectOperatorList" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
@@ -237,7 +283,7 @@
 		WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
 	
-	<select id="selectOperatorListCount" parameterType="Map" resultType="Integer">
+	<select id="selectCircleListCount" parameterType="Map" resultType="Integer">
 		SELECT
 			COUNT(*)
 		FROM operator
@@ -264,20 +310,16 @@
 	
 	<select id="selectByOperatorName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
 	    SELECT
-	    	id,
-			name,
-			description,
-			created_at AS createdAt,
-			updated_at AS updatedAt
+	    	id, circle_name, town_name, town_code, latitude, longitude, description, created_at as createdAt, updated_at as updatedAt
 		FROM operator
-		WHERE name = #{operatorName}
+		WHERE town_name = #{operatorName}
 	</select>
 	
 	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
-		INSERT INTO operator(<if test="id != null">`id`,</if>`name`, `description`, `created_at`, `updated_at`)
+		INSERT INTO operator(<if test="id != null">`id`,</if>`town_name`, `description`, `created_at`, `updated_at`)
 		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
-		name = #{name}, description = #{description}, updated_at = NOW()
+		town_name = #{name}, description = #{description}, updated_at = NOW()
 	</insert>
 	
 	<insert id="insertGrade" parameterType="com.catenoid.dashbd.dao.model.Operator">

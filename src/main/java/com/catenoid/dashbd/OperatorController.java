@@ -1,6 +1,7 @@
 package com.catenoid.dashbd;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -54,8 +55,7 @@ public class OperatorController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/operator/list.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
-	public String postOperatorList(
-			@RequestBody String body) {
+	public String postOperatorList(@RequestBody String body) {
 		logger.info("-> [body = {}]", body);
 		
 		JSONObject jsonResult = new JSONObject();
@@ -137,19 +137,58 @@ public class OperatorController {
 	}
 	
 	/**
-	 * Operator 삭제
+	 * Grade 삭제
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/api/operator/delete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@RequestMapping(value = "/api/grade/delete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
-	public String postOperatorDelete(
-			@RequestParam(value = "operatorId", required = true) Integer operatorId) {
-		logger.info("-> [operatorId = {}]", operatorId);
+	public String GradeDelete(@RequestParam(value = "gradeId", required = true) Integer gradeId) {
 		
 		JSONObject jsonResult = new JSONObject();
-		jsonResult.put("result", operatorServiceImpl.deleteOperator(operatorId));
+		jsonResult.put("result", operatorServiceImpl.deleteGrade(gradeId));
 		
-		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
+	
+	/**
+	 * Circle 삭제
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/circle/delete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String ciecleDelete(@RequestParam(value = "circleId", required = true) Integer circleId) {
+		
+		JSONObject jsonResult = new JSONObject();
+		jsonResult.put("result", operatorServiceImpl.deleteCircle(circleId));
+		
+		return jsonResult.toString();
+	}
+	
+	/**
+	 * Circle 선택 시 
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/circle/selectCircle.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String selectCircle(@RequestBody HashMap<String,String> param) {
+		
+		JSONObject jsonResult = new JSONObject();
+
+		int offset = Integer.parseInt(String.valueOf(param.get("offset")));
+		int limit = Integer.parseInt(String.valueOf(param.get("limit")));
+		param.put("start", Integer.toString(offset+1));
+		param.put("end", Integer.toString(offset+limit));
+		
+		List<Circle> circleList = operatorServiceImpl.selectTownFromCircle(param);
+		
+		JSONArray jsonArray = new JSONArray();
+		for (Circle circle : circleList) {
+			jsonArray.add(circle.toJSONObject());
+		}
+		
+		jsonResult.put("rows", jsonArray);
+		int total = operatorServiceImpl.selectTownFromCircleCount(param);
+		jsonResult.put("total", total);
 		return jsonResult.toString();
 	}
 	

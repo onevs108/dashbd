@@ -4,35 +4,36 @@
 
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operator Management</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operator Management</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/animate.css" rel="stylesheet">
+<link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+<link href="css/custom.css" rel="stylesheet">
+<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 
-	<script src="js/jquery-2.1.1.js"></script>
-	<script src="js/jquery.cookie.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/bootstrap-table.js"></script>
-	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-	<script src="js/common.js"></script>
-	<script src="js/modules/operator.js"></script>
-	
-	<script type="text/javascript">
-		$(document).ready(function() {
-			getMenuList('OPERATOR_MGMT');
-			getOperatorList();
-			$("#circleSelect").on("change", function(){
-				alert("Circle에 속하는 그룹을 조회해준다.");
-			});
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-table.js"></script>
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/modules/operator.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		getMenuList('OPERATOR_MGMT');
+		getOperatorList();
+		$("#circleSelect").on("change", function(e){
+			getOperatorList2(this.value);
 		});
-	</script>
+	});
+	
+</script>
 </head>
 
 <body>
@@ -205,7 +206,7 @@
 	                                    <select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;">
 	                                    	<option value="none">Select</option>
 	                                		<c:forEach var="row" items="${circleList}">
-	                                   			<option value="${row.id}">${row.circle_name}</option>
+	                                   			<option value="${row.circle_name}">${row.circle_name}</option>
 	                                   		</c:forEach>
 	                                    </select>
 	                                </div>
@@ -224,6 +225,7 @@
 					                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Group Name</label>
 					                                    	<div class="input-group" id="form-operator-name-input-area2">
 					                                    		<input type="text" id="form-operator-name2" class="form-control">
+					                                    		<input type="hidden" id="form-circle-name2" class="form-control">
 														    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn2" type="button">Check</button></span>
 					                                    	</div>
 													    </div>

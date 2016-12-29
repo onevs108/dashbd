@@ -59,7 +59,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
 			usersMapper.insertSystemAjaxLog(syslogMap);
-			operatorList = operatorMapper.selectGradeListAll();
+			operatorList = operatorMapper.selectGradeListAll(map);
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
 			syslogMap.put("reqSubType", "getOperatorList");
@@ -165,12 +165,52 @@ public class OperatorServiceImpl implements OperatorService {
 			return false;
 		}
 	}
-
+	
 	/**
-	 * Operator 삭제
+	 * Grade 삭제
 	 */
 	@Override
-	public boolean deleteOperator(Integer operatorId) {
+	public boolean deleteGrade(Integer gradeId) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		try {
+			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			OperatorBmscMapper operatorBmscMapper = sqlSession.getMapper(OperatorBmscMapper.class);
+			BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);
+			
+			// Grade에 딸린 BMSC도 삭제해준다.
+			// foreign key 자체가 없어 별도로 지워줘야 한다.
+			List<Integer> bmscIdList = operatorBmscMapper.selectBmscIdListOfOperator(gradeId);
+			operatorBmscMapper.deleteOperatorBmscOfOperator(gradeId);
+			if (bmscIdList != null && !bmscIdList.isEmpty()) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("bmscIdList", bmscIdList);
+				bmscMapper.deleteBmscs(map);
+			}
+			syslogMap.put("reqType", "Grade Mgmt");
+			syslogMap.put("reqSubType", "deleteGrade");
+			syslogMap.put("reqUrl", "grade/delete.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			return operatorMapper.deleteGrade(gradeId) > 0;
+		} catch (Exception e) {
+			syslogMap.put("reqType", "Grade Mgmt");
+			syslogMap.put("reqSubType", "deleteGrade");
+			syslogMap.put("reqUrl", "grade/delete.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+			logger.error("~~ An error occurred!", e);
+			return false;
+		}
+	}
+
+	/**
+	 * Circle 삭제
+	 */
+	@Override
+	public boolean deleteCircle(Integer circleId) {
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
@@ -180,8 +220,8 @@ public class OperatorServiceImpl implements OperatorService {
 
 			// Operator에 딸린 BMSC도 삭제해준다.
 			// foreign key 자체가 없어 별도로 지워줘야 한다.
-			List<Integer> bmscIdList = operatorBmscMapper.selectBmscIdListOfOperator(operatorId);
-			operatorBmscMapper.deleteOperatorBmscOfOperator(operatorId);
+			List<Integer> bmscIdList = operatorBmscMapper.selectBmscIdListOfOperator(circleId);
+			operatorBmscMapper.deleteOperatorBmscOfOperator(circleId);
 			if (bmscIdList != null && !bmscIdList.isEmpty()) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("bmscIdList", bmscIdList);
@@ -194,7 +234,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
 			usersMapper.insertSystemAjaxLog(syslogMap);
-			return operatorMapper.deleteByPrimaryKey(operatorId) > 0;
+			return operatorMapper.deleteCircle(circleId) > 0;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
 			syslogMap.put("reqSubType", "deleteOperator");
@@ -280,6 +320,18 @@ public class OperatorServiceImpl implements OperatorService {
 	public List<Circle> getOperatorList() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Circle> selectTownFromCircle(HashMap<String,String> param) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectTownFromCircle(param);
+	}
+
+	@Override
+	public int selectTownFromCircleCount(HashMap<String, String> param) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectTownFromCircleCount(param);
 	}
 	
 }

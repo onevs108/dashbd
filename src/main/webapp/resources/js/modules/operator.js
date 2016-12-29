@@ -69,6 +69,7 @@ function doAdd() {
 function doAdd2() {
 	$('#modal-title2').html('Create New Regional');
 	
+	var circleName = $('#form-circle-name2').val();
 	var operatorName = $('#form-operator-name2').val();
 	var operatorDescription = $('#form-operator-description2').val();
 	
@@ -90,6 +91,7 @@ function doAdd2() {
 	
 	var data = {
 			id: operatorId, // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
+			circleName: circleName,
 			name: operatorName,
 			description: operatorDescription
 	}
@@ -117,19 +119,46 @@ function doEdit(id, name, description) {
 	$('#form-modal').modal('show');
 }
 
-function doEdit2(id, name, description) {
+function doEdit2(id, circleName, name, description) {
 	$('#modal-title2').html('Edit Regional Group');
 	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다. 							
 	operatorId = id;
+	$('#form-circle-name2').val(circleName);
 	$('#form-operator-name2').val(name);
 	$('#form-operator-description2').val(description);
 	$('#form-modal2').modal('show');
 }
 
-function doDelete(operatorId, name) {
-	if (confirm('Do you really want to delete the Operator "' + name + '"?')) {
+function doDelete(gradeId, name) {
+	if (confirm('Do you really want to delete the Grade "' + name + '"?')) {
 		$.ajax({
-			url: '/dashbd/api/operator/delete.do',
+			url: '/dashbd/api/grade/delete.do',
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				gradeId: gradeId
+			},
+			success: function(data, textStatus, jqXHR) {
+				if (data.result) { // 성공
+					$('#table').bootstrapTable('destroy');
+					getOperatorList();
+				}
+				else { // 실패
+					alert('Failed!! Please you report to admin!');
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				alert(errorThrown + textStatus);
+				return false;
+			}
+		});
+	}
+}
+
+function doDelete2(operatorId, name) {
+	if (confirm('Do you really want to delete the Circle "' + name + '"?')) {
+		$.ajax({
+			url: '/dashbd/api/circle/delete.do',
 			method: 'POST',
 			dataType: 'json',
 			data: {
@@ -137,8 +166,8 @@ function doDelete(operatorId, name) {
 			},
 			success: function(data, textStatus, jqXHR) {
 				if (data.result) { // 성공
-					$('#table').bootstrapTable('destroy');
-					getOperatorList();
+					$('#table2').bootstrapTable('destroy');
+					getOperatorList2();
 				}
 				else { // 실패
 					alert('Failed!! Please you report to admin!');
@@ -247,6 +276,7 @@ function callInsert(data) {
 }
 
 function callInsert2(data) {
+	var circleName = data.circleName;
 	$.ajax({
 		url: '/dashbd/api/operator/insert.do',
 		method: 'POST',
@@ -255,7 +285,7 @@ function callInsert2(data) {
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공
 				$('#table2').bootstrapTable('destroy');
-				getOperatorList2();
+				getOperatorList2(circleName);
 				closeModal2();
 				operatorId = null; // 초기화
 			}
@@ -287,7 +317,7 @@ function getOperatorList() {
 		pagination: true,
 		sidePagination: 'server',
 		pageNumber: pageNumber,
-		pageSize: 3,
+		pageSize: 4,
 		search: false,
 		showHeader: true,
 		showColumns: false,
@@ -334,24 +364,24 @@ function getOperatorList() {
 	});
 }
 
-function getOperatorList2() {
-	// 테이블 생성
+function getOperatorList2(circleName) {
+	$('#table2').bootstrapTable('destroy');
 	var pageNumber = 1;
 	var table = $('#table2').bootstrapTable({
 		method: 'post',
-		url: '/dashbd/api/operator/list.do',
+		url: '/dashbd/api/circle/selectCircle.do',
 		contentType: 'application/json',
 		dataType: 'json',
 		queryParams: function(params) {
-			location.href = '#';
 			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+			params['circleName'] = circleName;
 			return params;
 		},
 		cache: false,
 		pagination: true,
 		sidePagination: 'server',
 		pageNumber: pageNumber,
-		pageSize: 10,
+		pageSize: 4,
 		search: false,
 		showHeader: true,
 		showColumns: false,
@@ -367,7 +397,7 @@ function getOperatorList2() {
 			sortable: false,
 			visible: false
 		}, {
-			field: 'name',
+			field: 'town_name',
 			title: 'Group Name',
 			width: '30%',
 			align: 'center',
@@ -388,8 +418,8 @@ function getOperatorList2() {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" onclick="doEdit2(\'' + row.id + '\', \'' + row.name + '\', \'' + row.description + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
-				+ '<button type="button" onclick="doDelete2(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
+				var html = '<button type="button" onclick="doEdit2(\'' + row.id + '\', \'' + row.circle_name + '\', \'' + row.town_name + '\', \'' + row.description + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+				+ '<button type="button" onclick="doDelete2(\'' + row.id + '\', \'' + row.town_name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
 		}]
