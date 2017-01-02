@@ -12,9 +12,8 @@ import com.catenoid.dashbd.dao.model.Operator;
 @Service
 public interface OperatorService {
 	
-	public List<Operator> getOperatorListAll();
 	public List<Operator> getOperatorList(String sort, String order, long offset, long limit);
-	public List<Circle> getOperatorList();
+	public List<Operator> getGradeListAll();
 	public int getGradeListCount();
 	public int getOperatorListCount();
 	public JSONArray getOperatorListToJsonArray(String sort, String order, long offset, long limit);

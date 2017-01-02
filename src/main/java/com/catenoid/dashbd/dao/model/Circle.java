@@ -14,11 +14,20 @@ public class Circle {
     private String latitude;
     private String longitude;
     private String description;
+    private String permission;
     private Date createdAt;
     private Date updatedAt;
     private Integer totalCount;
 
-    public Integer getId() {
+    public String getPermission() {
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+		this.permission = permission;
+	}
+
+	public Integer getId() {
         return id;
     }
 

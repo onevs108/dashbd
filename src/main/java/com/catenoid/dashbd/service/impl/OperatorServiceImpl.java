@@ -59,7 +59,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
 			usersMapper.insertSystemAjaxLog(syslogMap);
-			operatorList = operatorMapper.selectGradeListAll(map);
+			operatorList = operatorMapper.selectGradeList(map);
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
 			syslogMap.put("reqSubType", "getOperatorList");
@@ -311,18 +311,6 @@ public class OperatorServiceImpl implements OperatorService {
 	}
 
 	@Override
-	public List<Operator> getOperatorListAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Circle> getOperatorList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<Circle> selectTownFromCircle(HashMap<String,String> param) {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		return operatorMapper.selectTownFromCircle(param);
@@ -332,6 +320,12 @@ public class OperatorServiceImpl implements OperatorService {
 	public int selectTownFromCircleCount(HashMap<String, String> param) {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		return operatorMapper.selectTownFromCircleCount(param);
+	}
+
+	@Override
+	public List<Operator> getGradeListAll() {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectGradeListAll();
 	}
 	
 }

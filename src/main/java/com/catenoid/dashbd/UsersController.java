@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.OperatorService;
@@ -46,17 +47,17 @@ public class UsersController {
 	 * 사용자 관리 페이지 이동
 	 */
 	@RequestMapping(value = "/resources/user.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String getUserMgmt(
-			@RequestParam(value = "isBack", required = false) Boolean isBack,
-			ModelMap modelMap) {
+	public String getUserMgmt(@RequestParam(value = "isBack", required = false) Boolean isBack, ModelMap modelMap) {
 		logger.info("-> [isBack = {}]", isBack);
 	
 		modelMap.addAttribute("isBack", isBack == null ? false : isBack);
 		
-		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
-		modelMap.addAttribute("operatorList", operatorList);
+		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
+		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
 		
-		logger.info("<- [operatorListSize = {}]", operatorList.size());
+		modelMap.addAttribute("gradeList", gradeList);
+		modelMap.addAttribute("circleList", circleList);
+		
 		return "user/userMgmt";
 	}
 	
@@ -64,21 +65,20 @@ public class UsersController {
 	 * 사용자 관리 Form 페이지 이동
 	 */
 	@RequestMapping(value = "/resources/userform.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String getLogin(
-			@RequestParam(value = "flag", required = false) String flag, // 등록, 상세, 수정 구분
-			@RequestParam(value = "userId", required = false) String userId,
-			Model model) {
+	public String getLogin(@RequestParam(value = "flag", required = false) String flag, // 등록, 상세, 수정 구분
+						   @RequestParam(value = "userId", required = false) String userId,
+						   Model model) {
 		logger.info("-> [flag = {}], [userId = {}]", flag, userId);
 		
 		model.addAttribute("flag", flag);
 		
-		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
-		model.addAttribute("operatorList", operatorList);
-		
-		if (userId != null)
-			model.addAttribute("userId", userId); // 상세, 수정 구분 용
-		
-		logger.info("<- [flag = {}], [operatorListSize = {}]", flag, operatorList.size());
+//		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
+//		model.addAttribute("operatorList", operatorList);
+//		
+//		if (userId != null)
+//			model.addAttribute("userId", userId); // 상세, 수정 구분 용
+//		
+//		logger.info("<- [flag = {}], [operatorListSize = {}]", flag, operatorList.size());
 		return "user/userMgmtForm";
 	}
 	

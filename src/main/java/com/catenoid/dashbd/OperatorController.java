@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.service.OperatorService;
+import com.catenoid.dashbd.service.PermissionService;
 
 /**
  * Operator 관리 Controller
@@ -36,15 +38,18 @@ public class OperatorController {
 	
 	@Autowired
 	private OperatorService operatorServiceImpl;
-	
+	@Autowired
+	private PermissionService permissionServiceImpl;
 	/**
 	 * Operator 관리 페이지 이동
 	 */
 	@RequestMapping(value = "/resources/operator.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public String getOperatorMgmt(Model model) {
-		logger.info("-> []");
-		//circle 리스트 가져오기
+		
+		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
 		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+
+		model.addAttribute("permissionList", permissionList);
 		model.addAttribute("circleList", circleList);
 		return "operator/operatorMgmt";
 	}

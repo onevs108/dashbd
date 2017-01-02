@@ -69,7 +69,7 @@ public class BmscController {
 		try {
 			logger.info("-> []");
 			
-			List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
+			List<Operator> operatorList = operatorServiceImpl.getGradeListAll();
 			modelMap.addAttribute("operatorList", operatorList);
 			syslogMap.put("reqType", "BM-SC Mgmt");
 			syslogMap.put("reqSubType", "getBmscMgmt");

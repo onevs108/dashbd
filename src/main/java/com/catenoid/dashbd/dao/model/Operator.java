@@ -12,6 +12,8 @@ public class Operator {
     private String name;
     
     private String description;
+    
+    private String permission;
 
     private Date createdAt;
 
@@ -43,7 +45,15 @@ public class Operator {
         this.description = description == null ? null : description.trim();
     }
 
-    public Date getCreatedAt() {
+    public String getPermission() {
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+		this.permission = permission;
+	}
+
+	public Date getCreatedAt() {
         return createdAt;
     }
 
@@ -73,6 +83,7 @@ public class Operator {
 		jsonResult.put("id", id);
 		jsonResult.put("name", name);
 		jsonResult.put("description", description);
+		jsonResult.put("permission", permission);
 		jsonResult.put("createdAt", Utils.getFormatDateTime(createdAt, "yyyy-MM-dd HH:mm:ss"));
 		jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
 		return jsonResult;

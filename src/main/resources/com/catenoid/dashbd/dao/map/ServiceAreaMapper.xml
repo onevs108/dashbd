@@ -469,7 +469,7 @@
 	
 	<select id="getServiceAreaOperator" resultMap="OperatorServiceArea" parameterType="com.catenoid.dashbd.dao.model.OperatorSearchParam" >
 		select
-			id, name, description, created_at, updated_at
+			id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt
 			, (select count(*) from operator where 1 = 1) as totalCount
 		from 
 			operator

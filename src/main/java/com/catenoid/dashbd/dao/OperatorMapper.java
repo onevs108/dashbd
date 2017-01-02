@@ -25,7 +25,7 @@ public interface OperatorMapper {
     int updateByPrimaryKeySelective(Operator record);
     int updateByPrimaryKey(Operator record);
     List<Circle> selectOperatorListAll();
-    List<Operator> selectGradeListAll(Map<String, Object> map);
+    List<Operator> selectGradeListAll();
     List<Operator> selectOperatorList(Map<String, Object> map);
     int selectOperatorListCount();
     int insertOperator(Operator operator);
@@ -36,5 +36,6 @@ public interface OperatorMapper {
 	List<Circle> selectCircleListAll();
 	List<Circle> selectTownFromCircle(HashMap<String, String> param);
 	int selectTownFromCircleCount(HashMap<String, String> param);
+	List<Operator> selectGradeList(Map<String, Object> map);
 	
 }

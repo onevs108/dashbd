@@ -13,6 +13,7 @@
 <link href="css/animate.css" rel="stylesheet">
 <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
 <link href="css/custom.css" rel="stylesheet">
+<link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 
 <script src="js/jquery-2.1.1.js"></script>
@@ -31,7 +32,28 @@
 		$("#circleSelect").on("change", function(e){
 			getOperatorList2(this.value);
 		});
+		
+		$("input[name='permission']").click(checkSuperAdmin);
+		$("input[name='permission2']").click(checkSuperAdmin);
+		
 	});
+	
+	function checkSuperAdmin() {
+		var selector = "permission"
+		if(this.name == "permission2") {
+			selector += "2";
+		}
+		if(this.value == "13") {
+			if($(this).is(":checked")) {
+				$("input[name='"+selector+"']").attr("disabled", "disabled");
+				$("input[name='"+selector+"']").prop("checked", false);
+				$(this).prop("checked", true);
+	 			this.removeAttribute("disabled");
+			}else{
+				$("input[name='"+selector+"']").removeAttr("disabled", "disabled");	
+			}
+		}
+	}
 	
 </script>
 </head>
@@ -174,6 +196,17 @@
 	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
 	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description" style="height:200px"></div>
 	                                                    </div>
+	                                                    <div class="form-group">
+	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label>
+	                                                        <div class="col-sm-8">
+	                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status">
+	                                                        	<div class="checkbox checkbox-primary">
+																	<input type="checkbox" name="permission" value="${row.id}">
+																	<label for="checkbox${status.count}"> ${row.name}</label>
+																</div>
+																</c:forEach>
+	                                                        </div>
+	                                                    </div>
 	                                                </form>
 	                                            </div>
 	                                            <div class="modal-footer">
@@ -232,6 +265,17 @@
 	                                                    <div class="form-group">
 	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
 	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description2" style="height:200px"></div>
+	                                                    </div>
+	                                                    <div class="form-group">
+	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label>
+	                                                        <div class="col-sm-8">
+	                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status">
+	                                                        	<div class="checkbox checkbox-primary">
+																	<input type="checkbox" name="permission2" value="${row.id}">
+																	<label for="checkbox${status.count}"> ${row.name}</label>
+																</div>
+																</c:forEach>
+	                                                        </div>
 	                                                    </div>
 	                                                </form>
 	                                            </div>

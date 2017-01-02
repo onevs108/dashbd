@@ -47,7 +47,7 @@ public class PermissionController {
 		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
 		modelMap.addAttribute("permissionList", permissionList);
 		
-		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
+		List<Operator> operatorList = operatorServiceImpl.getGradeListAll();
 		modelMap.addAttribute("operatorList", operatorList);
 		
 		logger.info("<- [permissionListSize = {}], [operatorListSize = {}]", permissionList.size(), operatorList.size());

@@ -208,13 +208,13 @@
 	
 	<select id="selectTownFromCircle" parameterType="HashMap" resultType="com.catenoid.dashbd.dao.model.Circle">
 		SELECT 
-			id, circle_name, town_name, town_code, latitude, longitude, description, created_at as createdAt, updated_at as updatedAt
+			id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt
 		FROM ( SELECT
 				   @ROWNUM := @ROWNUM + 1 AS rownum,
-				   id, circle_name, town_name, town_code, latitude, longitude, description, created_at, updated_at
+				   id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at, updated_at
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( SELECT
-						 id, circle_name, town_name, town_code, latitude, longitude, description, created_at, updated_at
+						 id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at, updated_at
 					  FROM operator
 					  WHERE circle_name = #{circleName}
 					  ORDER BY <if test="sort == null">id ASC</if>
@@ -235,19 +235,32 @@
 		ORDER BY length(circle_name) ASC, circle_name ASC
 	</select>
 	
+	<select id="selectGradeList" resultType="com.catenoid.dashbd.dao.model.Operator">
+		SELECT 
+			id,
+			name,
+			description,
+			permission,
+			created_at AS createdAt,
+			updated_at AS updatedAt
+		FROM grade
+		ORDER BY length(name) ASC, name ASC
+	</select>
+	
 	<select id="selectGradeListAll" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
 		SELECT 
 			id,
 			name,
 			description,
+			permission,
 			created_at AS createdAt,
 			updated_at AS updatedAt
 		FROM ( SELECT
 				   @ROWNUM := @ROWNUM + 1 AS rownum,
-				   id, name, description, created_at, updated_at
+				   id, name, description, permission, created_at, updated_at
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( SELECT
-						 id, name, description, created_at, updated_at
+						 id, name, description, permission, created_at, updated_at
 					  FROM grade
 					  ORDER BY <if test="sort == null">id ASC</if>
 					  		   <if test="sort != null">
@@ -302,6 +315,7 @@
 	    	id,
 			name,
 			description,
+			permission,
 			created_at AS createdAt,
 			updated_at AS updatedAt
 		FROM grade
@@ -310,23 +324,23 @@
 	
 	<select id="selectByOperatorName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
 	    SELECT
-	    	id, circle_name, town_name, town_code, latitude, longitude, description, created_at as createdAt, updated_at as updatedAt
+	    	id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt
 		FROM operator
 		WHERE town_name = #{operatorName}
 	</select>
 	
 	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
-		INSERT INTO operator(<if test="id != null">`id`,</if>`town_name`, `description`, `created_at`, `updated_at`)
-		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, NOW(), NOW())
+		INSERT INTO operator(<if test="id != null">`id`,</if>`town_name`, `description`, permission, `created_at`, `updated_at`)
+		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, #{permission}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
-		town_name = #{name}, description = #{description}, updated_at = NOW()
+		town_name = #{name}, description = #{description}, permission = #{permission}, updated_at = NOW()
 	</insert>
 	
 	<insert id="insertGrade" parameterType="com.catenoid.dashbd.dao.model.Operator">
-		INSERT INTO grade(<if test="id != null">`id`,</if>`name`, `description`, `created_at`, `updated_at`)
-		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, NOW(), NOW())
+		INSERT INTO grade(<if test="id != null">`id`,</if>`name`, `description`, permission, `created_at`, `updated_at`)
+		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, #{permission}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
-		name = #{name}, description = #{description}, updated_at = NOW()
+		name = #{name}, description = #{description}, permission = #{permission}, updated_at = NOW()
 	</insert>
 	
 	<delete id="deleteOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">

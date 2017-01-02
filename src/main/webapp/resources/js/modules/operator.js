@@ -41,6 +41,13 @@ function doAdd() {
 	
 	var operatorName = $('#form-operator-name').val();
 	var operatorDescription = $('#form-operator-description').val();
+	var permission = "";
+	var checkbox = $("input[name='permission']");
+	for(var i=0; i < checkbox.length; i++){
+		if($(checkbox[i]).is(":checked")){
+			permission += checkbox[i].value + ",";
+		}
+	}
 	
 	if (operatorName == null || operatorName.length == 0) {
 		alert('Please input the Group Name');
@@ -61,7 +68,8 @@ function doAdd() {
 	var data = {
 		id: operatorId, // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
 		name: operatorName,
-		description: operatorDescription
+		description: operatorDescription,
+		permission: permission
 	}
 	callInsert(data);
 }
@@ -72,6 +80,14 @@ function doAdd2() {
 	var circleName = $('#form-circle-name2').val();
 	var operatorName = $('#form-operator-name2').val();
 	var operatorDescription = $('#form-operator-description2').val();
+	
+	var permission = "";
+	var checkbox = $("input[name='permission2']");
+	for(var i=0; i < checkbox.length; i++){
+		if($(checkbox[i]).is(":checked")){
+			permission += checkbox[i].value + ",";
+		}
+	}
 	
 	if (operatorName == null || operatorName.length == 0) {
 		alert('Please input the Operator Name');
@@ -93,7 +109,8 @@ function doAdd2() {
 			id: operatorId, // Edit도 doAdd() 함수를 타기 때문에 글로벌 변수에 null을 세팅해 null을 준다.
 			circleName: circleName,
 			name: operatorName,
-			description: operatorDescription
+			description: operatorDescription,
+			permission: permission
 	}
 	callInsert2(data);
 }
@@ -110,12 +127,19 @@ function doModalCancel2() {
 	closeModal2();
 }
 
-function doEdit(id, name, description) {
+function doEdit(id, name, description, permission) {
 	$('#modal-title').html('Edit National Wise Group');
 	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다. 							
 	operatorId = id;
 	$('#form-operator-name').val(name);
 	$('#form-operator-description').val(description);
+	var checkbox = $("input[name='permission']");
+	var permissionArray = permission.split(",");
+	for(var i=0; i < checkbox.length; i++){
+		if(permissionArray.indexOf(checkbox[i].value) > -1){
+			$(checkbox[i]).prop("checked", true);
+		}
+	}
 	$('#form-modal').modal('show');
 }
 
@@ -126,6 +150,13 @@ function doEdit2(id, circleName, name, description) {
 	$('#form-circle-name2').val(circleName);
 	$('#form-operator-name2').val(name);
 	$('#form-operator-description2').val(description);
+	var checkbox = $("input[name='permission2']");
+	var permissionArray = permission.split(",");
+	for(var i=0; i < checkbox.length; i++){
+		if(permissionArray.indexOf(checkbox[i].value) > -1){
+			$(checkbox[i]).prop("checked", true);
+		}
+	}
 	$('#form-modal2').modal('show');
 }
 
@@ -355,7 +386,7 @@ function getOperatorList() {
 			sortable: false,
 			formatter: function(value, row, index) {
 				if(row.id > 3){
-					var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.description + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+					var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.description + '\', \'' + row.permission + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 					+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				}
 				return html;
@@ -429,11 +460,13 @@ function getOperatorList2(circleName) {
 function closeModal() {
 	$('#form-operator-name').val('');
 	$('#form-operator-description').val('');
+	$("input[name='permission']").prop("checked", false);
 	$('#form-modal').modal('hide');
 }
 
 function closeModal2() {
 	$('#form-operator-name2').val('');
 	$('#form-operator-description2').val('');
+	$("input[name='permission2']").prop("checked", false);
 	$('#form-modal2').modal('hide');
 }
