@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
 
+import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Users;
 
 @Service
@@ -18,4 +19,5 @@ public interface UserService {
 	public boolean insertUser(Users user);
 	public boolean deleteUser(Users user);
 	public void insertSystemAjaxLog(String reqType, String reqSubType, String reqUrl, String reqCode, String reqMsg);
+	public List<Circle> selectTownFromCircle(String circleName);
 }

@@ -1,5 +1,6 @@
 package com.catenoid.dashbd.dao;
 
+import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.dao.model.UsersExample;
@@ -59,4 +60,6 @@ public interface UsersMapper {
     int insertSystemAjaxLog(Map<String, Object> map);
     
     int insertSystemInterFaceLog(Map<String, String> map);
+
+	List<Circle> selectTownFromCircle(String circleName);
 }

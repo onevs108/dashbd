@@ -60,6 +60,34 @@ function initForm(flag, userId) {
 	}
 }
 
+function getTownListFromCircle(circleName) {
+	$.ajax({
+		url: '/dashbd/api/user/getTownFromCircle.do',
+		method: 'POST',
+		dataType: 'json',
+		data: {
+			circleName: circleName
+		},
+		success: function(data, textStatus, jqXHR) {
+			if (data.result) {
+				var html = "";
+				for (var i = 0; i < data.result.length; i++) {
+					html += "<option value='"+data.result[i].id+"'>"+data.result[i].town_name+"</option>";
+				}
+				$("#form-circle").html(html);
+			}
+			else {
+				alert("Fail! Please");
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown);
+			checkUserId = false;
+			return false;
+		}
+	});	
+}
+
 function changeGrade() {
 	var grade = $('#form-grade').val();
 	
@@ -127,7 +155,13 @@ function getUserInfo(userId) {
 }
 
 function setElements(user) {
-	$('#form-operator-id').val(user.operatorId);
+	if(user.grade == '9999'){$("#circleArea").show();}
+	$('#form-operator-id').val(user.circleName);
+	getTownListFromCircle(user.circleName);
+	setTimeout(() => {
+		$('#form-circle').val(user.operatorId);
+	}, 200);
+	$('#form-circle').val(user.operatorId);
 	$('#form-user-id').val(user.userId);
 	$('#form-password').val(user.password);
 	$('#form-confirm-password').val(user.password);
@@ -138,7 +172,8 @@ function setElements(user) {
 	$('#form-modified-date').val(user.updatedAt);
 	$('#form-grade').val(user.grade);
 	$('#form-memo').val(user.memo);
-	if(user.grade == 0){
+	
+	if(user.grade == 13){
 		$('#checkbox-permission-user').attr("checked", true);
 		$('#checkbox-permission-permission').attr("checked", true);
 		$('#checkbox-permission-contents').attr("checked", true);
@@ -188,7 +223,7 @@ function setElements(user) {
 }
 
 function doInsert() {
-	var operatorId = $('#form-operator-id').val();
+	var operatorId = $('#form-circle').val();
 	var userId = $('#form-user-id').val();
 	var password = $('#form-password').val();
 	var confirmPassword = $('#form-confirm-password').val();

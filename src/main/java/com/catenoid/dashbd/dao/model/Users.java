@@ -33,6 +33,8 @@ public class Users {
     private String gradeName;
     
     private String memo;
+    
+    private String circleName;
 
     private Date createdAt;
 
@@ -50,6 +52,14 @@ public class Users {
 		this.lastName = lastName;
 		this.department = department;
 		this.grade = grade;
+	}
+    
+	public String getCircleName() {
+		return circleName;
+	}
+
+	public void setCircleName(String circleName) {
+		this.circleName = circleName;
 	}
 
 	public Integer getId() {
@@ -187,6 +197,7 @@ public class Users {
     	jsonResult.put("grade", grade);
     	jsonResult.put("gradeName", gradeName);
     	jsonResult.put("memo", memo);
+    	jsonResult.put("circleName", circleName);
     	
     	JSONArray jsonArray = new JSONArray();
     	for (Permission perms : permissions)
@@ -210,6 +221,7 @@ public class Users {
 				+ ", grade=" + grade
 				+ ", gradeName=" + gradeName
 				+ ", memo=" + memo
+				+ ", circleName=" + circleName
 				+ ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt
 				+ ", permissionsSize=" + (permissions == null ? null : permissions.size())

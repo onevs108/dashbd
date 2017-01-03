@@ -27,14 +27,17 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			getMenuList('USER_MGMT');
-			initForm('${flag}', '${userId}');
 			$("#form-grade").on("change", function(e){
-				if(e.target.value == "3"){
+				if(e.target.value == "9999"){
 					$("#circleArea").show();
 				}else{
 					$("#circleArea").hide();
 				}
 			});
+			$("#form-operator-id").on("change", function(e){
+				getTownListFromCircle(this.selectedOptions.item(0).text);
+			});
+			initForm('${flag}', '${userId}');
 		});
 	</script>
 </head>
@@ -167,53 +170,39 @@
                             	<div class="form-group">
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Grade</label>
 									<div class="col-sm-3">
-                                    	<select class="input-sm form-control input-s-sm" id="form-grade" <c:if test="${USER.grade != 0}">disabled="disabled"</c:if>>
-                                    		<option value="0" selected="selected">Administrator Group</option>
-                                    		<option value="1">National Operator Group</option>
-                                    		<option value="2">System Operator Group</option>
-                                    		<option value="3">Circle Group</option>
+                                    	<select class="input-sm form-control input-s-sm" id="form-grade" <c:if test="${USER.grade != 13}">disabled="disabled"</c:if>>
+											<c:forEach var="row" items="${gradeList}">
+												<option value="${row.id}">${row.name}</option>
+											</c:forEach>
 										</select>
 	                                </div>
                                 </div>
+                                <!-- Circle 가입 부분 -->
                                 <div id="circleArea" class="form-group" style="display: none;">
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Select Circle</label>
                                     <div class="col-sm-3">
                                     	<c:choose>
-											<c:when test="${USER.grade == 3}">
-												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm" disabled="disabled">
-													<c:forEach items="${operatorList}" var="operator">
+											<c:when test="${USER.grade == 13 or USER.grade == 9999}"> <!-- admin 또는 Circle 소속일때 -->
+												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm">
+													<option value="">Please Select</option>
+													<c:forEach items="${circleList}" var="row">
 														<c:choose>
 															<c:when test="${USER.operatorId == operator.id}">
-																<option value="${operator.id}" selected="selected">${operator.name}</option>
+																<option value="${row.circle_name}" selected="selected">${row.circle_name}</option>
 															</c:when>
 															<c:otherwise>
-																<option value="${operator.id}">${operator.name}</option>
+																<option value="${row.circle_name}">${row.circle_name}</option>
 															</c:otherwise>
 														</c:choose>
 													</c:forEach>
 												</select>
 											</c:when>
-											<c:otherwise>
-												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm">
-													<c:forEach items="${operatorList}" var="operator">
-														<option value="${operator.id}">${operator.name}</option>
-													</c:forEach>
-												</select>
-											</c:otherwise>
 										</c:choose>
-<!-- 	                                    <select class="input-sm form-control input-s-sm" id="form-operator-id"> -->
-<%-- 	                                    	<c:forEach items="${operatorList}" var="operator"> --%>
-<%-- 												<option value="${operator.id}">${operator.name}</option> --%>
-<%-- 											</c:forEach> --%>
-<!-- 	                                    </select> -->
                                     </div>
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Circle Group</label>
 									<div class="col-sm-3">
-                                    	<select class="input-sm form-control input-s-sm" id="form-circle" <c:if test="${USER.grade != 0}">disabled="disabled"</c:if>>
-                                    		<option value="0" selected="selected">Administrator Group</option>
-                                    		<option value="1">National Operator Group</option>
-                                    		<option value="2">System Operator Group</option>
-                                    		<option value="3">Circle Group</option>
+                                    	<select class="input-sm form-control input-s-sm" id="form-circle" <c:if test="${USER.grade != 13}">disabled="disabled"</c:if>>
+                                    		
 										</select>
 	                                </div>
                                 </div>

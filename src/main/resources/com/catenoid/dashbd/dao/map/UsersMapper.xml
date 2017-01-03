@@ -13,6 +13,7 @@
     <result column="grade" property="grade" jdbcType="INTEGER" />
     <result column="grade_name" property="gradeName" jdbcType="VARCHAR" />
     <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="circle_name" property="circleName" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -133,14 +134,14 @@
 	<select id="selectUserList" resultMap="BaseResultMap" parameterType="Map">
 	    SELECT
 	    	id, user_id, ifnull(operator_id, '') as operator_id, ifnull(operator_name, '') as operator_name, password, first_name, last_name, department, 
-	    	grade, created_at, updated_at, (select grade_name from grade where id = grade) as grade_name
+	    	grade, created_at, updated_at, (select name from grade where id = grade) as grade_name
     	FROM ( SELECT
 				   @ROWNUM := @ROWNUM + 1 AS rownum,
 				   id, user_id, operator_id, operator_name, password, first_name, last_name, department, grade, created_at, updated_at
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( SELECT
 						 U.id, U.user_id, U.operator_id, U.password, U.first_name, U.last_name, U.department, U.grade, U.created_at, U.updated_at,
-						 O.name AS operator_name, (select grade_name from grade where id = U.grade) as grade_name
+						 O.circle_name AS operator_name, (select name from grade where id = U.grade) as grade_name
 					  FROM users U LEFT JOIN operator O ON U.operator_id = O.id
 					  <choose>
 					      <when test="searchKeyword != null">
@@ -149,35 +150,35 @@
 								          OR user_id LIKE CONCAT('%', #{searchKeyword}, '%')
 								          OR department LIKE CONCAT('%', #{searchKeyword}, '%') )
 								  <if test="operatorId != null">
-									  AND operator_id = #{operatorId}
+									  AND grade = #{operatorId}
 								  </if>
 							  </if>
 							  <if test="searchColumn.equals('name')">
 							  	  WHERE ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
 								  <if test="operatorId != null">
-									  AND operator_id = #{operatorId}
+									  AND grade = #{operatorId}
 								  </if>
 							  </if>
 							  <if test="searchColumn.equals('userId')">
 							  	  WHERE user_id LIKE CONCAT('%', #{searchKeyword}, '%')
 								  <if test="operatorId != null">
-									  AND operator_id = #{operatorId}
+									  AND grade = #{operatorId}
 								  </if>
 							  </if>
 							  <if test="searchColumn.equals('department')">
 							  	  WHERE department LIKE CONCAT('%', #{searchKeyword}, '%')
 							  	  <if test="operatorId != null">
-									  AND operator_id = #{operatorId}
+									  AND grade = #{operatorId}
 								  </if>
 							  </if>
 					      </when>
 					      <otherwise>
 					          <if test="operatorId != null">
-					              WHERE operator_id = #{operatorId}
+					              WHERE grade = #{operatorId}
 					          </if>
 					      </otherwise>
 					  </choose>
-					  ORDER BY <if test="sort == null">operator_id ASC</if>
+					  ORDER BY <if test="sort == null">grade ASC</if>
 					  		   <if test="sort != null">
 					  		       <if test="sort == 'operatorName'">O.name</if>
 					  		       <if test="sort == 'userId'">U.user_id</if>
@@ -186,8 +187,10 @@
 					  		       <if test="sort == 'department'">U.department</if>
 					  		       ${order}
 					  		   </if> ) T
+					  WHERE user_id != 'admin'
 			  ) R
 		WHERE rownum BETWEEN #{start} AND #{end}
+		
 	</select>
 	
 	<select id="selectUserListCount" resultType="Integer" parameterType="Map">
@@ -238,7 +241,7 @@
   </select>
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="String" >
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List" />, (select max(circle_name) from operator where id = users.operator_id) AS circle_name
     from users
     where user_id = #{userId}
   </select>
@@ -501,6 +504,12 @@
 	    `created_at` AS `created_at`,
 	    `updated_at` AS `updated_at`
     from permission P
+  </select>
+  
+  <select id="selectTownFromCircle" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Circle">
+  	select
+  		id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt 
+	from operator where circle_name = #{circle_name}
   </select>
   
   <select id="selectPermissionsByUserId" resultType="com.catenoid.dashbd.dao.model.Permission" parameterType="String">

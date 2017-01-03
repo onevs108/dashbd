@@ -104,13 +104,13 @@ function getUserList(isBack, isSearch) {
 		columns: [{
 			field: 'gradeName',
 			title: 'Grade',
-			width: '17%',
+			width: '20%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
 		}, {
 			field: 'operatorName',
-			title: 'OperatorName',
+			title: 'CircleName',
 			width: '13%',
 			align: 'center',
 			valign: 'middle',
@@ -146,7 +146,7 @@ function getUserList(isBack, isSearch) {
 		}, {
 			field: 'command',
 			title: 'Command',
-			width: '25%',
+			width: '20%',
 			align: 'right',
 			valign: 'middle',
 			sortable: false,

@@ -5,7 +5,7 @@ public class Const {
 	/**
 	 * 사용자 등급
 	 */
-	public static final int USER_GRADE_ADMIN = 0; // 슈퍼
+	public static final int USER_GRADE_ADMIN = 13; // 슈퍼
 	public static final int USER_GRADE_USER = 1; // 일반
 	
 	/**

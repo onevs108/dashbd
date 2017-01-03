@@ -156,11 +156,11 @@
                             <div class="row" id="search-area">
                             	<div class="col-sm-3">
 									<c:choose>
-										<c:when test="${USER.grade == 0}">
+										<c:when test="${USER.grade == 13}">
 											<select name="status" id="search-operator-id" class="input-sm form-control input-s-sm">
 												<option value="">All</option>
-												<c:forEach items="${operatorList}" var="operator">
-													<option value="${operator.id}">${operator.name}</option>
+												<c:forEach var="row" items="${gradeList}">
+													<option value="${row.id}">${row.name}</option>
 												</c:forEach>
 											</select>
 										</c:when>

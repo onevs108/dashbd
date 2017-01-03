@@ -214,7 +214,7 @@
                                     <div class="form-group">
                                         <label class="control-label" for="status">Operator</label>
                                         <c:choose>
-											<c:when test="${USER.grade == 0}">
+											<c:when test="${USER.grade == 13}">
 												<select name="status" id="operator" class="form-control">
 													<c:forEach items="${OperatorList}" var="operator">
 														<option value="${operator.id}">${operator.name}</option>

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.catenoid.dashbd.dao.UsersMapper;
+import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.UserService;
 
@@ -165,5 +166,11 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			logger.error("~~ An error occurred!", e);
 		}
+	}
+
+	@Override
+	public List<Circle> selectTownFromCircle(String circleName) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		return usersMapper.selectTownFromCircle(circleName);
 	}
 }

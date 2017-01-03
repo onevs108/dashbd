@@ -1,5 +1,8 @@
 package com.catenoid.dashbd;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,13 +75,15 @@ public class UsersController {
 		
 		model.addAttribute("flag", flag);
 		
-//		List<Operator> operatorList = operatorServiceImpl.getOperatorListAll();
-//		model.addAttribute("operatorList", operatorList);
-//		
-//		if (userId != null)
-//			model.addAttribute("userId", userId); // 상세, 수정 구분 용
-//		
-//		logger.info("<- [flag = {}], [operatorListSize = {}]", flag, operatorList.size());
+		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
+		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+		
+		model.addAttribute("gradeList", gradeList);
+		model.addAttribute("circleList", circleList);
+		
+		if (userId != null)
+			model.addAttribute("userId", userId); // 상세, 수정 구분 용
+		
 		return "user/userMgmtForm";
 	}
 	
@@ -135,8 +140,7 @@ public class UsersController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/user/info.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
-	public String postUserInfo(
-			@RequestParam(value = "userId", required = true) String userId) {
+	public String postUserInfo(@RequestParam(value = "userId", required = true) String userId) {
 		logger.info("-> [userId = {}]", userId);
 		
 		JSONObject jsonResult = new JSONObject();
@@ -259,5 +263,40 @@ public class UsersController {
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
+	}
+	
+	/**
+	 * TownList 가져오기
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/user/getTownFromCircle.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getTownFromCircle(@RequestParam(value = "circleName", required = true) String circleName) {
+		logger.info("-> [circleName = {}]", circleName);
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		List<Circle> townList = userServiceImpl.selectTownFromCircle(circleName);
+		JSONArray array = new JSONArray();
+		for(int i = 0; i < townList.size(); i++) {
+			Circle data = townList.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("id", data.getId());
+			obj.put("circle_name", data.getCircle_name());
+			obj.put("town_name", data.getTown_name());
+			obj.put("town_code", data.getTown_code());
+			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
+			array.add(obj);
+		}
+		jsonResult.put("result", array);
+		return jsonResult.toJSONString();
+	}
+	
+	private String getFormatDateTime(Date date, String format) {
+		if(date == null) return "";
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return new SimpleDateFormat(format).format(cal.getTime());
 	}
 }

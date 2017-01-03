@@ -235,7 +235,7 @@
 		ORDER BY length(circle_name) ASC, circle_name ASC
 	</select>
 	
-	<select id="selectGradeList" resultType="com.catenoid.dashbd.dao.model.Operator">
+	<select id="selectGradeListAll" resultType="com.catenoid.dashbd.dao.model.Operator">
 		SELECT 
 			id,
 			name,
@@ -244,10 +244,10 @@
 			created_at AS createdAt,
 			updated_at AS updatedAt
 		FROM grade
-		ORDER BY length(name) ASC, name ASC
+		ORDER BY id ASC
 	</select>
 	
-	<select id="selectGradeListAll" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
+	<select id="selectGradeList" parameterType="Map" resultType="com.catenoid.dashbd.dao.model.Operator">
 		SELECT 
 			id,
 			name,
