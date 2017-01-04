@@ -60,7 +60,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		// Super Admin일 경우
-		if (user.getPermissions().size() == 1 && user.getPermissions().get(0).getId() == 13) {
+		if (permission.size() != 0) {
 			HttpSession session = request.getSession(false);
 			session.setAttribute("USER", user);
 			
@@ -75,7 +75,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			
 			response.sendRedirect("/dashbd/resources/main.do");
 		}
-		else { // 선택한 operator와 실제 operator가 다른 경우
+		else { // 부여된 권한이 없는 경우
 			logger.info("<- [redirect = {}] [cause = {}]", "/dashbd/loginfail.do", Const.LOGIN_FAIL_MISMATCH);
 
 			map.put("reqType", "Login");

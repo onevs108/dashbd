@@ -124,6 +124,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/check.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
+			operatorName.replaceAll("\n", "").replaceAll("\t", "");
 			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.selectByOperatorName(operatorName) == null ? true : false;
 		} catch (Exception e) {

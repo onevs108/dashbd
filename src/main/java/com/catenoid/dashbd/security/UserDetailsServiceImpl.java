@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 	
-	// TODO @Autowired 적용이 안된다... 추후 원인파악할 것
+	// TODO @Autowired 적용이 안된다... 추후 원인파악할 것.
 	private SqlSession sqlSession;
 	
 	public void setSqlSession(SqlSession sqlSession) {
@@ -49,7 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			authorities = new ArrayList<SimpleGrantedAuthority>();
 			if (user.getGrade() == Const.USER_GRADE_ADMIN)
 				authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-			else if (user.getGrade() == Const.USER_GRADE_USER) {
+			else{
 				for (Permission permission : permissionsOfUser)
 					authorities.add(new SimpleGrantedAuthority(permission.getRole()));
 			}

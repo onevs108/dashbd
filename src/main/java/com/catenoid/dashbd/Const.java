@@ -7,6 +7,7 @@ public class Const {
 	 */
 	public static final int USER_GRADE_ADMIN = 13; // 슈퍼
 	public static final int USER_GRADE_USER = 1; // 일반
+	public static final int USER_GRADE_CIRCLE = 9999; // 일반
 	
 	/**
 	 * 로그인 관련

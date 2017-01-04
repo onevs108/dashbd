@@ -35,7 +35,7 @@
         <logout invalidate-session="true" logout-url="/out" logout-success-url="/logout.do" delete-cookies="JSESSIONID" />
         
         <session-management>
-			<concurrency-control expired-url="/sessiontimeout.do" max-sessions="10" />
+			<concurrency-control expired-url="/sessiontimeout.do" max-sessions="100" />
 		</session-management>
 		
         <!-- check session time out with ajax -->

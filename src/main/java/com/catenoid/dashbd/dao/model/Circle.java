@@ -117,6 +117,7 @@ public class Circle {
 		jsonResult.put("latitude", latitude);
 		jsonResult.put("longitude", longitude);
 		jsonResult.put("description", description);
+		jsonResult.put("permission", permission);
 		jsonResult.put("createdAt", Utils.getFormatDateTime(createdAt, "yyyy-MM-dd HH:mm:ss"));
 		jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
 		return jsonResult;
@@ -126,6 +127,6 @@ public class Circle {
 	public String toString() {
 		return "Operator [id=" + id + ", circle_name=" + circle_name + ", town_name=" + town_name
 				+ ", town_code=" + town_code + ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", description=" + description + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", description=" + description + ", permission=" + permission + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 }

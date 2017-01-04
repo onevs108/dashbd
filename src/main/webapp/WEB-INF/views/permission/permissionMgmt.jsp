@@ -151,7 +151,7 @@
 		                                	<label class="col-sm-2 control-label">Operator</label>
 		                                    <div class="col-sm-6">
 			                                	<c:choose>
-													<c:when test="${USER.grade == 0}">
+													<c:when test="${USER.grade == 13}">
 														<select name="status" id="search-operator-id" class="form-control">
 															<c:forEach items="${operatorList}" var="operator">
 																<option value="${operator.id}">${operator.name}</option>

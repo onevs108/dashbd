@@ -40,6 +40,7 @@ function initForm(flag, userId) {
 		$('#form-registered-date').attr("disabled", "disabled");
 		$('#form-modified-date').attr("disabled", "disabled");
 		$('#form-grade').attr("disabled", "disabled");
+		$('#form-circle').attr("disabled", "disabled");
 		
 		$('#save-btn').hide();
 		$('#cancel-btn').hide();

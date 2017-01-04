@@ -143,7 +143,7 @@ function doEdit(id, name, description, permission) {
 	$('#form-modal').modal('show');
 }
 
-function doEdit2(id, circleName, name, description) {
+function doEdit2(id, circleName, name, description, permission) {
 	$('#modal-title2').html('Edit Regional Group');
 	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다. 							
 	operatorId = id;
@@ -449,7 +449,7 @@ function getOperatorList2(circleName) {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" onclick="doEdit2(\'' + row.id + '\', \'' + row.circle_name + '\', \'' + row.town_name + '\', \'' + row.description + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+				var html = '<button type="button" onclick="doEdit2(\'' + row.id + '\', \'' + row.circle_name + '\', \'' + row.town_name + '\', \'' + row.description + '\', \'' + row.permission + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 				+ '<button type="button" onclick="doDelete2(\'' + row.id + '\', \'' + row.town_name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}

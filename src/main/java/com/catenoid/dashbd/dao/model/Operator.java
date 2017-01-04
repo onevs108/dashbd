@@ -91,7 +91,7 @@ public class Operator {
 
 	@Override
 	public String toString() {
-		return "Operator [id=" + id + ", name=" + name + ", description=" + description + ", createdAt=" + createdAt
+		return "Operator [id=" + id + ", name=" + name + ", description=" + description + ", permission=" + permission + ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt + "]";
 	}
 }

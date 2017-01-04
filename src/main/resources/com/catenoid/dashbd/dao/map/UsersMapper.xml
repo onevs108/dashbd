@@ -180,7 +180,8 @@
 					  </choose>
 					  ORDER BY <if test="sort == null">grade ASC</if>
 					  		   <if test="sort != null">
-					  		       <if test="sort == 'operatorName'">O.name</if>
+					  		       <if test="sort == 'gradeName'">grade_name</if>
+					  		       <if test="sort == 'operatorName'">O.circle_name</if>
 					  		       <if test="sort == 'userId'">U.user_id</if>
 					  		       <if test="sort == 'firstName'">U.first_name</if>
 					  		       <if test="sort == 'lastName'">U.last_name</if>
@@ -468,7 +469,7 @@
 					      AND user_id LIKE CONCAT('%', #{searchUserId}, '%')
 					  </if>
 					  <if test="searchOperatorId != null">
-					      AND operator_id = #{searchOperatorId}
+					      AND grade = #{searchOperatorId}
 					  </if>
 				   	  ORDER BY <if test="sort == null">user_id ASC</if>
 					  		   <if test="sort != null">
