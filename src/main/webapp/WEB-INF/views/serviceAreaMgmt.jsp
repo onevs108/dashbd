@@ -25,8 +25,7 @@
 	<script src="app-js/apps/svc_area_management.js"></script>
 	<script src="app-js/apps/svc_area_mgmt_map.js"></script>
 	
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap"
-        async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo&callback=initMap" async defer></script>
         
 	<script src="js/common.js"></script>
     

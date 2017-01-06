@@ -30,6 +30,7 @@ public class Const {
 	public static final String ROLE_CONTENTS_MGMT 		= "ROLE_CONTENTS_MGMT";
 	public static final String ROLE_OPERATOR_MGMT 		= "ROLE_OPERATOR_MGMT";
 	public static final String ROLE_BMSC_MGMT			= "ROLE_BMSC_MGMT";
+	public static final String ROLE_CIRCLE_MGMT			= "ROLE_CIRCLE_MGMT";
 	public static final String ROLE_SERVICE_AREA_MGMT 	= "ROLE_SERVICE_AREA_MGMT";
 	public static final String ROLE_ENB_MGMT 			= "ROLE_ENB_MGMT";
 	public static final String ROLE_SCHEDULE_MGMT 		= "ROLE_SCHEDULE_MGMT";

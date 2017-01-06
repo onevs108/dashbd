@@ -150,12 +150,12 @@ var markers = [];
 var enb_markers = [];
 var enbInfoWindows = {};
 var menuInfoWindows = {};
-var default_lat = 36.869872;
-var default_lng = 127.838728;
-var default_zoom = 7;
+var default_lat = 24;
+var default_lng = 82.975;
+var default_zoom = 5;
 var activeInfoWindow;
-var default_center_lat = 37.551968;
-var default_center_lng = 126.991696;
+var default_center_lat = 24;
+var default_center_lng = 83.975;
 
 var shiftPressed = false;
 var ctlPressed = false;
@@ -213,6 +213,25 @@ default_enb_table += "</tfoot>";
 default_enb_table += "</table>";
 
 var selectedENBsCount = 0;
+
+var citymap = {
+  chicago: {
+    center: {lat: 24, lng: 84.629},		//위경도
+    population: 1500000					//원크기
+  },
+  newyork: {
+    center: {lat: 24, lng: 74.629},
+    population: 1500000
+  },
+  losangeles: {
+    center: {lat: 34.052, lng: -118.243},
+    population: 3857799
+  },
+  vancouver: {
+    center: {lat: 49.25, lng: -123.1},
+    population: 603502
+  }
+};
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -349,6 +368,7 @@ function initMap() {
 	// mouse drag end
 	
 	//alert($('#bmsc option:selected').val());
+	// 처음 로딩 시 지도에 표시해주는 부분
 	drawServiceAreaByBmSc($('#bmsc option:selected').val());
     $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
 }
@@ -440,7 +460,7 @@ function editServiceArea( operatorId, bmscId ) {
         }
 	});
 }
-function getSeviceAreaNotMapped( bmscId ) {
+function getSeviceAreaNotMapped(bmscId) {
 	
 	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
@@ -1255,29 +1275,45 @@ function drawServiceAreaByBmSc(bmscId) {
             var data = JSON.parse(responseData);
             var dataLen = data.length;
 
-            for(var i = 0; i < dataLen; i++) {
-            	if(area_positions[data[i].city]) {
+//            for(var i = 0; i < dataLen; i++) {
+//            	if(area_positions[data[i].city]) {
             		
-            		var marker = new MarkerWithLabel({
-						position: area_positions[data[i].city],
-						draggable: false,
-						raiseOnDrag: true,
-						map: map,
-						labelContent: '' + data[i].count,
-						labelAnchor: new google.maps.Point(22, 0),
-						labelClass: "labels", // the CSS class for the label
-						labelStyle: {opacity: 0.7},
-						title: data[i].city,
-						icon: {url: "/dashbd/resources/img/icon/enb_red_on.png"}
-            		});
+//            		var marker = new MarkerWithLabel({
+//						position: area_positions[data[i].city],
+//						draggable: false,
+//						raiseOnDrag: true,
+//						map: map,
+//						labelContent: '' + data[i].count,
+//						labelAnchor: new google.maps.Point(22, 0),
+//						labelClass: "labels", // the CSS class for the label
+//						labelStyle: {opacity: 0.7},
+//						title: data[i].city,
+//						icon: {url: "/dashbd/resources/img/icon/enb_red_on.png"}
+//            		});
+            		
+            		for (var city in citymap) {
+	        		    // Add the circle for this city to the map.
+	        		    var cityCircle = new google.maps.Circle({
+	        		      strokeColor: '#FF0000',
+	        		      strokeOpacity: 0.8,
+	        		      strokeWeight: 2,
+	        		      fillColor: '#FF0000',
+	        		      fillOpacity: 0.35,
+	        		      map: map,
+	        		      center: citymap[city].center,
+	        		      radius: Math.sqrt(citymap[city].population) * 100, 
+	        		    });
+	        		    
+	        		    cityCircle.addListener('click', function() {
+	        		    	alert("서비스 그룹 호출");
+//	            			getServiceGroupList();
+//	            				getServiceAreaByBmScCity(1, bmscId, this.title, "");
+	            		});
+	        		}
 
-            		marker.addListener('click', function() {
-            				getServiceAreaByBmScCity(1, bmscId, this.title, "");
-            		});
-
-		            markers.push(marker);
-            	}
-            }
+//		            markers.push(marker);
+//            	}
+//            }
             
             map.setCenter(new google.maps.LatLng(default_lat, default_lng));
             map.setZoom(default_zoom);
