@@ -166,7 +166,7 @@ var toDeleteEnbs = [];
 var default_service_area = "<div class=\"ibox-title\"><h5>Service Area  </h5></div>";
 default_service_area += "<div class=\"ibox-content\">";
 default_service_area += "<table class=\"footable table table-stripped toggle-arrow-tiny\" data-page-size=\"10\">";
-default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th><th class=\"footable-sortable\">COMMAND</th></tr></thead>";
+/*default_service_area += "<thead><tr><th class=\"footable-sortable footable-sorted\">SA_ID</th><th class=\"footable-sortable\">SA_NAME</th><th class=\"footable-sortable\">COMMAND</th></tr></thead>";
 default_service_area += "<tbody>";
 default_service_area += "<tr>";
 default_service_area += "<td></td>";
@@ -179,7 +179,7 @@ default_service_area += "<tr>";
 default_service_area += "<td colspan=\"3\">";
 default_service_area += "</td>";
 default_service_area += "</tr>";
-default_service_area += "</tfoot>";
+default_service_area += "</tfoot>";*/
 default_service_area += "</table>";
 default_service_area += "</div>";
 
