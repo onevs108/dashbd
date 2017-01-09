@@ -46,17 +46,22 @@
 	
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="/dashbd/resources/js/markerwithlabel.js"></script>
-	<script src="/dashbd/resources/app-js/apps/svc_area_main_map.js"></script>
+	<script src="/dashbd/resources/app-js/apps/circle_mgmt_main_map.js"></script>
     
     <script src="js/common.js"></script>
     
 	<script type="text/javascript">
+		var circleJson = ${circleList};
+		var circleJsonLength = circleJson.length;
 		$(document).ready(function() {
 			getMenuList('ROLE_CIRCLE_MGMT');
 		});
 	</script>
     
 	<style type="text/css">
+	.google-map {
+	    height: 700px;
+	}
 	.labels {
 		color: red;
 		background-color: white;
@@ -210,61 +215,7 @@
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
                         <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="control-label" for="status">Operator</label>
-                                        <c:choose>
-											<c:when test="${USER.grade == 13}">
-												<select name="status" id="operator" class="form-control">
-													<c:forEach items="${OperatorList}" var="operator">
-														<option value="${operator.id}">${operator.name}</option>
-													</c:forEach>
-												</select>
-											</c:when>
-											<c:otherwise>
-												<select name="status" id="operator" class="form-control" disabled="disabled">
-													<c:forEach items="${OperatorList}" var="operator">
-														<c:choose>
-															<c:when test="${USER.operatorId == operator.id}">
-																<option value="${operator.id}" selected="selected">${operator.name}</option>
-															</c:when>
-															<c:otherwise>
-																<option value="${operator.id}">${operator.name}</option>
-															</c:otherwise>
-														</c:choose>
-													</c:forEach>
-												</select>
-											</c:otherwise>
-										</c:choose>
-<!-- 	                                    <select name="status" id="operator" class="form-control"> -->
-<!-- 	                                    	<option value=""></option> -->
-<%-- 	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx"> --%>
-<%-- 												<option value="${operatorList.id }">${operatorList.name }</option> --%>
-<%-- 											</c:forEach> --%>
-<!-- 	                                    </select> -->
-                                    </div>
-                                </div>
-						  
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="control-label" for="status">BM-SC</label>
-                                        <select name="status" id="bmsc" class="form-control">
-                                        <c:forEach var='bmscList' items="${BmscList}" varStatus="idx">
-											<option value="${bmscList.id }">${bmscList.name }</option>
-										</c:forEach>
-                                    	</select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-						  			<div class="form-group4">
-                                        <button type="button" class="btn btn-primary btn-sm demo1" id="btn-add-service-area">Add</button>
-                                        <button type="button" class="btn btn-primary2 btn-sm demo1" id="btn-not-mapped-service-area">Not Mapped Service Area</button>
-                                    </div>
-                                </div>
-						</div>
-                        
-                        <div class="row">
-							<div class="col-sm-8">
+							<div class="col-sm-8" style="min-h">
 								<div class="ibox-title">
 									<h5><i class="fa fa-wifi"></i> <span id="selectedSvcArea"></span></h5>
 								</div>
@@ -439,7 +390,6 @@
 	</div><!-- end page-wrapper -->
 
 </div><!-- end wrapper -->
-
 
 <div class="modal fade" id="createServiceAreaLayer">
 	<div class="modal-dialog" role="document">

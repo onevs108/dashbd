@@ -151,7 +151,6 @@
 							</li>
 						</ul>
 					</li>
-		
 					<li>
 						<a href="/dashbd/out">
 							<i class="fa fa-sign-out"></i> Log out

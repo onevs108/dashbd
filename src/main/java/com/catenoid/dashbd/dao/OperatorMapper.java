@@ -37,5 +37,6 @@ public interface OperatorMapper {
 	List<Circle> selectTownFromCircle(HashMap<String, String> param);
 	int selectTownFromCircleCount(HashMap<String, String> param);
 	List<Operator> selectGradeList(Map<String, Object> map);
+	List<Circle> selectTownListAll();
 	
 }
