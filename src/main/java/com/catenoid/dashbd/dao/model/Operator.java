@@ -8,7 +8,9 @@ import com.catenoid.dashbd.util.Utils;
 
 public class Operator {
     private Integer id;
-
+    
+    private String circleName;
+    
     private String name;
     
     private String description;
@@ -21,7 +23,15 @@ public class Operator {
     
     private Integer totalCount;
 
-    public Integer getId() {
+    public String getCircleName() {
+		return circleName;
+	}
+
+	public void setCircleName(String circleName) {
+		this.circleName = circleName;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -81,6 +91,7 @@ public class Operator {
 	public JSONObject toJSONObject() {
 		JSONObject jsonResult = new JSONObject();
 		jsonResult.put("id", id);
+		jsonResult.put("circleName", circleName);
 		jsonResult.put("name", name);
 		jsonResult.put("description", description);
 		jsonResult.put("permission", permission);
@@ -91,7 +102,7 @@ public class Operator {
 
 	@Override
 	public String toString() {
-		return "Operator [id=" + id + ", name=" + name + ", description=" + description + ", permission=" + permission + ", createdAt=" + createdAt
+		return "Operator [id=" + id + ", circleName=" + circleName + ", name=" + name + ", description=" + description + ", permission=" + permission + ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt + "]";
 	}
 }

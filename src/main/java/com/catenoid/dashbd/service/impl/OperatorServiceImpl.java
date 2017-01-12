@@ -312,21 +312,27 @@ public class OperatorServiceImpl implements OperatorService {
 	}
 
 	@Override
-	public List<Circle> selectTownFromCircle(HashMap<String,String> param) {
+	public List<HashMap<String,String>> selectCityFromCircle(HashMap<String,String> param) {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
-		return operatorMapper.selectTownFromCircle(param);
+		return operatorMapper.selectCityFromCircle(param);
 	}
 
 	@Override
-	public int selectTownFromCircleCount(HashMap<String, String> param) {
+	public int selectOperatorFromCircleCount(HashMap<String, String> param) {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
-		return operatorMapper.selectTownFromCircleCount(param);
+		return operatorMapper.selectOperatorFromCircleCount(param);
 	}
 
 	@Override
 	public List<Operator> getGradeListAll() {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		return operatorMapper.selectGradeListAll();
+	}
+
+	@Override
+	public List<HashMap<String, String>> selectOperatorFromCircle(HashMap<String, String> param) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectOperatorFromCircle(param);
 	}
 	
 }

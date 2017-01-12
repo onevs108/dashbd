@@ -12,7 +12,7 @@ $(document).ready(function()
     
     $('#bmsc').change(function(){
     	$("#viewEnbIDAdd").hide();
-    	$("#viewEnbIDList").hide();
+//    	$("#viewEnbIDList").hide();
 //        drawServiceAreaByBmSc($('#bmsc option:selected').val());
         $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
     });
@@ -214,6 +214,7 @@ default_enb_table += "</table>";
 
 var selectedENBsCount = 0;
 var circleMap = new Array();
+var cityMap = new Array();
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -1242,6 +1243,8 @@ function getServiceAreaByBmScCity(page, bmscId, city, toSearchTxt)
 
 
 var cityCircles = [];
+var townCircles = [];
+
 function drawServiceAreaByBmSc() {
 	google.maps.event.clearListeners( map, 'idle' );
 	clearMarkers();
@@ -1250,8 +1253,8 @@ function drawServiceAreaByBmSc() {
 	clearCircle();
 	map.setZoom( 8 );
 	
-	$("#service_area").empty();
-	$("#service_area").append(default_service_area);
+//	$("#service_area").empty();
+//	$("#service_area").append(default_service_area);
 	$("#enb_table").empty();
 	$("#enb_table").append(default_enb_table);
 	$("#selectedSvcArea").empty();
@@ -1288,11 +1291,7 @@ function drawServiceAreaByBmSc() {
 		});
 	    
 	    cityCircle.addListener('click', function() {
-	    	clearCircle();
-        	map.setZoom(10);
-	    	var centerLatLng = this.center;
-        	map.setCenter(centerLatLng);
-	    	circleList();
+	    	circleList(this.title);
     	});
 	    
 	    cityCircles.push(cityCircle);
@@ -1332,29 +1331,73 @@ function deleteCircle(title) {
 	}
 }
 
-function circleList() {
-	/*$.ajax({
-        url : "/dashbd/api/addToServiceArea.do",
+function circleList(title) {
+	
+	clearCircle();
+	map.setZoom(8);
+	map.setCenter(circleMap[title].center);
+	
+	$.ajax({
+        url : "/dashbd/api/getCityFromCircleName.do",
         type: "post",
-        data : { "serviceAreaId" : serviceAreaId, "enbIds" : toAddEnbs },
+        data : { "circleName" : title, "start" : 1, "end" : 10 },
         dateType : 'json',
-        success : function(responseData){
+        success : function(data){
+        	var thisCity = JSON.parse(data).thisCity;
+        	var html = "";
+        	//클릭한 circle에 해당된 town들
+        	for (var i = 0; i < thisCity.length; i++) {
+            	html += "<tr><td onclick='moveTownView("+thisCity[i].id+")'>"+thisCity[i].cityName+"</td></tr>";
+            	cityMap[thisCity[i].cityName] = {
+        			center: {lat: parseFloat(thisCity[i].latitude), lng: parseFloat(thisCity[i].longitude)},	//위도, 경도
+        		    population: 10000																			//원 크기
+        		}
+			}
         	
-        	clearDatas();
+//        	//클릭한 circle에 해당된 town들
+//        	for (var i = 0; i < thisTown.length; i++) {
+//            	html += "<tr><td onclick='moveTownView("+json[i].id+")'>"+thisTown[i].townName+"</td></tr>";
+//            	cityMap[thisTown[i].townName] = {
+//        			center: {lat: parseFloat(thisTown[i].latitude), lng: parseFloat(thisTown[i].longitude)},	//위도, 경도
+//        		    population: 10000																			//원 크기
+//        		}
+//			}
         	
-        	swal({
-                title: "Success !",
-                text: "등록이 완료 되었습니다."
-            });
+        	$("#cityList").html(html);
+        	$("#circleTitle").html(title);
         	
-        	if( isNotMapped ) {
-        		getSeviceAreaNotMapped( bmscId );
-        	} else {
-            	var centerLatLng = map.getCenter();
-            	moveToEnb(bmscId, serviceAreaId, "");
-            	map.setCenter(centerLatLng);
+        	for (var city in cityMap) {
+        	    // Add the circle for this city to the map.
+        	    var townCircle = new google.maps.Circle({
+        			strokeColor: '#FF0000',
+        			strokeOpacity: 0.8,
+        			strokeWeight: 2,
+        			fillColor: '#FF0000',
+        			fillOpacity: 0.35,
+        			map: map,
+        			center: cityMap[city].center,
+        			radius: Math.sqrt(cityMap[city].population) * 100,
+        			title: city,
+        			position: cityMap[city].center
+        	    });
+        	    
+        	    townCircle.addListener('mousedown', function(e) {
+        	    	if(e.xa.which == 3) {							//우클릭
+        				var contentString = "<b>"+this.title+"</b><br><button onclick=editCircle('"+encodeURI(this.title)+"')>Edit</button><button onclick=deleteCircle('"+encodeURI(this.title)+"')>Detele</button>";
+        				var infowindow = new google.maps.InfoWindow({
+        				    content: contentString
+        				});
+        	    		infowindow.open(map, this);
+        	    	}
+        		});
+        	    
+        	    townCircle.addListener('click', function() {
+//        	    	circleList(this.title);
+            	});
+        	    
+        	    townCircles.push(townCircle);
         	}
-        	getServiceAreaByBmScCity("1", $("#bmsc").val(), $("#checkCityName").val(), "");
+        	
         },
         error : function(xhr, status, error){
         	swal({
@@ -1362,11 +1405,14 @@ function circleList() {
                 text: "오류가 발생했습니다."
             });
         }
-    });*/
+    });
+}
+
+function moveTownView(id) {
+	map.setZoom(10);
 }
 
 function addToServiceArea( bmscId, serviceAreaId, isNotMapped ) {
-
 	$.ajax({
         url : "/dashbd/api/addToServiceArea.do",
         type: "post",

@@ -26,7 +26,8 @@ public interface OperatorService {
 	public boolean deleteCircle(Integer circleId);
 	public List<Circle> getCircleList();
 	public List<Circle> getCircleListAll();
-	public List<Circle> selectTownFromCircle(HashMap<String,String> param);
-	public int selectTownFromCircleCount(HashMap<String, String> param);
+	public int selectOperatorFromCircleCount(HashMap<String, String> param);
+	public List<HashMap<String,String>> selectCityFromCircle(HashMap<String, String> param);
+	public List<HashMap<String,String>> selectOperatorFromCircle(HashMap<String, String> param);
 	
 }

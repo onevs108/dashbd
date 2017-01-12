@@ -227,23 +227,17 @@
                             <div class="col-sm-4">
                                 <div class="ibox float-e-margins" id="service_area">
                                     <div class="ibox-title">
-                                        <h5>Service Area</h5>
+                                        <h5><span id="circleTitle"></span>&nbsp;City/Town List</h5>
                                     </div>
                                     <div class="ibox-content">
                                         <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
                                             <thead>
                                                 <tr>
-                                                    <th>SA_ID</th>
-                                                    <th>SA_NAME</th>
-                                                    <th>COMMAND</th>
+                                                    <th>City Name</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
+                                            <tbody id="cityList">
+                                                
                                             </tbody>
                                             <tfoot>
                                                 <tr>
@@ -274,19 +268,14 @@
                                     </div><!-- end ibox-content -->
                                 </div><!-- end ibox float-e-margins -->
                             </div>
-					  		 <div class="col-sm-12" style="margin-top:-30px;display:none;" id="viewEnbIDList">
+					  		 <div class="col-sm-12" style="margin-top:-30px; display: none;" id="viewEnbIDList">
                                 <div class="ibox ">
                                 	<input type="hidden" id="checkCityName" name="checkCityName">
                                 	<div class="ibox-content" id="enb_table">
                                         <table class="footable table table-stripped" data-page-size="10">
                                             <thead>
                                                 <tr style="border-top-style:solid;border-top-width:1px;border-top-color:#c0c0c0;">
-                                                    <th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3" style="border-right-style:solid;border-right-width:1px;border-right-color:#c0c0c0;">eNB Name</th>
-										  			<th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3" style="border-right-style:solid;border-right-width:1px;border-right-color:#c0c0c0;">eNB Name</th>
-										  			<th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3">eNB Name</th>
+                                                    <th class="col-sm-1">townName</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

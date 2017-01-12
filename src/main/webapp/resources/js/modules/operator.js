@@ -77,7 +77,7 @@ function doAdd() {
 function doAdd2() {
 	$('#modal-title2').html('Create New Regional');
 	
-	var circleName = $('#form-circle-name2').val();
+	var circleName = $('#circleSelect').val();
 	var operatorName = $('#form-operator-name2').val();
 	var operatorDescription = $('#form-operator-description2').val();
 	
@@ -385,7 +385,7 @@ function getOperatorList() {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				if(row.id > 3){
+				if(row.id > 3 && row.id != 9999){
 					var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.description + '\', \'' + row.permission + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 					+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				}

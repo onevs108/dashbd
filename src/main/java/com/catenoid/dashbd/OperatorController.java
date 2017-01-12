@@ -25,6 +25,7 @@ import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.service.OperatorService;
 import com.catenoid.dashbd.service.PermissionService;
+import com.google.gson.Gson;
 
 /**
  * Operator 관리 Controller
@@ -184,15 +185,13 @@ public class OperatorController {
 		param.put("start", Integer.toString(offset+1));
 		param.put("end", Integer.toString(offset+limit));
 		
-		List<Circle> circleList = operatorServiceImpl.selectTownFromCircle(param);
+		List<HashMap<String,String>> circleList = operatorServiceImpl.selectOperatorFromCircle(param);
+		Gson gson = new Gson();
+		String str = gson.toJson(circleList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
 		
-		JSONArray jsonArray = new JSONArray();
-		for (Circle circle : circleList) {
-			jsonArray.add(circle.toJSONObject());
-		}
-		
-		jsonResult.put("rows", jsonArray);
-		int total = operatorServiceImpl.selectTownFromCircleCount(param);
+		jsonResult.put("rows", json);
+		int total = operatorServiceImpl.selectOperatorFromCircleCount(param);
 		jsonResult.put("total", total);
 		return jsonResult.toString();
 	}

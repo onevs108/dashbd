@@ -20,7 +20,7 @@ default_service_area += "</table>";
 default_service_area += "</div>";
 
 $(document).ready(function()
-{alert("A");
+{
 	getServiceAreaByBmScCity(1,$('#bmsc option:selected').val(), '', '');
     $('#operator').change(function(){
         getServiceAreaBmSc(1, $('#operator option:selected').val());

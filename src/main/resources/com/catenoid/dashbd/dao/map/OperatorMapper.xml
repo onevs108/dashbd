@@ -201,9 +201,8 @@
   </update>
   
 	<select id="selectCircleListAll" resultType="com.catenoid.dashbd.dao.model.Circle">
-		SELECT circle_name, avg(latitude) as latitude, avg(longitude) as longitude 
-		FROM operator
-		GROUP BY circle_name
+		SELECT circle_id, circle_name, description, latitude, longitude 
+		FROM circle
 		ORDER BY length(circle_name) ASC, circle_name ASC
 	</select>
   
@@ -213,15 +212,36 @@
 		ORDER BY length(circle_name) ASC, circle_name ASC
 	</select>
 	
-	<select id="selectTownFromCircle" parameterType="HashMap" resultType="com.catenoid.dashbd.dao.model.Circle">
+	<select id="selectCityFromCircle" parameterType="HashMap" resultType="HashMap">
 		SELECT 
-			id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt
+			city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at as createdAt, updated_at as updatedAt
 		FROM ( SELECT
 				   @ROWNUM := @ROWNUM + 1 AS rownum,
-				   id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at, updated_at
+				   city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at, updated_at
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( SELECT
-						 id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at, updated_at
+						 city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at, updated_at
+					  FROM city
+					  WHERE circle_name = #{circleName}
+					  ORDER BY <if test="sort == null">city_id ASC</if>
+					  		   <if test="sort != null">
+					  		       <if test="sort == 'town_name'">city_name</if>
+					  		       <if test="sort == 'description'">description</if>
+					  		       ${order}
+					  		   </if> ) T
+			 ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectOperatorFromCircle" parameterType="HashMap" resultType="HashMap">
+		SELECT 
+			id, circle_name, town_name, description, permission, created_at, updated_at
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   id, circle_name, town_name, description, permission, created_at, updated_at
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 id, circle_name, town_name, description, permission, created_at, updated_at
 					  FROM operator
 					  WHERE circle_name = #{circleName}
 					  ORDER BY <if test="sort == null">id ASC</if>
@@ -234,7 +254,7 @@
 		WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
 	
-	<select id="selectTownFromCircleCount" parameterType="Map" resultType="Integer">
+	<select id="selectOperatorFromCircleCount" parameterType="Map" resultType="Integer">
 		SELECT
 			COUNT(*)
 		FROM operator
@@ -337,10 +357,10 @@
 	</select>
 	
 	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
-		INSERT INTO operator(<if test="id != null">`id`,</if>`town_name`, `description`, permission, `created_at`, `updated_at`)
-		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, #{permission}, NOW(), NOW())
+		INSERT INTO operator(<if test="id != null">`id`,</if>circle_name, town_name, `description`, permission, `created_at`, `updated_at`)
+		VALUES (<if test="id != null">#{id},</if>#{circleName}, #{name}, #{description}, #{permission}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
-		town_name = #{name}, description = #{description}, permission = #{permission}, updated_at = NOW()
+		circle_name = #{circleName}, town_name = #{name}, description = #{description}, permission = #{permission}, updated_at = NOW()
 	</insert>
 	
 	<insert id="insertGrade" parameterType="com.catenoid.dashbd.dao.model.Operator">
