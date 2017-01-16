@@ -1,5 +1,6 @@
 package com.catenoid.dashbd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.session.SqlSession;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,6 @@ public class CircleController {
 	@Value("#{config['main.contents.max']}")
 	private Integer contentMax;
 	
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/resources/circle.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public ModelAndView getServiceAreaMain(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("circleMgmt");
@@ -74,16 +73,10 @@ public class CircleController {
 		
 		logger.info("First Town ID: {}", searchParam.getOperatorId());
 		
-		JSONArray circleJsonArray = new JSONArray();
-		for (Circle circle : circleList) {
-			JSONObject json = new JSONObject();
-			json.put("circle_name", circle.getCircle_name());
-			json.put("latitude", circle.getLatitude());
-			json.put("longitude", circle.getLongitude());
-			circleJsonArray.add(json);
-		}
+		Gson gson = new Gson();
+		org.json.JSONArray circleJson = new org.json.JSONArray(gson.toJson(circleList));
 		
-		mv.addObject("circleList", circleJsonArray);
+		mv.addObject("circleList", circleJson);
 		mv.addObject("townList", townList);
 		
 		return mv;
@@ -93,22 +86,77 @@ public class CircleController {
 	@ResponseBody
 	@RequestMapping(value = "/api/getCityFromCircleName.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String addToServiceArea(@RequestParam HashMap<String, String> param, HttpServletRequest request, HttpServletResponse response) {
-		
+		Gson gson = new Gson();
 		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
-//		List<HashMap<String, String>> cityList = circleMapper.selectCityFromCircle(param);
 		List<HashMap<String, String>> cityList = circleMapper.selectCity();
+		List<HashMap<String, String>> thisCityList = new ArrayList<HashMap<String,String>>();
+		List<HashMap<String, String>> noneCityList = new ArrayList<HashMap<String,String>>();
+		List<HashMap<String, String>> otherCityList = new ArrayList<HashMap<String,String>>();
 		
 		JSONObject cityJson = new JSONObject();
 		
-		Gson gson = new Gson();
-		String str = gson.toJson(cityList);
-		org.json.JSONArray json = new org.json.JSONArray(str);
+		for (int i = 0; i < cityList.size(); i++) {
+			if(cityList.get(i).get("circle_name").equals(param.get("circleName"))){	//클릭한 서클에 속한 city
+				thisCityList.add(cityList.get(i));
+			}
+			else if (cityList.get(i).get("circle_name").length() < 2) // 아무곳에도 속하지 않은 city
+			{
+				noneCityList.add(cityList.get(i));
+			}
+			else // 다른 곳에 속한 city
+			{
+				otherCityList.add(cityList.get(i));
+			}
+		}
 		
-		cityJson.put("thisCity", json);
-		cityJson.put("noneCity", json);
-		cityJson.put("otherCity", json);
+		org.json.JSONArray thisCityJson = new org.json.JSONArray(gson.toJson(thisCityList));
+		org.json.JSONArray noneJson = new org.json.JSONArray(gson.toJson(noneCityList));
+		org.json.JSONArray otherJson = new org.json.JSONArray(gson.toJson(otherCityList));
+		
+		cityJson.put("thisCity", thisCityJson);
+		cityJson.put("noneCity", noneJson);
+		cityJson.put("otherCity", otherJson);
 		
 		return cityJson.toJSONString();
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/api/checkCircleName.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String checkCircleName(@RequestParam String circleName, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		int result = circleMapper.checkCircleExist(circleName);
+		if(result > 0) {
+			returnStr = "EXIST";
+		}
+		return returnStr;
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/api/insertCircle.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String insertCircle(@RequestParam HashMap<String, String> param, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		int result = circleMapper.insertCircle(param);
+		if(result < 1) {
+			returnStr = "FAIL";
+		}
+		return returnStr;
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/api/deleteCircle.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String deleteCircle(@RequestParam String circleId, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		int result = circleMapper.deleteCircle(circleId);
+		if(result != 1) {
+			returnStr = "FAIL";
+		}
+		return returnStr;
+		
 	}
 	
 }

@@ -227,15 +227,19 @@
                             <div class="col-sm-4">
                                 <div class="ibox float-e-margins" id="service_area">
                                     <div class="ibox-title">
-                                        <h5><span id="circleTitle"></span>&nbsp;City/Town List</h5>
+                                        <h5><span id="circleTitle"></span>&nbsp;City List</h5>
                                     </div>
-                                    <div class="ibox-content">
-                                        <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
+                                     <div class="ibox-content" style="padding-top:0;padding-bottom:0;">
+                                     <table class="footable table table-stripped toggle-arrow-tiny" style="margin:0;">
                                             <thead>
                                                 <tr>
                                                     <th>City Name</th>
                                                 </tr>
                                             </thead>
+                                    </table>
+                                    </div>
+                                    <div class="ibox-content" style="height:660px;padding-top:0;border-top:0;overflow-y:scroll;">
+                                        <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
                                             <tbody id="cityList">
                                                 
                                             </tbody>
@@ -412,33 +416,77 @@
 </div><!-- /.modal -->
 
 
-<div class="modal fade" id="editServiceAreaLayer">
+<div class="modal fade" id="addCircleModal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 				</button>
-				<h5 class="modal-title">Create New Service Area</h5>
+				<h5 class="modal-title">Create New Circle</h5>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal">
 				<input type="hidden" placeholder="" class="form-control" id="editType">
-				<div class="form-group"><label class="col-lg-4 control-label">Service Area ID</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="editServiceAreaId" disabled></div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Circle Name</label>
+				<div class="col-lg-6"><input type="hidden" placeholder="" class="form-control" id="circleId"></div>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="circleName"></div>
+				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existCircle()">Check</button></div>
 				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area Name</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="editServiceAreaName"></div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Longitude</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="longitude"></div>
 				</div>
-				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr" id="editServiceAreaDescription"></div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Latitude</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="latitude"></div>
 				</div>
 				<br>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editSvcAreaBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="addCircleBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editCircleBtn">OK</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" id="addCityModal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="modal-title">Create New Circle</h5>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal">
+				<input type="hidden" placeholder="" class="form-control" id="editType">
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Name of the City</label>
+				<div class="col-lg-6"><input type="hidden" placeholder="" class="form-control" id="cityId"></div>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="cityName"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Longitude</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityLongitude"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Latitude</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityLatitude"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Bandwidth</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityLatitude"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Bandwidth</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control0" id="cityLatitude"></div>
+				</div>
+				<br>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="addCircleBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editCircleBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

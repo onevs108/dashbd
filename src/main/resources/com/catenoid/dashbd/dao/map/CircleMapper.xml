@@ -7,5 +7,23 @@
 			city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at as createdAt, updated_at as updatedAt
 		FROM city
 	</select>
+
+	<select id="checkCircleExist" parameterType="String" resultType="int">
+		SELECT count(*)			
+		FROM circle
+		where circle_name = #{circleName}
+	</select>
+
+	<insert id="insertCircle" parameterType="HashMap">
+		INSERT INTO circle (<if test="circleId != null">circle_id,</if>circle_name, description, latitude, longitude, created_at, updated_at) 
+		VALUES (<if test="circleId != null">#{circleId},</if>#{circleName}, #{circleName}, ${latitude}, ${longitude}, NOW(), NOW())
+		ON DUPLICATE KEY UPDATE
+		circle_name = #{circleName}, description = #{circleName}, latitude = ${latitude}, longitude = ${longitude}, updated_at = NOW()
+	</insert>
+
+	<delete id="deleteCircle" parameterType="String">
+		DELETE FROM circle
+		where circle_id = #{circleId}
+	</delete>
 	
 </mapper>

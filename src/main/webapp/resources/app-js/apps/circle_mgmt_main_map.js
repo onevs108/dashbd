@@ -2,6 +2,9 @@ var initBmScId = 1;
 
 $(document).ready(function()
 {
+	$("#circleName").on("change", function(){
+		checkCircle = false;
+	});
 	//getServiceAreaBmSc(1, $('#operator option:selected').val());
 	$('#createServiceAreaLayer').on('hidden.bs.modal', function (e) {
 		$('#createServiceAreaLayer').find('input').val('');
@@ -70,24 +73,84 @@ $(document).ready(function()
     });
 
     
-    $('#editSvcAreaBtn').click(function(){
-
-    	if( isEmpty($('#editServiceAreaId').val()) ) {
+    $('#addCircleBtn').click(function(){
+    	if(!checkCircle){
     		swal({
-                title: "Sorry !",
-                text: "Please input Service Area ID first."
+                title: "Warning !",
+                text: "Please Check Circle Name!"
             });
-    	} else if( isEmpty($('#editServiceAreaName').val()) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please input Service Area Name first."
-            });
-    	} else {
-    		$('#editServiceAreaLayer').modal('hide');
-    	
-    		editServiceArea( $('#operator option:selected').val(), $('#bmsc option:selected').val());
+    		return;
     	}
+    	$('#addCircleModal').modal('hide');
+    	$.ajax({
+            url : "/dashbd/api/insertCircle.do",
+            type: "post",
+            data : { 
+            	"circleName" : $("#circleName").val(),
+            	"latitude" : $("#latitude").val(),
+            	"longitude" : $("#longitude").val()
+            },
+            success : function(data){
+            	if(data == "SUCCESS"){
+            		swal({
+                        title: "Success !",
+                        text: "Circle is created!"
+                    });
+            		setTimeout(() => {
+            			location.reload();
+					}, 1000);
+            	} else {
+            		swal({
+                        title: "Error !",
+                        text: "Insert Fail."
+                    });
+            	}
+            },
+            error : function(xhr, status, error){
+            	swal({
+                    title: "Fail !",
+                    text: "서버 통신 오류 입니다."
+                });
+            }
+        });
     });
+    
+    $('#editCircleBtn').click(function(){
+    	$('#addCircleModal').modal('hide');
+    	$.ajax({
+    		url : "/dashbd/api/insertCircle.do",
+    		type: "post",
+    		data : { 
+    			"circleId" : $("#circleId").val(),
+    			"circleName" : $("#circleName").val(),
+    			"latitude" : $("#latitude").val(),
+    			"longitude" : $("#longitude").val()
+    		},
+    		success : function(data){
+    			if(data == "SUCCESS"){
+    				swal({
+    					title: "Success !",
+    					text: "Circle is updated!"
+    				});
+    				setTimeout(() => {
+    					location.reload();
+    				}, 1000);
+    			} else {
+    				swal({
+    					title: "Error !",
+    					text: "Update Fail."
+    				});
+    			}
+    		},
+    		error : function(xhr, status, error){
+    			swal({
+    				title: "Fail !",
+    				text: "서버 통신 오류 입니다."
+    			});
+    		}
+    	});
+    });
+    
 });
 
 var perPage = 15;
@@ -145,6 +208,7 @@ function getServiceAreaOperator(page)
     });
 }
 
+var mode = "";
 var map;
 var markers = [];
 var enb_markers = [];
@@ -214,7 +278,9 @@ default_enb_table += "</table>";
 
 var selectedENBsCount = 0;
 var circleMap = new Array();
-var cityMap = new Array();
+var thisCityMap = new Array();
+var noneCityMap = new Array();
+var otherCityMap = new Array();
 
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -224,7 +290,7 @@ function initMap() {
 
 	// mouse drag start
 	// Start drag rectangle to select markers !!!!!!!!!!!!!!!!
-
+//	google.maps.event.clearListeners(map, 'zoom_changed', getCircle);	//zoom change 이벤트 제거
 	$(window).keydown(function (e) {
 	    if(e.which === 16) { // shift
 	        shiftPressed = true;
@@ -267,7 +333,7 @@ function initMap() {
 	var mouseDownPos, gribBoundingBox = null,
 	    mouseIsDown = 0;
 	var themap = map;
-
+	
 	google.maps.event.addListener(themap, 'mousemove', function (e) {
 	    if (mouseIsDown && (shiftPressed|| gribBoundingBox != null) ) {
 	        if (gribBoundingBox !== null) // box exists
@@ -298,7 +364,9 @@ function initMap() {
 	        });
 	    }
 	});
-
+	
+	google.maps.event.addListener(themap, 'mousedown', addCircle);
+	
 	google.maps.event.addListener(themap, 'mouseup', function (e) {
 	    if (mouseIsDown && (shiftPressed|| gribBoundingBox != null)) {
 	        mouseIsDown = 0;
@@ -360,11 +428,48 @@ function initMap() {
 
 function makeCircleMap() {
 	for (var i = 0; i < circleJson.length; i++) {
-		circleMap[circleJson[i].circle_name] = {
+		circleMap[circleJson[i].circle_id] = {
 			center: {lat: parseFloat(circleJson[i].latitude), lng: parseFloat(circleJson[i].longitude)},	//위도, 경도
-		    population: 1500000																				//원 크기
+		    population: 1500000,																				//원 크기
+		    title: circleJson[i].circle_name
 		}
 	}
+}
+
+var checkCircle = false;
+function existCircle() {
+	if($("#circleName").val() == ""){
+		swal({
+            title: "Warning !",
+            text: "Please Input Circle Name"
+        });
+		return;
+	}
+	$.ajax({
+        url : "/dashbd/api/checkCircleName.do",
+        type: "post",
+        data : { "circleName" : $("#circleName").val()},
+        success : function(data){
+        	if(data == "EXIST"){
+        		swal({
+                    title: "Warning !",
+                    text: "사용할 수 없는 이름입니다."
+                });
+        	} else {
+        		swal({
+                    title: "Success !",
+                    text: "사용 가능합니다."
+                });
+        		checkCircle = true;
+        	}
+        },
+        error : function(xhr, status, error){
+        	swal({
+                title: "Fail !",
+                text: "서버 통신 오류 입니다."
+            });
+        }
+    });
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
@@ -1251,7 +1356,7 @@ function drawServiceAreaByBmSc() {
 	clearEnbMarkers();
 	clearDatas();
 	clearCircle();
-	map.setZoom( 8 );
+//	map.setZoom( 8 );
 	
 //	$("#service_area").empty();
 //	$("#service_area").append(default_service_area);
@@ -1260,7 +1365,7 @@ function drawServiceAreaByBmSc() {
 	$("#selectedSvcArea").empty();
     $("#selectedENBs").empty();
 	
-    map.setZoom(7);
+//    map.setZoom(7);
     // 원그리기
     for (var circle in circleMap) {
 	    // Add the circle for this city to the map.
@@ -1273,53 +1378,69 @@ function drawServiceAreaByBmSc() {
 			map: map,
 			center: circleMap[circle].center,
 			radius: Math.sqrt(circleMap[circle].population) * 100,
-			title: circle,
+			id: circle,
+			title: circleMap[circle].title,
 			position: circleMap[circle].center
 	    });
 	    
-	    cityCircle.addListener('mousedown', function(e) {
-	    	if(e.xa.which == 3) {							//우클릭
-				var contentString = "<b>"+this.title+"</b><br><button onclick=editCircle('"+encodeURI(this.title)+"')>Edit</button><button onclick=deleteCircle('"+encodeURI(this.title)+"')>Detele</button>";
-				var infowindow = new google.maps.InfoWindow({
-				    content: contentString
-				});
-	    		infowindow.open(map, this);
-	    	}
+	    cityCircle.addListener('rightclick', function(e) {
+			var contentString = "<b>"+this.title+"</b><br><button class='btn btn-success btn-xs' onclick='editCircle("+this.id+")'>Edit</button>" +
+					"<button class='btn btn-success btn-xs' onclick=deleteCircle('"+encodeURI(this.id)+"')>Detele</button>";
+			var infowindow = new google.maps.InfoWindow({
+			    content: contentString
+			});
+    		infowindow.open(map, this);
 	    	
 //        	getServiceGroupList();
 //        	getServiceAreaByBmScCity(1, bmscId, this.title, "");
 		});
 	    
 	    cityCircle.addListener('click', function() {
-	    	circleList(this.title);
+	    	moveCityList(this.id);
     	});
 	    
 	    cityCircles.push(cityCircle);
 	}
 
     map.setCenter(new google.maps.LatLng(default_lat, default_lng));
-    map.setZoom(default_zoom);
+//    map.setZoom(default_zoom);
+    
     
 }
 
-function editCircle(title) {
-	title = decodeURI(title);
-	var url = "http://www.naver.com";
-	launchCenter(url, "editCircle", 500, 500, "yes");
+
+function addCircle(e) {
+	$("#editCircleBtn").show();
+	$("#addCircleBtn").hide();
+	$("#addCircleModal").modal();
+	$("#longitude").val(e.latLng.lng());
+	$("#latitude").val(e.latLng.lat());
 }
 
-function deleteCircle(title) {
-	title = decodeURI(title);
+function editCircle(circleId) {
+	var latLng = circleMap[circleId].center;
+	$("#editCircleBtn").show();
+	$("#addCircleBtn").hide();
+	$("#addCircleModal").modal();
+	$("#circleId").val(circleId);
+	$("#circleName").val(circleMap[circleId].title);
+	$("#longitude").val(latLng.lng);
+	$("#latitude").val(latLng.lat);
+}
+
+function deleteCircle(circleId) {
+	title = decodeURI(circleId);
 	if(confirm("do you want to delete?")) {
 		$.ajax({
-	        url : "/dashbd/api/addToServiceArea.do",
+	        url : "/dashbd/api/deleteCircle.do",
 	        type: "post",
-	        data : { "serviceAreaId" : serviceAreaId, "enbIds" : toAddEnbs },
+	        data : { "circleId" : circleId },
 	        success : function(responseData){
 	        	swal({
 	                title: "Success !",
-	                text: "Service Area 정보가 수정되었습니다."
+	                text: "삭제 되었습니다."
 	            });
+	        	location.reload();
 	        },
 	        error : function(xhr, status, error){
 	        	swal({
@@ -1331,72 +1452,80 @@ function deleteCircle(title) {
 	}
 }
 
-function circleList(title) {
+function cityRightClick(e) {
+//	var service = new google.maps.places.PlacesService(map);
+	var contentString = "Do you want to add this place as city of "+circleTitle.innerHTML+" Circle?<br>" +
+			"<div style='text-align: center;'>" +
+			"<button class='btn btn-success btn-xs' onclick=addCityInCircle("+circleTitle.innerHTML+","+e.latLng.lat()+",'"+e.latLng.lng()+"')>Continue</button></div>";
+	var infowindow = new google.maps.InfoWindow({
+		content: contentString,
+		position: {lat: e.latLng.lat(), lng: e.latLng.lng()}
+	});
+	infowindow.open(map, this);
+}
+
+function getCircle(e) {
+	if(this.zoom == default_zoom) {
+		clearCity();
+		initMap();
+		return false;
+	}else{
+		
+	}
+}
+
+function moveCityList(circleId) {
 	
 	clearCircle();
 	map.setZoom(8);
-	map.setCenter(circleMap[title].center);
+	map.setCenter(circleMap[circleId].center);
+	
+	google.maps.event.clearListeners(map, 'mousedown', addCircle);	//클릭 시 Add circle 이벤트 제거
+	google.maps.event.addListener(map, 'rightclick', cityRightClick);
+	google.maps.event.addListener(map, 'zoom_changed', getCircle);
 	
 	$.ajax({
         url : "/dashbd/api/getCityFromCircleName.do",
         type: "post",
-        data : { "circleName" : title, "start" : 1, "end" : 10 },
+        data : { "circleName" : circleMap[circleId].title },
         dateType : 'json',
-        success : function(data){
+        success : function(data) {
         	var thisCity = JSON.parse(data).thisCity;
+        	var noneCity = JSON.parse(data).noneCity;
+        	var otherCity = JSON.parse(data).otherCity;
         	var html = "";
         	//클릭한 circle에 해당된 town들
         	for (var i = 0; i < thisCity.length; i++) {
-            	html += "<tr><td onclick='moveTownView("+thisCity[i].id+")'>"+thisCity[i].cityName+"</td></tr>";
-            	cityMap[thisCity[i].cityName] = {
+            	html += "<tr><td onclick='moveTownView("+thisCity[i].city_id+")'>"+thisCity[i].city_name+"</td></tr>";
+            	thisCityMap[thisCity[i].city_id] = {
         			center: {lat: parseFloat(thisCity[i].latitude), lng: parseFloat(thisCity[i].longitude)},	//위도, 경도
+        			title: thisCity[i].city_name,
         		    population: 10000																			//원 크기
         		}
 			}
         	
-//        	//클릭한 circle에 해당된 town들
-//        	for (var i = 0; i < thisTown.length; i++) {
-//            	html += "<tr><td onclick='moveTownView("+json[i].id+")'>"+thisTown[i].townName+"</td></tr>";
-//            	cityMap[thisTown[i].townName] = {
-//        			center: {lat: parseFloat(thisTown[i].latitude), lng: parseFloat(thisTown[i].longitude)},	//위도, 경도
-//        		    population: 10000																			//원 크기
-//        		}
-//			}
+        	for (var i = 0; i < noneCity.length; i++) {
+            	noneCityMap[noneCity[i].city_id] = {
+        			center: {lat: parseFloat(noneCity[i].latitude), lng: parseFloat(noneCity[i].longitude)},	//위도, 경도
+        			title: noneCity[i].city_name,
+        		    population: 10000																			//원 크기
+        		}
+			}
+        	
+        	for (var i = 0; i < otherCity.length; i++) {
+            	otherCityMap[otherCity[i].city_id] = {
+        			center: {lat: parseFloat(otherCity[i].latitude), lng: parseFloat(otherCity[i].longitude)},	//위도, 경도
+        			title: otherCity[i].city_name,
+        		    population: 10000																			//원 크기
+        		}
+			}
+        	
+        	drawCity(thisCityMap, "#FF0000", circleId, circleMap[circleId].title);	//빨강
+        	drawCity(noneCityMap, "#828282", circleId, circleMap[circleId].title);	//회색
+        	drawCity(otherCityMap, "#7B68EE", circleId, circleMap[circleId].title);	//파랑
         	
         	$("#cityList").html(html);
-        	$("#circleTitle").html(title);
-        	
-        	for (var city in cityMap) {
-        	    // Add the circle for this city to the map.
-        	    var townCircle = new google.maps.Circle({
-        			strokeColor: '#FF0000',
-        			strokeOpacity: 0.8,
-        			strokeWeight: 2,
-        			fillColor: '#FF0000',
-        			fillOpacity: 0.35,
-        			map: map,
-        			center: cityMap[city].center,
-        			radius: Math.sqrt(cityMap[city].population) * 100,
-        			title: city,
-        			position: cityMap[city].center
-        	    });
-        	    
-        	    townCircle.addListener('mousedown', function(e) {
-        	    	if(e.xa.which == 3) {							//우클릭
-        				var contentString = "<b>"+this.title+"</b><br><button onclick=editCircle('"+encodeURI(this.title)+"')>Edit</button><button onclick=deleteCircle('"+encodeURI(this.title)+"')>Detele</button>";
-        				var infowindow = new google.maps.InfoWindow({
-        				    content: contentString
-        				});
-        	    		infowindow.open(map, this);
-        	    	}
-        		});
-        	    
-        	    townCircle.addListener('click', function() {
-//        	    	circleList(this.title);
-            	});
-        	    
-        	    townCircles.push(townCircle);
-        	}
+        	$("#circleTitle").html(circleMap[circleId].title);
         	
         },
         error : function(xhr, status, error){
@@ -1406,6 +1535,58 @@ function circleList(title) {
             });
         }
     });
+}
+
+function addCityInCircle(circleName, lat, lng) {
+	alert(circleName)
+	alert(lat)
+	alert(lng)
+}
+
+function drawCity(cityMap, color, circleId, circleTitle) {
+	for (var city in cityMap) {
+	    var townCircle = new google.maps.Circle({
+			strokeColor: color,
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			fillColor: color,
+			fillOpacity: 0.35,
+			map: map,
+			center: cityMap[city].center,
+			radius: Math.sqrt(cityMap[city].population) * 100,
+			id: city,
+			title: cityMap[city].title,
+			position: cityMap[city].center
+	    });
+	    
+	    townCircle.addListener('rightclick', function(e) {
+//	    	"#FF0000"	//빨강
+//        	"#828282"	//회색
+//        	"#7B68EE"	//파랑
+	    	if(color == "#828282")
+	    	{	//아무것도 
+	    		var contentString = "<button class='btn btn-success btn-xs' onclick=addCityInCircle("+this.id+","+circleId+",'"+encodeURI(circleTitle)+"')>Add to Circle</button>";
+	    		var infowindow = new google.maps.InfoWindow({
+	    			content: contentString
+	    		});
+	    		infowindow.open(map, this);
+	    	} 
+	    	else if(color == "#7B68EE") 
+	    	{
+	    		var contentString = "<button class='btn btn-success btn-xs' onclick=changeCityInCircle("+this.id+","+circleId+",'"+encodeURI(circleTitle)+"')>Change this city to this Circle</button>";
+	    		var infowindow = new google.maps.InfoWindow({
+	    			content: contentString
+	    		});
+	    		infowindow.open(map, this);
+	    	}
+		});
+	    
+	    townCircle.addListener('click', function() {
+//	    	circleList(this.id);// city 클릭 시 
+    	});
+	    
+	    townCircles.push(townCircle);
+	}
 }
 
 function moveTownView(id) {
@@ -1532,6 +1713,16 @@ function deleteFromServiceArea(bmscId, serviceAreaId) {
         	moveToEnb(bmscId, serviceAreaId, "");
         }
     });
+}
+
+function clearCity() {
+	
+	for (var i = 0; i < townCircles.length; i++) {
+		townCircles[i].labelVisible = false;
+		townCircles[i].setMap(null);
+	}
+	
+	townCircles = [];
 }
 
 function clearCircle() {
