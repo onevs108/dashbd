@@ -48,6 +48,7 @@ public class Const {
 	public static final String MENU_CONTENTS_MGMT 			= "CONTENTS_MGMT";
 	public static final String MENU_OPERATOR_MGMT 			= "OPERATOR_MGMT";
 	public static final String MENU_BMSC_MGMT				= "BMSC_MGMT";
+	public static final String MENU_CIRCLE_MGMT				= "MENU_CIRCLE_MGMT";
 	public static final String MENU_SERVICE_AREA_MGMT 		= "SERVICE_AREA_MGMT";
 	public static final String MENU_SERVICE_AREA_GROUP_MGMT = "SERVICE_AREA_GROUP_MGMT";
 	public static final String MENU_ENB_MGMT 				= "ENB_MGMT";

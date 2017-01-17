@@ -54,7 +54,7 @@
 		var circleJson = ${circleList};
 		var circleJsonLength = circleJson.length;
 		$(document).ready(function() {
-			getMenuList('ROLE_CIRCLE_MGMT');
+			getMenuList('MENU_CIRCLE_MGMT');
 		});
 	</script>
     
