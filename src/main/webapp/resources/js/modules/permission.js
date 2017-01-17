@@ -193,6 +193,9 @@ function getUserPermissions() {
 				case PERMISSION_ID_SERVICE_AREA:
 					$('#checkbox-permission-service-area').prop("checked", true);
 					break;
+				case PERMISSION_ID_SERVICE_AREA_GROUP:
+					$('#checkbox-permission-service-area-group').prop("checked", true);
+					break;
 				case PERMISSION_ID_ENB:
 					$('#checkbox-permission-enb').prop("checked", true);
 					break;
@@ -233,6 +236,7 @@ function initPermissionBox() {
 	$('#checkbox-permission-operator').prop("checked", false);
 	$('#checkbox-permission-bmsc').prop("checked", false);
 	$('#checkbox-permission-service-area').prop("checked", false);
+	$('#checkbox-permission-service-area-group').prop("checked", false);
 	$('#checkbox-permission-enb').prop("checked", false);
 	$('#checkbox-permission-schedule').prop("checked", false);
 	$('#checkbox-permission-system').prop("checked", false);

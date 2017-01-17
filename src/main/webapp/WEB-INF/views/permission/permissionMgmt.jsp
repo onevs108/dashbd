@@ -253,6 +253,12 @@
 														<label for="checkbox6"> Service Area Management</label>
 													</div>
 												</c:if>
+												<c:if test="${permission.id == 15}">
+													<div class="checkbox checkbox-primary">
+														<input id="checkbox-permission-service-area-group" type="checkbox" name="permissions" value="${permission.id}">
+														<label for="checkbox6"> Service Area Group Management</label>
+													</div>
+												</c:if>
 												<c:if test="${permission.id == 7}">
 													<div class="checkbox checkbox-primary">
 														<input id="checkbox-permission-enb" type="checkbox" name="permissions" value="${permission.id}">
