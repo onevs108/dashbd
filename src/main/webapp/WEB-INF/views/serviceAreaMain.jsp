@@ -51,6 +51,8 @@
     <script src="js/common.js"></script>
     
 	<script type="text/javascript">
+		var circlemap = '${circlemap}';
+		
 		$(document).ready(function() {
 			getMenuList('SERVICE_AREA_MGMT');
 		});
@@ -102,7 +104,6 @@
 
 <body>
 <div id="wrapper">
-    
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
@@ -117,9 +118,7 @@
                 </ul>
             </div>
         </nav>
-
-<div id="page-wrapper" class="gray-bg">
-
+	<div id="page-wrapper" class="gray-bg">
         <div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 				<div class="navbar-header" style="padding-bottom: 10px;">
@@ -203,72 +202,18 @@
             
             
 	<div class="wrapper wrapper-content">
-	
 		<!-- User Mgmt -->
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
                         <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="control-label" for="status">Operator</label>
-                                        <c:choose>
-											<c:when test="${USER.grade == 13}">
-												<select name="status" id="operator" class="form-control">
-													<c:forEach items="${OperatorList}" var="operator">
-														<option value="${operator.id}">${operator.name}</option>
-													</c:forEach>
-												</select>
-											</c:when>
-											<c:otherwise>
-												<select name="status" id="operator" class="form-control" disabled="disabled">
-													<c:forEach items="${OperatorList}" var="operator">
-														<c:choose>
-															<c:when test="${USER.operatorId == operator.id}">
-																<option value="${operator.id}" selected="selected">${operator.name}</option>
-															</c:when>
-															<c:otherwise>
-																<option value="${operator.id}">${operator.name}</option>
-															</c:otherwise>
-														</c:choose>
-													</c:forEach>
-												</select>
-											</c:otherwise>
-										</c:choose>
-<!-- 	                                    <select name="status" id="operator" class="form-control"> -->
-<!-- 	                                    	<option value=""></option> -->
-<%-- 	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx"> --%>
-<%-- 												<option value="${operatorList.id }">${operatorList.name }</option> --%>
-<%-- 											</c:forEach> --%>
-<!-- 	                                    </select> -->
-                                    </div>
-                                </div>
-						  
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label class="control-label" for="status">BM-SC</label>
-                                        <select name="status" id="bmsc" class="form-control">
-                                        <c:forEach var='bmscList' items="${BmscList}" varStatus="idx">
-											<option value="${bmscList.id }">${bmscList.name }</option>
-										</c:forEach>
-                                    	</select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-						  			<div class="form-group4">
-                                        <button type="button" class="btn btn-primary btn-sm demo1" id="btn-add-service-area">Add</button>
-                                        <button type="button" class="btn btn-primary2 btn-sm demo1" id="btn-not-mapped-service-area">Not Mapped Service Area</button>
-                                    </div>
-                                </div>
-						</div>
-                        
-                        <div class="row">
 							<div class="col-sm-8">
 								<div class="ibox-title">
 									<h5><i class="fa fa-wifi"></i> <span id="selectedSvcArea"></span></h5>
+									<span id="selectedCircleId"></span>
 								</div>
-								<div class="google-map" id="map"></div><br>
+								<div class="google-map" id="map" style="height: 700px;"></div><br>
 								<h3 style="position:absolute;bottom:35px;left:25px;padding:5px 10px;border-radius:15px; background-color:rgba(0,0,0,0.5);box-shadow:0 0 10px #ccc;color:#fff;">
 									<i class="fa fa-circle text-danger"></i> <span id="selectedENBs"></span>
 								</h3><br>
@@ -276,84 +221,24 @@
                             <div class="col-sm-4">
                                 <div class="ibox float-e-margins" id="service_area">
                                     <div class="ibox-title">
-                                        <h5>Service Area</h5>
+                                    	<button type="button" class="btn btn-primary2 btn-sm demo1" id="service-create-btn" onclick="javascript:openCreateServiceModal()">Create Service Group</button>
                                     </div>
-                                    <div class="ibox-content">
-                                        <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
-                                            <thead>
-                                                <tr>
-                                                    <th>SA_ID</th>
-                                                    <th>SA_NAME</th>
-                                                    <th>COMMAND</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
+                                    <div class="ibox-content" style="scroll:auto">
+                                        <table class="table table-bordered table-hover" data-page-size="10">
+                                        	<thead>
+                                        		<tr>
+                                        			<th>Service Area Group</th>
+                                        		</tr>
+                                        	</thead>
+                                            <tbody id="area_group">
+                                                
                                             </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="3">
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div><!-- end ibox-content -->
-                                </div><!-- end ibox float-e-margins -->
-                            </div>
-							<div class="col-sm-12" id="viewEnbIDAdd" style="display:none;">
-                                <div class="ibox float-e-margins">
-                                    <div class="ibox-content"><br>
-							 	<form method="get" class="form-horizontal">
-								  <div class="form-group"><label class="pull-left" style="padding:7px 0 0 10px">eNB ID</label>
-									 <div class="col-sm-7">
-										<div class="input-group"><input type="text" class="form-control" id="toAddENBs" name="toAddENBs">
-										<input type="hidden" class="form-control" id="toAddENBsBmscId" name="toAddENBsBmscId" value="">
-										<input type="hidden" class="form-control" id="toAddENBsServiceAreaId" name="toAddENBsServiceAreaId" value="">
-											<span class="input-group-btn">
-												<button type="button" class="btn btn-primary4" onclick="javascript:addToServiceAreaManually();" id="toAddENBsBtn">Add</button>
-											</span>
-										</div>
-									 </div>
-								  </div>
-								</form>
-                                    </div><!-- end ibox-content -->
-                                </div><!-- end ibox float-e-margins -->
-                            </div>
-					  		 <div class="col-sm-12" style="margin-top:-30px;display:none;" id="viewEnbIDList">
-                                <div class="ibox ">
-                                	<input type="hidden" id="checkCityName" name="checkCityName">
-                                	<div class="ibox-content" id="enb_table">
-                                        <table class="footable table table-stripped" data-page-size="10">
-                                            <thead>
-                                                <tr style="border-top-style:solid;border-top-width:1px;border-top-color:#c0c0c0;">
-                                                    <th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3" style="border-right-style:solid;border-right-width:1px;border-right-color:#c0c0c0;">eNB Name</th>
-										  			<th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3" style="border-right-style:solid;border-right-width:1px;border-right-color:#c0c0c0;">eNB Name</th>
-										  			<th class="col-sm-1">eNB ID</th>
-                                                    <th class="col-sm-3">eNB Name</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-										  			<td></td>
-                                                    <td></td>
-										  			<td></td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="6">
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
+<!--                                             <tfoot> -->
+<!--                                                 <tr> -->
+<!--                                                     <td colspan="3"> -->
+<!--                                                     </td> -->
+<!--                                                 </tr> -->
+<!--                                             </tfoot> -->
                                         </table>
                                     </div><!-- end ibox-content -->
                                 </div><!-- end ibox float-e-margins -->
@@ -364,142 +249,78 @@
 			</div>
 		</div>
 		<!-- end User Mgmt -->
-		<!-- More info -->
-		<!-- 
-                <div class="col-lg-7">
-                        <div class="ibox-content">
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">item</th>
-                                    <th class="text-center">Option</th>
-                                    <th class="text-center">Remark</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="text-center text-danger">PLMN 정보</td>
-                                    <td class="text-center text-danger">Mandatory</td>
-                                    <td class="text-danger">MCC, MNC</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center text-danger">Circle</td>
-                                    <td class="text-center text-danger">Optioanl</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center text-danger">Circle명</td>
-                                    <td class="text-center text-danger">Optioanl</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">cluster ID</td>
-                                    <td class="text-center">Optioanl</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">위도, 경도</td>
-                                    <td class="text-center">Mandatory</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">eNB ID</td>
-                                    <td class="text-center">Mandatory</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">eNB IP</td>
-                                    <td class="text-center">Optioanl</td>
-                                    <td>NE IP (eNB OAP IP), M1 IP (multicast ID)</td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">EARFCN</td>
-                                    <td class="text-center">Optioanl</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center text-danger">MBSFN</td>
-                                    <td class="text-center text-danger">Mandatory</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center text-danger">MBMS Service AreA id</td>
-                                    <td class="text-center text-danger">Mandatory</td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                </div>
-         -->
-		<!-- end More info -->
-	   
 	</div><!-- end wrapper wrapper-content -->
-
 	</div><!-- end page-wrapper -->
-
 </div><!-- end wrapper -->
 
 
-<div class="modal fade" id="createServiceAreaLayer">
+<div class="modal fade" id="createServiceGroupLayer">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 				</button>
-				<h5 class="modal-title">Create New Service Area</h5>
+				<h5 class="modal-title">Create New Service Group</h5>
 			</div>
-			<div class="modal-body">
-				<form class="form-horizontal">
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area ID</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaId"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area Name</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaName"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr" id="serviceAreaDescription"></div>
-				</div>
+			<div class="modal-body" style="padding: 20px 30px 0px 30px;">
+				<form id="serviceGroupForm" class="form-horizontal">
+					<div class="form-group">
+						<label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Group Name</label>
+						<div class="col-lg-8 input-group">
+							<input type="text" placeholder="" class="form-control" id="serviceGroupName" onkeydown="javascript:if(event.keyCode == 13) checkServiceGroup();">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-primary0 btn-sm btn-white" onclick="javascript:checkServiceGroup();">Check</button>
+							</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-4 control-label">Description</label>
+						<div class="col-lg-8 input-group">
+							<input type="text" placeholder="" class="form-controlr" id="serviceAreaDescription">
+						</div>
+					</div>
+					<div class="form-group">
+						<span class="col-lg-4"></span>
+						<div class="col-lg-8 input-group">
+							<button type="button" class="btn btn-primary4 btn-sm btn-white" onclick="javascript:callSelectCityPop()">Select Cities</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<span class="col-lg-4"></span>
+						<div class="col-lg-8 input-group" style="overflow:auto;">
+							<table class="table table-bordered table-hover" data-page-size="10">
+								<tbody id="serviceGroupCityTab"></tbody>
+							</table>
+						</div>
+					</div>
 				<br>
 				</form>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="createSvcAreaBtn">OK</button>
+			<div class="modal-footer" style="text-align:center;">
+				<button type="button" class="btn btn-primary0 btn-white" onclick="javascript:createServiceGroup()">Create</button>
+				<button type="button" class="btn btn-secondary btn-white" data-dismiss="modal">Cancle</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 
-<div class="modal fade" id="editServiceAreaLayer">
+<div class="modal fade" id="selectCitiesModal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-				</button>
-				<h5 class="modal-title">Create New Service Area</h5>
-			</div>
+<!-- 			<div class="modal-header"> -->
+<!-- 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"> -->
+<!-- 				<span aria-hidden="true">&times;</span> -->
+<!-- 				</button> -->
+<!-- 				<h5 class="modal-title">Cities Modal</h5> -->
+<!-- 			</div> -->
 			<div class="modal-body">
-				<form class="form-horizontal">
-				<input type="hidden" placeholder="" class="form-control" id="editType">
-				<div class="form-group"><label class="col-lg-4 control-label">Service Area ID</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="editServiceAreaId" disabled></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area Name</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="editServiceAreaName"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr" id="editServiceAreaDescription"></div>
-				</div>
-				<br>
-				</form>
+				<div class="google-map" id="modalMap"></div>
 			</div>
-			<div class="modal-footer">
+			<div class="modal-footer" style="text-align:center;">
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" onclick="javascript:addCitiesInServiceGroup()">Continue</button>
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editSvcAreaBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

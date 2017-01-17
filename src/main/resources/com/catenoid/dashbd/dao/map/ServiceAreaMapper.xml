@@ -490,7 +490,7 @@
 		order by length(y.id), y.id
 		limit #{page,jdbcType=INTEGER}, #{perPage,jdbcType=INTEGER}
 	</select>
-
+	
 	<select id="getServiceAreaEnbAp" resultMap="ServiceAreaEnbAp" parameterType="java.util.HashMap" >
 	select 
 		t1.service_area_id, t3.bandwidth as service_area_bandwidth, 
@@ -1452,5 +1452,99 @@
 			) T
 		) R
 		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="getServiceAreaGroupList" parameterType="HashMap" resultType="HashMap">
+		SELECT 
+			  sagc.group_id							
+			, sag.group_name								
+			, sag.group_description
+		FROM service_area_group sag
+		INNER JOIN service_area_group_city sagc
+		ON sag.group_id = sagc.group_id
+		INNER JOIN city c
+		ON sagc.city_id = c.city_id
+		WHERE c.circle_id = #{circle_id}
+		GROUP BY sagc.group_id					
+			, sag.group_name								
+			, sag.group_description
+		ORDER BY sagc.group_id
+	</select>
+	
+	<select id="getCitiesInServiceAreaGroup" parameterType="HashMap" resultType="HashMap">
+		SELECT c.city_id
+			, c.circle_id								
+			, c.circle_name								
+			, c.city_code								
+			, c.city_name								
+			, c.description								
+			, c.latitude								
+			, c.longitude								
+			, c.bandwidth								
+			, c.created_at
+			<choose>
+				<when test="group_id != '' and group_id != null">
+					, CASE WHEN group_city.color IS NULL AND out_group_city.color IS NULL THEN 'gray'
+					       WHEN group_city.color IS NULL THEN out_group_city.color
+					       WHEN out_group_city.color IS NULL THEN group_city.color
+					  END color
+				</when>
+				<otherwise>
+					, 'gray' as color
+				</otherwise>
+			</choose>
+		FROM city c
+		<if test="group_id != '' and group_id != null">
+			LEFT JOIN ( 
+			  SELECT    city_id
+			          , 'red' as color
+			  FROM service_area_group_city
+			  WHERE group_id = #{group_id}
+			) group_city
+			ON c.city_id = group_city.city_id
+			LEFT JOIN ( 
+			  SELECT    city_id
+			          , 'blue' as color
+			  FROM service_area_group_city
+			  WHERE group_id != #{group_id}
+			    AND city_id NOT IN(
+			        SELECT  city_id
+			        FROM service_area_group_city
+			        WHERE group_id = #{group_id}
+			    )
+			) out_group_city
+			ON c.city_id = out_group_city.city_id
+		</if>
+	</select>
+	
+	<select id="checkServiceAreaGroupName" parameterType="HashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM service_area_group
+		WHERE group_name = #{group_name}
+	</select>
+	
+	<insert id="insertServiceAreaGroup" parameterType="HashMap">
+		INSERT INTO service_area_group(group_name, group_description, created_at)
+		VALUES(#{group_name}, #{group_description}, now())
+		<selectKey resultType="int" keyProperty="group_id" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertServiceAreaGroupCity" parameterType="HashMap">
+		INSERT INTO service_area_group_city(group_id, city_id, created_at)
+		VALUES(#{group_id}, #{city_id}, now())
+	</insert>
+	
+	<delete id="deleteServiceAreaGroupCity" parameterType="HashMap">
+		DELETE FROM service_area_group_city
+		WHERE group_id = #{group_id} 
+		  AND city_id = #{city_id}
+	</delete>
+	
+	<select id="checkServiceAreaGroupCity" parameterType="HashMap" resultType="int">
+		SELECT COUNT(*)
+		FROM service_area_group_city
+		WHERE city_id = #{city_id}
 	</select>
 </mapper>
