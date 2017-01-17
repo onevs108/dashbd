@@ -8,6 +8,23 @@
 		FROM city
 	</select>
 
+	<select id="checkSAID" parameterType="String" resultType="int">
+		select count(*) from 
+		(
+			SELECT circle_id
+					FROM circle
+					where circle_id = #{checkSAID}
+			union all
+			SELECT city_id
+					FROM city
+					where city_id = #{checkSAID}
+			union all
+			SELECT hotspot_id
+					FROM hotspot
+					where hotspot_id = #{checkSAID}
+		) T
+	</select>
+
 	<select id="checkCircleExist" parameterType="String" resultType="int">
 		SELECT count(*)			
 		FROM circle

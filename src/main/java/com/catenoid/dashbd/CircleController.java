@@ -172,4 +172,17 @@ public class CircleController {
 		
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/api/checkSAID.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String checkSAID(@RequestParam String checkSAID, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		int result = circleMapper.checkSAID(checkSAID);
+		if(result != 1) {
+			returnStr = "EXIST";
+		}
+		return returnStr;
+		
+	}
+	
 }

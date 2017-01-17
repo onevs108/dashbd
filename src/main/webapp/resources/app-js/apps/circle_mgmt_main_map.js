@@ -468,16 +468,58 @@ function initMap() {
 function makeCircleMap() {
 	for (var i = 0; i < circleJson.length; i++) {
 		circleMap[circleJson[i].circle_id] = {
-			center: {lat: parseFloat(circleJson[i].latitude), lng: parseFloat(circleJson[i].longitude)},	//위도, 경도
+			center: {lat: parseFloat(circleJson[i].latitude), lng: parseFloat(circleJson[i].longitude)},		//위도, 경도
 		    population: 1500000,																				//원 크기
 		    title: circleJson[i].circle_name
 		}
 	}
 }
 
+var checkSAID = false;
+function existSAID(type) {
+	var said = "";
+	if($("#circleId").val() == "") {
+		swal({
+            title: "Warning !",
+            text: "Please Input SAID"
+        });
+		return;
+	}
+	if(type == "circle") {
+		said = $("#circleId").val();
+	} else if (type == "city") {
+		said = $("#cityId").val();
+	}
+	$.ajax({
+        url : "/dashbd/api/checkSAID.do",
+        type: "post",
+        data : { "existSAID" : said},
+        success : function(data) {
+        	if(data == "EXIST"){
+        		swal({
+                    title: "Warning !",
+                    text: "사용할 수 없는 이름입니다."
+                });
+        	} else {
+        		swal({
+                    title: "Success !",
+                    text: "사용 가능합니다."
+                });
+        		checkSAID = true;
+        	}
+        },
+        error : function(xhr, status, error){
+        	swal({
+                title: "Fail !",
+                text: "서버 통신 오류 입니다."
+            });
+        }
+    });
+}
+
 var checkCircle = false;
 function existCircle() {
-	if($("#circleName").val() == ""){
+	if($("#circleName").val() == "") {
 		swal({
             title: "Warning !",
             text: "Please Input Circle Name"

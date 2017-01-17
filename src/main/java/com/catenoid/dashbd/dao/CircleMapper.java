@@ -14,5 +14,7 @@ public interface CircleMapper {
 	int deleteCircle(String circleId);
 
 	int insertCity(HashMap<String, String> param);
+
+	int checkSAID(String checkSAID);
 	
 }

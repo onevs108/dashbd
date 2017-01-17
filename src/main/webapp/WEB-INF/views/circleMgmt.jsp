@@ -429,9 +429,12 @@
 				<form class="form-horizontal">
 				<input type="hidden" placeholder="" class="form-control" id="editType">
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Circle Name</label>
-				<div class="col-lg-6"><input type="hidden" placeholder="" class="form-control" id="circleId"></div>
 				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="circleName"></div>
 				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existCircle()">Check</button></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> SAID</label>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="circleId"></div>
+				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existSAID('circle')">Check</button></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Longitude</label>
 				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="longitude"></div>
@@ -476,6 +479,10 @@
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Bandwidth</label>
 				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityBandwidth"></div>
+				</div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> SAID</label>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="said"></div>
+				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existSAID()">Check</button></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
 				<div class="col-lg-8"><textarea type="text" placeholder="" class="form-control" id="cityDescription" style="height: 150px;"></textarea></div>
