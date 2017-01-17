@@ -125,4 +125,21 @@ public interface ServiceAreaMapper {
     int insertSystemDbBackup(HashMap< String, Object > searchParm);
     
     List<SystemBroadCastContents> getSystemBCContentsList(HashMap<String, Object> example);
+    
+    
+    
+    List<HashMap<String, Object>> getServiceAreaGroupList(HashMap<String, Object> searchParam);
+    
+    List<HashMap<String, Object>> getCitiesInServiceAreaGroup(HashMap<String, Object> searchParam);
+    
+    int checkServiceAreaGroupName(HashMap<String, Object> searchParam);
+    
+    int insertServiceAreaGroup(HashMap<String, Object> insertParam);
+    
+    int insertServiceAreaGroupCity(HashMap<String, Object> insertParam);
+    
+    int deleteServiceAreaGroupCity(HashMap<String, Object> insertParam);
+    
+    int checkServiceAreaGroupCity(HashMap<String, Object> searchParam);
+    
 }
