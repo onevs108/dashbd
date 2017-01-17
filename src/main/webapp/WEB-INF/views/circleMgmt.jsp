@@ -475,18 +475,18 @@
 				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityLatitude"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Bandwidth</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityLatitude"></div>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityBandwidth"></div>
 				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Bandwidth</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control0" id="cityLatitude"></div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
+				<div class="col-lg-8"><textarea type="text" placeholder="" class="form-control" id="cityDescription" style="height: 150px;"></textarea></div>
 				</div>
 				<br>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="addCircleBtn">OK</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editCircleBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="addCityBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editCityBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

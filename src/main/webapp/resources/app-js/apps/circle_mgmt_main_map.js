@@ -151,6 +151,45 @@ $(document).ready(function()
     	});
     });
     
+    $('#addCityBtn').click(function(){
+    	$('#addCityModal').modal('hide');
+    	$.ajax({
+    		url : "/dashbd/api/insertCity.do",
+    		type: "post",
+    		data : { 
+    			"cityName" : $("#cityName").val(),
+    			"circleId" : $("#circleId").val(),
+    			"circleName" : $("#circleName").val(),
+    			"latitude" : $("#cityLatitude").val(),
+    			"longitude" : $("#cityLongitude").val(),
+    			"bandwidth" : $("#cityBandwidth").val(),
+    			"description" : $("#cityDescription").val()
+    		},
+    		success : function(data){
+    			if(data == "SUCCESS"){
+    				swal({
+    					title: "Success !",
+    					text: "City is updated!"
+    				});
+    				setTimeout(() => {
+    					location.reload();
+    				}, 2000);
+    			} else {
+    				swal({
+    					title: "Error !",
+    					text: "Update Fail."
+    				});
+    			}
+    		},
+    		error : function(xhr, status, error){
+    			swal({
+    				title: "Fail !",
+    				text: "서버 통신 오류 입니다."
+    			});
+    		}
+    	});
+    });
+    
 });
 
 var perPage = 15;
@@ -1453,10 +1492,9 @@ function deleteCircle(circleId) {
 }
 
 function cityRightClick(e) {
-//	var service = new google.maps.places.PlacesService(map);
 	var contentString = "Do you want to add this place as city of "+circleTitle.innerHTML+" Circle?<br>" +
 			"<div style='text-align: center;'>" +
-			"<button class='btn btn-success btn-xs' onclick=addCityInCircle("+circleTitle.innerHTML+","+e.latLng.lat()+",'"+e.latLng.lng()+"')>Continue</button></div>";
+			"<button class='btn btn-success btn-xs' onclick=addCityInCircleFromBlank("+e.latLng.lat()+",'"+e.latLng.lng()+"')>Continue</button></div>";
 	var infowindow = new google.maps.InfoWindow({
 		content: contentString,
 		position: {lat: e.latLng.lat(), lng: e.latLng.lng()}
@@ -1525,6 +1563,8 @@ function moveCityList(circleId) {
         	drawCity(otherCityMap, "#7B68EE", circleId, circleMap[circleId].title);	//파랑
         	
         	$("#cityList").html(html);
+        	$("#circleId").val(circleId);
+        	$("#circleName").val(circleMap[circleId].title);
         	$("#circleTitle").html(circleMap[circleId].title);
         	
         },
@@ -1537,10 +1577,18 @@ function moveCityList(circleId) {
     });
 }
 
+function addCityInCircleFromBlank(lat, lng) {
+	$("#addCityBtn").show();
+	$("#editCityBtn").hide();
+	$("#cityLongitude").val(lng);
+	$("#cityLatitude").val(lat);
+	$("#addCityModal").modal();
+}
+
 function addCityInCircle(circleName, lat, lng) {
-	alert(circleName)
-	alert(lat)
-	alert(lng)
+	$("#addCityBtn").show();
+	$("#editCityBtn").hide();
+	$("#addCityModal").modal();
 }
 
 function drawCity(cityMap, color, circleId, circleTitle) {
@@ -1563,21 +1611,30 @@ function drawCity(cityMap, color, circleId, circleTitle) {
 //	    	"#FF0000"	//빨강
 //        	"#828282"	//회색
 //        	"#7B68EE"	//파랑
-	    	if(color == "#828282")
-	    	{	//아무것도 
+	    	if(color == "#828282")	//아무대도 안 속한 도시
+	    	{
 	    		var contentString = "<button class='btn btn-success btn-xs' onclick=addCityInCircle("+this.id+","+circleId+",'"+encodeURI(circleTitle)+"')>Add to Circle</button>";
 	    		var infowindow = new google.maps.InfoWindow({
 	    			content: contentString
 	    		});
 	    		infowindow.open(map, this);
 	    	} 
-	    	else if(color == "#7B68EE") 
+	    	else if(color == "#7B68EE") 	//다른 서클에 속한 도시
 	    	{
 	    		var contentString = "<button class='btn btn-success btn-xs' onclick=changeCityInCircle("+this.id+","+circleId+",'"+encodeURI(circleTitle)+"')>Change this city to this Circle</button>";
 	    		var infowindow = new google.maps.InfoWindow({
 	    			content: contentString
 	    		});
 	    		infowindow.open(map, this);
+	    	}
+	    	else	//해당 서클에 속한 도시
+	    	{
+	    		var contentString = "<b>"+this.title+"</b><br><button class='btn btn-success btn-xs' onclick=editCircle("+this.id+","+circleId+",'"+encodeURI(circleTitle)+"')>Edit</button>" +
+						"<button class='btn btn-success btn-xs' onclick=deleteCircle("+this.id+","+circleId+",'"+encodeURI(circleTitle)+"')>Detele</button>";
+				var infowindow = new google.maps.InfoWindow({
+				    content: contentString
+				});
+				infowindow.open(map, this);
 	    	}
 		});
 	    

@@ -147,6 +147,19 @@ public class CircleController {
 	}
 	
 	@ResponseBody
+	@RequestMapping(value = "/api/insertCity.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String insertCity(@RequestParam HashMap<String, String> param, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		int result = circleMapper.insertCity(param);
+		if(result < 1) {
+			returnStr = "FAIL";
+		}
+		return returnStr;
+		
+	}
+	
+	@ResponseBody
 	@RequestMapping(value = "/api/deleteCircle.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String deleteCircle(@RequestParam String circleId, HttpServletRequest request, HttpServletResponse response) {
 		String returnStr = "SUCCESS";

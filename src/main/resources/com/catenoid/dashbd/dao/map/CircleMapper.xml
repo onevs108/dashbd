@@ -14,6 +14,13 @@
 		where circle_name = #{circleName}
 	</select>
 
+	<insert id="insertCity" parameterType="HashMap">
+		INSERT INTO city (<if test="cityId != null">city_id,</if>circle_id, circle_name, city_name, description, latitude, longitude, bandwidth, created_at, updated_at) 
+		VALUES (<if test="cityId != null">#{cityId},</if>#{circleName}, #{circleName}, ${latitude}, ${longitude}, NOW(), NOW())
+		ON DUPLICATE KEY UPDATE
+		circle_name = #{circleName}, description = #{circleName}, latitude = ${latitude}, longitude = ${longitude}, updated_at = NOW()
+	</insert>
+
 	<insert id="insertCircle" parameterType="HashMap">
 		INSERT INTO circle (<if test="circleId != null">circle_id,</if>circle_name, description, latitude, longitude, created_at, updated_at) 
 		VALUES (<if test="circleId != null">#{circleId},</if>#{circleName}, #{circleName}, ${latitude}, ${longitude}, NOW(), NOW())
