@@ -1,103 +1,3 @@
-var initBmScId = 1;
-
-$(document).ready(function()
-{
-	//getServiceAreaBmSc(1, $('#operator option:selected').val());
-	$('#createServiceGroupLayer').on('hidden.bs.modal', function (e) {
-		$('#createServiceGroupLayer').find('input').val('');
-	})
-//    $('#operator').change(function(){
-//        getServiceAreaBmSc(1, $('#operator option:selected').val());
-//    });
-    
-    $('#btn-add-service-area').click(function(){
-    	
-    	if( isEmpty( $('#operator option:selected').val() ) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please select operator first."
-            });
-    	} else if( isEmpty(  ) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please select BM-SC first."
-            });
-    	} else {
-    		$("#createServiceGroupLayer").modal();
-    	}
-    });
-    
-    $('#btn-not-mapped-service-area').click(function() {
-    	if( isEmpty( $('#operator option:selected').val() ) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please select operator first."
-            });
-    	} else if( isEmpty(  ) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please select BM-SC first."
-            });
-    	} else {
-    		getSeviceAreaNotMapped(  );
-    	}
-    });
-    
-    $('#createSvcAreaBtn').click(function(){
-
-    	if( isEmpty($('#serviceAreaId').val()) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please input Service Area ID first."
-            });
-    	} else if( isEmpty($('#serviceAreaName').val()) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please input Service Area Name first."
-            });
-    	} else {
-    		$('#createServiceGroupLayer').modal('hide');
-    	
-    		createServiceArea( $('#operator option:selected').val());
-    	}
-    });
-
-    
-    $('#editSvcAreaBtn').click(function(){
-
-    	if( isEmpty($('#editServiceAreaId').val()) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please input Service Area ID first."
-            });
-    	} else if( isEmpty($('#editServiceAreaName').val()) ) {
-    		swal({
-                title: "Sorry !",
-                text: "Please input Service Area Name first."
-            });
-    	} else {
-    		$('#editServiceAreaLayer').modal('hide');
-    	
-    		editServiceArea( $('#operator option:selected').val());
-    	}
-    });
-    
-    //json 형태로 변환
-    circlemap = JSON.parse(circlemap);
-});
-
-var perPage = 15;
-var listPageCount = 10;
-
-var enb_markers = [];
-var enbInfoWindows = {};
-var menuInfoWindows = {};
-var shiftPressed = false;
-var ctlPressed = false;
-var toAddEnbs = [];
-var toDeleteEnbs = [];
-var selectedENBsCount = 0;
-
 var map;
 var modalMap;
 var circles = [];
@@ -122,6 +22,104 @@ var tempInfoWindow;
 //최근 클릭된 city Object를 담는 변수
 var tempCityObj;
 
+$(document).ready(function()
+{
+	jsTreeSetting();
+    //json 형태로 변환
+    circlemap = JSON.parse(circlemap);
+});
+
+function tabChange(tabDiv) {
+	if(tabDiv == '1') {
+		$($("ul.nav.nav-tabs")[0]).addClass("active");
+		$($("ul.nav.nav-tabs")[1]).removeClass("active");
+		$("#map").hide();
+		$("#treeNode").show();
+		
+		jsTreeSetting();
+	} else if(tabDiv == '2') {
+		$($("ul.nav.nav-tabs")[1]).addClass("active");
+		$($("ul.nav.nav-tabs")[0]).removeClass("active");
+		$("#map").show();
+		$("#treeNode").hide();
+		
+		google.maps.event.trigger(map, "resize");
+		map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
+	}
+}
+
+function jsTreeSetting() {
+	$.getScript( "/dashbd/resources/js/plugins/jsTree/jstree.min.js" )
+		.done(function( script, textStatus ) {
+			$.ajax({
+			    url : "/dashbd/api/getTreeNodeData.do",
+			    type: "POST",
+			    data : { 
+			    	gruop_id : ''
+			    },
+			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			    success : function(responseData) {
+			        $("#ajax").remove();
+			        var data = JSON.parse(responseData);
+			        
+			        $("#treeNode").jstree("destroy").empty();
+			        treeInit(data);
+			    },
+		        error : function(xhr, status, error) {
+		        	swal({
+		                title: "Fail !",
+		                text: "Error"
+		            });
+		        }
+			});
+		});
+}
+
+//jsTree Init Function
+function treeInit(data) {
+	var treeData = data.resultList;
+	for(var i=0; i < treeData.length; i++) {
+		var node = treeData[i];
+		
+		if(i == 0) {
+			$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
+			continue;
+		}
+		
+		var compareClass = '';
+		if(node.node_div == 'circle') compareClass='root';
+		else if(node.node_div == 'city') compareClass='circle';
+		else if(node.node_div == 'hotspot') compareClass='city';
+		
+		for(var j=0; j < $('#treeNode li.' + compareClass).length; j++) {
+			var compareNode = $('#treeNode li.' + compareClass)[j];
+			
+			if($(compareNode).attr("data-init") == node.pnode_id) { 
+				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name;
+				liStr += '<span style="margin-left:20px;"><input type="text" name="lat"></span>';
+				liStr += '<span style="margin-left:20px;"><input type="text" name="lng"></span>';
+				liStr += '<span style="margin-left:20px;"><button type="button" class="btn btn-success btn-xs button-edit" onclick="callSetLocationModalMap(this, \'serviceArea\')">Map</button></span>';
+				liStr += '</li>';
+				
+				if($(compareNode).html().indexOf("ul") == -1) {
+					$(compareNode).append('<ul>' + liStr + '</ul>');
+				} else {
+					$(compareNode).find("ul").append(liStr)
+				}
+				
+				break;
+			}
+		}
+	}
+	
+	$('#treeNode').jstree({
+	    "conditionalselect" : function (node, event) {
+	        return false;
+	      },
+	      "plugins" : [ "conditionalselect" ]
+	    });;
+}
+
 //메인 화면의 모달 로드
 function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
@@ -129,11 +127,6 @@ function initMap() {
 		zoom: default_zoom
 	});
 	
-	modalMap = new google.maps.Map(document.getElementById('modalMap'), {
-		center: {lat: 22.352687, lng: 79.311189},
-		zoom: default_zoom+1
-	});
-
 	var mouseDownPos, gribBoundingBox = null,
 	    mouseIsDown = 0;
 	var themap = map;
@@ -317,243 +310,6 @@ function drawServiceAreaByBmSc() {
 	}
 }
 
-//circle 선택시 service area group 리스트 조회 메소드 
-function drawServiceAreaGroupList(circle) {
-	var circleId = circle.circleId;
-	
-	$.ajax({
-	    url : "/dashbd/api/getServiceAreaGroupList.do",
-	    type: "POST",
-	    data : { 
-	    	circle_id : circleId
-	    },
-	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-	    success : function(responseData) {
-	        $("#ajax").remove();
-	        var data = JSON.parse(responseData);
-	        
-	        $("#area_group").empty();
-	        
-	        if( data.length != 0 ) {
-	        	for(var i=0; i < data.length; i++) {
-	        		$("#area_group").append('<tr onclick="selectServiceAreaGroup(this)" data-init="' 
-		        			+ data[i].group_id + '" data-lat="' + circle.getCenter().lat() + '" data-lng="' + circle.getCenter().lng() + '" title="' 
-		        			+ data[i].group_description + '"><td>' + data[i].group_name + '</td></tr>');
-		        }
-	        } else{
-	        	$("#area_group").append('<tr><td>No Data</td></tr>');
-	        }
-	    },
-        error : function(xhr, status, error) {
-        	swal({
-                title: "Fail !",
-                text: "Error"
-            });
-        }
-	});
-}
-
-//서비스 영억 그룹 테이블 선택시 발동하는 함수
-function selectServiceAreaGroup(obj) {
-	$(obj).css("background", blue);
-	$(obj).css("color", white);
-	$(obj).attr("choiceYn", 'Y');
-	
-	$(obj).siblings().css("background", white);
-	$(obj).siblings().css("color", black);
-	$(obj).siblings().attr("choiceYn", 'N');
-	
-	map.setCenter(new google.maps.LatLng( $(obj).attr("data-lat"), $(obj).attr("data-lng") ));
-	map.setZoom(default_zoom + 2);
-	
-	//선택된 gruop에 따른 city 리스트 조회
-	serviceAreaGroupChoice();
-}
-
-//service Group modal 호출
-function openCreateServiceModal() {
-	//팝업 내용 완전 초기화
-	$("#serviceGroupName").val('');
-	$("#serviceGroupName").prop("readonly", false);
-	$("#serviceAreaDescription").val('');
-	
-	//기존에 추가한 도시가 있다면 모두 삭제
-	$("#serviceGroupCityTab").empty();
-	
-	cityClear('modalCities');
-	$("#createServiceGroupLayer").modal('show');
-}
-
-//서비스 그룹 이름의 중복 여부 판단
-function checkServiceGroup() {
-	if($("#serviceGroupName").val() != '') {
-		$.ajax({
-		    url : "/dashbd/api/checkServiceAreaGroupName.do",
-		    type: "POST",
-		    data : { 
-		    	group_name : $("#serviceGroupName").val()
-		    },
-		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-		    success : function(responseData) {
-		        $("#ajax").remove();
-		        var data = JSON.parse(responseData);
-		        
-		        if(data.resultCode == 'S') {
-		        	$("#serviceGroupName").prop("readonly", true);
-		        } else {
-		        	swal({
-		                title: "Fail !",
-		                text: "Already Exist Your Group Name"
-		            });
-		        }
-		    },
-	        error : function(xhr, status, error) {
-	        	swal({
-	                title: "Fail !",
-	                text: "Error"
-	            });
-	        }
-		});
-	} else {
-		swal({
-            title: "Fail !",
-            text: "Check Your Group Name"
-        });
-	}
-}
-
-//service group에 도시를 추가하기 위한 팝업 호출
-function callSelectCityPop() {
-	$("#selectCitiesModal").modal('show');
-	
-	$('#selectCitiesModal').on('shown.bs.modal', function () {
-		google.maps.event.trigger(modalMap, "resize");
-		
-		//서비스 그룹 생성 팝업을 띄운상태에서 그 팝업을 닫지 않고 또다시 띄울경우 이전 상태 그대로 둠
-		if(modalCities.length == 0)
-			drawServiceAreaByCity(modalMap, '', 'modalCities');
-	});
-}
-
-//도시 선택 팝업 에서 도시 선택 후 continue 버튼 클릭시 수행되는 메소드
-function addCitiesInServiceGroup() {
-	$("#serviceGroupCityTab").empty();
-	
-	for(var i=0; i < modalCities.length; i++) {
-		var tempCity = modalCities[i];
-		
-		if(tempCity.fillColor == 'red') {
-			$("#serviceGroupCityTab").append('<tr data-init="' + tempCity.city_id + '"><td>' + tempCity.city_name + '</td></tr>');
-		}
-	}
-	
-	$("#selectCitiesModal").modal('hide');
-}
-
-//서비스 그룹 생성 메소드
-function createServiceGroup() {
-	if($("#serviceGroupName").val().trim() != '' && $("#serviceGroupName").prop("readonly") == true) {
-		if($("#serviceGroupCityTab tr").length > 0) {
-			var cityListStr = '';
-			for(var i=0; i < $("#serviceGroupCityTab tr").length; i++) {
-				var tempCity = $("#serviceGroupCityTab tr")[i];
-				cityListStr += ',' + $(tempCity).attr("data-init"); 
-			}
-			cityListStr = cityListStr.substring(1);
-			
-			$.ajax({
-			    url : "/dashbd/api/insertServiceAreaGroup.do",
-			    type: "POST",
-			    data : { 
-			    	group_name : $("#serviceGroupName").val(),
-			    	group_description : $("#serviceAreaDescription").val(),
-			    	cityListStr : cityListStr
-			    },
-			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-			    success : function(responseData) {
-			        $("#ajax").remove();
-			        var data = JSON.parse(responseData);
-			        
-			        if(data.resultCode == 'S') {
-			        	swal({
-			                title: "Success !",
-			                text: "Success"
-			            });
-			        	
-			        	location.reload();
-			        } else {
-			        	swal({
-			                title: "Fail !",
-			                text: "Error"
-			            });
-			        }
-			    },
-		        error : function(xhr, status, error) {
-		        	swal({
-		                title: "Fail !",
-		                text: "Error"
-		            });
-		        }
-			});
-		} else {
-			swal({
-	            title: "Fail !",
-	            text: "Check Your City Group"
-	        });
-		}
-	} else {
-		swal({
-            title: "Fail !",
-            text: "Check Your Group Name"
-        });
-	}
-}
-
-//메인 맵에서 도시를 서비스 그룹으로 넣거나 뺴는 메소드
-function addAndDeleteCityInServiceGroup(div, group_id, city_id) {
-	$.ajax({
-	    url : "/dashbd/api/addDeleteCitiInServiceAreaGroup.do",
-	    type: "POST",
-	    data : { 
-	    	div : div,
-	    	group_id : group_id,
-	    	city_id : city_id
-	    },
-	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-	    success : function(responseData) {
-	        $("#ajax").remove();
-	        var data = JSON.parse(responseData);
-	        
-	        //데이터 등록이나 삭제에 성공했을 경우 수행
-	        if(data.resultCode == 'S') {
-	        	if(div == 'add') {
-	        		tempCityObj.setOptions({strokeColor:'red', fillColor:'red'})
-	        	} else if(div == 'delete') {
-	        		tempCityObj.setOptions({strokeColor:'gray', fillColor:'gray'})
-	        	}
-	        } 
-	        //삭제 했을 경우 다른 서비스 그룹에 있다면 파란색으로 셋팅
-	        else if(data.resultCode == 'E') {
-	        	tempCityObj.setOptions({strokeColor:'blue', fillColor:'blue'})
-	        }
-	        else {
-	        	swal({
-	                title: "Fail !",
-	                text: "Error"
-	            });
-	        }
-	        
-	        //열려있던 infoWindow 닫기
-	        tempInfoWindow.close();
-	    },
-        error : function(xhr, status, error) {
-        	swal({
-                title: "Fail !",
-                text: "Error"
-            });
-        }
-	});
-}
 
 
 

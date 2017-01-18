@@ -130,16 +130,14 @@ public interface ServiceAreaMapper {
     
     List<HashMap<String, Object>> getServiceAreaGroupList(HashMap<String, Object> searchParam);
     
-    List<HashMap<String, Object>> getCitiesInServiceAreaGroup(HashMap<String, Object> searchParam);
+//    List<HashMap<String, Object>> getCitiesInServiceAreaGroup(HashMap<String, Object> searchParam);
     
     int checkServiceAreaGroupName(HashMap<String, Object> searchParam);
     
     int insertServiceAreaGroup(HashMap<String, Object> insertParam);
     
-    int insertServiceAreaGroupCity(HashMap<String, Object> insertParam);
+    int deleteServiceAreaGroup(HashMap<String, Object> insertParam);
     
-    int deleteServiceAreaGroupCity(HashMap<String, Object> insertParam);
-    
-    int checkServiceAreaGroupCity(HashMap<String, Object> searchParam);
+    List<HashMap<String, Object>> getTreeNodeData(HashMap<String, Object> searchParam);
     
 }

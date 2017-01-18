@@ -2677,42 +2677,10 @@ public class ServiceAreaController {
 		ModelAndView mv = new ModelAndView("serviceAreaMain");
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-//		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
-//		Integer perPage = 50;
-		
-//		OperatorSearchParam searchParam = new OperatorSearchParam();
-//		searchParam.setPage((page-1) * perPage);
-//		searchParam.setPerPage(perPage);
-		
-//		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
-//		Operator initOperator = result.get(0);
-		
-//		searchParam = new OperatorSearchParam();
-//		searchParam.setPage((page-1) * perPage);
-//		searchParam.setPerPage(perPage);
-//		searchParam.setOperatorId(initOperator.getId());
-		
-//		List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
-		
-//		mv.addObject("OperatorList", result);
-//		mv.addObject("BmscList", bmscs);
 		
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		
 		List<Circle> circleList = operatorMapper.selectCircleListAll();
-//		List<Circle> townList = operatorMapper.selectTownListAll();
-		
-//		var circlemap = {
-//		  circleA: {
-//			center: {lat: 24, lng: 74.629},
-//			population: 1500000
-//		  },
-//		  circleB: {
-//		    center: {lat: 24, lng: 84.629},		//위경도
-//		    population: 1500000					//원크기
-//		  },
-//		}
-		  
 		
 		JSONObject circlemap = new JSONObject();
 		
@@ -2727,13 +2695,69 @@ public class ServiceAreaController {
 		}
 		
 		mv.addObject("circlemap", circlemap);
-//		mv.addObject("townList", townList);
 		
 		return mv;
 	}
 	
+//	/**
+//	 * Service Area Mgmt > Circle 킬릭시 service area group List 호출
+//	 * @param request
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/api/getCitiesInServiceAreaGroup.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+//	public void getCitiesInServiceAreaGroup(HttpServletRequest request, HttpServletResponse response) {
+//		try {
+//			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+//			
+//			String group_id = request.getParameter("group_id");
+//			
+//			HashMap< String, Object > searchParam = new HashMap();
+//			searchParam.put("group_id", group_id);
+//			List<HashMap<String, Object>> citiesInServiceAreaGroup= mapper.getCitiesInServiceAreaGroup(searchParam);
+//			
+//			JSONObject circlemap = new JSONObject();
+//			
+//			for (HashMap<String, Object> city : citiesInServiceAreaGroup) {
+//				JSONObject jsonObj1 = new JSONObject();
+//				JSONObject jsonObj2 = new JSONObject();
+//				jsonObj2.put("lat", city.get("latitude"));
+//				jsonObj2.put("lng", city.get("longitude"));
+//				jsonObj1.put("center", jsonObj2);
+//				jsonObj1.put("color", city.get("color"));
+//				jsonObj1.put("population", "1000000"); 
+//				jsonObj1.put("city_id", city.get("city_id"));
+//				jsonObj1.put("city_name", city.get("city_name"));
+//				circlemap.put(city.get("city_id"), jsonObj1);
+//			}
+//		
+//			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+//	        response.getWriter().print(circlemap);
+//	    } catch (Exception e) {
+//	        e.printStackTrace();
+//	    }
+//	}
+		
 	/**
-	 * Service Area Mgmt > Circle 킬릭시 service area group List 호출
+	 * Service Area Group Mgmt > Service Area Group Mgmt 페이지 호출
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/resources/serviceAreaGroup.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public ModelAndView serviceAreaGroup(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("serviceAreaGroup");
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		
+		List<Circle> circleList = operatorMapper.selectCircleListAll();
+		mv.addObject("circleList", circleList);
+		
+		return mv;
+	} 
+	
+	/**
+	 * Service Area Mgmt > Circle 선택시 service area group List 호출
 	 * @param request
 	 * @return
 	 */
@@ -2768,78 +2792,9 @@ public class ServiceAreaController {
 	        e.printStackTrace();
 	    }
 	} 
-		
-	/**
-	 * Service Area Mgmt > Circle 킬릭시 service area group List 호출
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/api/getCitiesInServiceAreaGroup.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void getCitiesInServiceAreaGroup(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-			
-			String group_id = request.getParameter("group_id");
-			
-			HashMap< String, Object > searchParam = new HashMap();
-			searchParam.put("group_id", group_id);
-			List<HashMap<String, Object>> citiesInServiceAreaGroup= mapper.getCitiesInServiceAreaGroup(searchParam);
-			
-			JSONObject circlemap = new JSONObject();
-			
-			for (HashMap<String, Object> city : citiesInServiceAreaGroup) {
-				JSONObject jsonObj1 = new JSONObject();
-				JSONObject jsonObj2 = new JSONObject();
-				jsonObj2.put("lat", city.get("latitude"));
-				jsonObj2.put("lng", city.get("longitude"));
-				jsonObj1.put("center", jsonObj2);
-				jsonObj1.put("color", city.get("color"));
-				jsonObj1.put("population", "1000000"); 
-				jsonObj1.put("city_id", city.get("city_id"));
-				jsonObj1.put("city_name", city.get("city_name"));
-				circlemap.put(city.get("city_id"), jsonObj1);
-			}
-		
-			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
-	        response.getWriter().print(circlemap);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
 	
 	/**
-	 * Service Area Mgmt > service area group 생성 전에 기존에 group_name이 존재하는지 확인해는 메소드
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/api/checkServiceAreaGroupName.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void checkServiceAreaGroupName(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-			
-			String group_name = request.getParameter("group_name");
-			
-			HashMap< String, Object > searchParam = new HashMap();
-			searchParam.put("group_name", group_name);
-			int checkNum= mapper.checkServiceAreaGroupName(searchParam);
-			
-			JSONObject checkObj = new JSONObject();
-			//기존에 존재하여 1건이 나올경우 F로 처리
-			if(checkNum > 0)
-				checkObj.put("resultCode", "F");
-			else 
-				checkObj.put("resultCode", "S");
-			
-			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
-	        response.getWriter().print(checkObj);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-		
-	/**
-	 * Service Area Mgmt > service area group에 새로운 데이터 삽입
+	 * Service Area Group Mgmt > service area group에 새로운 데이터 삽입
 	 * @param request
 	 * @return
 	 */
@@ -2854,36 +2809,68 @@ public class ServiceAreaController {
 		try {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			
+			String circle_id = request.getParameter("circle_id");
 			String group_name = request.getParameter("group_name");
 			String group_description = request.getParameter("group_description");
 			
 			HashMap< String, Object > inserthParam = new HashMap();
+			inserthParam.put("circle_id", circle_id);
 			inserthParam.put("group_name", group_name);
 			inserthParam.put("group_description", group_description);
+			int checkCnt = mapper.checkServiceAreaGroupName(inserthParam);
 			
-			//service group 테이블에 삽입
-			int resultCnt = mapper.insertServiceAreaGroup(inserthParam);
-			
-			if(resultCnt > 0) {
-				String cityListStr = request.getParameter("cityListStr");
-				StringTokenizer stk = new StringTokenizer(cityListStr, ",");
-				
-				resultCnt = 0;
-				while(stk.hasMoreTokens()) {
-					inserthParam.put("city_id", stk.nextToken());
-					//service group city 테이블에 삽입
-					resultCnt += mapper.insertServiceAreaGroupCity(inserthParam);
-				}
+			if(checkCnt > 0) {
+				resultObj.put("resultCode", "E");
+			} else {
+				//service group 테이블에 삽입
+				int resultCnt = mapper.insertServiceAreaGroup(inserthParam);
 				
 				if(resultCnt > 0) {
 					resultObj.put("resultCode", "S");
 					txManager.commit(txStatus);
 				} else {
-					resultObj.put("resultCode", "SF");
+					resultObj.put("resultCode", "F");
 					txManager.rollback(txStatus);
 				}
+			}
+			
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(resultObj);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        txManager.rollback(txStatus);
+	    }
+	}
+	
+	/**
+	 * Service Area Group Mgmt > service area group 데이터 삭제
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/deleteServiceAreaGroup.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void deleteServiceAreaGroup(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject resultObj = new JSONObject();
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED); 
+		TransactionStatus txStatus= txManager.getTransaction(def);
+		
+		try {
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			String group_id = request.getParameter("group_id");
+			
+			HashMap< String, Object > inserthParam = new HashMap();
+			inserthParam.put("group_id", group_id);
+
+			//service group 테이블에 데이터 삭제
+			int resultCnt = mapper.deleteServiceAreaGroup(inserthParam);
+				
+			if(resultCnt > 0) {
+				resultObj.put("resultCode", "S");
+				txManager.commit(txStatus);
 			} else {
-				resultObj.put("resultCode", "MF");
+				resultObj.put("resultCode", "F");
 				txManager.rollback(txStatus);
 			}
 			
@@ -2896,54 +2883,33 @@ public class ServiceAreaController {
 	}
 	
 	/**
-	 * Service Area Mgmt > city를 service group에 추가하거나 삭제하는 메소드
+	 * Service Area Group Mgmt > Tree Data 조회
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/api/addDeleteCitiInServiceAreaGroup.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void addDeleteCitiInServiceAreaGroup(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/api/getTreeNodeData.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getTreeNodeData(HttpServletRequest request, HttpServletResponse response) {
 		JSONObject resultObj = new JSONObject();
 		
 		try {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-			
-			String div = request.getParameter("div");
 			String group_id = request.getParameter("group_id");
-			String city_id = request.getParameter("city_id");
 			
-			HashMap< String, Object > inserthParam = new HashMap();
-			inserthParam.put("group_id", group_id);
-			inserthParam.put("city_id", city_id);
-			
-			int checkCnt = 0;
-			
-			//넘어오는 유형에 따라 add delete 구분해서 태움(service_area_group_city 테이블 사용)
-			int resultCnt = 0;
-			if(div.equals("add"))
-				resultCnt = mapper.insertServiceAreaGroupCity(inserthParam);
-			else if(div.equals("delete")) {
-				resultCnt = mapper.deleteServiceAreaGroupCity(inserthParam);
+			HashMap< String, Object > searchParam = new HashMap();
+			searchParam.put("group_id", group_id);
+			List<HashMap<String, Object>> resultList = mapper.getTreeNodeData(searchParam);
 				
-				//삭제가 완료됐을 경우 다른 서비스 그룹에 존재하는지 여부를 판단하여 넘김
-				if(resultCnt > 0)
-					checkCnt = mapper.checkServiceAreaGroupCity(inserthParam);
-			}
-				
-			if(resultCnt > 0) {
-				if(checkCnt > 0) {
-					resultObj.put("resultCode", "E");
-				} else {
-					resultObj.put("resultCode", "S");
-				}
-				
+			if(resultList.size() > 0) {
+				resultObj.put("resultCode", "S");
+				resultObj.put("resultList", resultList);
 			} else {
 				resultObj.put("resultCode", "F");
 			}
 			
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
-	        response.getWriter().print(resultObj);
+	        response.getWriter().print(resultObj.toJSONString());
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-	}
+	} 
 } 

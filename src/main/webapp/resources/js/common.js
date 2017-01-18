@@ -106,3 +106,56 @@ function launchCenter(url, name, width, height, scroll) {
 
 	return window.open(url, name, str);
 }
+
+//이전에 선택한 마커를 저장하는 임시 전역변수
+var modalMarker;
+var latTarget;
+var lngTarget;
+
+//위치 선정을 위한 모달 맵 호출
+function callSetLocationModalMap(obj, accessDiv) {
+	if(accessDiv == 'serviceArea') {
+		latTarget = $($(obj).parents("li")[0]).find("span input[name='lat']");
+		lngTarget =	$($(obj).parents("li")[0]).find("span input[name='lng']");
+	}
+	
+	modalMap = new google.maps.Map(document.getElementById('modalMap'), {
+		center: {lat: 22.059619, lng: 78.934389},
+		zoom: 5
+	});
+	
+	modalMap.addListener('click', function(event) {
+		if(modalMarker != undefined) modalMarker.setMap(null);
+		
+		var infowindow = new google.maps.InfoWindow({
+		    content: '<button type="button" class="btn btn-primary4" onclick="settingLatLng()">Use Location</button>'
+		});
+		
+		var marker = new google.maps.Marker({
+		    position: event.latLng,
+		    map: modalMap
+		  });
+		
+		marker.addListener('click', function() {
+			infowindow.open(modalMap, marker);
+		});
+		
+		google.maps.event.trigger(marker, "click");
+		
+		modalMarker = marker;
+	});
+	
+	$("#setLocationModal").modal('show');
+	$('#setLocationModal').on('shown.bs.modal', function () {
+		google.maps.event.trigger(modalMap, "resize");
+		modalMap.setCenter( new google.maps.LatLng( 22.059619, 78.934389) );
+	});
+}
+
+//위치 지정 맵에서 위치 사용 버튼 클릭시 셋팅해주는 메소드
+function settingLatLng() {
+	latTarget.val(modalMarker.position.lat());
+	lngTarget.val(modalMarker.position.lng());
+	
+	$("#setLocationModal").modal('hide');
+}

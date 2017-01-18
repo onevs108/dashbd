@@ -26,6 +26,9 @@
     <!-- Sweet Alert -->
     <link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 
+	<!-- JSTree -->
+	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
+
     <!-- Mainly scripts -->
     <script src="/dashbd/resources/js/jquery-2.1.1.js"></script>
     <script src="/dashbd/resources/js/bootstrap.min.js"></script>
@@ -210,39 +213,33 @@
                         <div class="row">
 							<div class="col-sm-8">
 								<div class="ibox-title">
-									<h5><i class="fa fa-wifi"></i> <span id="selectedSvcArea"></span></h5>
-									<span id="selectedCircleId"></span>
+									<ul class="nav nav-tabs">
+									    <li class="active"><a href="#" data-toggle="tab" onclick="tabChange('1')">Tree View</a></li>
+									    <li><a href="#" data-toggle="tab" onclick="tabChange('2')">Map View</a></li>
+									</ul>
 								</div>
-								<div class="google-map" id="map" style="height: 700px;"></div><br>
-								<h3 style="position:absolute;bottom:35px;left:25px;padding:5px 10px;border-radius:15px; background-color:rgba(0,0,0,0.5);box-shadow:0 0 10px #ccc;color:#fff;">
-									<i class="fa fa-circle text-danger"></i> <span id="selectedENBs"></span>
-								</h3><br>
+								<div id="treeNode" style="height: 700px; overflow: scroll;"></div>
+								<div class="google-map" id="map" style="height: 700px; display:none;"></div>
 							</div>
-                            <div class="col-sm-4">
-                                <div class="ibox float-e-margins" id="service_area">
-                                    <div class="ibox-title">
-                                    	<button type="button" class="btn btn-primary2 btn-sm demo1" id="service-create-btn" onclick="javascript:openCreateServiceModal()">Create Service Group</button>
-                                    </div>
-                                    <div class="ibox-content" style="scroll:auto">
-                                        <table class="table table-bordered table-hover" data-page-size="10">
-                                        	<thead>
-                                        		<tr>
-                                        			<th>Service Area Group</th>
-                                        		</tr>
-                                        	</thead>
-                                            <tbody id="area_group">
+<!--                             <div class="col-sm-4"> -->
+<!--                                 <div class="ibox float-e-margins" id="service_area"> -->
+<!--                                     <div class="ibox-title"> -->
+<!--                                     	<button type="button" class="btn btn-primary2 btn-sm demo1" id="service-create-btn" onclick="javascript:openCreateServiceModal()">Create Service Group</button> -->
+<!--                                     </div> -->
+<!--                                     <div class="ibox-content" style="scroll:auto"> -->
+<!--                                         <table class="table table-bordered table-hover" data-page-size="10"> -->
+<!--                                         	<thead> -->
+<!--                                         		<tr> -->
+<!--                                         			<th>Service Area Group</th> -->
+<!--                                         		</tr> -->
+<!--                                         	</thead> -->
+<!--                                             <tbody id="area_group"> -->
                                                 
-                                            </tbody>
-<!--                                             <tfoot> -->
-<!--                                                 <tr> -->
-<!--                                                     <td colspan="3"> -->
-<!--                                                     </td> -->
-<!--                                                 </tr> -->
-<!--                                             </tfoot> -->
-                                        </table>
-                                    </div><!-- end ibox-content -->
-                                </div><!-- end ibox float-e-margins -->
-                            </div>
+<!--                                             </tbody> -->
+<!--                                         </table> -->
+<!--                                     </div>end ibox-content -->
+<!--                                 </div>end ibox float-e-margins -->
+<!--                             </div> -->
                         </div>
                     </div><!-- end ibox-content -->
 				</div><!-- end ibox float-e-margins -->
@@ -253,78 +250,8 @@
 	</div><!-- end page-wrapper -->
 </div><!-- end wrapper -->
 
-
-<div class="modal fade" id="createServiceGroupLayer">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-				</button>
-				<h5 class="modal-title">Create New Service Group</h5>
-			</div>
-			<div class="modal-body" style="padding: 20px 30px 0px 30px;">
-				<form id="serviceGroupForm" class="form-horizontal">
-					<div class="form-group">
-						<label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Group Name</label>
-						<div class="col-lg-8 input-group">
-							<input type="text" placeholder="" class="form-control" id="serviceGroupName" onkeydown="javascript:if(event.keyCode == 13) checkServiceGroup();">
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-primary0 btn-sm btn-white" onclick="javascript:checkServiceGroup();">Check</button>
-							</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-lg-4 control-label">Description</label>
-						<div class="col-lg-8 input-group">
-							<input type="text" placeholder="" class="form-controlr" id="serviceAreaDescription">
-						</div>
-					</div>
-					<div class="form-group">
-						<span class="col-lg-4"></span>
-						<div class="col-lg-8 input-group">
-							<button type="button" class="btn btn-primary4 btn-sm btn-white" onclick="javascript:callSelectCityPop()">Select Cities</button>
-						</div>
-					</div>
-					<div class="form-group">
-						<span class="col-lg-4"></span>
-						<div class="col-lg-8 input-group" style="overflow:auto;">
-							<table class="table table-bordered table-hover" data-page-size="10">
-								<tbody id="serviceGroupCityTab"></tbody>
-							</table>
-						</div>
-					</div>
-				<br>
-				</form>
-			</div>
-			<div class="modal-footer" style="text-align:center;">
-				<button type="button" class="btn btn-primary0 btn-white" onclick="javascript:createServiceGroup()">Create</button>
-				<button type="button" class="btn btn-secondary btn-white" data-dismiss="modal">Cancle</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<div class="modal fade" id="selectCitiesModal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-<!-- 			<div class="modal-header"> -->
-<!-- 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"> -->
-<!-- 				<span aria-hidden="true">&times;</span> -->
-<!-- 				</button> -->
-<!-- 				<h5 class="modal-title">Cities Modal</h5> -->
-<!-- 			</div> -->
-			<div class="modal-body">
-				<div class="google-map" id="modalMap"></div>
-			</div>
-			<div class="modal-footer" style="text-align:center;">
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" onclick="javascript:addCitiesInServiceGroup()">Continue</button>
-				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+<!-- 위치지정 모달 팝업 페이지 호출 -->
+<jsp:include page="common/setLocationModal.jsp" />
 
 </body>
 </html>
