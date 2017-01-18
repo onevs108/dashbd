@@ -8,6 +8,89 @@
 		FROM city
 	</select>
 
+	<select id="getCircleCityListSearch" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM
+		( 
+			SELECT @ROWNUM := @ROWNUM + 1 AS rownum, id, name, gubun from 
+				( SELECT @ROWNUM := 0 AS rownum) R, (
+				<if test="searchType == 'circle'">
+					SELECT circle_id as id, circle_name as name, 'circle' as gubun from circle
+					WHERE circle_name like '%${searchKeyword}%'
+				</if>
+				<if test="searchType == 'city'">
+					SELECT city_id as id, city_name as name, 'city' as gubun from city
+					WHERE city_name like '%${searchKeyword}%'
+				</if>
+				<if test="searchType == 'circleCity'">
+					SELECT circle_id as id, circle_name as name, 'circle' as gubun from circle
+					WHERE circle_name like '%${searchKeyword}%'
+			
+					UNION ALL
+			
+					SELECT city_id as id, city_name as name, 'city' as gubun from city
+					WHERE city_name like '%${searchKeyword}%'
+				</if>
+			) T
+		) T
+	</select>
+	
+	<select id="getCircleCityListSearchCount" parameterType="HashMap" resultType="int">
+		SELECT COUNT(*) FROM
+		( 
+			SELECT @ROWNUM := @ROWNUM + 1 AS rownum, id, name, gubun from 
+				( SELECT @ROWNUM := 0 AS rownum) R, (
+				<if test="searchType == 'circle'">
+					SELECT circle_id as id, circle_name as name, 'circle' as gubun from circle
+					WHERE circle_name like '%${searchKeyword}%'
+				</if>
+				<if test="searchType == 'city'">
+					SELECT city_id as id, city_name as name, 'city' as gubun from city
+					WHERE city_name like '%${searchKeyword}%'
+				</if>
+				<if test="searchType == 'circleCity'">
+					SELECT circle_id as id, circle_name as name, 'circle' as gubun from circle
+					WHERE circle_name like '%${searchKeyword}%'
+			
+					UNION ALL
+			
+					SELECT city_id as id, city_name as name, 'city' as gubun from city
+					WHERE city_name like '%${searchKeyword}%'
+				</if>
+			) T
+		) T
+	</select>
+
+	<select id="selectCityFromCircleId" parameterType="HashMap" resultType="HashMap">
+		SELECT 
+			city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, createdAt, updatedAt
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, createdAt, updatedAt
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at as createdAt, updated_at as updatedAt
+					  FROM city
+					  WHERE circle_id = #{circleId}
+					) T
+			 ) R
+		WHERE rownum BETWEEN #{start} AND #{end}
+	</select>
+
+	<select id="selectCityFromCircleIdCount" parameterType="HashMap" resultType="int">
+		SELECT 
+			count(*)
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, createdAt, updatedAt
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT
+						 city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at as createdAt, updated_at as updatedAt
+					  FROM city
+					  WHERE circle_id = #{circleId}
+					) T
+			 ) R
+	</select>
+	
 	<select id="checkSAID" parameterType="String" resultType="int">
 		select count(*) from 
 		(
@@ -32,22 +115,34 @@
 	</select>
 
 	<insert id="insertCity" parameterType="HashMap">
-		INSERT INTO city (<if test="cityId != null">city_id,</if>circle_id, circle_name, city_name, description, latitude, longitude, bandwidth, created_at, updated_at) 
-		VALUES (<if test="cityId != null">#{cityId},</if>#{circleName}, #{circleName}, ${latitude}, ${longitude}, NOW(), NOW())
+		INSERT INTO city (city_id, circle_id, circle_name, city_name, description, latitude, longitude, bandwidth, created_at, updated_at) 
+		VALUES (#{cityId}, #{circleId}, #{circleName}, #{cityName}, #{description}, ${latitude}, ${longitude}, #{bandwidth}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
-		circle_name = #{circleName}, description = #{circleName}, latitude = ${latitude}, longitude = ${longitude}, updated_at = NOW()
+		city_id = #{cityId}, circle_id = #{circleId}, circle_name = #{circleName}, city_name = #{cityName}, description = #{description}, 
+		latitude = ${latitude}, longitude = ${longitude}, bandwidth = #{bandwidth}, updated_at = NOW()
 	</insert>
 
 	<insert id="insertCircle" parameterType="HashMap">
-		INSERT INTO circle (<if test="circleId != null">circle_id,</if>circle_name, description, latitude, longitude, created_at, updated_at) 
-		VALUES (<if test="circleId != null">#{circleId},</if>#{circleName}, #{circleName}, ${latitude}, ${longitude}, NOW(), NOW())
+		INSERT INTO circle (circle_id, circle_name, description, latitude, longitude, created_at, updated_at) 
+		VALUES (#{circleId}, #{circleName}, #{circleName}, ${latitude}, ${longitude}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
 		circle_name = #{circleName}, description = #{circleName}, latitude = ${latitude}, longitude = ${longitude}, updated_at = NOW()
 	</insert>
 
 	<delete id="deleteCircle" parameterType="String">
 		DELETE FROM circle
-		where circle_id = #{circleId}
+		WHERE circle_id = #{circleId}
+	</delete>
+
+	<delete id="deleteCity" parameterType="String">
+		DELETE FROM city
+		WHERE city_id = #{cityId}
+	</delete>
+
+	<delete id="moveCityOtherCircle" parameterType="HashMap">
+		UPDATE city
+		SET circle_id = #{circleId}, circle_name = #{circleName}
+		WHERE city_id = #{cityId}
 	</delete>
 	
 </mapper>

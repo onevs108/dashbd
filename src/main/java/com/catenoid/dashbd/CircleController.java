@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -156,7 +157,6 @@ public class CircleController {
 			returnStr = "FAIL";
 		}
 		return returnStr;
-		
 	}
 	
 	@ResponseBody
@@ -173,15 +173,85 @@ public class CircleController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/api/checkSAID.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public String checkSAID(@RequestParam String checkSAID, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/api/deleteCity.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String deleteCity(@RequestParam String cityId, HttpServletRequest request, HttpServletResponse response) {
 		String returnStr = "SUCCESS";
 		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
-		int result = circleMapper.checkSAID(checkSAID);
+		int result = circleMapper.deleteCity(cityId);
 		if(result != 1) {
+			returnStr = "FAIL";
+		}
+		return returnStr;
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/api/checkSaId.do", method = RequestMethod.POST, produces="text/plain;charset=UTF-8")
+	public String checkSAID(@RequestParam String checkSaId, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		int result = circleMapper.checkSAID(checkSaId);
+		if(result > 0) {
 			returnStr = "EXIST";
 		}
 		return returnStr;
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/api/moveCityOtherCircle.do", method = RequestMethod.POST, produces="text/plain;charset=UTF-8")
+	public String moveCityOtherCircle(@RequestParam HashMap<String, String> param, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		int result = circleMapper.moveCityOtherCircle(param);
+		if(result > 0) {
+			returnStr = "FAIL";
+		}
+		return returnStr;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/circle/getCityList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getCityList(@RequestBody HashMap<String,String> param) {
+		
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		JSONObject jsonResult = new JSONObject();
+		
+		int offset = Integer.parseInt(String.valueOf(param.get("offset")));
+		int limit = Integer.parseInt(String.valueOf(param.get("limit")));
+		param.put("start", Integer.toString(offset+1));
+		param.put("end", Integer.toString(offset+limit));
+		
+		List<HashMap<String,String>> cityList = circleMapper.selectCityFromCircleId(param);
+		Gson gson = new Gson();
+		String str = gson.toJson(cityList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
+		
+		jsonResult.put("rows", json);
+		int total = circleMapper.selectCityFromCircleIdCount(param);
+		jsonResult.put("total", total);
+		return jsonResult.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/circle/getCityListSearch.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getCityListSearch(@RequestParam HashMap<String,String> param) {
+		
+		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+		JSONObject jsonResult = new JSONObject();
+		
+		List<HashMap<String,String>> resultList = circleMapper.getCircleCityListSearch(param);
+		
+		Gson gson = new Gson();
+		String str = gson.toJson(resultList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
+		
+		jsonResult.put("rows", json);
+		
+		return jsonResult.toString();
 		
 	}
 	

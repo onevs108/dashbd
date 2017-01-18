@@ -19,6 +19,7 @@
     <link href="/dashbd/resources/css/animate.css" rel="stylesheet">
     <link href="/dashbd/resources/css/style.css" rel="stylesheet">
     <link href="/dashbd/resources/css/custom.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/plugins/select2/select2.min.css" rel="stylesheet">
     
     <!-- FooTable -->
     <link href="/dashbd/resources/css/plugins/footable/footable.core.css" rel="stylesheet">
@@ -46,6 +47,10 @@
 	
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="/dashbd/resources/js/markerwithlabel.js"></script>
+	<script src="/dashbd/resources/js/jquery.cookie.js"></script>
+	<script src="/dashbd/resources/js/bootstrap.min.js"></script>
+	<script src="/dashbd/resources/js/bootstrap-table.js"></script>
+	<script src="/dashbd/resources/js/plugins/select2/select2.full.min.js"></script>
 	<script src="/dashbd/resources/app-js/apps/circle_mgmt_main_map.js"></script>
     
     <script src="js/common.js"></script>
@@ -55,6 +60,8 @@
 		var circleJsonLength = circleJson.length;
 		$(document).ready(function() {
 			getMenuList('MENU_CIRCLE_MGMT');
+			$(".js-example-basic").on("select2:select", function (e) { alert("하이"); return false;})
+			$(".js-example-basic").select2();
 		});
 	</script>
     
@@ -215,10 +222,23 @@
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
                         <div class="row">
+                        	<div class="col-sm-3" style="padding-bottom: 5px;">
+                        		<select id="searchType" class="input-sm form-control input">
+                                    <option value="">선택</option>
+                                    <option value="circle">Circle</option>
+                                    <option value="city">City</option>
+                                    <option value="circleCity">Circle & City</option>
+                                </select>
+							</div>
+                        	<div class="col-sm-3" style="padding-bottom: 5px;"> 
+<!--                         		<input type="text" id="searchKeyword" class="form-control" placeholder=" Search Keyword" onclick="callSetLocationModalMap(this, 'circle')"  /> -->
+                        		<select id="searchKeyword" class="js-example-basic" style="width: 220px;" onclick="alert('하이')">
+								</select>
+							</div>
+                        	<div class="col-sm-2" style="min-h">
+                        		<button id="search" type="button" class="btn btn-primary4">Search</button>
+							</div>
 							<div class="col-sm-8" style="min-h">
-								<div class="ibox-title">
-									<h5><i class="fa fa-wifi"></i> <span id="selectedSvcArea"></span></h5>
-								</div>
 								<div class="google-map" id="map"></div><br>
 								<h3 style="position:absolute;bottom:35px;left:25px;padding:5px 10px;border-radius:15px; background-color:rgba(0,0,0,0.5);box-shadow:0 0 10px #ccc;color:#fff;">
 									<i class="fa fa-circle text-danger"></i> <span id="selectedENBs"></span>
@@ -229,28 +249,11 @@
                                     <div class="ibox-title">
                                         <h5><span id="circleTitle"></span>&nbsp;City List</h5>
                                     </div>
-                                     <div class="ibox-content" style="padding-top:0;padding-bottom:0;">
-                                     <table class="footable table table-stripped toggle-arrow-tiny" style="margin:0;">
-                                            <thead>
-                                                <tr>
-                                                    <th>City Name</th>
-                                                </tr>
-                                            </thead>
+                                    <div class="ibox-content" style="padding-top:0;padding-bottom:0;">
+                                    <table class="footable table table-stripped toggle-arrow-tiny" style="margin:0;" id="table">
+                                           
                                     </table>
                                     </div>
-                                    <div class="ibox-content" style="height:660px;padding-top:0;border-top:0;overflow-y:scroll;">
-                                        <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
-                                            <tbody id="cityList">
-                                                
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="3">
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div><!-- end ibox-content -->
                                 </div><!-- end ibox float-e-margins -->
                             </div>
 							<div class="col-sm-12" id="viewEnbIDAdd" style="display:none;">
@@ -468,7 +471,6 @@
 				<form class="form-horizontal">
 				<input type="hidden" placeholder="" class="form-control" id="editType">
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Name of the City</label>
-				<div class="col-lg-6"><input type="hidden" placeholder="" class="form-control" id="cityId"></div>
 				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="cityName"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Longitude</label>
@@ -481,8 +483,8 @@
 				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityBandwidth"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> SAID</label>
-				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="said"></div>
-				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existSAID()">Check</button></div>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="cityId"></div>
+				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existSAID('city')">Check</button></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
 				<div class="col-lg-8"><textarea type="text" placeholder="" class="form-control" id="cityDescription" style="height: 150px;"></textarea></div>
@@ -498,6 +500,6 @@
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+<jsp:include page="common/setLocationModal.jsp" />
 </body>
 </html>
