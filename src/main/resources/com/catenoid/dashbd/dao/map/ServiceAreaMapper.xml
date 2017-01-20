@@ -1458,6 +1458,21 @@
 	
 	
 	
+	
+	
+	
+	<select id="getCitiesInCircle" parameterType="HashMap" resultType="HashMap">
+		SELECT city_id, city_name, latitude, longitude, bandwidth
+		FROM city
+		WHERE circle_id = #{circle_id}
+	</select>
+	
+	<select id="getHotspotsInCities" parameterType="HashMap" resultType="HashMap">
+		SELECT hotspot_id, hotspot_name, latitude, longitude, bandwidth
+		FROM hotspot
+		WHERE city_id = #{city_id}
+	</select>
+	
 	<select id="getServiceAreaGroupList" parameterType="HashMap" resultType="HashMap">
 		SELECT 
 			  group_id

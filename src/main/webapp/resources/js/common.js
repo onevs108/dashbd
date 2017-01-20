@@ -113,16 +113,37 @@ var latTarget;
 var lngTarget;
 
 //위치 선정을 위한 모달 맵 호출
-function callSetLocationModalMap(obj, accessDiv) {
+function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 	if(accessDiv == 'serviceArea') {
-		latTarget = $($(obj).parents("li")[0]).find("span input[name='lat']");
-		lngTarget =	$($(obj).parents("li")[0]).find("span input[name='lng']");
-	}
+		if($(obj).parents("li").length > 0) {
+			latTarget = $($(obj).parents("li")[0]).find("span input[name='lat']");
+			lngTarget =	$($(obj).parents("li")[0]).find("span input[name='lng']");
+		} else if($(obj).parents("table").length > 0) {
+			latTarget = $(obj).parents("table").find("tr td input[name='lat']");
+			lngTarget =	$(obj).parents("table").find("tr td input[name='lng']");
+		}
+		
+	} 
 	
-	modalMap = new google.maps.Map(document.getElementById('modalMap'), {
-		center: {lat: 22.059619, lng: 78.934389},
-		zoom: 5
-	});
+	if(zoomLevel == undefined) {
+		modalMap = new google.maps.Map(document.getElementById('modalMap'), {
+			center: {lat: 22.059619, lng: 78.934389},
+			zoom: 5
+		});
+		
+		lat = 22.059619;
+		lng = 78.934389;
+	} else {
+		var zoom = 0;
+		if(zoomLevel == 'circle') zoom = 5;
+		else if(zoomLevel == 'city') zoom = 9;
+		else if(zoomLevel == 'hotspot') zoom = 15;
+		
+		modalMap = new google.maps.Map(document.getElementById('modalMap'), {
+			center: {lat: lat, lng: lng},
+			zoom: zoom
+		});
+	}
 	
 	modalMap.addListener('click', function(event) {
 		if(modalMarker != undefined) modalMarker.setMap(null);
@@ -148,7 +169,7 @@ function callSetLocationModalMap(obj, accessDiv) {
 	$("#setLocationModal").modal('show');
 	$('#setLocationModal').on('shown.bs.modal', function () {
 		google.maps.event.trigger(modalMap, "resize");
-		modalMap.setCenter( new google.maps.LatLng( 22.059619, 78.934389) );
+		modalMap.setCenter( new google.maps.LatLng( lat, lng) );
 	});
 }
 

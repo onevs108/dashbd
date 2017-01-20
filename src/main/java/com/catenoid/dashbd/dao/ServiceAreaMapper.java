@@ -130,7 +130,9 @@ public interface ServiceAreaMapper {
     
     List<HashMap<String, Object>> getServiceAreaGroupList(HashMap<String, Object> searchParam);
     
-//    List<HashMap<String, Object>> getCitiesInServiceAreaGroup(HashMap<String, Object> searchParam);
+    List<HashMap<String, Object>> getCitiesInCircle(HashMap<String, Object> searchParam);
+    
+    List<HashMap<String, Object>> getHotspotsInCities(HashMap<String, Object> searchParam);
     
     int checkServiceAreaGroupName(HashMap<String, Object> searchParam);
     

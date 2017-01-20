@@ -2,6 +2,7 @@ var map;
 var modalMap;
 var circles = [];
 var cities = [];
+var hotspots = [];
 var modalCities = [];
 
 var default_lat = 24;
@@ -19,8 +20,11 @@ var black = '#000000';
 
 //최근 클릭된 InfoWindow를 담는 변수
 var tempInfoWindow;
-//최근 클릭된 city Object를 담는 변수
-var tempCityObj;
+//마지막으로 클릭된 상위 Object를 담는 변수
+var upperObj;
+
+//현재 줌레벨을 담고있는 변수 선언
+var currentZoomLevel = 'circle';
 
 $(document).ready(function()
 {
@@ -49,7 +53,7 @@ function tabChange(tabDiv) {
 }
 
 function jsTreeSetting() {
-	$.getScript( "/dashbd/resources/js/plugins/jsTree/jstree.min.js" )
+	$.getScript( "/dashbd/resourcesRenew/js/plugins/jsTree/jstree.min.js" )
 		.done(function( script, textStatus ) {
 			$.ajax({
 			    url : "/dashbd/api/getTreeNodeData.do",
@@ -96,9 +100,9 @@ function treeInit(data) {
 			
 			if($(compareNode).attr("data-init") == node.pnode_id) { 
 				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name;
-				liStr += '<span style="margin-left:20px;"><input type="text" name="lat"></span>';
-				liStr += '<span style="margin-left:20px;"><input type="text" name="lng"></span>';
-				liStr += '<span style="margin-left:20px;"><button type="button" class="btn btn-success btn-xs button-edit" onclick="callSetLocationModalMap(this, \'serviceArea\')">Map</button></span>';
+				liStr += '<span style="margin-left:20px;"><input type="text" name="lat" ></span>';
+				liStr += '<span style="margin-left:10px;"><input type="text" name="lng" ></span>';
+				liStr += '<span style="margin-left:10px;"><button type="button" class="btn btn-success btn-xs button-edit" onclick="callSetLocationModalMap(this, \'serviceArea\')">Map</button></span>';
 				liStr += '</li>';
 				
 				if($(compareNode).html().indexOf("ul") == -1) {
@@ -112,12 +116,15 @@ function treeInit(data) {
 		}
 	}
 	
-	$('#treeNode').jstree({
+	$("#treeNode").jstree({
 	    "conditionalselect" : function (node, event) {
-	        return false;
-	      },
-	      "plugins" : [ "conditionalselect" ]
-	    });;
+	      return false;
+	    },
+	    "plugins" : [ "conditionalselect" ]
+	  });
+	
+	//제일 처음 노드 오픈
+	$("#treeNode").jstree("open_node", $("#j1_1"))
 }
 
 //메인 화면의 모달 로드
@@ -127,67 +134,145 @@ function initMap() {
 		zoom: default_zoom
 	});
 	
-	var mouseDownPos, gribBoundingBox = null,
-	    mouseIsDown = 0;
-	var themap = map;
+//	var mouseDownPos, gribBoundingBox = null,
+//	    mouseIsDown = 0;
+//	var themap = map;
 	
-	google.maps.event.addListener(themap, 'zoom_changed', function() {
+	google.maps.event.addListener(map, 'zoom_changed', function() {
+		currentZoomLevel = checkZoomLevel(this.zoom);
+		
 		//circle이 보이는 줌 레벨보다 멀어질 경우 circleList 그림
-		if(this.zoom < default_zoom + 1) {
+		if(currentZoomLevel == 'circle') {
 			if(circles.length == 0) {
 				cityClear('cities');
+				hotspotClear();
 				drawServiceAreaByBmSc();
 			}
-		} else {
+		} else if(currentZoomLevel == 'city') {
 			circleClear();
+			hotspotClear();
 			
-			if(cities.length == 0) {
-				//서비스 영업 그룹이 한건이라도 선택됐어야 city를 그려줌
-				serviceAreaGroupChoice();
-			}
+//			if(cities.length == 0) {
+//				drawServiceAreaByCity(tempCircleObj);
+//			}
+		} else if(currentZoomLevel == 'hotspot') {
+			circleClear();
+			cityClear('cities');
 		}
+	});
+	
+	//맵 클릭 이벤트 부여
+	google.maps.event.addListener(map, 'click', function(event) {
+	    var contentString = makeInfoWindow('add', event);
+		
+		//이전에 열린 infoWindow가 있을 경우 닫아줌
+		if(tempInfoWindow != undefined)
+			tempInfoWindow.close();
+		
+		var infowindow = new google.maps.InfoWindow({ content: contentString
+						, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+		infowindow.open(map, this);
+		tempInfoWindow = infowindow
 	});
 	
 	// 처음 로딩 시 지도에 표시해주는 부분
 	drawServiceAreaByBmSc();
 }
 
-//service area group표에서 선택된 로우가 있는지를 판별하여 city List를 가지고 오는 메소드
-function serviceAreaGroupChoice() {
-	cityClear('cities');
-	
-	for(var i=0; i < $("#area_group tr").length; i++) {
-		var tempTr = $("#area_group tr")[i];
-		
-		if($(tempTr).attr("choiceYn") == 'Y') {
-			drawServiceAreaByCity(map, $(tempTr).attr("data-init"), 'cities');
-			break;
-		}
+function makeInfoWindow(div, object) {
+	var contentString = '';
+	contentString = '<div>';
+	contentString = '<form name="serviceAreaForm">'; 
+	contentString += '<input type="hidden" name="proccessDiv">';
+	contentString += '<input type="hidden" name="currentZoomLevel">';
+	if(currentZoomLevel != 'circle') {
+		contentString += '<input type="hidden" name="upper_said">';
+		contentString += '<input type="hidden" name="upper_name">';
 	}
+	contentString += '<table>';
+	contentString += '<tbody>';
+	contentString += '<tr>';
+	var upperChar = currentZoomLevel.substring(0,1).toUpperCase();
+	contentString += '<td>' + upperChar + currentZoomLevel.substring(1) + '</td>';
+	var name = '';
+	if(div == 'edit') name = object.name;
+	contentString += '<td colspan="2"><input type="text" style="width:100%" name="name" value="' + name + '"></td>';
+	contentString += '</tr>';
+	contentString += '<tr>';
+	contentString += '<td>SAID</td>';
+	var said = '';
+	if(div == 'edit') said = object.said;
+	contentString += '<td colspan="2"><input type="text" style="width:100%" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + '></td>';
+	contentString += '</tr>';
+	contentString += '<tr>';
+	contentString += '<td>Latitude</td>';
+	var lat,lng;
+	if(div == 'add') {
+		lat =  object.latLng.lat();
+		lng =  object.latLng.lng();
+	}
+	else if(div == 'edit') {
+		lat = object.center.lat();
+		lng = object.center.lng();
+	}
+	contentString += '<td><input type="text" name="lat" value="' + lat + '" readonly></td>';
+	if(div == 'edit')
+		contentString += '<td rowspan="2"><button type="button" class="btn btn-success btn-xs button-edit" style="height:100%" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset<br>Location</button></td>';
+	contentString += '</tr>';
+	contentString += '<tr>';
+	contentString += '<td>Longitude</td>';
+	contentString += '<td><input type="text" name="lng" value="' + lng + '" readonly></td>';
+	contentString += '</tr>';
+	if(currentZoomLevel != 'circle') {
+		var bandwidth = '';
+		if(div == 'edit') bandwidth = object.bandwidth;
+		contentString += '<tr>';
+		contentString += '<td>Bandwidth</td>';
+		contentString += '<td><input type="text" name="bandwidth" value="' + bandwidth + '"></td>';
+		contentString += '</tr>';
+	}
+	contentString += '</tbody>';
+	contentString += '</table>';
+	contentString += '</form>';
+	contentString += '</div>';
+	contentString += '<div style="text-align:center; margin-top:3px">';
+	
+	if(div == 'add') {
+		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'add\')">Add</button>';
+	} else if(div == 'edit') {
+		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'edit\')">Edit</button>';
+		contentString += '<button type="button" class="btn btn-sm btn-default proccess-btn" onclick="serviceAreaProccess(\'delete\')">Delete</button>';
+	}
+	
+	contentString += '</div>';
+	
+	return contentString; 
+}
+
+//현재 줌레벨을 기준으로 어느 데이터를 보여줄지 판단하는 메소드
+function checkZoomLevel(zoom) {
+	var zoomLevel = '';
+	
+	//circle level
+	if(zoom < 8) {
+		zoomLevel = 'circle';
+		map.setOptions({ maxZoom: 7 });
+	} 
+	//city level
+	else if(zoom < 10) {
+		zoomLevel = 'city';
+		map.setOptions({ maxZoom: 9 });
+	} 
+	//hotspot level
+	else {
+		zoomLevel = 'hotspot';
+		map.setOptions({ maxZoom: 20 });
+	}
+	
+	return zoomLevel;
 }
 
 google.maps.event.addDomListener(window, 'load', initMap);
-
-//도시 circle 삭제(메인 페이지와 모달 페이지를 구분하여 삭제)
-function cityClear(targetCity) {
-	if(targetCity == 'cities') {
-		for(var i=0; i < cities.length; i++) {
-			//서클 클리어
-			var tempCity = cities[i];
-			tempCity.setMap(null);
-		}
-		
-		cities = [];
-	} else {
-		for(var i=0; i < modalCities.length; i++) {
-			//서클 클리어
-			var tempCity = modalCities[i];
-			tempCity.setMap(null);
-		}
-		
-		modalCities = [];
-	}
-}
 
 function circleClear() {
 	for(var i=0; i < circles.length; i++) {
@@ -199,87 +284,34 @@ function circleClear() {
 	circles = [];
 }
 
-//도시 리스트를 찍어주는 메소드
-function drawServiceAreaByCity(targetMap, group_id, targetCity) {
-	$.ajax({
-	    url : "/dashbd/api/getCitiesInServiceAreaGroup.do",
-	    type: "POST",
-	    async:false,
-	    data : { 
-	    	group_id : group_id
-	    },
-	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-	    success : function(responseData) {
-	        $("#ajax").remove();
-	        var data = JSON.parse(responseData);
-	        
-	        for (var city in data) {
-	        	var cityCircle = new google.maps.Circle({
-	  	  	      strokeColor: data[city].color,
-	  	  	      strokeOpacity: 0.8,
-	  	  	      strokeWeight: 2,
-	  	  	      fillColor: data[city].color,
-	  	  	      fillOpacity: 0.35,
-	  	  	      map: targetMap,
-	  	  	      center: data[city].center,
-	  	  	      radius: Math.sqrt(data[city].population) * 10,
-	  	  	      city_id:data[city].city_id,
-	  	  	      city_name:data[city].city_name
-	  	  	    });
-	        	
-	        	//매인 맵에 city circle을 넣어줄 경우
-	        	if(targetCity == 'cities') {
-	        		cities.push(cityCircle);
-	        		
-	        		//오른쪽을 클릭할 경우 infoWindow 뿌려줌 
-	        		cityCircle.addListener('rightclick', function() {
-	        			for(var i=0; i < $("#area_group tr").length; i++) {
-	        				var tempTr = $("#area_group tr")[i];
-	        				
-	        				if($(tempTr).attr("choiceYn") == 'Y') {
-	        					var contentString = '';
-	    	        			if(this.fillColor == 'gray' || this.fillColor == 'blue') {
-	    	        			   contentString = '<a href="javascript:void(0);" onclick="addAndDeleteCityInServiceGroup(\'add\', \'' + $(tempTr).attr("data-init") + '\', \'' + this.city_id + '\')">Add to ' + $(tempTr).find("td").text() + '</a>';
-	    	        			} else {
-	    	        				contentString = '<a href="javascript:void(0);" onclick="addAndDeleteCityInServiceGroup(\'delete\', \'' + $(tempTr).attr("data-init") + '\', \'' + this.city_id + '\')">Delete From ' + $(tempTr).find("td").text() + '</a>';
-	    	        			}
-	    	        			
-	    	        			//선택된 city obj를 전역변수에 담음(color변경을 위해)
-	    	        			tempCityObj = this;
-	    	        			
-	    	        			//이전에 열린 infoWindow가 있을 경우 닫아줌
-	    	        			if(tempInfoWindow != undefined)
-	    	        				tempInfoWindow.close();
-	    	        			
-	    	        			var infowindow = new google.maps.InfoWindow({ content: contentString
-    	        								, position: new google.maps.LatLng(this.center.lat(), this.center.lng()) });
-	    	        			infowindow.open(map, this);
-	    	        			tempInfoWindow = infowindow
-	        				}
-	        			}
-	        		});
-	        	}
-	        	//팝업 맵에 city circle을 넣어줄 경우
-	        	else {
-	        		modalCities.push(cityCircle);
-	        		
-	        		//오른쪽 마우스 클릭 이벤트 적용
-	        		cityCircle.addListener('click', function() {
-	        			if(this.fillColor == 'gray') 	        				
-	        				this.setOptions({strokeColor:'red', fillColor:'red'})
-	        			else 
-	        				this.setOptions({strokeColor:'gray', fillColor:'gray'})
-	        		});
-	        	}
-	        }
-	    },
-        error : function(xhr, status, error) {
-        	swal({
-                title: "Fail !",
-                text: "Error"
-            });
-        }
-	});
+//도시 삭제(메인 페이지와 모달 페이지를 구분하여 삭제)
+function cityClear(targetCity) {
+	if(targetCity == 'cities') {
+		for(var i=0; i < cities.length; i++) {
+			var tempCity = cities[i];
+			tempCity.setMap(null);
+		}
+		
+		cities = [];
+	} else {
+		for(var i=0; i < modalCities.length; i++) {
+			var tempCity = modalCities[i];
+			tempCity.setMap(null);
+		}
+		
+		modalCities = [];
+	}
+}
+
+//핫스팟 삭제
+function hotspotClear() {
+	for(var i=0; i < hotspots.length; i++) {
+		//서클 클리어
+		var tempHotspot = hotspots[i];
+		tempHotspot.setMap(null);
+	}
+	
+	hotspots = [];
 }
 
 //서클 리스트를 지도상에 그려주는 메소드
@@ -299,16 +331,264 @@ function drawServiceAreaByBmSc() {
 	      map: map,
 	      center: circlemap[circle].center,
 	      radius: Math.sqrt(circlemap[circle].population) * 100,
-	      circleId : circle 
+	      said : circlemap[circle].circle_id,
+	      name : circlemap[circle].circle_name
 	    });
 	    
 	    cityCircle.addListener('click', function() {
-	    	drawServiceAreaGroupList(this);
+	    	//선택된 object를 전역변수에 담음(추후 추가시에 부모 노드로 사용)
+	    	upperObj = this;
+	    	drawServiceAreaByCity(this);
+		});
+	    
+	    cityCircle.addListener('rightclick', function(event) {
+	    	var contentString = makeInfoWindow('edit', this);
+			
+			//이전에 열린 infoWindow가 있을 경우 닫아줌
+			if(tempInfoWindow != undefined)
+				tempInfoWindow.close();
+			
+			var infowindow = new google.maps.InfoWindow({ content: contentString
+							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+			infowindow.open(map, this);
+			tempInfoWindow = infowindow
 		});
 	    
 	    circles.push(cityCircle);
 	}
 }
+
+//도시 리스트를 찍어주는 메소드
+function drawServiceAreaByCity(circle) {
+	$.ajax({
+	    url : "/dashbd/api/getCitiesInCircle.do",
+	    type: "POST",
+//	    async:false,
+	    data : { 
+	    	circle_id : circle.said
+	    },
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    success : function(responseData) {
+	        $("#ajax").remove();
+	        var data = JSON.parse(responseData);
+	        
+	        //도시 기본 줌 사이즈로 셋팅
+	        map.setZoom(9);
+	        //서클의 위도 경도로 이동
+	        map.setCenter(new google.maps.LatLng(circle.center.lat(), circle.center.lng()));
+	        
+	        for (var city in data) {
+	        	var cityCircle = new google.maps.Circle({
+	  	  	      strokeColor: data[city].color,
+	  	  	      strokeOpacity: 0.8,
+	  	  	      strokeWeight: 2,
+	  	  	      fillColor: data[city].color,
+	  	  	      fillOpacity: 0.35,
+	  	  	      map: map,
+	  	  	      center: data[city].center,
+	  	  	      radius: Math.sqrt(data[city].population) * 10,
+	  	  	      said:data[city].city_id,
+	  	  	      name:data[city].city_name,
+	  	  	      bandwidth:data[city].bandwidth
+	  	  	    });
+	        	
+	        	//매인 맵에 city circle을 넣어줄 경우
+//	        	if(targetCity == 'cities') {
+	        		cities.push(cityCircle);
+	        		
+	        		cityCircle.addListener('click', function() {
+	        			//선택된 object를 전역변수에 담음(추후 추가시에 부모 노드로 사용)
+	        	    	upperObj = this;
+	        			drawServiceAreaByHotspot(this);
+	        		});
+	        		
+	        		cityCircle.addListener('rightclick', function(event) {
+	        	    	var contentString = makeInfoWindow('edit', this);
+	        			
+	        			//이전에 열린 infoWindow가 있을 경우 닫아줌
+	        			if(tempInfoWindow != undefined)
+	        				tempInfoWindow.close();
+	        			
+	        			var infowindow = new google.maps.InfoWindow({ content: contentString
+	        							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+	        			infowindow.open(map, this);
+	        			tempInfoWindow = infowindow
+	        		});
+	        		
+	        		//오른쪽을 클릭할 경우 infoWindow 뿌려줌 
+//	        		cityCircle.addListener('rightclick', function() {
+//	        			for(var i=0; i < $("#area_group tr").length; i++) {
+//	        				var tempTr = $("#area_group tr")[i];
+//	        				
+//	        				if($(tempTr).attr("choiceYn") == 'Y') {
+//	        					var contentString = '';
+//	    	        			if(this.fillColor == 'gray' || this.fillColor == 'blue') {
+//	    	        			   contentString = '<a href="javascript:void(0);" onclick="addAndDeleteCityInServiceGroup(\'add\', \'' + $(tempTr).attr("data-init") + '\', \'' + this.city_id + '\')">Add to ' + $(tempTr).find("td").text() + '</a>';
+//	    	        			} else {
+//	    	        				contentString = '<a href="javascript:void(0);" onclick="addAndDeleteCityInServiceGroup(\'delete\', \'' + $(tempTr).attr("data-init") + '\', \'' + this.city_id + '\')">Delete From ' + $(tempTr).find("td").text() + '</a>';
+//	    	        			}
+//	    	        			
+//	    	        			//선택된 city obj를 전역변수에 담음(color변경을 위해)
+//	    	        			tempCityObj = this;
+//	    	        			
+//	    	        			//이전에 열린 infoWindow가 있을 경우 닫아줌
+//	    	        			if(tempInfoWindow != undefined)
+//	    	        				tempInfoWindow.close();
+//	    	        			
+//	    	        			var infowindow = new google.maps.InfoWindow({ content: contentString
+//    	        								, position: new google.maps.LatLng(this.center.lat(), this.center.lng()) });
+//	    	        			infowindow.open(map, this);
+//	    	        			tempInfoWindow = infowindow
+//	        				}
+//	        			}
+//	        		});
+//	        	}
+	        	//팝업 맵에 city circle을 넣어줄 경우
+//	        	else {
+//	        		modalCities.push(cityCircle);
+//	        		
+//	        		//오른쪽 마우스 클릭 이벤트 적용
+//	        		cityCircle.addListener('click', function() {
+//	        			if(this.fillColor == 'gray') 	        				
+//	        				this.setOptions({strokeColor:'red', fillColor:'red'})
+//	        			else 
+//	        				this.setOptions({strokeColor:'gray', fillColor:'gray'})
+//	        		});
+//	        	}
+	        }
+	    },
+        error : function(xhr, status, error) {
+        	swal({
+                title: "Fail !",
+                text: "Error"
+            });
+        }
+	});
+}
+
+//핫스팟 리스트를 찍어주는 메소드
+function drawServiceAreaByHotspot(city) {
+	$.ajax({
+	    url : "/dashbd/api/getHotspotsInCities.do",
+	    type: "POST",
+	    async:false,
+	    data : { 
+	    	city_id : city.city_id
+	    },
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    success : function(responseData) {
+	        $("#ajax").remove();
+	        var data = JSON.parse(responseData);
+	        
+	        //도시 기본 줌 사이즈로 셋팅
+	        map.setZoom(14);
+	        //서클의 위도 경도로 이동
+	        map.setCenter(new google.maps.LatLng(city.center.lat(), city.center.lng()));
+	        
+	        for (var hotspot in data) {
+	        	var hotspotMarker = new google.maps.Marker({
+	  	  	      map: map,
+	  	  	      position: data[hotspot].center,
+	  	  	      title: data[hotspot].hotspot_name,
+		  	  	  hotspot_id:data[hotspot].hotspot_id,
+		  	  	  hotspot_name:data[hotspot].hotspot_name,
+		  	  	  bandwidth:data[hotspot].bandwidth
+	  	  	    });
+	        	
+	        	hotspotMarker.addListener('rightclick', function(event) {
+	    	    	var contentString = makeInfoWindow('edit', this);
+	    			
+	    			//이전에 열린 infoWindow가 있을 경우 닫아줌
+	    			if(tempInfoWindow != undefined)
+	    				tempInfoWindow.close();
+	    			
+	    			var infowindow = new google.maps.InfoWindow({ content: contentString
+	    							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+	    			infowindow.open(map, this);
+	    			tempInfoWindow = infowindow
+	    		});
+	        	
+	        	hotspots.push(hotspotMarker);
+	        }
+	    },
+	    error : function(xhr, status, error) {
+        	swal({
+                title: "Fail !",
+                text: "Error"
+            });
+        }
+	});
+}
+
+//circle, city, hotspot을 추가, 수정, 삭제할 경우 사용하는 메소드
+function serviceAreaProccess(div) {
+	//필수값이 모두 입력되어 있을 경우에는 이 값을 변경하지 않아 ajax 수행
+	var ajaxYn = true;
+	
+	//form에 셋팅
+	$("form[name='serviceAreaForm'] input[name='proccessDiv']").val(div); 
+	$("form[name='serviceAreaForm'] input[name='currentZoomLevel']").val(currentZoomLevel);
+	
+	if(currentZoomLevel != 'circle') {
+		//city, hotspot 마냥 상위 노드가 필요할 경우에만 셋팅
+		if(upperObj != undefined) {
+			$("form[name='serviceAreaForm'] input[name='upper_said']").val(upperObj.said);
+			$("form[name='serviceAreaForm'] input[name='upper_name']").val(upperObj.name);
+		}
+	}
+	
+	$.each($("form[name='serviceAreaForm'] input"), function(index, obj) {
+		if($(obj).val() == '') {
+			swal({
+              title: "Fail !",
+              text: "Insert Value"
+	        });
+			
+			$(obj).focus();
+			ajaxYn = false;
+			return false;
+		}
+	});
+	
+	if(ajaxYn) {
+		$.ajax({
+		    url : "/dashbd/api/serviceAreaProccess.do",
+		    type: "POST",
+		    data : $("form[name='serviceAreaForm']").serialize(),
+		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		    success : function(responseData) {
+		        $("#ajax").remove();
+		        var data = JSON.parse(responseData);
+		        
+		        if(data.resultCode == 'S') {
+		        	swal({
+		                title: "Fail !",
+		                text: "Error"
+		            });
+		        } 
+		        else if(data.resultCode == 'E') {
+		        	swal({
+		                title: "Exist Code Value",
+		                text: "Exist SAID Code Value"
+		            });
+		        }
+		        else {
+		        	swal({
+		                title: "Fail !",
+		                text: "Error"
+		            });
+		        }
+		    },
+		    error : function(xhr, status, error) {
+	        	swal({
+	                title: "Fail !",
+	                text: "Error"
+	            });
+	        }
+		});
+	}
+}
+
 
 
 

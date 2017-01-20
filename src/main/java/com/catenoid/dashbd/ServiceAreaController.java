@@ -64,6 +64,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.BmscMapper;
+import com.catenoid.dashbd.dao.CircleMapper;
+import com.catenoid.dashbd.dao.HotSpotMapper;
 import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.ServiceAreaEnbApMapper;
 import com.catenoid.dashbd.dao.ServiceAreaScheduleMapper;
@@ -2691,6 +2693,8 @@ public class ServiceAreaController {
 			jsonObj2.put("lng", circle.getLongitude());
 			jsonObj1.put("center", jsonObj2);
 			jsonObj1.put("population", "1500000");
+			jsonObj1.put("circle_id", circle.getCircle_id());
+			jsonObj1.put("circle_name", circle.getCircle_name());
 			circlemap.put(circle.getCircle_id(), jsonObj1);
 		}
 		
@@ -2699,43 +2703,172 @@ public class ServiceAreaController {
 		return mv;
 	}
 	
-//	/**
-//	 * Service Area Mgmt > Circle 킬릭시 service area group List 호출
-//	 * @param request
-//	 * @return
-//	 */
-//	@RequestMapping(value = "/api/getCitiesInServiceAreaGroup.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-//	public void getCitiesInServiceAreaGroup(HttpServletRequest request, HttpServletResponse response) {
-//		try {
-//			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-//			
-//			String group_id = request.getParameter("group_id");
-//			
-//			HashMap< String, Object > searchParam = new HashMap();
-//			searchParam.put("group_id", group_id);
-//			List<HashMap<String, Object>> citiesInServiceAreaGroup= mapper.getCitiesInServiceAreaGroup(searchParam);
-//			
-//			JSONObject circlemap = new JSONObject();
-//			
-//			for (HashMap<String, Object> city : citiesInServiceAreaGroup) {
-//				JSONObject jsonObj1 = new JSONObject();
-//				JSONObject jsonObj2 = new JSONObject();
-//				jsonObj2.put("lat", city.get("latitude"));
-//				jsonObj2.put("lng", city.get("longitude"));
-//				jsonObj1.put("center", jsonObj2);
-//				jsonObj1.put("color", city.get("color"));
-//				jsonObj1.put("population", "1000000"); 
-//				jsonObj1.put("city_id", city.get("city_id"));
-//				jsonObj1.put("city_name", city.get("city_name"));
-//				circlemap.put(city.get("city_id"), jsonObj1);
-//			}
-//		
-//			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
-//	        response.getWriter().print(circlemap);
-//	    } catch (Exception e) {
-//	        e.printStackTrace();
-//	    }
-//	}
+	/**
+	 * Service Area Mgmt > Circle 클릭시 도시 리스트 호출
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/getCitiesInCircle.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getCitiesInServiceAreaGroup(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			String circle_id = request.getParameter("circle_id");
+			
+			HashMap< String, Object > searchParam = new HashMap();
+			searchParam.put("circle_id", circle_id);
+			List<HashMap<String, Object>> citiesInCircle= mapper.getCitiesInCircle(searchParam);
+			
+			JSONObject citymap = new JSONObject();
+			
+			for (HashMap<String, Object> city : citiesInCircle) {
+				JSONObject jsonObj1 = new JSONObject();
+				JSONObject jsonObj2 = new JSONObject();
+				jsonObj2.put("lat", city.get("latitude"));
+				jsonObj2.put("lng", city.get("longitude"));
+				jsonObj1.put("center", jsonObj2);
+				jsonObj1.put("color", "red");
+				jsonObj1.put("population", "1000000"); 
+				jsonObj1.put("city_id", city.get("city_id"));
+				jsonObj1.put("city_name", city.get("city_name"));
+				jsonObj1.put("bandwidth", city.get("bandwidth"));
+				citymap.put(city.get("city_id"), jsonObj1);
+			}
+		
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(citymap);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	/**
+	 * Service Area Mgmt > City 클릭시 핫스팟 리스트 호출
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/getHotspotsInCities.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getHotspotsInCities(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			
+			String city_id = request.getParameter("city_id");
+			
+			HashMap< String, Object > searchParam = new HashMap();
+			searchParam.put("city_id", city_id);
+			List<HashMap<String, Object>> hotspotsInCity= mapper.getHotspotsInCities(searchParam);
+			
+			JSONObject hotspotmap = new JSONObject();
+			
+			for (HashMap<String, Object> hotspot : hotspotsInCity) {
+				JSONObject jsonObj1 = new JSONObject();
+				JSONObject jsonObj2 = new JSONObject();
+				jsonObj2.put("lat", hotspot.get("latitude"));
+				jsonObj2.put("lng", hotspot.get("longitude"));
+				jsonObj1.put("center", jsonObj2);
+				jsonObj1.put("hotspot_id", hotspot.get("hotspot_id"));
+				jsonObj1.put("hotspot_name", hotspot.get("hotspot_name"));
+				jsonObj1.put("bandwidth", hotspot.get("bandwidth"));
+				hotspotmap.put(hotspot.get("hotspot_id"), jsonObj1);
+			}
+		
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(hotspotmap);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	} 
+		
+	/**
+	 * Service Area Mgmt > circle, city, hotspot 추가, 수정, 삭제 프로세스 메소드
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/serviceAreaProccess.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void serviceAreaProccess(@RequestParam HashMap<String, String> param, HttpServletResponse response) {
+		try {
+			JSONObject resultMap = new JSONObject();
+			
+			CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
+			HotSpotMapper hotSpotMapper = sqlSession.getMapper(HotSpotMapper.class);
+			
+			String proccessDiv = param.get("proccessDiv");
+			String currentZoomLevel = param.get("currentZoomLevel");
+			
+			int resultCnt = 0;
+			if(proccessDiv.equals("add")) {
+				if(circleMapper.checkSAID(param.get("said")) == 0) {
+					if(currentZoomLevel.equals("circle")) {
+						param.put("circleId", param.get("said"));
+						param.put("circleName", param.get("name"));
+						param.put("latitude", param.get("lat"));
+						param.put("longitude", param.get("lng"));
+//						resultCnt = circleMapper.insertCircle(param);
+					} else if(currentZoomLevel.equals("city")) {
+						param.put("cityId", param.get("said"));
+						param.put("circleId", param.get("upper_said"));
+						param.put("circleName", param.get("upper_name"));
+						param.put("cityName", param.get("name"));
+						param.put("description", param.get("name"));
+						param.put("latitude", param.get("lat"));
+						param.put("longitude", param.get("lng"));
+						param.put("bandwidth", param.get("bandwidth"));
+//						resultCnt = circleMapper.insertCity(param);
+					} else if(currentZoomLevel.equals("hotspot")) {
+						resultCnt = 0;
+					} 
+				} 
+				//중복이 존재할 경우 add 프로세스 진행X
+				else {
+					resultMap.put("resultCode", "E");
+				}
+			} else if(proccessDiv.equals("edit")) {
+				if(currentZoomLevel.equals("circle")) {
+					param.put("circleId", param.get("said"));
+					param.put("circleName", param.get("name"));
+					param.put("latitude", param.get("lat"));
+					param.put("longitude", param.get("lng"));
+//					resultCnt = circleMapper.insertCircle(param);
+				} else if(currentZoomLevel.equals("city")) {
+					param.put("cityId", param.get("said"));
+					param.put("circleId", param.get("upper_said"));
+					param.put("circleName", param.get("upper_name"));
+					param.put("cityName", param.get("name"));
+					param.put("description", param.get("name"));
+					param.put("latitude", param.get("lat"));
+					param.put("longitude", param.get("lng"));
+					param.put("bandwidth", param.get("bandwidth"));
+//					resultCnt = circleMapper.insertCity(param);
+				} else if(currentZoomLevel.equals("hotspot")) {
+					resultCnt = 0;
+				} 
+			} else if(proccessDiv.equals("delete")) {
+				if(currentZoomLevel.equals("circle")) {
+					String circleId = param.get("said");
+//					resultCnt = circleMapper.deleteCircle(circleId);
+				} else if(currentZoomLevel.equals("city")) {
+					String cityId =  param.get("said");
+//					resultCnt = circleMapper.deleteCity(cityId);
+				} else if(currentZoomLevel.equals("hotspot")) {
+					resultCnt = 0;
+				} 
+			}
+			
+			//SAID가 존재하지 않을 경우 에만 수행(기존재하는 id에 대해서는 이미 resultCode 부여했음)
+			if(!resultMap.get("resultCode").equals("E")) {
+				if(resultCnt > 0) {
+					resultMap.put("resultCode", "S");
+				} else {
+					resultMap.put("resultCode", "F");
+				}
+			}
+		
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(resultMap.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 		
 	/**
 	 * Service Area Group Mgmt > Service Area Group Mgmt 페이지 호출
