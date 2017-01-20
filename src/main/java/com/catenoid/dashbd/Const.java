@@ -31,6 +31,7 @@ public class Const {
 	public static final String ROLE_OPERATOR_MGMT 			= "ROLE_OPERATOR_MGMT";
 	public static final String ROLE_BMSC_MGMT				= "ROLE_BMSC_MGMT";
 	public static final String ROLE_CIRCLE_MGMT				= "ROLE_CIRCLE_MGMT";
+	public static final String ROLE_HOTSPOT_MGMT			= "ROLE_HOTSPOT_MGMT";
 	public static final String ROLE_SERVICE_AREA_MGMT 		= "ROLE_SERVICE_AREA_MGMT";
 	public static final String ROLE_SERVICE_AREA_GROUP_MGMT = "ROLE_SERVICE_AREA_GROUP_MGMT";
 	public static final String ROLE_ENB_MGMT 				= "ROLE_ENB_MGMT";
@@ -49,6 +50,7 @@ public class Const {
 	public static final String MENU_OPERATOR_MGMT 			= "OPERATOR_MGMT";
 	public static final String MENU_BMSC_MGMT				= "BMSC_MGMT";
 	public static final String MENU_CIRCLE_MGMT				= "MENU_CIRCLE_MGMT";
+	public static final String MENU_HOTSPOT_MGMT			= "MENU_HOTSPOT_MGMT";
 	public static final String MENU_SERVICE_AREA_MGMT 		= "SERVICE_AREA_MGMT";
 	public static final String MENU_SERVICE_AREA_GROUP_MGMT = "SERVICE_AREA_GROUP_MGMT";
 	public static final String MENU_ENB_MGMT 				= "ENB_MGMT";

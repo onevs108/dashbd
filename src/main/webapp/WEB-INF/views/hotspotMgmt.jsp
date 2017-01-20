@@ -51,15 +51,13 @@
 	<script src="/dashbd/resources/js/bootstrap.min.js"></script>
 	<script src="/dashbd/resources/js/bootstrap-table.js"></script>
 	<script src="/dashbd/resources/js/plugins/select2/select2.full.min.js"></script>
-	<script src="/dashbd/resources/app-js/apps/circle_mgmt_main_map.js"></script>
+	<script src="/dashbd/resources/app-js/apps/hotspot_mgmt_main_map.js"></script>
     
     <script src="js/common.js"></script>
     
 	<script type="text/javascript">
-		var circleJson = ${circleList};
-		var circleJsonLength = circleJson.length;
 		$(document).ready(function() {
-			getMenuList('MENU_CIRCLE_MGMT');
+			getMenuList('MENU_HOTSPOT_MGMT');
 			$(".js-example-basic").on("select2:select", function (e) { alert("하이"); return false;})
 			$(".js-example-basic").select2();
 		});
@@ -67,7 +65,7 @@
     
 	<style type="text/css">
 	.google-map {
-	    height: 700px;
+	    height: 400px;
 	}
 	.labels {
 		color: red;
@@ -135,9 +133,9 @@
         <div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 				<div class="navbar-header" style="padding-bottom: 10px;">
-					<h2 style="margin-left: 15px;"><strong>Circle Mgmt</strong></h2>
+					<h2 style="margin-left: 15px;"><strong>Hot Spot Mgmt</strong></h2>
 					<span style="margin-left: 15px;">
-						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> Circle & City Mgmt</strong>
+						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> Hot Spot Mgmt</strong>
 					</span>
 				</div><!-- end navbar-header -->
 		        
@@ -199,110 +197,35 @@
 			</nav>
 		</div><!-- end border-bottom -->
         
-<!--         <div class="row wrapper border-bottom white-bg page-heading"> -->
-<!-- 			<div class="col-lg-12"> -->
-<!-- 				<h2><strong>Service Area Mgmt</strong></h2> -->
-<!-- 				<ol class="breadcrumb"> -->
-<!-- 				    <li> -->
-<!-- 					   <a href="/dashbd/resources/main.do">Home</a> -->
-<!-- 				    </li> -->
-<!-- 				    <li class="active"> -->
-<!-- 					   <strong>Service Area Mgmt</strong> -->
-<!-- 				    </li> -->
-<!-- 				</ol> -->
-<!-- 			</div> -->
-<!-- 		</div>end row wrapper border-bottom white-bg page-heading -->
-            
-            
 	<div class="wrapper wrapper-content">
-	
-		<!-- User Mgmt -->
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="ibox float-e-margins">
 					<div class="ibox-content">
                         <div class="row">
                         	<div class="col-sm-3" style="padding-bottom: 5px;">
-                        		<select id="searchType" class="input-sm form-control input">
-                                    <option value="">선택</option>
-                                    <option value="circle">Circle</option>
-                                    <option value="city">City</option>
-                                    <option value="circleCity">Circle & City</option>
+                        		<select id="selectCircle" class="input-sm form-control input">
+                                    <option value="">Select Circle</option>
+                                    <c:forEach var="row" items="${circleList}">
+                                    	<option value="${row.circle_id}^${row.circle_name}^${row.latitude}^${row.longitude}">${row.circle_name}</option>
+                                    </c:forEach>
                                 </select>
 							</div>
-                        	<div class="col-sm-3" style="padding-bottom: 5px;"> 
-<!--                         		<input type="text" id="searchKeyword" class="form-control" placeholder=" Search Keyword" onclick="callSetLocationModalMap(this, 'circle')"  /> -->
-                        		<select id="searchKeyword" class="js-example-basic" style="width: 220px;" onclick="alert('하이')">
-								</select>
+                        	<div class="col-sm-3" style="padding-bottom: 5px;">
+                        		<select id="selectCity" class="input-sm form-control input" style="display: none;">
+                                </select>
 							</div>
-                        	<div class="col-sm-2" style="min-h">
-                        		<button id="search" type="button" class="btn btn-primary4">Search</button>
-							</div>
-							<div class="col-sm-8" style="min-h">
+							<div class="col-sm-12" style="min-h">
 								<div class="google-map" id="map"></div><br>
 								<h3 style="position:absolute;bottom:35px;left:25px;padding:5px 10px;border-radius:15px; background-color:rgba(0,0,0,0.5);box-shadow:0 0 10px #ccc;color:#fff;">
 									<i class="fa fa-circle text-danger"></i> <span id="selectedENBs"></span>
 								</h3><br>
 							</div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-12">
                                 <div class="ibox float-e-margins" id="service_area">
-                                    <div class="ibox-title">
-                                        <h5><span id="circleTitle"></span>&nbsp;City List</h5>
-                                    </div>
-                                    <div class="ibox-content" style="padding-top:0;padding-bottom:0;">
                                     <table class="footable table table-stripped toggle-arrow-tiny" style="margin:0;" id="table">
-                                           
+                                    
                                     </table>
-                                    </div>
-                                </div><!-- end ibox float-e-margins -->
-                            </div>
-							<div class="col-sm-12" id="viewEnbIDAdd" style="display:none;">
-                                <div class="ibox float-e-margins">
-                                    <div class="ibox-content"><br>
-							 	<form method="get" class="form-horizontal">
-								  <div class="form-group"><label class="pull-left" style="padding:7px 0 0 10px">eNB ID</label>
-									 <div class="col-sm-7">
-										<div class="input-group"><input type="text" class="form-control" id="toAddENBs" name="toAddENBs">
-										<input type="hidden" class="form-control" id="toAddENBsBmscId" name="toAddENBsBmscId" value="">
-										<input type="hidden" class="form-control" id="toAddENBsServiceAreaId" name="toAddENBsServiceAreaId" value="">
-											<span class="input-group-btn">
-												<button type="button" class="btn btn-primary4" onclick="javascript:addToServiceAreaManually();" id="toAddENBsBtn">Add</button>
-											</span>
-										</div>
-									 </div>
-								  </div>
-								</form>
-                                    </div><!-- end ibox-content -->
-                                </div><!-- end ibox float-e-margins -->
-                            </div>
-					  		 <div class="col-sm-12" style="margin-top:-30px; display: none;" id="viewEnbIDList">
-                                <div class="ibox ">
-                                	<input type="hidden" id="checkCityName" name="checkCityName">
-                                	<div class="ibox-content" id="enb_table">
-                                        <table class="footable table table-stripped" data-page-size="10">
-                                            <thead>
-                                                <tr style="border-top-style:solid;border-top-width:1px;border-top-color:#c0c0c0;">
-                                                    <th class="col-sm-1">townName</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td></td>
-                                                    <td></td>
-										  			<td></td>
-                                                    <td></td>
-										  			<td></td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="6">
-                                                    </td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div><!-- end ibox-content -->
                                 </div><!-- end ibox float-e-margins -->
                             </div>
                         </div>

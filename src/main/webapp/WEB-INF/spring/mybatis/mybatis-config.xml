@@ -26,6 +26,7 @@
 		<mapper resource="com/catenoid/dashbd/dao/map/OperatorBmscMapper.xml" />
 		<mapper resource="com/catenoid/dashbd/dao/map/OperatorMapper.xml" />
 		<mapper resource="com/catenoid/dashbd/dao/map/CircleMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/HotSpotMapper.xml" />
 		<mapper resource="com/catenoid/dashbd/dao/map/ServiceAreaEnbApMapper.xml" />
 		<mapper resource="com/catenoid/dashbd/dao/map/ServiceAreaMapper.xml" />
 		<mapper resource="com/catenoid/dashbd/dao/map/UsersMapper.xml" />

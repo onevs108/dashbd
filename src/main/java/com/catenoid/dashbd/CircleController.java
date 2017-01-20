@@ -236,9 +236,9 @@ public class CircleController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/api/circle/getCityListSearch.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@RequestMapping(value = "/hopspot/getCityListFromCircleId.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
-	public String getCityListSearch(@RequestParam HashMap<String,String> param) {
+	public String getCityListFromCircleId(@RequestParam HashMap<String,String> param) {
 		
 		CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
 		JSONObject jsonResult = new JSONObject();
