@@ -217,14 +217,22 @@
 							</div>
 							<div class="col-sm-12" style="min-h">
 								<div class="google-map" id="map"></div><br>
-								<h3 style="position:absolute;bottom:35px;left:25px;padding:5px 10px;border-radius:15px; background-color:rgba(0,0,0,0.5);box-shadow:0 0 10px #ccc;color:#fff;">
-									<i class="fa fa-circle text-danger"></i> <span id="selectedENBs"></span>
-								</h3><br>
 							</div>
                             <div class="col-sm-12">
                                 <div class="ibox float-e-margins" id="service_area">
                                     <table class="footable table table-stripped toggle-arrow-tiny" style="margin:0;" id="table">
                                     
+                                    </table>
+                                    <table class="footable table table-stripped toggle-arrow-tiny" style="margin:0; display: none;" id="addTable">
+                                    	<tr>
+                                    		<td width="30%"></td>
+                                    		<td width="10%"></td>
+                                    		<td width="20%"></td>
+                                    		<td width="20%"></td>
+                                    		<td width="20%" style="text-align: right;">
+                                    			<button id="addHostSpot" type="button" class="btn btn-success btn-xs button-edit">Add</button>
+                                    		</td>
+                                    	</tr>
                                     </table>
                                 </div><!-- end ibox float-e-margins -->
                             </div>
@@ -233,196 +241,60 @@
 				</div><!-- end ibox float-e-margins -->
 			</div>
 		</div>
-		<!-- end User Mgmt -->
-		<!-- More info -->
-		<!-- 
-                <div class="col-lg-7">
-                        <div class="ibox-content">
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">item</th>
-                                    <th class="text-center">Option</th>
-                                    <th class="text-center">Remark</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="text-center text-danger">PLMN 정보</td>
-                                    <td class="text-center text-danger">Mandatory</td>
-                                    <td class="text-danger">MCC, MNC</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center text-danger">Circle</td>
-                                    <td class="text-center text-danger">Optioanl</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center text-danger">Circle명</td>
-                                    <td class="text-center text-danger">Optioanl</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">cluster ID</td>
-                                    <td class="text-center">Optioanl</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">위도, 경도</td>
-                                    <td class="text-center">Mandatory</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">eNB ID</td>
-                                    <td class="text-center">Mandatory</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">eNB IP</td>
-                                    <td class="text-center">Optioanl</td>
-                                    <td>NE IP (eNB OAP IP), M1 IP (multicast ID)</td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center">EARFCN</td>
-                                    <td class="text-center">Optioanl</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center text-danger">MBSFN</td>
-                                    <td class="text-center text-danger">Mandatory</td>
-                                    <td></td>
-                                </tr>
-						  <tr>
-                                    <td class="text-center text-danger">MBMS Service AreA id</td>
-                                    <td class="text-center text-danger">Mandatory</td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                </div>
-         -->
-		<!-- end More info -->
 	   
 	</div><!-- end wrapper wrapper-content -->
 
 	</div><!-- end page-wrapper -->
 
 </div><!-- end wrapper -->
-
-<div class="modal fade" id="createServiceAreaLayer">
+<input type="hidden" id="cityId">
+<input type="hidden" id="cityName">
+<input type="hidden" id="cityLatitude">
+<input type="hidden" id="cityLongitude">
+<div class="modal fade" id="addHotSpotModal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 				</button>
-				<h5 class="modal-title">Create New Service Area</h5>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal">
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area ID</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaId"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Service Area Name</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="serviceAreaName"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label">Description</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-controlr" id="serviceAreaDescription"></div>
-				</div>
-				<br>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="createSvcAreaBtn">OK</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<div class="modal fade" id="addCircleModal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-				</button>
-				<h5 class="modal-title">Create New Circle</h5>
+				<h5 class="modal-title">Add Hot Spot</h5>
 			</div>
 			<div class="modal-body">
 				<form class="form-horizontal">
 				<input type="hidden" placeholder="" class="form-control" id="editType">
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Circle Name</label>
-				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="circleName"></div>
-				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existCircle()">Check</button></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> SAID</label>
-				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="circleId"></div>
-				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existSAID('circle')">Check</button></div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Name of the Hotspot</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="hotSpotName"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Longitude</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="longitude"></div>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="longitude"></div>
+				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-white" type="text" id="reset">Reset</button></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Latitude</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="latitude"></div>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="latitude"></div>
 				</div>
-				<br>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="addCircleBtn">OK</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editCircleBtn">OK</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<div class="modal fade" id="addCityModal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-				</button>
-				<h5 class="modal-title">Create New Circle</h5>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal">
-				<input type="hidden" placeholder="" class="form-control" id="editType">
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Name of the City</label>
-				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="cityName"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Longitude</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityLongitude"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Latitude</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityLatitude"></div>
-				</div>
-				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Bandwidth</label>
-				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="cityBandwidth"></div>
+				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i>Bandwidth</label>
+				<div class="col-lg-8"><input type="text" placeholder="" class="form-control" id="bandwidth"></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> SAID</label>
-				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="cityId"></div>
-				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existSAID('city')">Check</button></div>
+				<div class="col-lg-6"><input type="text" placeholder="" class="form-control" id="hotSpotId"></div>
+				<div class="col-lg-2"><button type="button" class="btn btn-primary0 btn-sm btn-blue" onclick="existSAID('hotspot')">Check</button></div>
 				</div>
 				<div class="form-group"><label class="col-lg-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
-				<div class="col-lg-8"><textarea type="text" placeholder="" class="form-control" id="cityDescription" style="height: 150px;"></textarea></div>
+				<div class="col-lg-8"><textarea type="text" placeholder="" class="form-control" id="description" style="height: 150px;"></textarea></div>
 				</div>
 				<br>
 				</form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary btn-sm btn-white" data-dismiss="modal">Cancle</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="addCityBtn">OK</button>
-				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editCityBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="addHotSpotBtn">OK</button>
+				<button type="button" class="btn btn-primary0 btn-sm btn-white" id="editHotSpotBtn">OK</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
 <jsp:include page="common/setLocationModal.jsp" />
 </body>
 </html>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONObject;
@@ -117,4 +118,29 @@ public class HotSpotController {
 		
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "/hotspot/deleteHotSpot.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String deleteHotSpot(@RequestParam String hotspotId, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		HotSpotMapper hotSpotMapper = sqlSession.getMapper(HotSpotMapper.class);
+		int result = hotSpotMapper.deleteHotSpot(hotspotId);
+		if(result != 1) {
+			returnStr = "FAIL";
+		}
+		return returnStr;
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/hotspot/insertHotSpot.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String insertHotSpot(@RequestParam HashMap<String,String> param, HttpServletRequest request, HttpServletResponse response) {
+		String returnStr = "SUCCESS";
+		HotSpotMapper hotSpotMapper = sqlSession.getMapper(HotSpotMapper.class);
+		int result = hotSpotMapper.insertHotSpot(param);
+		if(result != 1) {
+			returnStr = "FAIL";
+		}
+		return returnStr;
+		
+	}
 }

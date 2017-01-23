@@ -231,7 +231,7 @@
                                 </select>
 							</div>
                         	<div class="col-sm-3" style="padding-bottom: 5px;"> 
-<!--                         		<input type="text" id="searchKeyword" class="form-control" placeholder=" Search Keyword" onclick="callSetLocationModalMap(this, 'circle')"  /> -->
+<!--                         		<input type="text" id="searchKeyword" class="form-control" placeholder="Search Keyword" /> -->
                         		<select id="searchKeyword" class="js-example-basic" style="width: 220px;" onclick="alert('하이')">
 								</select>
 							</div>

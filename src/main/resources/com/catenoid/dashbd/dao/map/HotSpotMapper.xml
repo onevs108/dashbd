@@ -23,4 +23,16 @@
 		where city_id = #{cityId}
 	</select>
 	
+	<delete id="deleteHotSpot" parameterType="String">
+		DELETE FROM hotspot
+		where hotspot_id = #{hotspotId}
+	</delete>
+	
+	<insert id="insertHotSpot" parameterType="HashMap">
+		INSERT INTO hotspot (hotspot_id, city_id, city_name, hotspot_name, description, latitude, longitude, bandwidth, created_at, updated_at) 
+		VALUES (#{hotSpotId}, #{cityId}, #{cityName}, #{hotSpotName}, #{description}, ${latitude}, ${longitude}, #{bandwidth}, NOW(), NOW())
+		ON DUPLICATE KEY UPDATE
+		longitude = ${longitude}, latitude = ${latitude}
+	</insert>
+	
 </mapper>

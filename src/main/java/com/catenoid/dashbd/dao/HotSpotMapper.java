@@ -11,4 +11,8 @@ public interface HotSpotMapper {
 
 	List<HashMap<String, String>> selectCityFromCircleId(HashMap<String, String> param);
 
+	int deleteHotSpot(String hotspotId);
+
+	int insertHotSpot(HashMap<String, String> param);
+
 }

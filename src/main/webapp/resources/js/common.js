@@ -123,7 +123,10 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 			lngTarget =	$(obj).parents("table").find("tr td input[name='lng']");
 		}
 		
-	} 
+	} else if (accessDiv == 'hotspotAdd') {
+		latTarget = $(obj).parents("form").find("input[id='latitude']");
+		lngTarget =	$(obj).parents("form").find("input[id='longitude']");
+	}
 	
 	if(zoomLevel == undefined) {
 		modalMap = new google.maps.Map(document.getElementById('modalMap'), {

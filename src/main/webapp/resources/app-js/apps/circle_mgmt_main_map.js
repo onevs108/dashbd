@@ -2071,8 +2071,8 @@ function getCityList(circleId) {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" onclick="doEdit2(\'' + row.id + '\', \'' + row.circle_name + '\', \'' + row.town_name + '\', \'' + row.description + '\', \'' + row.permission + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
-				+ '<button type="button" onclick="doDelete2(\'' + row.id + '\', \'' + row.town_name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
+				var html = '<button type="button" onclick="editCity(\'' + row.city_id + '\', \'' + row.city_name + '\', \'' + row.latitude + '\', \'' + row.longitude + '\', \'' + row.bandwidth + '\', \'' + row.description + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+				+ '<button type="button" onclick="deleteCity(\'' + row.city_id + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
 		}]
