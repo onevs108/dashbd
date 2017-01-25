@@ -33,20 +33,26 @@ $(document).ready(function()
     circlemap = JSON.parse(circlemap);
 });
 
+//처음으로 map을 resize했는지 여부 판단
+var firstMapYn = true; 
 function tabChange(tabDiv) {
 	if(tabDiv == '1') {
 		$($("ul.nav.nav-tabs")[0]).addClass("active");
 		$($("ul.nav.nav-tabs")[1]).removeClass("active");
 		$("#map").hide();
 		$("#treeNode").show();
-		
+		$(".search-input").show();
 		jsTreeSetting();
 	} else if(tabDiv == '2') {
 		$($("ul.nav.nav-tabs")[1]).addClass("active");
 		$($("ul.nav.nav-tabs")[0]).removeClass("active");
 		$("#map").show();
-		$("#treeNode").hide();
+		$("#treeNode").hide(); 
+		$(".search-input").hide();
 		
+		//트리에서 변경된 데이터가 있을 수 있기 떄문에 다시 그려줌
+		circleClear();
+		getNewCircleList();
 		google.maps.event.trigger(map, "resize");
 		map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
 	}
@@ -81,34 +87,180 @@ function jsTreeSetting() {
 
 //jsTree Init Function
 function treeInit(data) {
+	(function ($, undefined) {
+        "use strict";
+        
+        $(".search-input").keydown(function(event) {
+        	//Enter입력시에만 조회
+        	if(event.keyCode == 13) {
+            	var searchString = $(this).val();
+                console.log(searchString);
+                $('#treeNode').jstree('search', searchString);
+            }
+        });
+        
+        $.jstree.plugins.inp = function (options, parent) {
+            this.bind = function () {
+                parent.bind.call(this);
+                this.element
+                    .on("change.jstree", ".jstree-inp", $.proxy(function (e) {
+                            // do something with $(e.target).val()
+
+                        }, this));
+            };
+            this.teardown = function () {
+                if(this.settings.questionmark) {
+                    this.element.find(".jstree-inp").remove();
+                }
+                parent.teardown.call(this);
+            };
+            //tree를 그릴때 input box 삽입
+            this.redraw_node = function(obj, deep, callback) {
+                obj = parent.redraw_node.call(this, obj, deep, callback);
+                if(obj) {
+                	var marginDefault = '20px';
+                	var componentMargin = '2px';
+                	
+                	var nodeLevel;
+                	if($(obj).hasClass('circle')) nodeLevel = 'Circle';
+                	else if($(obj).hasClass('city')) nodeLevel = 'City';
+                	else if($(obj).hasClass('hotspot')) nodeLevel = 'Hotspot';
+                	
+                	var inp0 = document.createElement('INPUT');
+                	inp0.setAttribute('type','text');
+                	inp0.setAttribute('name','name');
+                	inp0.setAttribute('placeholder',nodeLevel + ' Name');
+                	inp0.className = "jstree-inp";
+                	inp0.style.width = '80px';
+                	var inp1 = document.createElement('INPUT');
+                    inp1.setAttribute('type','text');
+                    inp1.setAttribute('name','said'); 
+                    inp1.setAttribute('readonly', 'readonly');
+                    inp1.className = "jstree-inp";
+                    inp1.style.width = '60px';
+                    inp1.style.marginLeft = marginDefault;
+                    var inp2 = document.createElement('INPUT');
+                    inp2.setAttribute('type','text');
+                    inp2.setAttribute('name','lat');
+                    inp2.className = "jstree-inp";
+                    inp2.style.width = '80px';
+                    inp2.style.marginLeft = componentMargin;
+                    var inp3 = document.createElement('INPUT');
+                    inp3.setAttribute('type','text');
+                    inp3.setAttribute('name','lng');
+                    inp3.className = "jstree-inp";
+                    inp3.style.width = '80px';
+                    inp3.style.marginLeft = componentMargin;
+                    
+                    var btn1 = document.createElement('BUTTON');
+                    btn1.setAttribute('type','button');
+                    btn1.setAttribute('onclick', 'callSetLocationModalMap(this, \'serviceArea\')');
+                    btn1.className = "btn btn-success btn-xs button-edit";
+                    btn1.style.marginLeft = componentMargin;
+                    btn1.textContent = 'Map';
+                    
+                    var btn2 = document.createElement('BUTTON');
+                    btn2.setAttribute('type','button');
+                    btn2.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'edit\', this)');
+                    btn2.className = "btn btn-success btn-xs button-edit";
+                    btn2.style.marginLeft = componentMargin;
+                    btn2.textContent = 'Edit';
+                    
+                    var btn3 = document.createElement('BUTTON');
+                    btn3.setAttribute('type','button');
+                    btn3.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'delete\', this)');
+                    btn3.className = "btn btn-success btn-xs button-edit";
+                    btn3.style.marginLeft = componentMargin;
+                    btn3.textContent = 'Delete';
+                    
+                    var btn4 = document.createElement('BUTTON');
+                    btn4.setAttribute('type','button');
+                    btn4.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'add\', this)');
+                    btn4.className = "btn btn-success btn-xs button-edit";
+                    btn4.style.marginLeft = componentMargin;
+                    btn4.textContent = 'Add';
+                    
+                    //해당 아이디 값 셋팅
+                    var said;
+                    
+                    //신규추가 노드일 경우 수행
+                    if($(obj).hasClass('newNode')) {
+                    	$(inp1).removeAttr("readonly");
+                    	inp1.setAttribute('value', '');
+                    	inp1.setAttribute('placeholder', 'SAID');
+                        inp2.setAttribute('value', '');
+                        inp2.setAttribute('placeholder', 'Latitude');
+                        inp3.setAttribute('value', '');
+                        inp3.setAttribute('placeholder', 'Longitude');
+                    } else {
+                    	if($(obj).hasClass('circle')) {
+                        	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('A')+1);
+                        } else if($(obj).hasClass('city')) {
+                        	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('B')+1);
+                        } else if($(obj).hasClass('hotspot')) {
+                        	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('C')+1);
+                        }
+                    	
+                        //아이디값 및 위도 경도 값 셋팅(트리 노드 뒤쪽의 input에 각각 넣어줌
+                        inp1.setAttribute('value', said);
+                        inp2.setAttribute('value', $(obj).attr("data-lat"));
+                        inp3.setAttribute('value', $(obj).attr("data-lng"));
+                    }
+                    
+                    //최종적으로 input과 button을 노드에 붙임
+                    if(!$(obj).hasClass('root')) {
+                        //신규 노드일 경우 Add 버튼 추가 그 외에는 edit, delete 버튼 추가
+                        if($(obj).hasClass('newNode')) {
+                        	$(obj).find("a").remove();
+                        	obj.append(inp0);
+                        	obj.append(inp1);
+                            obj.append(inp2);
+                            obj.append(inp3);
+                            obj.append(btn1);
+                        	obj.append(btn4);
+                        } else {
+                        	obj.append(inp1);
+                            obj.append(inp2);
+                            obj.append(inp3);
+                            obj.append(btn1);
+                        	obj.append(btn2);
+                            obj.append(btn3);
+                        }
+                    }
+                }
+                return obj;
+            };
+        };
+    })(jQuery);
+	
 	var treeData = data.resultList;
 	for(var i=0; i < treeData.length; i++) {
 		var node = treeData[i];
 		
+		//root를 그려줌(Circles)
 		if(i == 0) {
 			$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
 			continue;
 		}
 		
-		var compareClass = '';
-		if(node.node_div == 'circle') compareClass='root';
-		else if(node.node_div == 'city') compareClass='circle';
-		else if(node.node_div == 'hotspot') compareClass='city';
+		//현재 붙여넣어 줄 노드의 구분값을 판단하여 그에 따른 상위 노드만 모아서 부모 노드를 찾음
+		var divClass = '';
+		if(node.node_div == 'circle') divClass='root';
+		else if(node.node_div == 'city') divClass='circle';
+		else if(node.node_div == 'hotspot') divClass='city';
 		
-		for(var j=0; j < $('#treeNode li.' + compareClass).length; j++) {
-			var compareNode = $('#treeNode li.' + compareClass)[j];
+		for(var j=0; j < $('#treeNode li.' + divClass).length; j++) {
+			var compareNode = $('#treeNode li.' + divClass)[j];
 			
 			if($(compareNode).attr("data-init") == node.pnode_id) { 
-				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name;
-				liStr += '<span style="margin-left:20px;"><input type="text" name="lat" ></span>';
-				liStr += '<span style="margin-left:10px;"><input type="text" name="lng" ></span>';
-				liStr += '<span style="margin-left:10px;"><button type="button" class="btn btn-success btn-xs button-edit" onclick="callSetLocationModalMap(this, \'serviceArea\')">Map</button></span>';
-				liStr += '</li>';
+				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' + node.latitude + '" data-lng="' + node.longitude + '">' + node.name + '</li>';
 				
 				if($(compareNode).html().indexOf("ul") == -1) {
-					$(compareNode).append('<ul>' + liStr + '</ul>');
+					//첫 노드일 경우 가상 노드를 주어 새롭게 추가할 수 있도록 함
+					var firstNode = '<li class="newNode ' + node.node_div + '" data-init="" data-lat="" data-lng=""></li>';
+					$(compareNode).append('<ul>' + firstNode + liStr + '</ul>');
 				} else {
-					$(compareNode).find("ul").append(liStr)
+					$($(compareNode).find("ul")[0]).append(liStr);
 				}
 				
 				break;
@@ -120,11 +272,15 @@ function treeInit(data) {
 	    "conditionalselect" : function (node, event) {
 	      return false;
 	    },
-	    "plugins" : [ "conditionalselect" ]
+	    "search": {
+            "case_insensitive": true,
+            "show_only_matches" : true
+        },
+	    "plugins" : [ "conditionalselect" , "nohover", "inp", "search"]
 	  });
 	
 	//제일 처음 노드 오픈
-	$("#treeNode").jstree("open_node", $("#j1_1"))
+	$("#treeNode").jstree("open_node", $("#treeNode .root"));
 }
 
 //메인 화면의 모달 로드
@@ -140,6 +296,10 @@ function initMap() {
 	
 	google.maps.event.addListener(map, 'zoom_changed', function() {
 		currentZoomLevel = checkZoomLevel(this.zoom);
+		
+		//줌 레벨이 변경될 경우 기존에 열린 infowindow는 닫아줌
+		if(tempInfoWindow != undefined) 
+			tempInfoWindow.close();
 		
 		//circle이 보이는 줌 레벨보다 멀어질 경우 circleList 그림
 		if(currentZoomLevel == 'circle') {
@@ -204,6 +364,14 @@ function makeInfoWindow(div, object) {
 	if(div == 'edit') said = object.said;
 	contentString += '<td colspan="2"><input type="text" style="width:100%" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + '></td>';
 	contentString += '</tr>';
+	if(currentZoomLevel != 'circle') {
+		var bandwidth = '';
+		if(div == 'edit') bandwidth = object.bandwidth;
+		contentString += '<tr>';
+		contentString += '<td>Bandwidth</td>';
+		contentString += '<td colspan="2"><input type="text" style="width:100%" name="bandwidth" value="' + bandwidth + '"></td>';
+		contentString += '</tr>';
+	}
 	contentString += '<tr>';
 	contentString += '<td>Latitude</td>';
 	var lat,lng;
@@ -212,8 +380,13 @@ function makeInfoWindow(div, object) {
 		lng =  object.latLng.lng();
 	}
 	else if(div == 'edit') {
-		lat = object.center.lat();
-		lng = object.center.lng();
+		if(object.center != undefined) {
+			lat = object.center.lat();
+			lng = object.center.lng();
+		} else {
+			lat = object.position.lat();
+			lng = object.position.lng();
+		}
 	}
 	contentString += '<td><input type="text" name="lat" value="' + lat + '" readonly></td>';
 	if(div == 'edit')
@@ -223,14 +396,6 @@ function makeInfoWindow(div, object) {
 	contentString += '<td>Longitude</td>';
 	contentString += '<td><input type="text" name="lng" value="' + lng + '" readonly></td>';
 	contentString += '</tr>';
-	if(currentZoomLevel != 'circle') {
-		var bandwidth = '';
-		if(div == 'edit') bandwidth = object.bandwidth;
-		contentString += '<tr>';
-		contentString += '<td>Bandwidth</td>';
-		contentString += '<td><input type="text" name="bandwidth" value="' + bandwidth + '"></td>';
-		contentString += '</tr>';
-	}
 	contentString += '</tbody>';
 	contentString += '</table>';
 	contentString += '</form>';
@@ -238,10 +403,10 @@ function makeInfoWindow(div, object) {
 	contentString += '<div style="text-align:center; margin-top:3px">';
 	
 	if(div == 'add') {
-		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'add\')">Add</button>';
+		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'map\', \'add\')">Add</button>';
 	} else if(div == 'edit') {
-		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'edit\')">Edit</button>';
-		contentString += '<button type="button" class="btn btn-sm btn-default proccess-btn" onclick="serviceAreaProccess(\'delete\')">Delete</button>';
+		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'map\', \'edit\')">Edit</button>';
+		contentString += '<button type="button" class="btn btn-sm btn-default proccess-btn" onclick="serviceAreaProccess(\'map\', \'delete\')">Delete</button>';
 	}
 	
 	contentString += '</div>';
@@ -312,6 +477,28 @@ function hotspotClear() {
 	}
 	
 	hotspots = [];
+}
+
+//변경된 서클 리스트를 가지고오는 메소드
+function getNewCircleList() {
+	$.ajax({
+	    url : "/dashbd/api/getNewCircleList.do",
+	    type: "POST",
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    success : function(responseData) {
+	    	$("#ajax").remove();
+	        var data = JSON.parse(responseData);
+	        
+	        circlemap = data;
+	        drawServiceAreaByBmSc();
+	    }, 
+	    error : function(xhr, status, error) {
+        	swal({
+                title: "Fail !",
+                text: "Error"
+            });
+        }
+	});
 }
 
 //서클 리스트를 지도상에 그려주는 메소드
@@ -473,7 +660,7 @@ function drawServiceAreaByHotspot(city) {
 	    type: "POST",
 	    async:false,
 	    data : { 
-	    	city_id : city.city_id
+	    	city_id : city.said
 	    },
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 	    success : function(responseData) {
@@ -489,9 +676,10 @@ function drawServiceAreaByHotspot(city) {
 	        	var hotspotMarker = new google.maps.Marker({
 	  	  	      map: map,
 	  	  	      position: data[hotspot].center,
+	  	  	      icon : '/dashbd/resources/img/icon/ico_number_1_3.png',
 	  	  	      title: data[hotspot].hotspot_name,
-		  	  	  hotspot_id:data[hotspot].hotspot_id,
-		  	  	  hotspot_name:data[hotspot].hotspot_name,
+		  	  	  said:data[hotspot].hotspot_id,
+		  	  	  name:data[hotspot].hotspot_name,
 		  	  	  bandwidth:data[hotspot].bandwidth
 	  	  	    });
 	        	
@@ -521,40 +709,91 @@ function drawServiceAreaByHotspot(city) {
 }
 
 //circle, city, hotspot을 추가, 수정, 삭제할 경우 사용하는 메소드
-function serviceAreaProccess(div) {
+function serviceAreaProccess(tabDiv, div, treeBtn) {
 	//필수값이 모두 입력되어 있을 경우에는 이 값을 변경하지 않아 ajax 수행
 	var ajaxYn = true;
+	// 서버단으로 던지는 데이터셋
+	var sendData;
 	
-	//form에 셋팅
-	$("form[name='serviceAreaForm'] input[name='proccessDiv']").val(div); 
-	$("form[name='serviceAreaForm'] input[name='currentZoomLevel']").val(currentZoomLevel);
-	
-	if(currentZoomLevel != 'circle') {
-		//city, hotspot 마냥 상위 노드가 필요할 경우에만 셋팅
-		if(upperObj != undefined) {
-			$("form[name='serviceAreaForm'] input[name='upper_said']").val(upperObj.said);
-			$("form[name='serviceAreaForm'] input[name='upper_name']").val(upperObj.name);
+	//Map에서 추가 수정 삭제가 일어날 경우
+	if(tabDiv == 'map') {
+		//form에 셋팅
+		$("form[name='serviceAreaForm'] input[name='proccessDiv']").val(div); 
+		$("form[name='serviceAreaForm'] input[name='currentZoomLevel']").val(currentZoomLevel);
+		
+		if(currentZoomLevel != 'circle') {
+			//city, hotspot 마냥 상위 노드가 필요할 경우에만 셋팅
+			if(upperObj != undefined) {
+				$("form[name='serviceAreaForm'] input[name='upper_said']").val(upperObj.said);
+				$("form[name='serviceAreaForm'] input[name='upper_name']").val(upperObj.name);
+			}
 		}
-	}
-	
-	$.each($("form[name='serviceAreaForm'] input"), function(index, obj) {
-		if($(obj).val() == '') {
-			swal({
-              title: "Fail !",
-              text: "Insert Value"
-	        });
+		
+		$.each($("form[name='serviceAreaForm'] input"), function(index, obj) {
+			if($(obj).val() == '') {
+				swal({
+	              title: "Fail !",
+	              text: "Insert Value"
+		        });
+				
+				$(obj).focus();
+				ajaxYn = false;
+				return false;
+			}
+		});
+		
+		if(ajaxYn)
+			sendData = $("form[name='serviceAreaForm']").serialize()
+	} 
+	//Tree에서 추가 수정 삭제가 일어날 경우
+	else if(tabDiv == 'tree') {
+		$.each($(treeBtn).siblings("input"), function(index, obj) {
+			if($(obj).val() == '') {
+				swal({
+	              title: "Fail !",
+	              text: "Insert Value"
+		        });
+				
+				$(obj).focus();
+				ajaxYn = false;
+				return false;
+			}
+		});
+		
+		if(ajaxYn) {
+			var objLevel = $($(treeBtn).parents("li")[0]);
+			if(objLevel.hasClass('circle')) objLevel = 'circle';
+			else if(objLevel.hasClass('city')) objLevel = 'city';
+			else if(objLevel.hasClass('hotspot')) objLevel = 'hotspot';
 			
-			$(obj).focus();
-			ajaxYn = false;
-			return false;
+			var name;
+			
+			if(treeBtn.innerHTML.toLowerCase() == 'add') {
+				name = $($(treeBtn).parents("li")[0]).find("input")[0].value;
+			} else {
+				name = $($(treeBtn).parents("li")[0]).find("a").text();
+			}
+			
+			sendData = {
+				'proccessDiv' : treeBtn.innerHTML.toLowerCase(),
+//				'proccessDiv' : 'test',
+				'currentZoomLevel' : objLevel,
+				'said' : $(treeBtn).siblings("input[name='said']").val(),
+				'name' : name,
+				'lat' : $(treeBtn).siblings("input[name='lat']").val(),
+				'lng' : $(treeBtn).siblings("input[name='lng']").val(),
+				'upper_said' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($(treeBtn).parents("li")[1]).find("input[name='said']")[0].value,
+				'upper_name' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($($(treeBtn).parents("li")[1]).find("a")[0]).text()
+			}
 		}
-	});
+			
+	}
 	
 	if(ajaxYn) {
 		$.ajax({
 		    url : "/dashbd/api/serviceAreaProccess.do",
 		    type: "POST",
-		    data : $("form[name='serviceAreaForm']").serialize(),
+		    data : sendData,
 		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 		    success : function(responseData) {
 		        $("#ajax").remove();
@@ -562,9 +801,37 @@ function serviceAreaProccess(div) {
 		        
 		        if(data.resultCode == 'S') {
 		        	swal({
-		                title: "Fail !",
-		                text: "Error"
+		                title: "Success !",
+		                text: "Success"
 		            });
+		        	
+		        	if(tabDiv == 'map') {
+		        		if(currentZoomLevel == 'circle') {
+		        			circleClear();
+		        			getNewCircleList();
+		        			google.maps.event.trigger(map, "resize");
+		        			map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
+			        	} else if(currentZoomLevel == 'city') {
+			        		tempInfoWindow.close(); //InfoWindow 닫아줌
+			        		cityClear('cities');
+			        		drawServiceAreaByCity(upperObj);
+			        	} else if(currentZoomLevel == 'hotspot') {
+			        		tempInfoWindow.close(); //InfoWindow 닫아줌
+			        		hotspotClear();
+			        		drawServiceAreaByHotspot(upperObj);
+			        	}
+		        	} 
+		        	//tree의 경우 add되거나 delete될 때 해당 노드를 지워주거나 추가해줘야 함
+		        	else if(tabDiv == 'tree') {
+		        		if(treeBtn.innerHTML.toLowerCase() == 'add') {
+		        			jsTreeSetting();
+		        		} else if(treeBtn.innerHTML.toLowerCase() == 'delete') {
+		        			$($(treeBtn).parents("li")[0]).remove();
+		        		}
+		        		
+		        		circleClear();
+		        		getNewCircleList();
+		        	}
 		        } 
 		        else if(data.resultCode == 'E') {
 		        	swal({

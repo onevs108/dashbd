@@ -2678,8 +2678,6 @@ public class ServiceAreaController {
 	public ModelAndView getServiceAreaMain(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("serviceAreaMain");
 		
-		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-		
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		
 		List<Circle> circleList = operatorMapper.selectCircleListAll();
@@ -2701,6 +2699,39 @@ public class ServiceAreaController {
 		mv.addObject("circlemap", circlemap);
 		
 		return mv;
+	}
+	
+	/**
+	 * Service Area Mgmt > Circle 리스트 조회
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/getNewCircleList.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getNewCircleList(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			
+			List<Circle> circleList = operatorMapper.selectCircleListAll();
+			
+			JSONObject circlemap = new JSONObject();
+			
+			for (Circle circle : circleList) {
+				JSONObject jsonObj1 = new JSONObject();
+				JSONObject jsonObj2 = new JSONObject();
+				jsonObj2.put("lat", circle.getLatitude());
+				jsonObj2.put("lng", circle.getLongitude());
+				jsonObj1.put("center", jsonObj2);
+				jsonObj1.put("population", "1500000");
+				jsonObj1.put("circle_id", circle.getCircle_id());
+				jsonObj1.put("circle_name", circle.getCircle_name());
+				circlemap.put(circle.getCircle_id(), jsonObj1);
+			}
+		
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(circlemap);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	/**
@@ -2803,7 +2834,7 @@ public class ServiceAreaController {
 						param.put("circleName", param.get("name"));
 						param.put("latitude", param.get("lat"));
 						param.put("longitude", param.get("lng"));
-//						resultCnt = circleMapper.insertCircle(param);
+						resultCnt = circleMapper.insertCircle(param);
 					} else if(currentZoomLevel.equals("city")) {
 						param.put("cityId", param.get("said"));
 						param.put("circleId", param.get("upper_said"));
@@ -2813,9 +2844,17 @@ public class ServiceAreaController {
 						param.put("latitude", param.get("lat"));
 						param.put("longitude", param.get("lng"));
 						param.put("bandwidth", param.get("bandwidth"));
-//						resultCnt = circleMapper.insertCity(param);
+						resultCnt = circleMapper.insertCity(param);
 					} else if(currentZoomLevel.equals("hotspot")) {
-						resultCnt = 0;
+						param.put("hotSpotId", param.get("said"));
+						param.put("cityId", param.get("upper_said"));
+						param.put("cityName", param.get("upper_name"));
+						param.put("hotSpotName", param.get("name"));
+						param.put("description", param.get("name"));
+						param.put("latitude", param.get("lat"));
+						param.put("longitude", param.get("lng"));
+						param.put("bandwidth", param.get("bandwidth"));
+						resultCnt = hotSpotMapper.insertHotSpot(param);
 					} 
 				} 
 				//중복이 존재할 경우 add 프로세스 진행X
@@ -2828,7 +2867,7 @@ public class ServiceAreaController {
 					param.put("circleName", param.get("name"));
 					param.put("latitude", param.get("lat"));
 					param.put("longitude", param.get("lng"));
-//					resultCnt = circleMapper.insertCircle(param);
+					resultCnt = circleMapper.insertCircle(param);
 				} else if(currentZoomLevel.equals("city")) {
 					param.put("cityId", param.get("said"));
 					param.put("circleId", param.get("upper_said"));
@@ -2838,24 +2877,33 @@ public class ServiceAreaController {
 					param.put("latitude", param.get("lat"));
 					param.put("longitude", param.get("lng"));
 					param.put("bandwidth", param.get("bandwidth"));
-//					resultCnt = circleMapper.insertCity(param);
+					resultCnt = circleMapper.insertCity(param);
 				} else if(currentZoomLevel.equals("hotspot")) {
-					resultCnt = 0;
+					param.put("hotSpotId", param.get("said"));
+					param.put("cityId", param.get("upper_said"));
+					param.put("cityName", param.get("upper_name"));
+					param.put("hotSpotName", param.get("name"));
+					param.put("description", param.get("name"));
+					param.put("latitude", param.get("lat"));
+					param.put("longitude", param.get("lng"));
+					param.put("bandwidth", param.get("bandwidth"));
+					resultCnt = hotSpotMapper.insertHotSpot(param);
 				} 
 			} else if(proccessDiv.equals("delete")) {
 				if(currentZoomLevel.equals("circle")) {
 					String circleId = param.get("said");
-//					resultCnt = circleMapper.deleteCircle(circleId);
+					resultCnt = circleMapper.deleteCircle(circleId);
 				} else if(currentZoomLevel.equals("city")) {
 					String cityId =  param.get("said");
-//					resultCnt = circleMapper.deleteCity(cityId);
+					resultCnt = circleMapper.deleteCity(cityId);
 				} else if(currentZoomLevel.equals("hotspot")) {
-					resultCnt = 0;
+					String hotspotId =  param.get("said");
+					resultCnt = hotSpotMapper.deleteHotSpot(hotspotId);
 				} 
 			}
 			
 			//SAID가 존재하지 않을 경우 에만 수행(기존재하는 id에 대해서는 이미 resultCode 부여했음)
-			if(!resultMap.get("resultCode").equals("E")) {
+			if(resultMap.get("resultCode") == null) {
 				if(resultCnt > 0) {
 					resultMap.put("resultCode", "S");
 				} else {

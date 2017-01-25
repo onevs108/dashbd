@@ -1498,25 +1498,28 @@
 	</insert>
 
 	<select id="getTreeNodeData" parameterType="HashMap" resultType="HashMap">
-		SELECT result.node_id, result.pnode_id, result.name, result.node_div, IF(hotspot.hotspot_id IS NULL, 0, 1) as checkYn
+		SELECT result.node_id, result.pnode_id, result.name, result.node_div, IF(hotspot.hotspot_id IS NULL, 0, 1) as checkYn, latitude, longitude
 		FROM (
-		    SELECT 'A' AS node_id, null AS pnode_id, 'Circles' as name, 'root' AS node_div, '' AS hotspot_id
+		    SELECT 'A' AS node_id, null AS pnode_id, 'Circles' as name, 'root' AS node_div, '' AS hotspot_id, '' AS latitude, '' AS longitude
 		    UNION ALL
 		    SELECT CONCAT('A', circle_id) AS node_id, 'A' AS pnode_id
 		        , circle_name AS name, 'circle' AS node_div
 		        , '' AS hotspot_id
+		        , latitude, longitude
 		    FROM circle
 		    UNION ALL
 		    SELECT CONCAT('A', circle_id, 'B', city_id) AS node_id, CONCAT('A', circle_id) AS pnode_id
 		        , city_name AS name, 'city' AS node_div
 		        , '' AS hotspot_id
+		        , latitude, longitude
 		    FROM city
 		    UNION ALL
 		    SELECT CONCAT('A', circle_id, 'B', city_id, 'C', hotspot_id) AS node_id, CONCAT('A', circle_id, 'B', city_id) AS pnode_id
 		        , hotspot_name AS name, 'hotspot' AS node_div
 		        , hotspot_id AS hotspot_id
+		        , latitude, longitude
 		    FROM (
-		      SELECT mst.circle_id, mst.city_id, slv.hotspot_id, slv.hotspot_name
+		      SELECT mst.circle_id, mst.city_id, slv.hotspot_id, slv.hotspot_name, slv.latitude , slv.longitude
 		      FROM city mst
 		      INNER JOIN hotspot slv
 		      ON mst.city_id = slv.city_id

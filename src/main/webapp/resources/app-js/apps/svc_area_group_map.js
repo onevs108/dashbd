@@ -66,19 +66,21 @@ function treeInit(data) {
 			continue;
 		}
 		
-		var compareClass = '';
-		if(node.node_div == 'circle') compareClass='root';
-		else if(node.node_div == 'city') compareClass='circle';
-		else if(node.node_div == 'hotspot') compareClass='city';
+		var divClass = '';
+		if(node.node_div == 'circle') divClass='root';
+		else if(node.node_div == 'city') divClass='circle';
+		else if(node.node_div == 'hotspot') divClass='city';
 		
-		for(var j=0; j < $('#treeNode li.' + compareClass).length; j++) {
-			var compareNode = $('#treeNode li.' + compareClass)[j];
+		for(var j=0; j < $('#treeNode li.' + divClass).length; j++) {
+			var compareNode = $('#treeNode li.' + divClass)[j];
 			
 			if($(compareNode).attr("data-init") == node.pnode_id) {
+				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' + node.latitude + '" data-lng="' + node.longitude + '">' + node.name + "</li>";
+				
 				if($(compareNode).html().indexOf("ul") == -1) {
-					$(compareNode).append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
+					$(compareNode).append('<ul>' + liStr + '</ul>');
 				} else {
-					$(compareNode).find("ul").append('<li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li>')
+					$($(compareNode).find("ul")[0]).append(liStr);
 				}
 				
 				break;

@@ -116,8 +116,8 @@ var lngTarget;
 function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 	if(accessDiv == 'serviceArea') {
 		if($(obj).parents("li").length > 0) {
-			latTarget = $($(obj).parents("li")[0]).find("span input[name='lat']");
-			lngTarget =	$($(obj).parents("li")[0]).find("span input[name='lng']");
+			latTarget = $($(obj).parents("li")[0]).find("input[name='lat']");
+			lngTarget =	$($(obj).parents("li")[0]).find("input[name='lng']");
 		} else if($(obj).parents("table").length > 0) {
 			latTarget = $(obj).parents("table").find("tr td input[name='lat']");
 			lngTarget =	$(obj).parents("table").find("tr td input[name='lng']");

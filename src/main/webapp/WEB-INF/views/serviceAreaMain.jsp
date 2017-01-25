@@ -220,12 +220,13 @@
 							<div class="col-sm-8">
 								<div class="ibox-title">
 									<ul class="nav nav-tabs">
-									    <li><a href="#" data-toggle="tab" onclick="tabChange('1')">Tree View</a></li>
-									    <li class="active"><a href="#" data-toggle="tab" onclick="tabChange('2')">Map View</a></li>
+									    <li class="active"><a href="#" data-toggle="tab" onclick="tabChange('1')">Tree View</a></li>
+									    <li><a href="#" data-toggle="tab" onclick="tabChange('2')">Map View</a></li>
 									</ul>
 								</div>
-								<div id="treeNode" style="height: 700px; overflow: scroll; display:none;"></div>
-								<div class="google-map" id="map" style="height: 700px;"></div>
+								<div><input type="text" class="search-input"></div>
+								<div id="treeNode" style="height: 700px; overflow: scroll;"></div>
+								<div class="google-map" id="map" style="height: 700px; display:none;"></div>
 							</div>
 <!--                             <div class="col-sm-4"> -->
 <!--                                 <div class="ibox float-e-margins" id="service_area"> -->
