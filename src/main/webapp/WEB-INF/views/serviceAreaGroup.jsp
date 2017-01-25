@@ -218,7 +218,7 @@
 								</div>
 							</div>
                             <div class="col-sm-8">
-                                <div class="ibox float-e-margins" id="service_area">
+                                <div class="ibox float-e-margins" id="service_area" style="height:750px; overflow:scroll;">
                                     <div class="ibox-title">&nbsp;</div>
                                     <div id="treeNode"></div>
                                 </div><!-- end ibox float-e-margins -->

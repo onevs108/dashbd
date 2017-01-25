@@ -117,7 +117,7 @@ function treeInit(data) {
             //tree를 그릴때 input box 삽입
             this.redraw_node = function(obj, deep, callback) {
                 obj = parent.redraw_node.call(this, obj, deep, callback);
-                if(obj) {
+                if(!$(obj).hasClass('root')) {
                 	var marginDefault = '20px';
                 	var componentMargin = '2px';
                 	
@@ -154,7 +154,7 @@ function treeInit(data) {
                     
                     var btn1 = document.createElement('BUTTON');
                     btn1.setAttribute('type','button');
-                    btn1.setAttribute('onclick', 'callSetLocationModalMap(this, \'serviceArea\')');
+                    btn1.setAttribute('onclick', 'callSetLocationModalMap(this, \'serviceArea\', \'' + nodeLevel.toLowerCase() + '\', \'' + $(obj).attr("data-lat") + '\', \'' + $(obj).attr("data-lng") + '\')');
                     btn1.className = "btn btn-success btn-xs button-edit";
                     btn1.style.marginLeft = componentMargin;
                     btn1.textContent = 'Map';
@@ -276,7 +276,7 @@ function treeInit(data) {
             "case_insensitive": true,
             "show_only_matches" : true
         },
-	    "plugins" : [ "conditionalselect" , "nohover", "inp", "search"]
+	    "plugins" : [ "conditionalselect" , "nohover", "inp", "search", "types"]
 	  });
 	
 	//제일 처음 노드 오픈

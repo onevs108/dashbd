@@ -142,4 +142,8 @@ public interface ServiceAreaMapper {
     
     List<HashMap<String, Object>> getTreeNodeData(HashMap<String, Object> searchParam);
     
+    int deleteServiceAreaGroupHotspot(HashMap<String, Object> insertParam);
+    
+    int insertServiceAreaGroupHotspot(HashMap<String, Object> insertParam);
+    
 }

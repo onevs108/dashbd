@@ -63,6 +63,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.util.ErrorCodes;
+import com.google.gson.Gson;
 import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.CircleMapper;
 import com.catenoid.dashbd.dao.HotSpotMapper;
@@ -3093,4 +3094,53 @@ public class ServiceAreaController {
 	        e.printStackTrace();
 	    }
 	} 
+		
+	/**
+	 * Service Area Group Mgmt > Tree Data 조회
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/saveServiceAreaGroupHotspot.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void saveServiceAreaGroupHotspot(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject resultObj = new JSONObject();
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED); 
+		TransactionStatus txStatus= txManager.getTransaction(def);
+		
+		try {
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			String group_id = request.getParameter("group_id");
+			String resultStr = request.getParameter("resultStr");
+			
+			Gson json = new Gson();
+			HashMap<String, Object>[] resultList = json.fromJson(resultStr, HashMap[].class);
+			
+			HashMap<String, Object> insertParam = new HashMap<String, Object>();
+			insertParam.put("group_id", group_id);
+			
+			mapper.deleteServiceAreaGroupHotspot(insertParam);
+			
+			int resultCnt = 0;
+			for(int i=0; i < resultList.length; i++) {
+				HashMap<String, Object> tempMap = resultList[i];
+				insertParam.put("hotspot_id", tempMap.get("hotspot_id"));
+				resultCnt += mapper.insertServiceAreaGroupHotspot(insertParam);
+			}
+			
+			if(resultCnt > 0) {
+				resultObj.put("resultCode", "S");
+				txManager.commit(txStatus);
+			} else {
+				resultObj.put("resultCode", "F");
+				txManager.rollback(txStatus);
+			}
+			
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(resultObj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        txManager.rollback(txStatus);
+	    }
+	}
 } 

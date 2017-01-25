@@ -5,6 +5,9 @@ var gray = '#c2c2c2';
 var white = '#FFFFFF';
 var black = '#000000';
 
+//전역 서비스 영역 그룹 아이디
+var serviceAreaGroupId;
+
 $(document).ready(function() {
 	//저장버튼 숨김처리
 	$(".proccess-btn").hide();
@@ -15,24 +18,27 @@ function jsTreeSetting() {
 		.done(function( script, textStatus ) {
 			var trList = $("#group_area tr");
 			var choiceYn = false;
-			var gruop_id = '';
+			var group_id = '';
 			
 			for(var i=0; i < trList.length; i++) {
 				var tempTr = $(trList[i]);
 				
 				if(tempTr.attr("choiceYn") == 'Y') {
-					gruop_id = tempTr.attr("data-init");
+					group_id = tempTr.attr("data-init");
 					choiceYn = true;
 					break;
 				}
 			}
 			
 			if(choiceYn) {
+				//Tree 데이터를 불러오기 전에 전역변수에 할당
+				serviceAreaGroupId = group_id;
+				
 				$.ajax({
 				    url : "/dashbd/api/getTreeNodeData.do",
 				    type: "POST",
 				    data : { 
-				    	gruop_id : gruop_id
+				    	group_id : group_id
 				    },
 				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 				    success : function(responseData) {
@@ -55,17 +61,21 @@ function jsTreeSetting() {
 		});
 }
 
+var checkNodeList;
 //jsTree Init Function
 function treeInit(data) {
+	checkNodeList = ''; //체크된 노드 전역변수 초기화
 	var treeData = data.resultList;
 	for(var i=0; i < treeData.length; i++) {
 		var node = treeData[i];
 		
+		//root를 그려줌(Circles)
 		if(i == 0) {
 			$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
 			continue;
 		}
 		
+		//현재 붙여넣어 줄 노드의 구분값을 판단하여 그에 따른 상위 노드만 모아서 부모 노드를 찾음
 		var divClass = '';
 		if(node.node_div == 'circle') divClass='root';
 		else if(node.node_div == 'city') divClass='circle';
@@ -75,7 +85,10 @@ function treeInit(data) {
 			var compareNode = $('#treeNode li.' + divClass)[j];
 			
 			if($(compareNode).attr("data-init") == node.pnode_id) {
-				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' + node.latitude + '" data-lng="' + node.longitude + '">' + node.name + "</li>";
+				//체크된 노드가 있다면 전역변수에 넣어주고 jstree가 준비되면 노드를 열어주면서 체크함
+				if(node.checkYn == 1) checkNodeList += ',' + node.node_id;
+				
+				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' + node.latitude + '" data-lng="' + node.longitude + '">' + node.name + '</li>';
 				
 				if($(compareNode).html().indexOf("ul") == -1) {
 					$(compareNode).append('<ul>' + liStr + '</ul>');
@@ -88,14 +101,63 @@ function treeInit(data) {
 		}
 	}
 	
-	$('#treeNode').jstree({"checkbox" : {
+	$('#treeNode').bind('ready.jstree', function (event, data) { 
+		//체크된 노드의 id를 토대로 최상위 부모부터 내려와서 열고 체크해줌
+		var tempCheckNodeList = checkNodeList.substring(1).split(',');
+		for(var i=0; i < tempCheckNodeList.length; i++) {
+			var tempHotspotNode = tempCheckNodeList[i];
+			checkNode(tempHotspotNode);
+		}
+	}).jstree({"checkbox" : {
 	      "keep_selected_style" : false
 	       },
 	      'plugins':["checkbox"]
 	    });
 	
+	//제일 처음 노드 오픈
+	$("#treeNode").jstree("open_node", $("#treeNode .root"));
 	//저장 취소 버튼 표시
 	$(".proccess-btn").show();
+}
+
+//최하위 노드를 토대로 단계적으로 노드를 열고 최하위 노드를 체크하는 메소드
+function checkNode(leafNode) {
+	var circleId = leafNode.substring(0, leafNode.indexOf("B"));
+	var cityId = leafNode.substring(leafNode.indexOf("B"), leafNode.indexOf("C"));
+	var hotspotId = leafNode.substring(leafNode.indexOf("C"));
+	
+	for(var i=0; i < $("#treeNode li.circle").length; i++) {
+		var tempNode = $($("#treeNode li.circle")[i]);
+		
+		if(tempNode.attr("data-init") == circleId) {
+			if(tempNode.attr("aria-expanded") != 'true') {
+				$("#treeNode").jstree("open_node", tempNode);
+				break;
+			}
+		}
+	}
+	
+	for(var i=0; i < $("#treeNode li.city").length; i++) {
+		var tempNode = $($("#treeNode li.city")[i]);
+		
+		if(tempNode.attr("data-init") == (circleId + cityId)) {
+			if(tempNode.attr("aria-expanded") != 'true') {
+				$("#treeNode").jstree("open_node", tempNode);
+				break;
+			}
+		}
+	}
+	
+	for(var i=0; i < $("#treeNode li.hotspot").length; i++) {
+		var tempNode = $($("#treeNode li.hotspot")[i]);
+		
+		if(tempNode.attr("data-init") == (circleId + cityId + hotspotId)) {
+			if(tempNode.attr("aria-expanded") != 'true') {
+				tempNode.find("a").click();
+				break;
+			}
+		}
+	}
 }
 
 //서비스 영억 그룹 테이블 선택시 발동하는 함수
@@ -267,5 +329,74 @@ $(document).on("click", "#save-btn", function() {
         cancelButtonText: "No",
         closeOnConfirm: false,
         closeOnCancel: false
+    }, function(isConfirm) {
+    	if(isConfirm) {
+    		//체크된 핫스팟 아이디들을 불러옴
+    		var resultStr = getCheckedHotspotData();
+    		
+    		if(resultStr != '') {
+    			$.ajax({
+    			    url : "/dashbd/api/saveServiceAreaGroupHotspot.do",
+    			    type: "POST",
+    			    data : { 
+        				group_id : serviceAreaGroupId,
+    			    	resultStr : resultStr
+    			    },
+    			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+    			    success : function(responseData) {
+    			        $("#ajax").remove();
+    			        var data = JSON.parse(responseData);
+    			        
+    			        if(data.resultCode == 'S') {
+    			        	swal({
+    			                title: "Success !",
+    			                text: "Success",
+    			                type:"success"
+    			            },
+    			            function() {
+    			            	
+    			            })
+    			        } else {
+    			        	swal({
+    			                title: "Fail !",
+    			                text: "Error"
+    			            });
+    			        }
+    			    },
+    		        error : function(xhr, status, error) {
+    		        	swal({
+    		                title: "Fail !",
+    		                text: "Error"
+    		            });
+    		        }
+    			});
+    		} else {
+    			swal("Fail !", "Please select data", "error");
+    		}
+    	} else {
+    		swal("Cancelled", "Your imaginary file is safe :)", "error");
+    	} 
     });
 })
+
+//체크된 핫스팟 데이터를 string 연결로 리턴하는 메소드
+function getCheckedHotspotData() {
+	var tempList = [];
+	
+	var hotspotList = $("#treeNode li.hotspot");
+	for(var i=0; i < hotspotList.length; i++) {
+		var tempHotspot = $(hotspotList[i]);
+		
+		if(tempHotspot.attr("aria-selected") == 'true') {
+			var tempObj = {
+				"city_id" : tempHotspot.parent().parent().attr("data-init").substring(tempHotspot.parent().parent().attr("data-init").indexOf("B")+1),
+				"hotspot_id" : tempHotspot.attr("data-init").substring(tempHotspot.attr("data-init").indexOf("C")+1)
+			}
+			
+			tempList.push(tempObj);
+		}
+	}
+	
+	return (tempList.length > 0)? JSON.stringify(tempList) : '';
+	
+}

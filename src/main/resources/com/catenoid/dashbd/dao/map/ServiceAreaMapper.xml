@@ -1538,4 +1538,14 @@
 		DELETE FROM service_area_group
 		WHERE group_id = #{group_id}
 	</delete>
+	
+	<delete id="deleteServiceAreaGroupHotspot" parameterType="HashMap">
+		DELETE FROM service_area_group_hotspot
+		WHERE group_id = #{group_id}
+	</delete>
+	
+	<insert id="insertServiceAreaGroupHotspot" parameterType="HashMap">
+		INSERT INTO service_area_group_hotspot
+		VALUES(#{group_id}, #{hotspot_id}, now())
+	</insert>
 </mapper>
