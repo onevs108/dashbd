@@ -108,7 +108,13 @@ function treeInit(data) {
 			var tempHotspotNode = tempCheckNodeList[i];
 			checkNode(tempHotspotNode);
 		}
-	}).jstree({"checkbox" : {
+	})
+//	.bind('changed.jstree', function(evt, data) {
+//		if(data.node.li_attr.class == 'hotspot') { 
+//			data.instance.set_icon(data.node, '/dashbd/resources/img/icon/ico_number_1_3.png')
+//		}
+//	})
+	.jstree({"checkbox" : {
 	      "keep_selected_style" : false
 	       },
 	      'plugins':["checkbox"]
@@ -177,6 +183,11 @@ function selectServiceAreaGroup(obj) {
 //Circle select 박스 변경 이벤트
 function changeCircle() {
 	if($("#search-circle").val() != '') {
+		//저장버튼 숨김처리
+		$(".proccess-btn").hide();
+		//기존 treeNode 삭제
+		$("#treeNode").empty();
+		
 		$("#selectedCircle").text($("#search-circle option:selected").text() + ' Service Area Group');
 		
 		$.ajax({
@@ -241,7 +252,8 @@ function addServiceAreaGroup(obj) {
 		                type:"success"
 		            },
 		            function() {
-		            	location.reload();
+		            	//콤보박스 재조회
+		            	changeCircle();
 		            })
 		        } else if(data.resultCode == 'E') {
 		        	swal({
