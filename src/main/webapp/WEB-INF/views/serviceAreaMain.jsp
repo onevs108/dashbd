@@ -51,6 +51,7 @@
 	<script src="/dashbd/resources/js/markerwithlabel.js"></script>
 	<script src="/dashbd/resources/app-js/apps/svc_area_main_map.js"></script>
     
+    <script src="/dashbd/resources/js/plugins/validate/jquery.validate.min.js"></script>
     <script src="js/common.js"></script>
     
 	<script type="text/javascript">
@@ -224,7 +225,16 @@
 									    <li><a href="#" data-toggle="tab" onclick="tabChange('2')">Map View</a></li>
 									</ul>
 								</div>
-								<div><input type="text" class="search-input"></div>
+								<div class="input-group" style="width:100%">
+									<select id="searchType" class="input-sm form-control input search-group" style="width:20%; margin:0 0 0 0">
+	                                    <option value="">선택</option>
+	                                    <option value="circle">Circle</option>
+	                                    <option value="city">City</option>
+	                                    <option value="circleCity">Circle & City</option>
+	                                </select>
+									<input type="text" id="search-input" class="search-group">
+									<button type="button" onclick="searchTreeNode()" class="btn btn-success btn-xs button-edit search-group">Search</button>
+								</div>
 								<div id="treeNode" style="height: 700px; overflow: scroll;"></div>
 								<div class="google-map" id="map" style="height: 700px; display:none;"></div>
 							</div>

@@ -41,14 +41,14 @@ function tabChange(tabDiv) {
 		$($("ul.nav.nav-tabs")[1]).removeClass("active");
 		$("#map").hide();
 		$("#treeNode").show();
-		$(".search-input").show();
+		$(".search-group").show();
 		jsTreeSetting();
 	} else if(tabDiv == '2') {
 		$($("ul.nav.nav-tabs")[1]).addClass("active");
 		$($("ul.nav.nav-tabs")[0]).removeClass("active");
 		$("#map").show();
 		$("#treeNode").hide(); 
-		$(".search-input").hide();
+		$(".search-group").hide();
 		
 		//트리에서 변경된 데이터가 있을 수 있기 떄문에 다시 그려줌
 		circleClear();
@@ -90,15 +90,6 @@ function treeInit(data) {
 	(function ($, undefined) {
         "use strict";
         
-        $(".search-input").keydown(function(event) {
-        	//Enter입력시에만 조회
-        	if(event.keyCode == 13) {
-            	var searchString = $(this).val();
-                console.log(searchString);
-                $('#treeNode').jstree('search', searchString);
-            }
-        });
-        
         $.jstree.plugins.inp = function (options, parent) {
             this.bind = function () {
                 parent.bind.call(this);
@@ -129,28 +120,42 @@ function treeInit(data) {
                 	var inp0 = document.createElement('INPUT');
                 	inp0.setAttribute('type','text');
                 	inp0.setAttribute('name','name');
-                	inp0.setAttribute('placeholder',nodeLevel + ' Name');
+                	inp0.setAttribute('placeholder', nodeLevel + ' Name');
                 	inp0.className = "jstree-inp";
                 	inp0.style.width = '80px';
                 	var inp1 = document.createElement('INPUT');
                     inp1.setAttribute('type','text');
-                    inp1.setAttribute('name','said'); 
+                    inp1.setAttribute('name','said');
+                    inp1.setAttribute('title', 'said'); 
                     inp1.setAttribute('readonly', 'readonly');
+                    inp1.setAttribute('onblur', 'validationCheck(\'number\', this)');
                     inp1.className = "jstree-inp";
                     inp1.style.width = '60px';
                     inp1.style.marginLeft = marginDefault;
                     var inp2 = document.createElement('INPUT');
                     inp2.setAttribute('type','text');
                     inp2.setAttribute('name','lat');
+                    inp2.setAttribute('title', 'latitude');
+                    inp2.setAttribute('onblur', 'validationCheck(\'number\',  this)');
                     inp2.className = "jstree-inp";
                     inp2.style.width = '80px';
                     inp2.style.marginLeft = componentMargin;
                     var inp3 = document.createElement('INPUT');
                     inp3.setAttribute('type','text');
                     inp3.setAttribute('name','lng');
+                    inp3.setAttribute('title', 'longitude');
+                    inp3.setAttribute('onblur', 'validationCheck(\'number\',  this)');
                     inp3.className = "jstree-inp";
                     inp3.style.width = '80px';
                     inp3.style.marginLeft = componentMargin;
+                    var inp4 = document.createElement('INPUT');
+                    inp4.setAttribute('type','text');
+                    inp4.setAttribute('name','bandwidth');
+                    inp4.setAttribute('title', 'bandwidth');
+                    inp4.setAttribute('onblur', 'validationCheck(\'number\',  this)');
+                    inp4.className = "jstree-inp";
+                    inp4.style.width = '80px';
+                    inp4.style.marginLeft = componentMargin;
                     
                     var btn1 = document.createElement('BUTTON');
                     btn1.setAttribute('type','button');
@@ -192,6 +197,8 @@ function treeInit(data) {
                         inp2.setAttribute('placeholder', 'Latitude');
                         inp3.setAttribute('value', '');
                         inp3.setAttribute('placeholder', 'Longitude');
+                        inp4.setAttribute('value', '');
+                        inp4.setAttribute('placeholder', 'Bandwidth');
                     } else {
                     	if($(obj).hasClass('circle')) {
                         	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('A')+1);
@@ -205,6 +212,7 @@ function treeInit(data) {
                         inp1.setAttribute('value', said);
                         inp2.setAttribute('value', $(obj).attr("data-lat"));
                         inp3.setAttribute('value', $(obj).attr("data-lng"));
+                        inp4.setAttribute('value', ($(obj).attr("data-band") == 'undefined'? '' : $(obj).attr("data-band")));
                     }
                     
                     //최종적으로 input과 button을 노드에 붙임
@@ -216,12 +224,14 @@ function treeInit(data) {
                         	obj.append(inp1);
                             obj.append(inp2);
                             obj.append(inp3);
+                            if(nodeLevel != 'Circle') obj.append(inp4);
                             obj.append(btn1);
                         	obj.append(btn4);
                         } else {
                         	obj.append(inp1);
                             obj.append(inp2);
                             obj.append(inp3);
+                            if(nodeLevel != 'Circle') obj.append(inp4);
                             obj.append(btn1);
                         	obj.append(btn2);
                             obj.append(btn3);
@@ -253,11 +263,12 @@ function treeInit(data) {
 			var compareNode = $('#treeNode li.' + divClass)[j];
 			
 			if($(compareNode).attr("data-init") == node.pnode_id) { 
-				var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' + node.latitude + '" data-lng="' + node.longitude + '">' + node.name + '</li>';
+				var liStr = '<li class="' + node.node_div + '" title="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' 
+							+ node.latitude + '" data-lng="' + node.longitude + '" data-band="' + node.bandwidth + '">' + node.name + '</li>';
 				
 				if($(compareNode).html().indexOf("ul") == -1) {
 					//첫 노드일 경우 가상 노드를 주어 새롭게 추가할 수 있도록 함
-					var firstNode = '<li class="newNode ' + node.node_div + '" data-init="" data-lat="" data-lng=""></li>';
+					var firstNode = '<li class="newNode ' + node.node_div + '" data-init="" data-lat="" data-lng="" data-band=""></li>';
 					$(compareNode).append('<ul>' + firstNode + liStr + '</ul>');
 				} else {
 					$($(compareNode).find("ul")[0]).append(liStr);
@@ -268,7 +279,9 @@ function treeInit(data) {
 		}
 	}
 	
-	$("#treeNode").jstree({
+	$("#treeNode").bind('ready.jstree', function(e, data) {
+        
+    }).jstree({
 	    "conditionalselect" : function (node, event) {
 	      return false;
 	    },
@@ -281,6 +294,64 @@ function treeInit(data) {
 	
 	//제일 처음 노드 오픈
 	$("#treeNode").jstree("open_node", $("#treeNode .root"));
+}
+
+$(document).on("keydown", "#search-input", function(event) {
+	//Enter입력시에만 조회
+	if(event.keyCode == 13) {
+		searchTreeNode();
+    }
+})
+
+function searchTreeNode() {
+	var searchString = $("#search-input").val();
+	
+	if(searchString == '') {
+		$('#treeNode').jstree('search', searchString);
+		//제일 처음 노드 오픈
+		$("#treeNode").jstree("open_node", $("#treeNode .root"));
+	} else {
+		$('#treeNode').jstree('search', searchString);
+		$(".jstree-ocl").remove();
+        $('#treeNode li.newNode').remove();
+        $('#treeNode li').removeClass("searchPNode");
+        
+        if($("#searchType").val() != '') {
+        	for(var i=0; i < $('#treeNode li a.jstree-search').length; i++) {
+            	var tempObj = $($("#treeNode li a.jstree-search")[i]).parent();
+            	
+            	if($("#searchType").val() == 'circle') {
+            		if(!tempObj.hasClass('circle')) {
+            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+            			i--;
+            		}
+            	} else if($("#searchType").val() == 'city') {
+            		if(!tempObj.hasClass('city')) {
+            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+            			i--;
+            		}
+            	} else if($("#searchType").val() == 'circleCity') {
+            		if(!tempObj.hasClass('circle') && !tempObj.hasClass('city')) {
+            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+            			i--;
+            		}
+            	}
+            }
+        }
+        
+        $('#treeNode li a.jstree-search').parents("li").addClass("searchPNode");
+        $('#treeNode li a').not(".jstree-search").parent().not(".root, .searchPNode").remove();	
+        
+        for(var i=0; i < $("#treeNode li.circle").length; i++) {
+        	var tempCircleObj = $($("#treeNode li.circle")[i]);
+        	tempCircleObj.append(tempCircleObj.find("ul")[0]);
+        }
+        
+        for(var i=0; i < $("#treeNode li.city").length; i++) {
+        	var tempCityObj = $($("#treeNode li.city")[i]);
+        	tempCityObj.append(tempCityObj.find("ul")[0]);
+        }
+	}
 }
 
 //메인 화면의 모달 로드
@@ -362,14 +433,14 @@ function makeInfoWindow(div, object) {
 	contentString += '<td>SAID</td>';
 	var said = '';
 	if(div == 'edit') said = object.said;
-	contentString += '<td colspan="2"><input type="text" style="width:100%" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + '></td>';
+	contentString += '<td colspan="2"><input type="text" style="width:100%" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + ' onblur="validationCheck(\'number\', this)"></td>';
 	contentString += '</tr>';
 	if(currentZoomLevel != 'circle') {
 		var bandwidth = '';
 		if(div == 'edit') bandwidth = object.bandwidth;
 		contentString += '<tr>';
 		contentString += '<td>Bandwidth</td>';
-		contentString += '<td colspan="2"><input type="text" style="width:100%" name="bandwidth" value="' + bandwidth + '"></td>';
+		contentString += '<td colspan="2"><input type="text" style="width:100%" name="bandwidth" value="' + bandwidth + '" onblur="validationCheck(\'number\', this)"></td>';
 		contentString += '</tr>';
 	}
 	contentString += '<tr>';
@@ -771,7 +842,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 			if(treeBtn.innerHTML.toLowerCase() == 'add') {
 				name = $($(treeBtn).parents("li")[0]).find("input")[0].value;
 			} else {
-				name = $($(treeBtn).parents("li")[0]).find("a").text();
+				name = $($($(treeBtn).parents("li")[0]).find("a")[0]).text();
 			}
 			
 			sendData = {
@@ -782,78 +853,91 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 				'name' : name,
 				'lat' : $(treeBtn).siblings("input[name='lat']").val(),
 				'lng' : $(treeBtn).siblings("input[name='lng']").val(),
+				'bandwidth' : $(treeBtn).siblings("input[name='bandwidth']").val(),
 				'upper_said' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($(treeBtn).parents("li")[1]).find("input[name='said']")[0].value,
 				'upper_name' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($($(treeBtn).parents("li")[1]).find("a")[0]).text()
 			}
 		}
-			
 	}
 	
-	if(ajaxYn) {
-		$.ajax({
-		    url : "/dashbd/api/serviceAreaProccess.do",
-		    type: "POST",
-		    data : sendData,
-		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-		    success : function(responseData) {
-		        $("#ajax").remove();
-		        var data = JSON.parse(responseData);
-		        
-		        if(data.resultCode == 'S') {
-		        	swal({
-		                title: "Success !",
-		                text: "Success"
-		            });
-		        	
-		        	if(tabDiv == 'map') {
-		        		if(currentZoomLevel == 'circle') {
-		        			circleClear();
-		        			getNewCircleList();
-		        			google.maps.event.trigger(map, "resize");
-		        			map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
-			        	} else if(currentZoomLevel == 'city') {
-			        		tempInfoWindow.close(); //InfoWindow 닫아줌
-			        		cityClear('cities');
-			        		drawServiceAreaByCity(upperObj);
-			        	} else if(currentZoomLevel == 'hotspot') {
-			        		tempInfoWindow.close(); //InfoWindow 닫아줌
-			        		hotspotClear();
-			        		drawServiceAreaByHotspot(upperObj);
+	swal({
+	  title: "Are you sure?",
+	  text: "Do you want to proceed with this operation?",
+	  type: "warning",
+	  showCancelButton: true,
+	  confirmButtonColor: "#DD6B55",
+	  confirmButtonText: "Yes",
+	  closeOnConfirm: false
+	},
+	function(){
+		if(ajaxYn) {
+			$.ajax({
+			    url : "/dashbd/api/serviceAreaProccess.do",
+			    type: "POST",
+			    data : sendData,
+			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			    success : function(responseData) {
+			        $("#ajax").remove();
+			        var data = JSON.parse(responseData);
+			        
+			        if(data.resultCode == 'S') {
+			        	swal("Success !","Success", "success");
+			        	
+			        	if(tabDiv == 'map') {
+			        		if(currentZoomLevel == 'circle') {
+			        			circleClear();
+			        			getNewCircleList();
+			        			google.maps.event.trigger(map, "resize");
+			        			map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
+				        	} else if(currentZoomLevel == 'city') {
+				        		tempInfoWindow.close(); //InfoWindow 닫아줌
+				        		cityClear('cities');
+				        		drawServiceAreaByCity(upperObj);
+				        	} else if(currentZoomLevel == 'hotspot') {
+				        		tempInfoWindow.close(); //InfoWindow 닫아줌
+				        		hotspotClear();
+				        		drawServiceAreaByHotspot(upperObj);
+				        	}
+			        	} 
+			        	//tree의 경우 add되거나 delete될 때 해당 노드를 지워주거나 추가해줘야 함
+			        	else if(tabDiv == 'tree') {
+			        		if(treeBtn.innerHTML.toLowerCase() == 'add') {
+			        			jsTreeSetting();
+			        		} else if(treeBtn.innerHTML.toLowerCase() == 'delete') {
+			        			$($(treeBtn).parents("li")[0]).remove();
+			        		}
+			        		
+			        		circleClear();
+			        		getNewCircleList();
 			        	}
-		        	} 
-		        	//tree의 경우 add되거나 delete될 때 해당 노드를 지워주거나 추가해줘야 함
-		        	else if(tabDiv == 'tree') {
-		        		if(treeBtn.innerHTML.toLowerCase() == 'add') {
-		        			jsTreeSetting();
-		        		} else if(treeBtn.innerHTML.toLowerCase() == 'delete') {
-		        			$($(treeBtn).parents("li")[0]).remove();
-		        		}
-		        		
-		        		circleClear();
-		        		getNewCircleList();
-		        	}
-		        } 
-		        else if(data.resultCode == 'E') {
-		        	swal({
-		                title: "Exist Code Value",
-		                text: "Exist SAID Code Value"
-		            });
-		        }
-		        else {
+			        } 
+			        else if(data.resultCode == 'E') {
+			        	swal({
+			                title: "Exist Code Value",
+			                text: "Exist SAID Code Value"
+			            });
+			        }
+			        else {
+			        	swal({
+			                title: "Fail !",
+			                text: "Error"
+			            });
+			        }
+			    },
+			    error : function(xhr, status, error) {
 		        	swal({
 		                title: "Fail !",
 		                text: "Error"
 		            });
 		        }
-		    },
-		    error : function(xhr, status, error) {
-	        	swal({
-	                title: "Fail !",
-	                text: "Error"
-	            });
-	        }
-		});
-	}
+			});
+		} else {
+			swal({
+              title: "Fail !",
+              text: "Insert Value"
+	        });
+		}
+	});
 }
 
 

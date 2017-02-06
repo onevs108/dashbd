@@ -17,7 +17,6 @@ function jsTreeSetting() {
 	$.getScript( "/dashbd/resources/js/plugins/jsTree/jstree.min.js" )
 		.done(function( script, textStatus ) {
 			var trList = $("#group_area tr");
-			var choiceYn = false;
 			var group_id = '';
 			
 			for(var i=0; i < trList.length; i++) {
@@ -25,39 +24,35 @@ function jsTreeSetting() {
 				
 				if(tempTr.attr("choiceYn") == 'Y') {
 					group_id = tempTr.attr("data-init");
-					choiceYn = true;
 					break;
 				}
 			}
 			
-			if(choiceYn) {
-				//Tree 데이터를 불러오기 전에 전역변수에 할당
-				serviceAreaGroupId = group_id;
-				
-				$.ajax({
-				    url : "/dashbd/api/getTreeNodeData.do",
-				    type: "POST",
-				    data : { 
-				    	group_id : group_id
-				    },
-				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-				    success : function(responseData) {
-				        $("#ajax").remove();
-				        var data = JSON.parse(responseData);
-				        
-				        $("#treeNode").jstree("destroy").empty();
-				        treeInit(data);
-				    },
-			        error : function(xhr, status, error) {
-			        	swal({
-			                title: "Fail !",
-			                text: "Error"
-			            });
-			        }
-				});
-			} else {
-				alert("Choice Row");
-			}
+			//Tree 데이터를 불러오기 전에 전역변수에 할당
+			serviceAreaGroupId = group_id;
+			
+			$.ajax({
+			    url : "/dashbd/api/getTreeNodeData.do",
+			    type: "POST",
+			    data : { 
+			    	group_id : group_id,
+			    	circle_id : $("#search-circle").val()
+			    },
+			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			    success : function(responseData) {
+			        $("#ajax").remove();
+			        var data = JSON.parse(responseData);
+			        
+			        $("#treeNode").jstree("destroy").empty();
+			        treeInit(data);
+			    },
+		        error : function(xhr, status, error) {
+		        	swal({
+		                title: "Fail !",
+		                text: "Error"
+		            });
+		        }
+			});
 		});
 }
 
@@ -121,7 +116,7 @@ function treeInit(data) {
 	    });
 	
 	//제일 처음 노드 오픈
-	$("#treeNode").jstree("open_node", $("#treeNode .root"));
+	$("#treeNode").jstree("open_node", $($("#treeNode li")[0]));
 	//저장 취소 버튼 표시
 	$(".proccess-btn").show();
 }
@@ -211,6 +206,8 @@ function changeCircle() {
 		        } 
 		        
 		        $("#group_area").append('<tr><td><input type="text" /></td><td><button type="button" class="btn btn-primary4 btn-sm" onCLick="addServiceAreaGroup(this)">Add</button></td></tr>');
+		        //콤보박스 변경시 트리 셋팅
+		        jsTreeSetting();
 		    },
 	        error : function(xhr, status, error) {
 	        	swal({
@@ -220,10 +217,10 @@ function changeCircle() {
 	        }
 		});
 	} else {
-		swal({
-            title: "Alert !",
-            text: "Choice Circle Value"
-        });
+		$("#selectedCircle").text('');
+		$("#group_area").empty();
+        $(".proccess-btn").hide();
+        $("#treeNode").empty();
 	}
 }
 

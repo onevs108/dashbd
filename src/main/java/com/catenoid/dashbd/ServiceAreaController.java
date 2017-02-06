@@ -3076,9 +3076,11 @@ public class ServiceAreaController {
 		try {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			String group_id = request.getParameter("group_id");
+			String circle_id = request.getParameter("circle_id");
 			
 			HashMap< String, Object > searchParam = new HashMap();
 			searchParam.put("group_id", group_id);
+			searchParam.put("circle_id", circle_id);
 			List<HashMap<String, Object>> resultList = mapper.getTreeNodeData(searchParam);
 				
 			if(resultList.size() > 0) {

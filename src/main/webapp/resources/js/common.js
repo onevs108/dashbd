@@ -183,3 +183,24 @@ function settingLatLng() {
 	
 	$("#setLocationModal").modal('hide');
 }
+
+
+//유효성 체크 메소드
+function validationCheck(type, obj) {
+	var tempVal = obj.value; 
+	
+	if(type == 'number') {
+		if(tempVal != '') {
+			var num_check=/^[0-9]*$/;
+			if(!num_check.test(tempVal)) {
+				obj.value = '';
+				swal({
+	                title: "Fail !",
+	                text: "Please enter a number"
+	            }, function() {
+	            	$(obj).focus();
+	            });
+			}
+		}
+	}
+}

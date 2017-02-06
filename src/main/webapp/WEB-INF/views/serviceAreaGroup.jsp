@@ -228,7 +228,7 @@
                         	<div class="col-sm-4"></div>
                         	<div class="col-sm-8">
 								<button class="btn btn-sm btn-primary proccess-btn" type="button" id="save-btn">Save</button>
-								<button class="btn btn-sm btn-default proccess-btn" type="button" id="cancel-btn">Cancel</button>
+<!-- 								<button class="btn btn-sm btn-default proccess-btn" type="button" id="cancel-btn">Cancel</button> -->
                         	</div>
                         </div>
                     </div><!-- end ibox-content -->
