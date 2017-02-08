@@ -6,7 +6,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operator Management</title>
+<title>Operator Group Mgmt</title>
 
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
@@ -85,9 +85,9 @@
         <div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 				<div class="navbar-header" style="padding-bottom: 10px;">
-					<h2 style="margin-left: 15px;"><strong>Group Mgmt</strong></h2>
+					<h2 style="margin-left: 15px;"><strong>Operator Group Mgmt</strong></h2>
 					<span style="margin-left: 15px;">
-						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> Group Mgmt</strong>
+						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> Operator Group Mgmt</strong>
 					</span>
 				</div><!-- end navbar-header -->
 		        

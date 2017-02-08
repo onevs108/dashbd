@@ -1,6 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="now" value="<%= new java.util.Date() %>" />
+
+<%@ page import="com.catenoid.dashbd.util.SessionCounterListener"%>
 
 <!DOCTYPE html>
 <html>
@@ -72,7 +76,7 @@
 				<div class="session">
 					<h2>Dashboard Main</h2>
 					<div class="pull-right">
-						<span>Num Sessions:1233</span>
+						<span>Num Sessions:<%=SessionCounterListener.getActiveSessions() %></span>
 						<span>
 							<span class="onDisp on1"></span><!-- 활성화일때 클래스 on1, on2 -->
 							<span class="onDisp"></span>
@@ -180,12 +184,11 @@
 											<!-- // ibox -->
 										</div>
 										<!--// row -->
-
-
+										
 										<div class="col-lg-4 profile-content today">
 											<div class="ibox">
 												<div class="ibox-content">
-													<h2 class="text-center">2017-01-23</h2>
+													<h2 class="text-center"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
 													<div id="clock" class="light">
 														<div class="digits"></div>
 													</div>
@@ -193,7 +196,7 @@
 														<div class="panel panel-primary">
 															<div class="panel-heading">Total Users</div>
 															<div class="panel-body">
-																<p class="text-info">1354</p>
+																<p class="text-info">123</p>
 															</div>
 														</div>
 													</h3>

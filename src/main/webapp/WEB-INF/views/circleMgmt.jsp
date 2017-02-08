@@ -59,7 +59,7 @@
 		var circleJson = ${circleList};
 		var circleJsonLength = circleJson.length;
 		$(document).ready(function() {
-			getMenuList('MENU_CIRCLE_MGMT');
+			getMenuList('CIRCLE_MGMT');
 			$(".js-example-basic").on("select2:select", function (e) { alert("하이"); return false;})
 			$(".js-example-basic").select2();
 		});

@@ -57,7 +57,7 @@
     
 	<script type="text/javascript">
 		$(document).ready(function() {
-			getMenuList('MENU_HOTSPOT_MGMT');
+			getMenuList('HOTSPOT_MGMT');
 			$(".js-example-basic").on("select2:select", function (e) { alert("하이"); return false;})
 			$(".js-example-basic").select2();
 		});

@@ -60,8 +60,8 @@ public class Const {
 //	public static final String MENU_SYSTEM_CONF_MGMT		= "SYSTEM_CONF_MGMT";
 //	public static final String MENU_SYSTEM_DB_MGMT			= "SYSTEM_DB_MGMT";
 	
-	public static final String MENU_OPERATOR_MGMT 			= "OPERATOR_MGMT";
-	public static final String MENU_OPERATOR_GROUP_MGMT		= "OPERATOR_GROUP_MGMT";
+	public static final String MENU_OPERATOR_MGMT 			= "USER_MGMT";
+	public static final String MENU_OPERATOR_GROUP_MGMT		= "OPERATOR_MGMT";
 	public static final String MENU_CIRCLE_MGMT				= "CIRCLE_MGMT";
 	public static final String MENU_HOTSPOT_MGMT			= "HOTSPOT_MGMT";
 	public static final String MENU_SERVICE_AREA_MGMT		= "SERVICE_AREA_MGMT";

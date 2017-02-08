@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -145,7 +146,7 @@ public class HomeController {
 			List<Permission> permissions = user.getPermissions();
 			
 			if (user.getGrade() == Const.USER_GRADE_ADMIN) {
-//				menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
 //				menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
 //				menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
 //				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Group Mgmt</span></a></li>");
@@ -162,8 +163,8 @@ public class HomeController {
 //				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_DB_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">DB Backup & Restore</span></a></li>");
 				//menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\" onclick=\"javascript:goSystemMgmt();return false;\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span><span class=\"fa arrow\"></span></a><ul class=\"nav nav-second-level collapse\"><li class=\"\"><a href=\"#\" onclick=\"javascript:goSystemMgmt();return false;\"><i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li><li><a href=\"#\"><i class=\"fa fa-gear\"></i> <span class=\"nav-label\">System Configuration</span></a></li><li><a href=\"#\"><i class=\"fa fa-database\"></i> <span class=\"nav-label\">DB Backup/Restore</span></a></li></ul></li>");
 				
-				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/operator.do'><i class='fa fa-th-large'></i> <span class='nav-label'>Operator Mgmt</span> <span class='fa arrow'></span></a>");
-				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_GROUP_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='operatorGroupMgmt.html'><i class='fa fa-group'></i> <span class='nav-label'>Operator Group Mgmt</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/user.do'><i class='fa fa-th-large'></i> <span class='nav-label'>Operator Mgmt</span> <span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_GROUP_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/operator.do'><i class='fa fa-group'></i> <span class='nav-label'>Operator Group Mgmt</span><span class='fa arrow'></span></a>");
 				menuHtml.append(currentMenu.equals(Const.MENU_CIRCLE_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/circle.do'><i class='fa fa-dot-circle-o'></i> <span class='nav-label'>Circle &amp; City Mgmt</span><span class='fa arrow'></span></a>");
 				menuHtml.append(currentMenu.equals(Const.MENU_HOTSPOT_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/hotspot.do'><i class='fa fa-spotify'></i> <span class='nav-label'>Hot spot Mgmt </span><span class='fa arrow'></span></a>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/serviceArea.do'><i class='fa fa-pie-chart'></i> <span class='nav-label'>Service Area Mgmt</span><span class='fa arrow'></span></a>");
