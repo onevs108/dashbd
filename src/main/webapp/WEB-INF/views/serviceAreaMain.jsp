@@ -114,20 +114,20 @@
 
 <body>
 <div id="wrapper">
-        <nav class="navbar-default navbar-static-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav metismenu" id="side-menu">
-					<li class="nav-header">
-						<div class="dropdown profile-element">
-							<a href="/dashbd/resources/main.do"><img src="img/logo_small.png"></a>
-						</div>
-						<div class="logo-element">
-							<img src="img/logo2.png">
-						</div>
-					</li>
-                </ul>
-            </div>
-        </nav>
+     <nav class="navbar-default navbar-static-side" role="navigation">
+         <div class="sidebar-collapse">
+             <ul class="nav metismenu" id="side-menu">
+				<li class="nav-header">
+					<div class="dropdown profile-element">
+						<a href="/dashbd/resources/main.do"><img src="img/logo_small.png"></a>
+					</div>
+					<div class="logo-element">
+						<img src="img/logo2.png">
+					</div>
+				</li>
+             </ul>
+         </div>
+     </nav>
 	<div id="page-wrapper" class="gray-bg">
         <div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">

@@ -145,56 +145,67 @@ public class HomeController {
 			List<Permission> permissions = user.getPermissions();
 			
 			if (user.getGrade() == Const.USER_GRADE_ADMIN) {
-				menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Group Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/bmsc.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_CIRCLE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/circle.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Circle & City Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_HOTSPOT_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/hotspot.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Hot spot Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_GROUP_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceAreaGroup.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Group Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_STAT_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_CONF_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_DB_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">DB Backup & Restore</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Group Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/bmsc.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_CIRCLE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/circle.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Circle & City Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_HOTSPOT_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/hotspot.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Hot spot Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_GROUP_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceAreaGroup.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Group Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_STAT_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_CONF_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_DB_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">DB Backup & Restore</span></a></li>");
 				//menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\" onclick=\"javascript:goSystemMgmt();return false;\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span><span class=\"fa arrow\"></span></a><ul class=\"nav nav-second-level collapse\"><li class=\"\"><a href=\"#\" onclick=\"javascript:goSystemMgmt();return false;\"><i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li><li><a href=\"#\"><i class=\"fa fa-gear\"></i> <span class=\"nav-label\">System Configuration</span></a></li><li><a href=\"#\"><i class=\"fa fa-database\"></i> <span class=\"nav-label\">DB Backup/Restore</span></a></li></ul></li>");
+				
+				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/operator.do'><i class='fa fa-th-large'></i> <span class='nav-label'>Operator Mgmt</span> <span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_GROUP_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='operatorGroupMgmt.html'><i class='fa fa-group'></i> <span class='nav-label'>Operator Group Mgmt</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_CIRCLE_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/circle.do'><i class='fa fa-dot-circle-o'></i> <span class='nav-label'>Circle &amp; City Mgmt</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_HOTSPOT_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/hotspot.do'><i class='fa fa-spotify'></i> <span class='nav-label'>Hot spot Mgmt </span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/serviceArea.do'><i class='fa fa-pie-chart'></i> <span class='nav-label'>Service Area Mgmt</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_GROUP_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/serviceAreaGroup.do'><i class='fa fa-flask'></i> <span class='nav-label'>Service Area Group Mgmt</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/view/schdMgmt.do'><i class='fa fa-edit'></i> <span class='nav-label'>Schedule Mgmt</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_CLASS_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Service Class Mgmt</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SESSION_MONITORING) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Sessions Monitoring</span><span class='fa arrow'></span></a>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>System Mgmt</span><span class='fa arrow'></span></a>");
 			}
 			else {
 				for (Permission permission : permissions) {
-					if (permission.getRole().equals(Const.ROLE_ADMIN)); // 위 에서 처리 함
-					else if (permission.getRole().equals(Const.ROLE_USER_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_PERMISSION_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_CONTENTS_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_OPERATOR_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Group Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_BMSC_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/bmsc.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_CIRCLE_MGMT))
-						menuHtml.append(currentMenu.equals(Const.ROLE_CIRCLE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/circle.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Circle & City Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_HOTSPOT_MGMT))
-						menuHtml.append(currentMenu.equals(Const.ROLE_HOTSPOT_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/hotspot.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Hot spot Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SERVICE_AREA_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SERVICE_AREA_GROUP_MGMT))
-						menuHtml.append(currentMenu.equals(Const.ROLE_SERVICE_AREA_GROUP_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceAreaGroup.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Group Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_ENB_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SCHEDULE_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SYSTEM_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SYSTEM_STAT_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_STAT_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SYSTEM_CONF_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_CONF_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SYSTEM_DB_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_DB_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">DB Backup & Restore</span></a></li>");
+//					if (permission.getRole().equals(Const.ROLE_ADMIN)); // 위 에서 처리 함
+//					else if (permission.getRole().equals(Const.ROLE_USER_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_USER_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/user.do\"><i class=\"fa fa-user\"></i> <span class=\"nav-label\">User Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_PERMISSION_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_CONTENTS_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_OPERATOR_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/operator.do\"><i class=\"fa fa-envelope\"></i> <span class=\"nav-label\">Group Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_BMSC_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_BMSC_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/bmsc.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">BM-SC Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_CIRCLE_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.ROLE_CIRCLE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/circle.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Circle & City Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_HOTSPOT_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.ROLE_HOTSPOT_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/hotspot.do\"><i class=\"fa fa-flag\"></i> <span class=\"nav-label\">Hot spot Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_SERVICE_AREA_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceArea.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_SERVICE_AREA_GROUP_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.ROLE_SERVICE_AREA_GROUP_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/serviceAreaGroup.do\"><i class=\"fa fa-globe\"></i> <span class=\"nav-label\">Service Area Group Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_ENB_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_ENB_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/eNBMgmt.do\"><i class=\"fa fa-puzzle-piece\"></i> <span class=\"nav-label\">eNB Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_SCHEDULE_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_SYSTEM_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_SYSTEM_STAT_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_STAT_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_SYSTEM_CONF_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_CONF_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_SYSTEM_DB_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_DB_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">DB Backup & Restore</span></a></li>");
 				}
 			}
 			

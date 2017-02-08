@@ -2,26 +2,46 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
-	<title>main</title>
-	
-	<link href="/dashbd/resources/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/dashbd/resources/font-awesome/css/font-awesome.css" rel="stylesheet">
-	
-	<link href="/dashbd/resources/css/style.css" rel="stylesheet">
-	
-	<!-- Login page css -->
-	<link href="/dashbd/resources/css/login.css" rel="stylesheet">
-	
-	<!-- FooTable -->
-	<link href="/dashbd/resources/css/plugins/footable/footable.core.css" rel="stylesheet">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INSPINIA | Login</title>
+
+    <link href="/dashbd/resources/newPublish/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dashbd/resources/newPublish/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="/dashbd/resources/newPublish/css/animate.css" rel="stylesheet">
+    <link href="/dashbd/resources/newPublish/css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <h3>Dashboard Sign in</h3>
+            <form class="m-t" role="form" id="loginForm" action="/dashbd/authentication" method="post" autocomplete="off">
+                <div class="form-group">
+                    <input type="text" id="userId" name="userId" class="form-control" placeholder="Username" required autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+                <button type="submit" id="loginBtn" class="btn btn-primary block full-width m-b">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/dashbd/resources/newPublish/js/jquery-2.1.1.js"></script>
+    <script src="/dashbd/resources/newPublish/js/bootstrap.min.js"></script>
     
-    <script src="/dashbd/resources/js/jquery-2.1.1.js"></script>
-	<script src="/dashbd/resources/js/bootstrap.min.js"></script>
+    <script src="/dashbd/resources/newPublish/js/jquery-2.1.1.js"></script>
+	<script src="/dashbd/resources/newPublish/js/bootstrap.min.js"></script>
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
@@ -30,7 +50,7 @@
 		function onClickLoginBtn() {
 			var userId = $('#userId').val();
 			var password = $('#password').val();
-			var operatorId = $('#operatorId').val();
+// 			var operatorId = $('#operatorId').val();
 			
 			if (userId == null || userId.length == 0) {
 				alert('Please input your ID.');
@@ -64,26 +84,5 @@
 		});
 
 	</script>
-</head>
-
-<body> 
-	<div id="wrapper">
-<!-- 		<img id="loginTitle" align="middle" src="/dashbd/resources/img/logo_small.png"> -->
-		<h3 style="text-align: center;font-size: 30px;color: blue !important;">Sign-in</h3>
-		<form class="form-signin" id="loginForm" action="/dashbd/authentication" method="post" autocomplete="off">
-			<label for="inputEmail" class="sr-only">ID</label>
-			<input type="text" id="userId" name="userId" class="form-control" placeholder="ID" value="" autofocus>
-			<label for="inputPassword" class="sr-only">Password</label>
-			<input type="password" id="password" name="password" class="form-control" placeholder="Password" value="">
-<!-- 			<select class="form-control" id="operatorId" name="operatorId"> -->
-<!-- 				<option value="">Please select your operator</option> -->
-<!-- 				<option value="-1">Super Admin</option> -->
-<%-- 				<c:forEach items="${operatorList}" var="operator"> --%>
-<%-- 					<option value="${operator.id}">${operator.name}</option> --%>
-<%-- 				</c:forEach> --%>
-<!-- 			</select> -->
-			<button class="btn btn-lg btn-primary btn-block" type="button" id="loginBtn">Login</button>
-		</form>
-	</div><!-- end wrapper -->
 </body>
 </html>

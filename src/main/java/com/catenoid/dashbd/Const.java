@@ -44,20 +44,31 @@ public class Const {
 	/**
 	 * menu
 	 */
-	public static final String MENU_USER_MGMT 				= "USER_MGMT";
-	public static final String MENU_PERMISSION_MGMT 		= "PERMISSION_MGMT";
-	public static final String MENU_CONTENTS_MGMT 			= "CONTENTS_MGMT";
+//	public static final String MENU_USER_MGMT 				= "USER_MGMT";
+//	public static final String MENU_PERMISSION_MGMT 		= "PERMISSION_MGMT";
+//	public static final String MENU_CONTENTS_MGMT 			= "CONTENTS_MGMT";
+//	public static final String MENU_OPERATOR_MGMT 			= "OPERATOR_MGMT";
+//	public static final String MENU_BMSC_MGMT				= "BMSC_MGMT";
+//	public static final String MENU_CIRCLE_MGMT				= "MENU_CIRCLE_MGMT";
+//	public static final String MENU_HOTSPOT_MGMT			= "MENU_HOTSPOT_MGMT";
+//	public static final String MENU_SERVICE_AREA_MGMT 		= "SERVICE_AREA_MGMT";
+//	public static final String MENU_SERVICE_AREA_GROUP_MGMT = "SERVICE_AREA_GROUP_MGMT";
+//	public static final String MENU_ENB_MGMT 				= "ENB_MGMT";
+//	public static final String MENU_SCHEDULE_MGMT 			= "SCHEDULE_MGMT";
+//	public static final String MENU_SYSTEM_MGMT 			= "SYSTEM_MGMT";
+//	public static final String MENU_SYSTEM_STAT_MGMT		= "SYSTEM_STAT_MGMT";
+//	public static final String MENU_SYSTEM_CONF_MGMT		= "SYSTEM_CONF_MGMT";
+//	public static final String MENU_SYSTEM_DB_MGMT			= "SYSTEM_DB_MGMT";
+	
 	public static final String MENU_OPERATOR_MGMT 			= "OPERATOR_MGMT";
-	public static final String MENU_BMSC_MGMT				= "BMSC_MGMT";
-	public static final String MENU_CIRCLE_MGMT				= "MENU_CIRCLE_MGMT";
-	public static final String MENU_HOTSPOT_MGMT			= "MENU_HOTSPOT_MGMT";
-	public static final String MENU_SERVICE_AREA_MGMT 		= "SERVICE_AREA_MGMT";
-	public static final String MENU_SERVICE_AREA_GROUP_MGMT = "SERVICE_AREA_GROUP_MGMT";
-	public static final String MENU_ENB_MGMT 				= "ENB_MGMT";
-	public static final String MENU_SCHEDULE_MGMT 			= "SCHEDULE_MGMT";
-	public static final String MENU_SYSTEM_MGMT 			= "SYSTEM_MGMT";
-	public static final String MENU_SYSTEM_STAT_MGMT		= "SYSTEM_STAT_MGMT";
-	public static final String MENU_SYSTEM_CONF_MGMT		= "SYSTEM_CONF_MGMT";
-	public static final String MENU_SYSTEM_DB_MGMT			= "SYSTEM_DB_MGMT";
+	public static final String MENU_OPERATOR_GROUP_MGMT		= "OPERATOR_GROUP_MGMT";
+	public static final String MENU_CIRCLE_MGMT				= "CIRCLE_MGMT";
+	public static final String MENU_HOTSPOT_MGMT			= "HOTSPOT_MGMT";
+	public static final String MENU_SERVICE_AREA_MGMT		= "SERVICE_AREA_MGMT";
+	public static final String MENU_SERVICE_AREA_GROUP_MGMT	= "SERVICE_AREA_GROUP_MGMT";
+	public static final String MENU_SCHEDULE_MGMT			= "SCHEDULE_MGMT";
+	public static final String MENU_SERVICE_CLASS_MGMT		= "SERVICE_CLASS_MGMT";
+	public static final String MENU_SESSION_MONITORING		= "SESSION_MONITORING";
+	public static final String MENU_SYSTEM_MGMT				= "SYSTEM_MGMT";
 	
 }
