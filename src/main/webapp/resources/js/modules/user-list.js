@@ -23,7 +23,16 @@ function doEdit(userId) {
 }
 
 function doDelete(userId, operatorId, firstName, lastName) {
-	if (confirm('Do you really want to delete the user "' + firstName + ' ' + lastName + '"?')) {
+	swal({
+	  title: "Are you sure?",
+	  text: 'Do you really want to delete the user "' + firstName + ' ' + lastName + '"?',
+	  type: "warning",
+	  showCancelButton: true,
+	  confirmButtonColor: "#DD6B55",
+	  confirmButtonText: "Yes",
+	  closeOnConfirm: false
+	},
+	function(){
 		$.ajax({
 			url: '/dashbd/api/user/delete.do',
 			method: 'POST',
@@ -47,7 +56,7 @@ function doDelete(userId, operatorId, firstName, lastName) {
 				return false;
 			}
 		});
-	}
+	});
 }
 
 function getUserList(isBack, isSearch) {
@@ -102,16 +111,23 @@ function getUserList(isBack, isSearch) {
 		minimumCountColumns: 3,
 		clickToSelect: false,
 		columns: [{
-			field: 'gradeName',
-			title: 'Grade',
-			width: '20%',
-			align: 'center',
-			valign: 'middle',
-			sortable: true
+				field: 'operatorName',
+				title: 'CircleName',
+				width: '13%',
+				align: 'center',
+				valign: 'middle',
+				sortable: true,
+				formatter: function(value, row, index) {
+					var returnVal = '';
+					if(value == '') returnVal = 'N/A';
+					else returnVal = value;
+					
+					return returnVal;
+				}
 		}, {
-			field: 'operatorName',
-			title: 'CircleName',
-			width: '13%',
+			field: 'gradeName',
+			title: 'Group',
+			width: '20%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
@@ -123,15 +139,15 @@ function getUserList(isBack, isSearch) {
 			valign: 'middle', 
 			sortable: true
 		}, {
-			field: 'firstName',
-			title: 'First Name',
+			field: 'lastName',
+			title: 'Last Name',
 			width: '13%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
 		}, {
-			field: 'lastName',
-			title: 'Last Name',
+			field: 'firstName',
+			title: 'First Name',
 			width: '13%',
 			align: 'center',
 			valign: 'middle',
@@ -147,7 +163,7 @@ function getUserList(isBack, isSearch) {
 			field: 'command',
 			title: 'Command',
 			width: '20%',
-			align: 'right',
+			align: 'center',
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
