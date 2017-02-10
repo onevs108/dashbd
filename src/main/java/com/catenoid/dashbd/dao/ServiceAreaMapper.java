@@ -1,31 +1,27 @@
 package com.catenoid.dashbd.dao;
 
-import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
-import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
-import com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam;
-import com.catenoid.dashbd.dao.model.Operator;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.BmscServiceArea;
 import com.catenoid.dashbd.dao.model.BmscServiceAreaSearchParam;
-import com.catenoid.dashbd.dao.model.OperatorBmsc;
+import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ScheduleSummary;
 import com.catenoid.dashbd.dao.model.ScheduleSummarySearchParam;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceAreaCount;
+import com.catenoid.dashbd.dao.model.ServiceAreaEnbAp;
+import com.catenoid.dashbd.dao.model.ServiceAreaEnbApExample;
+import com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaExample;
 import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
-import com.catenoid.dashbd.dao.model.ServiceAreaSearchParam;
 import com.catenoid.dashbd.dao.model.SystemBroadCastContents;
 import com.catenoid.dashbd.dao.model.SystemDatabaseBackup;
 import com.catenoid.dashbd.dao.model.SystemIncomingLog;
-import com.catenoid.dashbd.dao.model.Users;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface ServiceAreaMapper {
     int countByExample(ServiceAreaExample example);
@@ -145,5 +141,7 @@ public interface ServiceAreaMapper {
     int deleteServiceAreaGroupHotspot(HashMap<String, Object> insertParam);
     
     int insertServiceAreaGroupHotspot(HashMap<String, Object> insertParam);
+
+	List<HashMap<String, String>> getServiceAreaOperator1(OperatorSearchParam searchParam);
     
 }

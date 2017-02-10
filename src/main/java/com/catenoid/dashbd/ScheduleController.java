@@ -30,13 +30,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.catenoid.dashbd.dao.ScheduleMapper;
-import com.catenoid.dashbd.dao.ServiceScheduleMapper;
-import com.catenoid.dashbd.dao.UsersMapper;
-import com.catenoid.dashbd.dao.ServiceAreaMapper;
-import com.catenoid.dashbd.util.ErrorCodes;
 import com.catenoid.dashbd.dao.ContentsMapper;
 import com.catenoid.dashbd.dao.ScheduleContentsMapper;
+import com.catenoid.dashbd.dao.ScheduleMapper;
+import com.catenoid.dashbd.dao.ServiceAreaMapper;
+import com.catenoid.dashbd.dao.ServiceScheduleMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.Schedule;
 import com.catenoid.dashbd.dao.model.ScheduleContents;
@@ -44,6 +43,7 @@ import com.catenoid.dashbd.dao.model.ScheduleContentsExample;
 import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.dao.model.ServiceSchedule;
 import com.catenoid.dashbd.dao.model.ServiceScheduleExample;
+import com.catenoid.dashbd.util.ErrorCodes;
 
 /**
  * Handles requests for the application home page.

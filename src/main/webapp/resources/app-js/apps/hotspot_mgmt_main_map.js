@@ -632,10 +632,10 @@ function existSAID(type) {
         type: "post",
         data : { "checkSaId" : said},
         success : function(data) {
-        	if(data == "EXIST"){
+        	if(data == "EXIST") {
         		swal({
                     title: "Warning !",
-                    text: "사용할 수 없는 이름입니다."
+                    text: "사용할 수 없는 ID입니다."
                 });
         	} else {
         		swal({
@@ -764,15 +764,24 @@ function drawServiceAreaByBmSc() {
     
 }
 
+var infowindow;
 function cityRightClickEmpty(e) {
+	if(infowindow != undefined) {
+		infowindow.close();
+	}
 	var contentString = "Do you want to add this place as hotspot of "+$("#cityName").val()+" city?<br>" +
 			"<div style='text-align: center;'>" +
-			"<button class='btn btn-success btn-xs' onclick=addHotSpotInCityFromBlank("+e.latLng.lat()+",'"+e.latLng.lng()+"')>Continue</button></div>";
-	var infowindow = new google.maps.InfoWindow({
+			"<button id='continue' class='btn btn-success btn-xs' onclick=addHotSpotInCityFromBlank("+e.latLng.lat()+",'"+e.latLng.lng()+"')>Continue</button></div>";
+	infowindow = new google.maps.InfoWindow({
 		content: contentString,
 		position: {lat: e.latLng.lat(), lng: e.latLng.lng()}
 	});
+	
 	infowindow.open(map, this);
+
+	$("#continue").on("click", function() {
+		infowindow.close();
+	});
 }
 
 function getCircle(e) {
@@ -792,7 +801,6 @@ function moveCityList(circleId) {
 	map.setCenter(circleMap[circleId].center);
 	
 	google.maps.event.clearListeners(map, 'mousedown', addCircle);	//클릭 시 Add circle 이벤트 제거
-	google.maps.event.addListener(map, 'rightclick', cityRightClickEmpty);
 	google.maps.event.addListener(map, 'zoom_changed', getCircle);
 	
 	$.ajax({
@@ -863,7 +871,8 @@ function drawCity(cityMap, color, circleId, circleTitle) {
 	    });
 	    
 	    townCircle.addListener('click', function(e) {
-	    	hotSpotReload(this.id, this.center.lat(), this.center.lng());
+	    	$("#selectCity option:selected").text(this.title);
+	    	hotSpotReload(this.id, this.center.lat(), this.center.lng(), this.title);
 	    });
 	    
 	    townCircles.push(townCircle);
@@ -1091,10 +1100,19 @@ function editHotSpotDirect(index, cityId) {
     });
 }
 
-function hotSpotReload(cityId, latitude, longitude) {
+function hotSpotReload(cityId, latitude, longitude, cityName) {
 	clearCity();
 	clearHotSpot();
 	$("#addTable").show();
+	$("#cityId").val(cityId);
+	if($("#cityName").val() == ""){
+		$("#cityName").val(cityName);
+	}
+	$("#latitude").val(latitude);
+	$("#longitude").val(longitude);
+	$("#cityLatitude").val(latitude);
+	$("#cityLongitude").val(longitude);
+	google.maps.event.addListener(map, 'rightclick', cityRightClickEmpty);
 	$.ajax({
 		url : "/dashbd/hotspot/getHotSpotListFromCityId.do",
 		type: "post",

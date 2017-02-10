@@ -9,10 +9,10 @@ $(function() {
 	//callTimetable(g_ServiceAreaId, searchDate);
 	
 	$("#btnScheduleDetail").click(function() {
-		if (g_ServiceAreaId == ''){
-			alert('Please, choose ServiceArea.')
-			return;
-		}
+//		if (g_ServiceAreaId == ''){
+//			alert('Please, choose ServiceArea.')
+//			return;
+//		}
 		location.href = "schdMgmtDetail.do?bmscId=" + g_bmscId + "&serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
 	});
 });

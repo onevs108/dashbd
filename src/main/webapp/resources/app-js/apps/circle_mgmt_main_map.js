@@ -579,7 +579,7 @@ function existSAID(type) {
         	if(data == "EXIST"){
         		swal({
                     title: "Warning !",
-                    text: "사용할 수 없는 이름입니다."
+                    text: "사용할 수 없는 ID입니다."
                 });
         	} else {
         		swal({
@@ -1618,15 +1618,20 @@ function deleteCircle(circleId) {
 	}
 }
 
+var infowindow;
 function cityRightClickEmpty(e) {
 	var contentString = "Do you want to add this place as city of "+circleTitle.innerHTML+" Circle?<br>" +
 			"<div style='text-align: center;'>" +
-			"<button class='btn btn-success btn-xs' onclick=addCityInCircleFromBlank("+e.latLng.lat()+",'"+e.latLng.lng()+"')>Continue</button></div>";
-	var infowindow = new google.maps.InfoWindow({
+			"<button id='continue' class='btn btn-success btn-xs' onclick=addCityInCircleFromBlank("+e.latLng.lat()+",'"+e.latLng.lng()+"')>Continue</button></div>";
+	infowindow = new google.maps.InfoWindow({
 		content: contentString,
 		position: {lat: e.latLng.lat(), lng: e.latLng.lng()}
 	});
 	infowindow.open(map, this);
+	
+	$("#continue").on("click", function(){
+		infowindow.close();
+	});
 }
 
 function getCircle(e) {

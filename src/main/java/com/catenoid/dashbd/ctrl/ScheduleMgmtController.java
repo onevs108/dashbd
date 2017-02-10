@@ -2,10 +2,7 @@ package com.catenoid.dashbd.ctrl;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,13 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.ibatis.session.SqlSession;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,10 +29,7 @@ import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
-import com.catenoid.dashbd.dao.model.ServiceArea;
 import com.catenoid.dashbd.service.XmlManager;
-import com.catenoid.dashbd.util.HttpNetAgent;
-import com.catenoid.dashbd.util.HttpNetAgentException;
 import com.catenoid.dashbd.util.Utils;
 
 
@@ -64,7 +55,6 @@ public class ScheduleMgmtController {
 	 */
 	@RequestMapping(value = "/view/schdMgmt.do")
 	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request) throws UnsupportedEncodingException {
-		//bmcm �� serviceArea  媛믪쑝濡�  �뒪耳�以� �젙蹂대�� 媛��졇�삩�떎.
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		try
 		{
@@ -75,14 +65,14 @@ public class ScheduleMgmtController {
 			OperatorSearchParam searchParam = new OperatorSearchParam();
 			searchParam.setPage((page-1) * perPage);
 			searchParam.setPerPage(perPage);
-			List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+			List<HashMap<String,String>> result = mapper.getServiceAreaOperator1(searchParam);
 			
-			Operator initOperator = result.get(0);
+			HashMap<String,String> initOperator = result.get(0);
 			
 			searchParam = new OperatorSearchParam();
 			searchParam.setPage((page-1) * perPage);
 			searchParam.setPerPage(perPage);
-			searchParam.setOperatorId(initOperator.getId());
+			searchParam.setOperatorId(Integer.parseInt(String.valueOf(initOperator.get("id"))));
 			
 			List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
 			

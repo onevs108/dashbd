@@ -96,7 +96,6 @@ function getServiceAreaByBmSc(page, bmscId)
                     }
                 }
                 
-                
                 if( page == totalPageCount ) {
                 	pageination += '<li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>';
                 }
