@@ -2,7 +2,6 @@ package com.catenoid.dashbd.service;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,8 +9,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SimpleTimeZone;
-import java.util.TimeZone;
 
 import org.apache.ibatis.session.SqlSession;
 import org.jdom.Attribute;
@@ -27,11 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.catenoid.dashbd.ctrl.ScheduleMgmtController;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.HttpNetAgent;
-import com.catenoid.dashbd.util.HttpNetAgentException;
 
 @Service
 public class XmlManager {
@@ -43,6 +38,9 @@ public class XmlManager {
 	public final int BMSC_XML_UPDATE = 3;
 	public final int BMSC_XML_DELETE = 4;
 	public final String SERVICE_TYPE_FILE_DOWNLOAD = "fileDownload";
+	public final String SERVICE_TYPE_STREAMING = "streaming";
+	public final String SERVICE_TYPE_CAROUSEL_MULTIPLE = "carouselMultiple";
+	public final String SERVICE_TYPE_CAROUSEL_SINGLE = "carouselSingle";
 	
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
@@ -190,10 +188,12 @@ public class XmlManager {
 	
 	public String makeXmlCreate(Map<String, String> params, int mode, List<String> saidData){
 		Element message = new Element("message");
-		if (BMSC_XML_CREATE == mode)
+		if (BMSC_XML_CREATE == mode){
 			message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
-		else
-			message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));
+		}
+		else{
+			message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));	
+		}
 		
 		message.setAttribute(new Attribute("type", "REQUEST"));
 		Document doc = new Document(message);
@@ -235,8 +235,9 @@ public class XmlManager {
 		FEC.addContent( new Element("fecType").setText(params.get("fecType")));
 		String ratio = "0";
 		
-		if (null != params.get("fecRatio") && !"".equals(params.get("fecRatio")))
+		if (null != params.get("fecRatio") && !"".equals(params.get("fecRatio"))){
 			ratio = params.get("fecRatio");
+		}
 		
 		FEC.addContent( new Element("fecRatio").setText(ratio));
 
@@ -261,9 +262,9 @@ public class XmlManager {
 		}
 
 		String serviceId = params.get("serviceId");
-		if (serviceId == null)
+		if (serviceId == null){
 			serviceId = "";
-		
+		}
 		
 		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
 			service.setAttribute(new Attribute("serviceType", "fileDownload"));
@@ -311,8 +312,9 @@ public class XmlManager {
 			fileDownload.addContent(serviceArea);
 			fileDownload.addContent(schedule);
 			
-			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport")))
+			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport"))){
 				fileDownload.addContent(associatedDelivery);
+			}
 			
 			service.addContent(fileDownload);
 		}

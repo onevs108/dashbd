@@ -250,7 +250,7 @@
 <input type="hidden" id="cityId">
 <input type="hidden" id="cityName">
 <input type="hidden" id="cityLatitude">
-<input type="hidden" id="cityLongitude">
+<input type="hidden" id="cityLongitude">se
 <div class="modal fade" id="addHotSpotModal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">

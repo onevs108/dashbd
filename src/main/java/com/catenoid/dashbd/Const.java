@@ -46,7 +46,7 @@ public class Const {
 	 */
 //	public static final String MENU_USER_MGMT 				= "USER_MGMT";
 //	public static final String MENU_PERMISSION_MGMT 		= "PERMISSION_MGMT";
-//	public static final String MENU_CONTENTS_MGMT 			= "CONTENTS_MGMT";
+	public static final String MENU_CONTENTS_MGMT 			= "CONTENTS_MGMT";
 //	public static final String MENU_OPERATOR_MGMT 			= "OPERATOR_MGMT";
 //	public static final String MENU_BMSC_MGMT				= "BMSC_MGMT";
 //	public static final String MENU_CIRCLE_MGMT				= "MENU_CIRCLE_MGMT";

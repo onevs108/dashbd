@@ -36,34 +36,36 @@
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
 		});
+		
+		function addFileSchedule() {
+			$("#fileDownload").append($("#fileDownload").clone());
+		}
  	</script>
-	
-<style>
+
+	<style>
 	ul
-{
-    list-style-type: none;
-}
-</style>
+	{
+	    list-style-type: none;
+	}
+	</style>
+	
 </head>
 <body>
 <div id="wrapper">
-    
-        <nav class="navbar-default navbar-static-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav metismenu" id="side-menu">
-                   <li class="nav-header">
-					<div class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
-					</div>
-					<div class="logo-element">
-						<img src="/dashbd/resources/img/logo2.png">
-					</div>
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+               <li class="nav-header">
+				<div class="dropdown profile-element">
+					<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
+				</div>
+				<div class="logo-element">
+					<img src="/dashbd/resources/img/logo2.png">
+				</div>
 				</li>
-            </div>
-        </nav>
-
+        </div>
+    </nav>
 <div id="page-wrapper" class="gray-bg">
-
 	<div class="row border-bottom">
         <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
@@ -74,7 +76,6 @@
                 </div>
             </form>
         </div><!-- end navbar-header -->
-        
             <ul class="nav navbar-top-links navbar-right">
                 <li>
                     <a>
@@ -175,12 +176,10 @@
 	                        		<input type="hidden" id=serviceType" name="serviceType" value="${mapSchedule.service}">
 	                        		<select class="input-sm form-control input-s-sm" disabled>            	
 	                        	</c:if>
-	                        	        <option value="fileDownload" <c:if test="${mapSchedule.service eq 'fileDownload'}"> selected</c:if>>File Download</option>
+                        	        	<option value="fileDownload" <c:if test="${mapSchedule.service eq 'fileDownload'}"> selected</c:if>>File Download</option>
                                         <option value="streaming" <c:if test="${mapSchedule.service eq 'streaming'}">selected</c:if>>Streaming</option>
-                                        <!-- 
-                                        <option value="2">Carousel MultiMedia Files</option>
-                                        <option value="3">Carousel Single File</option>
-                                         -->
+                                        <option value="carouselMultiple" <c:if test="${mapSchedule.service eq 'carouselMultiple'}">selected</c:if>>Carousel Multiple Files</option>
+                                        <option value="carouselSingle" <c:if test="${mapSchedule.service eq 'carouselSingle'}">selected</c:if>>Carousel Single File</option>
                                     </select>
                             </div>
                         </div><!-- end form-group -->
@@ -318,87 +317,83 @@
                         </div>
                     </div><!-- end ibox-content -->
                     <div class="ibox float-e-margins">
-                        <div class="ibox-content" style="background:#eee">
+                        <div id="fileDownload" class="ibox-content" style="background:#eee">
                             <div class="ibox-tools">
                                 <a class="close-link">
                                     <i class="fa fa-times"></i>
                                 </a>
                             </div>
                             <div class="row">
-                                
-                                    <div class="form-group"><label class="col-sm-2 control-label">Schedule</label>
-                                        <div class="col-sm-8">
-                                            <label class="col-sm-1 control-label">Start</label>
-                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.schedule_start}"></div>
-                                            <label class="col-sm-1 control-label">Stop</label>
-                                            
-                                                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.schedule_stop}"></div>
-                                        </div>
-                                        <div class="col-sm-1">
-                                            <div class="form-group"><button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px"><i class="fa fa-plus"></i></button>
-                                            </div>
-                                        </div>
+	                            <div class="form-group"><label class="col-sm-2 control-label">Schedule</label>
+	                                <div class="col-sm-8">
+	                                    <label class="col-sm-1 control-label">Start</label>
+	                                        <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.schedule_start}"></div>
+	                                    <label class="col-sm-1 control-label">Stop</label>
+	                                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.schedule_stop}"></div>
+	                                </div>
+	                                <div class="col-sm-1">
+	                                    <div class="form-group">
+	                                    	<!-- 스케쥴 버튼 추가버튼 -->
+	                                    	<button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px" onclick="addFileSchedule()">
+	                                    		<i class="fa fa-plus"></i>	
+	                                    	</button>
+	                                    </div>
+	                                </div>
+	                            </div>
+                                <div id="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'streaming'}"> style="display:none"</c:if>>
+	                                <div class="form-group">
+	                                <label class="col-sm-2 control-label">Content</label>
+	                                <div class="col-sm-9">
+	                                	<button type="button"  title="Create new cluster" class="btn btn-primary btn-sm" onclick="addFileContent()">
+	                                		<i class="fa fa-plus"></i> <span class="bold"></span>
+	                                	</button>
+	                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-10 col-sm-offset-2">
+                                        <ul class="schedule-list">
+                                            <li>
+                                                <div class="well">
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 control-label">File URI</label>
+                                                        <div class="col-md-10">
+                                                         <c:if test="${empty mapSchedule.BCID}">
+                                                         	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
+                                                         </c:if>
+                                                        	<c:if test="${not empty mapSchedule.BCID}">
+                                                        		<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapSchedule.fileURI}">
+                                                        	</c:if>
+                                                        </div>
+                                                        <label class="col-md-2 control-label">Start</label>
+                                                        <div class="col-md-4">
+                                                        <c:if test="${empty mapSchedule.BCID}">
+                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.start_date}"></div>
+                                                        </c:if>
+                                                        <c:if test="${not empty mapSchedule.BCID}">
+                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.deliveryInfo_start}"></div>
+                                                        </c:if>
+                                                        	
+                                                        <label class="col-md-2 control-label">Stop</label>
+                                                        <div class="col-md-4">
+                                                        <c:if test="${empty mapSchedule.BCID}">
+                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.end_date}"></div>
+                                                        </c:if>
+                                                        <c:if test="${not empty mapSchedule.BCID}">
+                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.deliveryInfo_end}"></div>
+                                                        </c:if>
+                                                        <!-- 
+                                                        <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
+                                                         -->
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    
-                                    
-                                    
-                                    <div id="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'streaming'}"> style="display:none"</c:if>>
-                                                                <div class="form-group">
-	                                                                <label class="col-sm-2 control-label">Content</label>
-	                                                                <!-- 
-	                                                                 -->
-	                                                                <div class="col-sm-9">
-	                                                                	<button type="button"  title="Create new cluster" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> <span class="bold"></span></button>
-	                                                                </div>
-	                                                            </div>
-	                                                            <div class="form-group">
-	                                                                <div class="col-sm-10 col-sm-offset-2">
-	                                                                    <ul class="schedule-list">
-	                                                                        <li>
-	                                                                            <div class="well">
-	                                                                                <div class="form-group">
-	                                                                                    <label class="col-md-2 control-label">File URI</label>
-	                                                                                    <div class="col-md-10">
-		                                                                                    <c:if test="${empty mapSchedule.BCID}">
-		                                                                                    	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
-		                                                                                    </c:if>
-	                                                                                    	<c:if test="${not empty mapSchedule.BCID}">
-	                                                                                    		<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapSchedule.fileURI}">
-	                                                                                    	</c:if>
-	                                                                                    </div>
-	                                                                                    
-	                                                                                    
-	                                                                                    <label class="col-md-2 control-label">Start</label>
-	                                                                                    <div class="col-md-4">
-	                                                                                    <c:if test="${empty mapSchedule.BCID}">
-	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.start_date}"></div>
-	                                                                                    </c:if>
-	                                                                                    <c:if test="${not empty mapSchedule.BCID}">
-	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.deliveryInfo_start}"></div>
-	                                                                                    </c:if>
-	                                                                                    	
-	                                                                                    <label class="col-md-2 control-label">Stop</label>
-	                                                                                    <div class="col-md-4">
-	                                                                                    <c:if test="${empty mapSchedule.BCID}">
-	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.end_date}"></div>
-	                                                                                    </c:if>
-	                                                                                    <c:if test="${not empty mapSchedule.BCID}">
-	                                                                                    	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.deliveryInfo_end}"></div>
-	                                                                                    </c:if>
-	                                                                                    <!-- 
-	                                                                                    <div class="col-md-12 text-right"><button type="button" class="btn btn-danger btn-sm">Content Delete</button></div>
-	                                                                                     -->
-	                                                                                </div>
-	                                                                            </div>
-	                                                                        </li>
-	                                                                    </ul>
-	                                                                </div>
-	                                                                <!-- 
-	                                                                <div class="col-sm-12 text-right"><button type="button" class="btn btn-danger">Schedule Delete</button></div>
-	                                                                 -->
-	                                                            </div>
-                                                            </div>
-                                
+                                    <!-- 
+                                    <div class="col-sm-12 text-right"><button type="button" class="btn btn-danger">Schedule Delete</button></div>
+                                    -->
+                                 </div>
+                            	</div>
                             </div>
                         </div><!-- end ibox-content -->
                     </div>

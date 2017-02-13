@@ -1,7 +1,7 @@
 //inbo add START
 var g_ServiceAreaId = '';
-var g_bmscId = '';
-var searchDate
+var g_bmscId = '793';
+var searchDate= $("#searchDate").val();
 
 $(function() {
 
@@ -9,10 +9,10 @@ $(function() {
 	//callTimetable(g_ServiceAreaId, searchDate);
 	
 	$("#btnScheduleDetail").click(function() {
-//		if (g_ServiceAreaId == ''){
-//			alert('Please, choose ServiceArea.')
-//			return;
-//		}
+		if (g_ServiceAreaId == '' || g_ServiceAreaId == undefined){
+			alert('Please, choose ServiceArea.');
+			return;
+		}
 		location.href = "schdMgmtDetail.do?bmscId=" + g_bmscId + "&serviceAreaId=" + g_ServiceAreaId + "&searchDate="+searchDate;
 	});
 });
@@ -32,7 +32,6 @@ function callTimetable(bmscId, serviceAreaId_val){
 			dataType : "json",
 			success : function( data ) {
 				setTimeTable(data);
-		
 			},
 			error : function(request, status, error) {
 				//alert("request=" +request +",status=" + status + ",error=" + error);
@@ -96,7 +95,7 @@ function setTimeTable(data ){
 function setTimeline(maxRow, viewStartHour) {
    	
    if(jQuery(".timeline").length == 0){
-      jQuery(".room-timeline").prepend("<div style='width:100%;overflow: visible;'><hr class='timeline'/></div>") 
+      jQuery(".room-timeline").prepend("<div style='width:100%; overflow: visible;'><hr class='timeline'/></div>") 
     }
 	
     var timeline = jQuery(".timeline");  

@@ -31,9 +31,45 @@ $(document).ready(function()
 		$("#viewProgram").hide();
 		drawServiceAreaByBmSc($('#bmsc option:selected').val(), $('#bmsc option:selected').text());
 		//inbo add START
-		callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);
-		//inbo add END
     });
+    
+    $("#selectCircle").on("change", function(e){
+    	var url = "/dashbd/hotspot/getCityListFromCircleId.do";
+    	if(e.target[0].value == ""){
+    		e.target[0].remove();
+    	}
+    	if($("input[name='radio']:checked").val() == "group"){
+    		url = "/dashbd/hotspot/getCityListFromCircleId.do";
+    	}
+    	var array = e.target[e.target.selectedIndex].value.split("^");
+    	var circleId = array[0];
+    	var circleName = array[1];
+    	$.ajax({
+    		url : url,
+    		type: "post",
+    		data : { "circleId" : circleId },
+    		success : function(data) {
+    			var json = JSON.parse(data).result;
+    			var html = "<option value=''>Select City</option>";
+    			for (var i = 0; i < json.length; i++) {
+            		html += "<option value='"+json[i].city_id+"^"+json[i].city_name+"^"+json[i].latitude+"^"+json[i].longitude+"'>"+json[i].city_name+"</option>";
+				}
+    			callTimetable(undefined, circleId);
+    			g_ServiceAreaId = circleId;
+            	$("#selectCity").html(html);
+            	
+    		},
+    		error : function(xhr, status, error){
+    			swal({
+    				title: "Fail !",
+    				text: "서버 통신 오류 입니다."
+    			});
+    		}
+    	});
+    });
+    
+    callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);
+    
 });
 
 var perPage = 15;

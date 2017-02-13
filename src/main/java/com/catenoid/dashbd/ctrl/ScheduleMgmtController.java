@@ -24,10 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.dao.BmscMapper;
+import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
-import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.service.XmlManager;
 import com.catenoid.dashbd.util.Utils;
@@ -59,6 +60,8 @@ public class ScheduleMgmtController {
 		try
 		{
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+			
 			Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 			Integer perPage = 50;
 			
@@ -76,8 +79,9 @@ public class ScheduleMgmtController {
 			
 			List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
 			
+			List<Circle> circleList = operatorMapper.selectCircleListAll();
+			mv.addObject("circleList", circleList);
 			mv.addObject("OperatorList", result);
-			
 			mv.addObject("BmscList", bmscs);
 			
 			//logger.info("GBRSum=", exampleGBRSum());
@@ -362,7 +366,7 @@ public class ScheduleMgmtController {
 				
 				//@ insert schedule append said
 				if (saidData != null){
-					for( String said : saidData){
+					for(String said : saidData){
 						params.put("serviceAreaId", said);
 						ret = mapper.insertAddSchedule(params);
 						logger.info("insertAddSchedule ret{}", ret);

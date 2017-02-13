@@ -241,15 +241,14 @@
             
             <div class="col-lg-12">
                     <div class="ibox float-e-margins">
-<!--                         <div class="ibox-title"> -->
-<!--                             <h5>Schedule Mgmt </h5> -->
-<!--                             <div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div> -->
-<!--                             <div class="ibox-tools"> -->
-<!--                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a> -->
-<!--                                 <a class="close-link"><i class="fa fa-times"></i></a> -->
-<!--                             </div> -->
-<!--                         </div> -->
-                        
+                        <div class="ibox-title">
+                            <h5>Schedule Mgmt </h5>
+                            <div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>
+                            <div class="ibox-tools">
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                <a class="close-link"><i class="fa fa-times"></i></a>
+                            </div>
+                        </div>
                         <div class="ibox-content">
                         <form method="get" class="form-horizontal">
                             <div class="row">
@@ -257,36 +256,33 @@
 									<div style = "width:100%;"id="calendar"></div>
                                 </div>
                                 <div class="col-sm-4">
+                                    <div class="form-group" style="margin-bottom: 5px;">
+                                        <label class="col-md-4 control-label">Category</label>
+                                        <!--div class="col-md-8">
+                                            <select class="form-control input-sm">
+                                                <option value="">?</option>
+                                            </select>
+                                        </div-->
+                                        <div class="col-md-8"><input type="text" id="form-category" class="form-control input-sm" value="${category}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label">Title</label>
+                                        <div class="col-md-8"><input type="text" id="form-title" class="form-control input-sm" value="${title}"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8 col-sm-offset-4">
+                                        	<button class="btn btn-block btn-primary" type="button" id="go-search">Search</button>
+                                       	</div>
+                                    </div>
                                     
-                                        <div class="form-group" style="margin-bottom: 5px;">
-                                            <label class="col-md-4 control-label">Category</label>
-                                            <!--div class="col-md-8">
-                                                <select class="form-control input-sm">
-                                                    <option value="">?</option>
-                                                </select>
-                                            </div-->
-                                            <div class="col-md-8"><input type="text" id="form-category" class="form-control input-sm" value="${category}"></div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="search-list" style="display:none">
+                                    	
+                                        <h5>Search Result</h5>
+                                        <div id='external-events'>
                                         </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="col-md-4 control-label">Title</label>
-                                            <div class="col-md-8"><input type="text" id="form-title" class="form-control input-sm" value="${title}"></div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-md-8 col-sm-offset-4">
-                                            	<button class="btn btn-block btn-primary" type="button" id="go-search">Search</button>
-                                           	</div>
-                                        </div>
-                                        
-                                        <div class="hr-line-dashed"></div>
-                                        <div class="search-list" style="display:none">
-                                        	
-                                            <h5>Search Result</h5>
-                                            <div id='external-events'>
-                                            </div>
-                                        </div>
-                                        <div id='paging'></div>
-                                    
+                                    </div>
+                                    <div id='paging'></div>
                                 </div>
                             </div>
                             </form>

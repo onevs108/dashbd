@@ -185,112 +185,46 @@
 		<div class="wrapper wrapper-content">
 		<input type="hidden" id="searchDate" name="searchDate" value="${searchDate}">
 			<!-- Schedule Mgmt -->
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="ibox float-e-margins">
+			<div class="row" id="viewProgram">
+				<div class="col-md-12 ">
+					<div class="ibox float-e-margins ibox-title">
+						<div class="ibox-title">
+							<div>
+								<h5>Regional Schedule</h5>
+								<button type="button" class="btn btn-primary btn-xs" id="btn" style="float: right;">Create Regional Schedule</button>
+								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area" style="margin-left: 20px;" checked/>Service Area&nbsp;
+								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
+							</div>
+						</div>
+						<div class="col-sm-3">
+                       		<select id="selectCircle" class="input-sm form-control input">
+                               <option value="">Select Circle</option>
+                               <c:forEach var="row" items="${circleList}">
+                               	<option value="${row.circle_id}^${row.circle_name}">${row.circle_name}</option>
+                               </c:forEach>
+                            </select>
+						</div>
+						<div class="col-sm-3">
+							<select id="selectCity" class="input-sm form-control input">
+                               
+                            </select>
+                        </div>
 						<div class="ibox-content">
-							<div class="row">
-								<div class="col-sm-4">
-									<div class="form-group">
-										<label class="control-label" for="status">Operator</label>
-										<c:choose>
-											<c:when test="${USER.grade == 13}">
-												<select name="operator" id="operator" class="form-control">
-													<c:forEach items="${OperatorList}" var="operator">
-														<option value="${operator.id}">${operator.town_name}</option>
-													</c:forEach>
-												</select>
-											</c:when>
-											<c:otherwise>
-												<select name="operator" id="operator" class="form-control" disabled="disabled">
-													<c:forEach items="${OperatorList}" var="operator">
-														<c:choose>
-															<c:when test="${USER.operatorId == operator.id}">
-																<option value="${operator.id}" selected="selected">${operator.name}</option>
-															</c:when>
-															<c:otherwise>
-																<option value="${operator.id}">${operator.name}</option>
-															</c:otherwise>
-														</c:choose>
-													</c:forEach>
-												</select>
-											</c:otherwise>
-										</c:choose>
-<!-- 										<select name="operator" id="operator" class="form-control" > -->
-<!-- 											<option value=''></option> -->
-<%-- 	                                        <c:forEach var='operatorList' items="${OperatorList}" varStatus="idx"> --%>
-<%-- 											<option value="${operatorList.id }">${operatorList.name }</option> --%>
-<%-- 											</c:forEach> --%>
-<!-- 										</select> -->
-									</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="form-group">
-											<label class="control-label" for="status">BM-SC</label>
-											<select name="bmsc" id="bmsc" class="form-control">
-											  <c:forEach var='bmscList' items="${BmscList}" varStatus="idx">
-												<option value="${bmscList.id }">${bmscList.name }</option>
-											  </c:forEach>
-											</select>
-										</div>
-									</div>
-								</div>
-	
-								<div class="row">
-									<div class="col-sm-8">
-										<div class="google-map" id="map" style="height:535px;"></div>
-									</div>
-									<div class="col-sm-4">
-										<div class="ibox float-e-margins" id="service_area">
-											<div class="ibox-title">
-												<h5>Service Area</h5>
-											</div>
-											<div class="ibox-content">
-												<table class="footable table table-stripped toggle-arrow-tiny" data-page-size="10">
-													<thead>
-														<tr>
-															<th>SA_ID</th>
-															<th>Description</th>
-														</tr>
-													</thead>
-													<tbody>
-													</tbody>
-													<tfoot>
-													</tfoot>
-												</table>
-											</div><!-- end ibox-content -->
-										</div><!-- end ibox float-e-margins -->
-									</div>
-								</div>
-							</div><!-- end ibox-content -->
-						</div><!-- end ibox float-e-margins -->
+                            <div class="row">
+                            	<div class="col-lg-12">
+                            	<div class="eepg_timeline">
+	                                <div class="timetable"></div>
+	                            </div>
+	                            <div class="">
+		                            <button type="button" class="btn btn-primary btn-sm" id="btnScheduleDetail">Show Detail</button>
+	                            </div>
+                            	</div>
+                            </div>
+                        </div><!-- end ibox-content -->
 					</div>
 				</div>
-				<!-- end User Mgmt -->
-        
-				<!-- Contents Being Serviced -->
-				<div class="row" id="viewProgram" style="display:none;">
-					<div class="col-md-12">
-						<div class="ibox float-e-margins">
-							<div class="ibox-title">
-								<h5>On Air Program</h5>
-							</div><!-- end ibox-title -->
-							<div class="ibox-content">
-	                            <div class="row">
-	                            	<div class="col-lg-12">
-	                            	<div class="eepg_timeline">
-		                                <div class="timetable"></div>
-		                            </div>
-		                            <div class="">
-			                            <button type="button" class="btn btn-primary btn-sm" id="btnScheduleDetail">eEPG management</button>
-		                            </div>
-	                            	</div>
-	                            </div>
-	                        </div><!-- end ibox-content -->
-						</div>
-					</div>
-				</div> 
-				<!-- end Contents Being Serviced -->
+			</div>
+			<!-- end Contents Being Serviced -->
 		</div><!-- end wrapper wrapper-content -->
 	</div><!-- end page-wrapper -->
 </div><!-- end wrapper -->
