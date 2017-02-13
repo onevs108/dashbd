@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -38,7 +39,17 @@
 		});
 		
 		function addFileSchedule() {
-			$("#fileDownload").append($("#fileDownload").clone());
+			$("#fileDownloads").append($("#fileDownload").last().clone());
+			addScheduleRemoveEvent();
+			addContentRemoveEvent();
+		}
+		
+		function addFileContent(e) {
+			var ctIdx = $("button[name='addContent']").index(e);	//스케쥴 갯수(index)
+			var content = $($("div[name='content']")[ctIdx]).children().last();
+			$(content).after(content.clone());
+			$($("#contentLength")[ctIdx]).val($($("div[name='content']")[ctIdx]).children().length);
+			addContentRemoveEvent();
 		}
  	</script>
 
@@ -218,7 +229,7 @@
                                         <div class="col-md-6">
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    <h3><i class="fa fa-check text-success"> Qos</i></h3>
+                                                    <h3><i class="fa fa-check text-success">Qos</i></h3>
                                                 </div>
                                                 <div class="panel-body">
                                                     <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> GBR</label>
@@ -234,7 +245,7 @@
                                                             </div>
                                                             <label class="col-sm-6 control-label">PreEmptionCapabiity</label>
                                                    			<div class="col-sm-6 swich">
-                                                                  <div class="onoffswitch" style="margin-left: 84px;">
+                                                                  <div class="onoffswitch" style="margin-left: 74px;">
                                                                       <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionCapabiity" name="preEmptionCapabiity" <c:if test="${mapSchedule.preEmptionCapabiity == 'on'}">checked</c:if>>
                                                                       <label class="onoffswitch-label" for="preEmptionCapabiity">
                                                                           <span class="onoffswitch-inner"></span>
@@ -242,10 +253,10 @@
                                                                       </label>
                                                                   </div>
                                                             </div>
-<br>
+															<br>
                                                             <label class="col-sm-6 control-label">PreEmptionVulnerability</label>
                                                             <div class="col-sm-6 swich">
-                                                              <div class="onoffswitch" style="margin-left: 84px;">
+                                                              <div class="onoffswitch" style="margin-left: 74px;">
                                                                      <input type="checkbox" class="onoffswitch-checkbox"  id="preEmptionVulnerability" name="preEmptionVulnerability" <c:if test="${mapSchedule.preEmptionVulnerability == 'on'}">checked</c:if>>
                                                                      <label class="onoffswitch-label" for="preEmptionVulnerability">
                                                                          <span class="onoffswitch-inner"></span>
@@ -258,7 +269,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    
                                     <div class="col-md-6">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
@@ -311,15 +321,13 @@
 	                                  -->
 	                                 </div>
                                 </div>
-                                
-                              
                             </form>
                         </div>
                     </div><!-- end ibox-content -->
-                    <div class="ibox float-e-margins">
+                    <div id="fileDownloads" class="ibox float-e-margins">
                         <div id="fileDownload" class="ibox-content" style="background:#eee">
                             <div class="ibox-tools">
-                                <a class="close-link">
+                                <a class="close-schedule">
                                     <i class="fa fa-times"></i>
                                 </a>
                             </div>
@@ -335,6 +343,7 @@
 	                                    <div class="form-group">
 	                                    	<!-- 스케쥴 버튼 추가버튼 -->
 	                                    	<button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px" onclick="addFileSchedule()">
+	                                    		<input type="hidden" class="form-control" id="contentLength" name="contentLength">
 	                                    		<i class="fa fa-plus"></i>	
 	                                    	</button>
 	                                    </div>
@@ -344,16 +353,21 @@
 	                                <div class="form-group">
 	                                <label class="col-sm-2 control-label">Content</label>
 	                                <div class="col-sm-9">
-	                                	<button type="button"  title="Create new cluster" class="btn btn-primary btn-sm" onclick="addFileContent()">
+	                                	<button type="button" name="addContent" title="Create new cluster" class="btn btn-primary btn-sm" onclick="addFileContent(this)">
 	                                		<i class="fa fa-plus"></i> <span class="bold"></span>
 	                                	</button>
 	                                </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-sm-10 col-sm-offset-2">
+                                    <div name="content" class="col-sm-10 col-sm-offset-2">
                                         <ul class="schedule-list">
+                                        	<div class="ibox-tools">
+				                                <a class="close-content">
+				                                    <i class="fa fa-times"></i>
+				                                </a>
+				                            </div>
                                             <li>
-                                                <div class="well">
+                                                <div class="well" style="margin-bottom: 0px;">
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">File URI</label>
                                                         <div class="col-md-10">
@@ -505,9 +519,6 @@
 					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>
 				                        	</div>
 									    </div>
-									    
-									    
-									    
                         </div>
                     </div><!-- end ibox-content -->
                 </div><!-- end ibox-content -->

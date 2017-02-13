@@ -76,7 +76,6 @@ $(document).ready(function()
 	$("#saidListDiv").on('click', '.cRemSaid', function() {
 		$(this).parents('p').remove();
 	});
-	
 		
 	$("#btnCancel").click(function() {
 		var tmpServiceAreaId = $("#serviceAreaId").val();
@@ -84,8 +83,6 @@ $(document).ready(function()
 		var bmscId= $("#bmscId").val();
 		location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId;
 	});
-	
-
 		
 	$("#btnDelete").click(function() {
 		if (!confirm("It will be deleted. do you want this??"))
@@ -137,8 +134,31 @@ $(document).ready(function()
 			alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
+	addScheduleRemoveEvent();
+	addContentRemoveEvent();
 });
-	
+
+function addScheduleRemoveEvent(){
+	$(".close-schedule").click(function(e){
+		if($(".close-schedule").length == 1){
+			return;
+		}
+		var idx = $(".close-schedule").index(e.target.parentNode);
+		$($(".close-schedule")[idx]).parent().parent().remove();
+	});
+}
+
+function addContentRemoveEvent(){
+	$(".close-content").click(function(e){
+		var ctIdx = $("div[name='content']").index($(e.target).parents("div[name='content']"));
+		var idx = $($("div[name='content']")[ctIdx]).find(".close-content").index(e.target.parentNode);
+		if($($("div[name='content']")[ctIdx]).find(".close-content").length == 1){
+			return;
+		}
+		$($($("div[name='content']")[ctIdx]).find(".schedule-list")[idx]).remove();
+	});
+}
+
 function valadationCheck(){
 	if ($("#fecType").val()== 'Raptor' && $("#fecRatio").val() == '0'){
 		alert('0 is not allowed for ratio.')

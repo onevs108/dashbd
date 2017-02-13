@@ -51,10 +51,10 @@ public class XmlManager {
 //	private String b2serverIpaddress;
 	
 	public String sendBroadcast(Map<String, String> params, int mode){
-		return sendBroadcast(params, mode, null);
+		return sendBroadcast(params, mode, null, null);
 	}
 	
-	public String sendBroadcast(Map<String, String> params, int mode, List<String> saidData){
+	public String sendBroadcast(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList){
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		String respBody = "SUCCESS";
 		String reqBody = "";
@@ -68,7 +68,7 @@ public class XmlManager {
 			if (BMSC_XML_RETRIEVE == mode)
 				reqBody= makeXmlRetrieve(params);
 			else if (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)
-				reqBody= makeXmlCreate(params, mode, saidData);
+				reqBody= makeXmlCreate(params, mode, saidData, paramList);
 			else
 				reqBody= makeXmlDelete(params);
 			
@@ -186,7 +186,7 @@ public class XmlManager {
 		return outString(doc);
 	}
 	
-	public String makeXmlCreate(Map<String, String> params, int mode, List<String> saidData){
+	public String makeXmlCreate(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList){
 		Element message = new Element("message");
 		if (BMSC_XML_CREATE == mode){
 			message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
@@ -244,12 +244,6 @@ public class XmlManager {
 		transferConfig.addContent(QoS);
 		transferConfig.addContent(FEC);
 		//schedule 은 배열이 될수도 있음. 일딴 한개만 처리
-		Element schedule = new Element("schedule");
-		schedule.setAttribute(new Attribute("index", "1"));
-		schedule.setAttribute(new Attribute("cancelled", "false"));
-		//time format ex) 2015-04-10T17:24:09.000+09:00
-		schedule.setAttribute(new Attribute("start", convertDateFormat(params.get("schedule_start"))));
-		schedule.setAttribute(new Attribute("stop", convertDateFormat(params.get("schedule_stop"))));
 		Element receptionReport = null;
 		Element associatedDelivery = new Element("associatedDelivery");
 		
@@ -260,12 +254,12 @@ public class XmlManager {
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
 			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));			
 		}
-
+		
 		String serviceId = params.get("serviceId");
 		if (serviceId == null){
 			serviceId = "";
 		}
-		
+		Element serviceType = null;
 		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
 			service.setAttribute(new Attribute("serviceType", "fileDownload"));
 			Element fileDownload = new Element("fileDownload");
@@ -279,19 +273,6 @@ public class XmlManager {
 					serviceArea.addContent( new Element("said").setText(said));
 				}
 			}
-			
-			Element content = new Element("content");
-			content.setAttribute(new Attribute("contentId", params.get("contentId")));						//??
-			content.setAttribute(new Attribute("contentType", "text/plain"));			//??
-			content.setAttribute(new Attribute("cancelled", "false"));					//??
-			content.setAttribute(new Attribute("changed", "false"));				
-			content.addContent( new Element("fileURI").setText(params.get("fileURI")));
-			Element deliveryInfo = new Element("deliveryInfo");
-			//time format ex) 2015-04-10T17:24:09.000+09:00
-			deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(params.get("deliveryInfo_start"))));
-			deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(params.get("deliveryInfo_end"))));
-			content.addContent(deliveryInfo);
-			schedule.addContent(content);
 			
 			if ("on".equals(params.get("FileRepair"))){
 				Element fileRepair= null; 
@@ -310,13 +291,11 @@ public class XmlManager {
 			fileDownload.addContent(serviceLanguage);
 			fileDownload.addContent(transferConfig);
 			fileDownload.addContent(serviceArea);
-			fileDownload.addContent(schedule);
 			
 			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport"))){
 				fileDownload.addContent(associatedDelivery);
 			}
-			
-			service.addContent(fileDownload);
+			serviceType = fileDownload;
 		}
 		else{ //streaming
 			service.setAttribute(new Attribute("serviceType", "streaming"));
@@ -358,19 +337,45 @@ public class XmlManager {
 				streaming.addContent(serviceLanguage);
 			
 			streaming.addContent(transferConfig);
-			streaming.addContent(schedule);
 			streaming.addContent(contentSet);
 			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport")))
 				streaming.addContent(associatedDelivery);
 			
-			service.addContent(streaming);
+			serviceType = streaming;
 		}
 		
+		Element schedule = null;
+		for (int i = 0; i < paramList.get(0).size(); i++) {	//schedule start 갯수에 따라 동작
+			schedule = new Element("schedule");
+			schedule.setAttribute(new Attribute("index", String.valueOf(i+1)));
+			schedule.setAttribute(new Attribute("cancelled", "false"));
+			//time format ex) 2015-04-10T17:24:09.000+09:00 
+			schedule.setAttribute(new Attribute("start", convertDateFormat(paramList.get(0).get(i))));
+			schedule.setAttribute(new Attribute("stop", convertDateFormat(paramList.get(1).get(i))));
+			for (int j = 0; j < Integer.parseInt(paramList.get(5).get(i)); j++) {	//fileURI 갯수에 따라 동작
+				Element content = new Element("content");
+				content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						//??
+				content.setAttribute(new Attribute("contentType", "text/plain"));							//??
+				content.setAttribute(new Attribute("cancelled", "false"));									//??
+				content.setAttribute(new Attribute("changed", "false"));				
+				content.addContent( new Element("fileURI").setText(paramList.get(2).get(i)));
+				Element deliveryInfo = new Element("deliveryInfo");
+				//time format ex) 2015-04-10T17:24:09.000+09:00
+				deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
+				deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));
+				content.addContent(deliveryInfo);
+				schedule.addContent(content);
+			}
+			serviceType.addContent(schedule);
+		}
+		
+		service.addContent(serviceType);
 		services.addContent(service);
 		parameters.addContent(services);
 		
 		doc.getRootElement().addContent(parameters);
-		return outString(doc);
+//		return outString(doc);
+		return "NO";
 	}
 	
 	public String testMaking(){

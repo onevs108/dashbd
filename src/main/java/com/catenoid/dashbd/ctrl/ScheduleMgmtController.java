@@ -2,6 +2,7 @@ package com.catenoid.dashbd.ctrl;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -309,11 +310,23 @@ public class ScheduleMgmtController {
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
 			@RequestParam(value="saidData", required=false) List<String> saidData,
+			@RequestParam(value="schedule_start", required=false) List<String> schedule_start,
+			@RequestParam(value="schedule_stop", required=false) List<String> schedule_stop,
+			@RequestParam(value="fileURI", required=false) List<String> fileURI,
+			@RequestParam(value="deliveryInfo_start", required=false) List<String> deliveryInfo_start,
+			@RequestParam(value="deliveryInfo_end", required=false) List<String> deliveryInfo_end,
+			@RequestParam(value="contentLength", required=false) List<String> contentLength,
             HttpServletRequest req, Locale locale ) {
 		
 		int ret;
 		logger.info("sending param{}", params);
-		logger.info("sending saidData{}", saidData);
+		List<List<String>> paramList = new ArrayList<List<String>>();
+		paramList.add(schedule_start);
+		paramList.add(schedule_stop);
+		paramList.add(fileURI);
+		paramList.add(deliveryInfo_start);
+		paramList.add(deliveryInfo_end);
+		paramList.add(contentLength);
 		
 		String tmp = params.get("preEmptionCapabiity");
 		
@@ -348,7 +361,7 @@ public class ScheduleMgmtController {
 			params.put("deliveryInfo_start", convertMysqlDateFormat(params.get("deliveryInfo_start"), false));
 			params.put("deliveryInfo_end", convertMysqlDateFormat(params.get("deliveryInfo_end"),false));
 			params.put("bmscIp", bmsc.getIpaddress());
-			String resStr = xmlManager.sendBroadcast(params, xmlMode, saidData);
+			String resStr = xmlManager.sendBroadcast(params, xmlMode, saidData, paramList);
 			
 			//@ check return XML success
 			if (!xmlManager.isSuccess(resStr))
