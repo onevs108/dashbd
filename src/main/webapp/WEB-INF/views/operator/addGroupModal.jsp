@@ -37,13 +37,9 @@
                                               <label for="product_name">Select Menus to grant</label>
                                               <div class="grant scroll-y white-bg">
                                               	<ul class="list-group">
-                                              		<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value=""> <i></i> User Management</label></div></li>
-                                              		<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value=""> <i></i> Group Management</label></div></li>
-                                              		<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value=""> <i></i> Schedule Management</label></div></li>
-                                              		<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value=""> <i></i> System Management</label></div></li>
-                                              		<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value=""> <i></i> Circle Management</label></div></li>
-                                              		<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value=""> <i></i> City/Town Management</label></div></li>
-                                              		<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value=""> <i></i> Statistic Management</label></div></li>
+                                              		<c:forEach var="obj" items="${permissionList}" varStatus="status">
+                                              			<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value="${obj.id}"> <i></i> ${obj.name}</label></div></li>
+                                              		</c:forEach>
                                               	</ul>
                                               </div>
 									</div>
@@ -56,7 +52,9 @@
                                               <label for="product_name">Member</label>
                                               <div class="Member scroll-y white-bg">
                                               	<ul class="list-group select-list">
-                                              		<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>a</span></label></div></li>
+                                              		<c:forEach var="obj" items="${initMemberList}" varStatus="status">
+                                              			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>a</span></label></div></li>	
+                                              		</c:forEach>
                                               	</ul>
                                               </div>
 									</div>
@@ -97,11 +95,9 @@
 										
                                               <div class="Member scroll-y white-bg">
                                               	<ul class="list-group select-list">
-                                              		<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>a</span></label></div></li>
-                                              		<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>b</span></label></div></li>
-                                              		<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>c</span></label></div></li>
-                                              		<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>test</span></label></div></li>
-                                              		<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>test</span></label></div></li>
+                                              		<c:forEach var="obj" items="${otherMemberList}" varStatus="status">
+                                              			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>a</span></label></div></li>
+                                              		</c:forEach>
                                               	</ul>
                                               </div>
 									</div>

@@ -4,6 +4,8 @@ package com.catenoid.dashbd;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Permission;
+import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.OperatorService;
 import com.catenoid.dashbd.service.PermissionService;
 import com.google.gson.Gson;
@@ -46,12 +49,23 @@ public class OperatorController {
 	 * Operator 관리 페이지 이동
 	 */
 	@RequestMapping(value = "/resources/operator.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String getOperatorMgmt(Model model) {
+	public String getOperatorMgmt(HttpServletRequest request, Model model) {
+		Users user = (Users) request.getSession(false).getAttribute("USER");
 		
-		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
+//		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
+//		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
 		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+		
+//		for(int i=0; i < gradeList.size(); i++) {
+//			if(gradeList.get(i).getId() == 1 || gradeList.get(i).getId() == 2 || gradeList.get(i).getId() == 3) {
+//				gradeList.remove(i);
+//				i--;
+//			}
+//		}
 
-		model.addAttribute("permissionList", permissionList);
+//		model.addAttribute("permissionList", permissionList);
+//		model.addAttribute("gradeList", gradeList);
+		model.addAttribute("userGrade", user.getGrade());
 		model.addAttribute("circleList", circleList);
 		return "operator/operatorMgmt";
 	}
@@ -237,11 +251,21 @@ public class OperatorController {
 	@ResponseBody
 	public ModelAndView callAddGruopModal(@RequestParam HashMap<String, Object> param, Model model) {
 		ModelAndView mv = new ModelAndView("operator/addGroupModal");
-//		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
-//		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
-//
-//		model.addAttribute("permissionList", permissionList);
-//		model.addAttribute("circleList", circleList);
+		
+		List<Users> initMemberList = null;
+		List<Users> otherMemberList = null;
+		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
+		
+		if(param.get("accessDiv").equals("edit")) {
+//			List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+//			model.addAttribute("circleList", circleList);
+		} else if(param.get("accessDiv").equals("add")) {
+			otherMemberList = operatorServiceImpl.selectMemberList(param);
+		}
+		
+		model.addAttribute("permissionList", permissionList);
+		model.addAttribute("initMemberList", initMemberList);
+		model.addAttribute("otherMemberList", otherMemberList);
 		return mv;
 	}
 	

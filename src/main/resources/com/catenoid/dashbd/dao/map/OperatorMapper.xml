@@ -375,4 +375,33 @@
 		WHERE id = #{id}
 	</delete>
 	
+	<select id="selectMemberList" parameterType="HashMap" resultType="com.catenoid.dashbd.dao.model.Users">
+		 SELECT  id
+			, user_id								
+			, operator_id								
+			, password								
+			, first_name								
+			, last_name								
+			, department								
+			, grade								
+			, permission								
+			, memo								
+			, created_at								
+			, updated_at								
+		FROM users
+		WHERE 1=1
+		<choose>
+			<when test="accessDiv == 'grade'">
+				<if test="grade != '' and grade != null">
+					AND grade = #{grade}
+				</if>
+			</when>
+			<when test="accessDiv == 'operator'">
+				<if test="operator_id != '' and operator_id != null">
+					AND operator_id = #{operator_id}
+				</if>
+			</when>
+		</choose>
+	</select>
+	
 </mapper>

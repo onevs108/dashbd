@@ -29,82 +29,73 @@
 									</div>
 								</div>
 								<!-- // ibox-title -->
-	
-								<div class="row">
-									<div class="col-lg-12">
-										<div class="ibox">
-											<div class="ibox-content">
-												<div class="row p-xs">
-													<div class="col-sm-9 m-b-xs"><h4>National Group</h4></div>
-													<div class="col-sm-3 text-right">
-														<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
-								                            <i class="fa fa-plus-square"> </i> Add Group
-								                        </a>
+								
+								<c:if test="${userGrade == 13}">
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="ibox">
+												<div class="ibox-content">
+													<div class="row p-xs">
+														<div class="col-sm-9 m-b-xs"><h4>National Group</h4></div>
+														<div class="col-sm-3 text-right">
+															<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
+									                            <i class="fa fa-plus-square"> </i> Add Group
+									                        </a>
+														</div>
 													</div>
+													<div class="tb_tpl table-responsive">
+														<table id="table" class="table table-striped">
+															<colgroup>
+																<col>
+																<col>
+																<col>
+															</colgroup>
+															<thead>
+																<tr>
+																	<th>Group Name</th>
+																	<th>Description</th>
+																	<th></th>
+																</tr>
+															</thead>
+															<tbody>
+																<tr>
+																	<td>Administrator Group</td>
+																	<td>Manage All menus</td>
+																	<td>
+																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
+																	</td>
+																</tr>
+																<tr>
+																	<td>National Schedule Operator Group</td>
+																	<td>Manage National Schedule</td>
+																	<td>
+																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
+																	</td>
+																</tr>
+																<tr>
+																	<td>System Operator Group</td>
+																	<td>Manage the system menu</td>
+																	<td>
+																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													<!-- // tb_tpl -->
+													
+													<div id="groupArea"></div>
+													<!-- MemberList Modal Area -->
+													<div id="memberListArea"></div>
 												</div>
-												<div class="tb_tpl table-responsive">
-													<table class="table table-striped">
-														<colgroup>
-															<col>
-															<col>
-															<col>
-														</colgroup>
-														<thead>
-															<tr>
-																<th>Group Name</th>
-																<th>Description</th>
-																<th></th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td>Administrator Group</td>
-																<td>Manage All menus</td>
-																<td>
-																	<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																</td>
-															</tr>
-															<tr>
-																<td>National Schedule Operator Group</td>
-																<td>Manage National Schedule</td>
-																<td>
-																	<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																</td>
-															</tr>
-															<tr>
-																<td>System Operator Group</td>
-																<td>Manage the system menu</td>
-																<td>
-																	<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																</td>
-															</tr>
-															<tr>
-																<td>Imsi Group</td>
-																<td>Imsi</td>
-																<td>
-																	<div class="btn-group">
-							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
-							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
-							                                        </div>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-												<!-- // tb_tpl -->
-												
-												<div id="groupArea"></div>
-												<!-- MemberList Modal Area -->
-												<div id="memberListArea"></div>
+												<!-- // ibox-content -->
 											</div>
-											<!-- // ibox-content -->
+											<!-- // ibox -->
 										</div>
-										<!-- // ibox -->
+										<!-- // col -->
 									</div>
-									<!-- // col -->
-								</div>
-								<!-- // row -->
-	
+									<!-- // row -->
+								</c:if>
 								<div class="row">
 	
 									<div class="col-lg-12">
@@ -122,10 +113,10 @@
 													<form class="form-horizontal">
 														<div class="col-lg-6">
 															<div class="form-group">
-																<label class="col-sm-6 control-label">Circle</label>
+																<label class="col-sm-6 control-label">Select Area</label>
 																<div class="col-sm-6">
 																	<select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;"> -->
-								                                    	<option value="none">Circle</option>
+								                                    	<option value="">Circle</option>
 								                                		<c:forEach var="row" items="${circleList}">
 								                                   			<option value="${row.circle_name}">${row.circle_name}</option>
 								                                   		</c:forEach>
@@ -136,7 +127,7 @@
 													</form>
 												</div>
 												<div class="tb_tpl table-responsive">
-													<table class="table table-striped">
+													<table id="table2" class="table table-striped">
 														<colgroup>
 															<col>
 															<col>
@@ -152,35 +143,39 @@
 														</thead>
 														<tbody>
 															<tr>
-																<td>Schedule Manager Group</td>
-																<td>Group that manages Regional Schedule</td>
-																<td>
-																	<div class="btn-group">
-							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
-							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
-							                                        </div>
-																</td>
+																<td colspan="3">No matching records found</td>
 															</tr>
-															<tr>
-																<td>User Manager Group</td>
-																<td>Group that manage the user of the circle</td>
-																<td>
-																	<div class="btn-group">
-							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
-							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
-							                                        </div>
-																</td>
-															</tr>
-															<tr>
-																<td></td>
-																<td>Manage the system menu</td>
-																<td>
-																	<div class="btn-group">
-							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
-							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
-							                                        </div>
-																</td>
-															</tr>
+															
+<!-- 															<tr> -->
+<!-- 																<td>Schedule Manager Group</td> -->
+<!-- 																<td>Group that manages Regional Schedule</td> -->
+<!-- 																<td> -->
+<!-- 																	<div class="btn-group"> -->
+<!-- 							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button> -->
+<!-- 							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button> -->
+<!-- 							                                        </div> -->
+<!-- 																</td> -->
+<!-- 															</tr> -->
+<!-- 															<tr> -->
+<!-- 																<td>User Manager Group</td> -->
+<!-- 																<td>Group that manage the user of the circle</td> -->
+<!-- 																<td> -->
+<!-- 																	<div class="btn-group"> -->
+<!-- 							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button> -->
+<!-- 							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button> -->
+<!-- 							                                        </div> -->
+<!-- 																</td> -->
+<!-- 															</tr> -->
+<!-- 															<tr> -->
+<!-- 																<td></td> -->
+<!-- 																<td>Manage the system menu</td> -->
+<!-- 																<td> -->
+<!-- 																	<div class="btn-group"> -->
+<!-- 							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button> -->
+<!-- 							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button> -->
+<!-- 							                                        </div> -->
+<!-- 																</td> -->
+<!-- 															</tr> -->
 														</tbody>
 													</table>
 												</div>

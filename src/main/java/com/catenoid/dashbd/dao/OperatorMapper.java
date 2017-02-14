@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorExample;
+import com.catenoid.dashbd.dao.model.Users;
 
 public interface OperatorMapper {
 	
@@ -40,4 +41,5 @@ public interface OperatorMapper {
 	List<HashMap<String, String>> selectOperatorFromCircle(HashMap<String, String> param);
 	List<HashMap<String, String>> selectCityFromCircle(HashMap<String, String> param);
 	
+	List<Users> selectMemberList(HashMap<String, Object> param);
 }

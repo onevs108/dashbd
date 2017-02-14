@@ -18,6 +18,7 @@ import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.OperatorService;
 
 @Service(value = "operatorServiceImpl")
@@ -335,4 +336,9 @@ public class OperatorServiceImpl implements OperatorService {
 		return operatorMapper.selectOperatorFromCircle(param);
 	}
 	
+	@Override
+	public List<Users> selectMemberList(HashMap<String, Object> param) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectMemberList(param);
+	}
 }
