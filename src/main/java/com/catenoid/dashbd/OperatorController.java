@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
@@ -226,5 +227,37 @@ public class OperatorController {
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
+	}
+	
+	/**
+	 * 그룹 생성 모달 팝업 호출
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/operator/callAddGruopModal.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public ModelAndView callAddGruopModal(@RequestParam HashMap<String, Object> param, Model model) {
+		ModelAndView mv = new ModelAndView("operator/addGroupModal");
+//		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
+//		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+//
+//		model.addAttribute("permissionList", permissionList);
+//		model.addAttribute("circleList", circleList);
+		return mv;
+	}
+	
+	/**
+	 * 멤버리스트 모달 팝업 호출
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/operator/callMemberListModal.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public ModelAndView callMemberListModal(@RequestParam HashMap<String, Object> param, Model model) {
+		ModelAndView mv = new ModelAndView("operator/memberListModal");
+//		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
+//		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+//
+//		model.addAttribute("permissionList", permissionList);
+//		model.addAttribute("circleList", circleList);
+		return mv;
 	}
 }

@@ -128,6 +128,13 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 		lngTarget =	$(obj).parents("form").find("input[id='longitude']");
 	}
 	
+	//위도 경도 값이 없을 경우 기본값 셋팅
+	if(lat == "undefined" || lng == "undefined") {
+		lat = lat = 22.059619;
+		lng = 78.934389;
+		zoomLevel = 'circle';
+	}
+	
 	if(zoomLevel == undefined) {
 		modalMap = new google.maps.Map(document.getElementById('modalMap'), {
 			center: {lat: 22.059619, lng: 78.934389},
@@ -191,7 +198,7 @@ function validationCheck(type, obj) {
 	
 	if(type == 'number') {
 		if(tempVal != '') {
-			var num_check=/^[0-9]*$/;
+			var num_check=/^[\.0-9]*$/;
 			if(!num_check.test(tempVal)) {
 				obj.value = '';
 				swal({

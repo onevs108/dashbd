@@ -470,3 +470,37 @@ function closeModal2() {
 	$("input[name='permission2']").prop("checked", false);
 	$('#form-modal2').modal('hide');
 }
+
+function callGruopModal(accessDiv, obj) {
+	$.ajax({
+		url: '/dashbd/api/operator/callAddGruopModal.do',
+		method: 'POST',
+		data: {accessDiv : accessDiv},
+		success: function(data, textStatus, jqXHR) {
+			$("#groupArea").empty();
+			$("#groupArea").html(data);
+			$("#addGroupModal").modal("show");
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
+function callMemberListModal(obj) {
+	$.ajax({
+		url: '/dashbd/api/operator/callMemberListModal.do',
+		method: 'POST',
+		data: {grade : 'test'},
+		success: function(data, textStatus, jqXHR) {
+			$("#memberListArea").empty();
+			$("#memberListArea").html(data);
+			$("#memberListModal").modal("show");
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}

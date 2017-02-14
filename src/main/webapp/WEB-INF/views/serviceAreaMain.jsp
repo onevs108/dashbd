@@ -235,7 +235,7 @@
 									<input type="text" id="search-input" class="search-group">
 									<button type="button" onclick="searchTreeNode()" class="btn btn-success btn-xs button-edit search-group">Search</button>
 								</div>
-								<div id="treeNode" style="height: 700px; overflow: scroll;"></div>
+								<div id="treeNode" style="min-height: 700px;"></div>
 								<div class="google-map" id="map" style="height: 700px; display:none;"></div>
 							</div>
 <!--                             <div class="col-sm-4"> -->

@@ -18,145 +18,326 @@
     	
 		<!-- content body -->
         <div class="wrapper wrapper-content">
-			
-            <!-- Operator Mgmt -->
-            <div class="row">
-				<div class="col-lg-12">
-	                <div class="ibox float-e-margins">
-	                    <div class="ibox-content">
-	                    	<div class="row" style="padding-top:20px">
-	                            <div class="col-md-12 pull-right">
-	                            	<div class="col-sm-3"><h3><strong>National Wise Group</strong></h3></div>
-	                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn">Add</button>
-	                                <div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true">
-	                                    <div class="modal-dialog">
-	                                        <div class="modal-content animated fadeIn">
-	                                            <div class="modal-header">
-	                                                <button type="button" class="close" id="modal-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	                                                <i class="fa fa-folder-open-o modal-icon"></i>
-	                                                <h4 class="modal-title" id="modal-title">Create New Group</h4>
-	                                            </div>
-	                                            <div class="modal-body">
-	                                                <form method="get" class="form-horizontal">
-					                                    <div class="form-group">
-					                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Group Name</label>
-					                                    	<div class="input-group" id="form-operator-name-input-area">
-					                                    		<input type="text" id="form-operator-name" class="form-control">
-														    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn" type="button">Check</button></span>
-					                                    	</div>
-													    </div> 
-	                                                    <div class="form-group">
-	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
-	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description" style="height:200px"></div>
-	                                                    </div>
-	                                                    <div class="form-group">
-	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label>
-	                                                        <div class="col-sm-8">
-	                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status">
-	                                                        	<div class="checkbox checkbox-primary">
-																	<input type="checkbox" name="permission" value="${row.id}">
-																	<label for="checkbox${status.count}"> ${row.name}</label>
+        	<div class="operatorB">
+        		<div class="row">
+						<div class="col-lg-12">
+							<div class="ibox">
+								<div class="ibox-title">
+									<h5>Operator Group Management</h5>
+									<div class="ibox-tools">
+										<a class="collapse-link"> <i class="fa fa-chevron-up"></i></a>
+									</div>
+								</div>
+								<!-- // ibox-title -->
+	
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="ibox">
+											<div class="ibox-content">
+												<div class="row p-xs">
+													<div class="col-sm-9 m-b-xs"><h4>National Group</h4></div>
+													<div class="col-sm-3 text-right">
+														<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
+								                            <i class="fa fa-plus-square"> </i> Add Group
+								                        </a>
+													</div>
+												</div>
+												<div class="tb_tpl table-responsive">
+													<table class="table table-striped">
+														<colgroup>
+															<col>
+															<col>
+															<col>
+														</colgroup>
+														<thead>
+															<tr>
+																<th>Group Name</th>
+																<th>Description</th>
+																<th></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td>Administrator Group</td>
+																<td>Manage All menus</td>
+																<td>
+																	<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
+																</td>
+															</tr>
+															<tr>
+																<td>National Schedule Operator Group</td>
+																<td>Manage National Schedule</td>
+																<td>
+																	<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
+																</td>
+															</tr>
+															<tr>
+																<td>System Operator Group</td>
+																<td>Manage the system menu</td>
+																<td>
+																	<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
+																</td>
+															</tr>
+															<tr>
+																<td>Imsi Group</td>
+																<td>Imsi</td>
+																<td>
+																	<div class="btn-group">
+							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
+							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
+							                                        </div>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<!-- // tb_tpl -->
+												
+												<div id="groupArea"></div>
+												<!-- MemberList Modal Area -->
+												<div id="memberListArea"></div>
+											</div>
+											<!-- // ibox-content -->
+										</div>
+										<!-- // ibox -->
+									</div>
+									<!-- // col -->
+								</div>
+								<!-- // row -->
+	
+								<div class="row">
+	
+									<div class="col-lg-12">
+										<div class="ibox">
+											<div class="ibox-content">
+												<div class="row p-xs">
+													<div class="col-sm-9 m-b-xs"><h4>Regional Group</h4></div>
+													<div class="col-sm-3 text-right">
+														<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
+								                            <i class="fa fa-plus-square"> </i> Add Group
+								                        </a>
+													</div>
+												</div>
+												<div class="row">
+													<form class="form-horizontal">
+														<div class="col-lg-6">
+															<div class="form-group">
+																<label class="col-sm-6 control-label">Circle</label>
+																<div class="col-sm-6">
+																	<select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;"> -->
+								                                    	<option value="none">Circle</option>
+								                                		<c:forEach var="row" items="${circleList}">
+								                                   			<option value="${row.circle_name}">${row.circle_name}</option>
+								                                   		</c:forEach>
+								                                    </select>
 																</div>
-																</c:forEach>
-	                                                        </div>
-	                                                    </div>
-	                                                </form>
-	                                            </div>
-	                                            <div class="modal-footer">
-	                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button>
-	                                                <button type="button" class="btn btn-primary" id="modal-add-btn">OK</button>
-	                                            </div>
-	                                        </div>
-	                                    </div>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    	<div class="hr-line-dashed"></div>
-	                    
-							<div class="table-responsive">
-                            	<table class="table table-bordered" id="table"></table>
-                            </div>
-	                    </div><!-- end ibox-content -->
-	                </div>
-	            </div>
-            </div>
-            
-            <div class="row">
-				<div class="col-lg-12">
-	                <div class="ibox float-e-margins">
-	                    <div class="ibox-content">
-	                    	<div class="row" style="padding-top:20px">
-	                            <div class="col-md-12 pull-right">
-	                            	<div class="col-sm-2"><h3><strong>Regional Group</strong></h3></div>
-	                            	<div class="col-sm-3">
-	                                    <select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;">
-	                                    	<option value="none">Select</option>
-	                                		<c:forEach var="row" items="${circleList}">
-	                                   			<option value="${row.circle_name}">${row.circle_name}</option>
-	                                   		</c:forEach>
-	                                    </select>
-	                                </div>
-	                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn2">Add</button>
-	                                <div class="modal inmodal" id="form-modal2" tabindex="-1" role="dialog" aria-hidden="true">
-	                                    <div class="modal-dialog">
-	                                        <div class="modal-content animated fadeIn">
-	                                            <div class="modal-header">
-	                                                <button type="button" class="close" id="modal-cancel-icon-btn2"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	                                                <i class="fa fa-folder-open-o modal-icon"></i>
-	                                                <h4 class="modal-title" id="modal-title2">Create New Group</h4>
-	                                            </div>
-	                                            <div class="modal-body">
-	                                                <form method="get" class="form-horizontal">
-					                                    <div class="form-group">
-					                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Group Name</label>
-					                                    	<div class="input-group" id="form-operator-name-input-area2">
-					                                    		<input type="text" id="form-operator-name2" class="form-control">
-					                                    		<input type="hidden" id="form-circle-name2" class="form-control">
-														    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn2" type="button">Check</button></span>
-					                                    	</div>
-													    </div>
-	                                                    <div class="form-group">
-	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label>
-	                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description2" style="height:200px"></div>
-	                                                    </div>
-	                                                    <div class="form-group">
-	                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label>
-	                                                        <div class="col-sm-8">
-	                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status">
-	                                                        	<div class="checkbox checkbox-primary">
-																	<input type="checkbox" name="permission2" value="${row.id}">
-																	<label for="checkbox${status.count}"> ${row.name}</label>
-																</div>
-																</c:forEach>
-	                                                        </div>
-	                                                    </div>
-	                                                </form>
-	                                            </div>
-	                                            <div class="modal-footer">
-	                                                <button type="button" class="btn btn-white" id="modal-cancel-btn2">Cancel</button>
-	                                                <button type="button" class="btn btn-primary" id="modal-add-btn2">OK</button>
-	                                            </div>
-	                                        </div>
-	                                    </div>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    	<div class="hr-line-dashed"></div>
-	                    
-							<div class="table-responsive">
-                            	<table class="table table-bordered" id="table2"></table>
-                            </div>
-	                    </div><!-- end ibox-content -->
-	                </div>
-	            </div>
-            </div>
-        </div><!-- content body end -->
-    </div><!-- content end -->
-</div><!-- wrapper end -->
+															</div>
+														</div>
+													</form>
+												</div>
+												<div class="tb_tpl table-responsive">
+													<table class="table table-striped">
+														<colgroup>
+															<col>
+															<col>
+															<col>
+														</colgroup>
+														<thead>
+															<tr>
+																<th>Group Name</th>
+																<th>Description</th>
+																<th>ID</th>
+																<th></th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td>Schedule Manager Group</td>
+																<td>Group that manages Regional Schedule</td>
+																<td>
+																	<div class="btn-group">
+							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
+							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
+							                                        </div>
+																</td>
+															</tr>
+															<tr>
+																<td>User Manager Group</td>
+																<td>Group that manage the user of the circle</td>
+																<td>
+																	<div class="btn-group">
+							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
+							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
+							                                        </div>
+																</td>
+															</tr>
+															<tr>
+																<td></td>
+																<td>Manage the system menu</td>
+																<td>
+																	<div class="btn-group">
+							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button>
+							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button>
+							                                        </div>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+												<!-- // tb_tpl -->
+											</div>
+										</div>
+									</div>
+								</div><!-- // row -->
+							</div>
+							<!-- e : ibox -->
+						</div>
+						<!-- // col -->
+					</div>
+					<!-- // row -->
+				</div>
+				<!-- // operatorB -->
+			</div>
+			<!-- e : wrapper -->
+			<jsp:include page="../common/footer.jsp" />	
+		</div>
+		<!-- e : page-wrapper -->
+	</div>
+	<!-- e : wrapper -->
+        		
+<!-- 		                    <div class="ibox-content"> -->
+<!-- 		                    	<div class="row" style="padding-top:20px"> -->
+<!-- 		                            <div class="col-md-12 pull-right"> -->
+<!-- 		                            	<div class="col-sm-3"><h3><strong>National Group</strong></h3></div> -->
+<!-- 		                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn">Add</button> -->
+<!-- 		                                <div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true"> -->
+<!-- 		                                    <div class="modal-dialog"> -->
+<!-- 		                                        <div class="modal-content animated fadeIn"> -->
+<!-- 		                                            <div class="modal-header"> -->
+<!-- 		                                                <button type="button" class="close" id="modal-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> -->
+<!-- 		                                                <i class="fa fa-folder-open-o modal-icon"></i> -->
+<!-- 		                                                <h4 class="modal-title" id="modal-title">Create New Group</h4> -->
+<!-- 		                                            </div> -->
+<!-- 		                                            <div class="modal-body"> -->
+<!-- 		                                                <form method="get" class="form-horizontal"> -->
+<!-- 						                                    <div class="form-group"> -->
+<!-- 						                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Group Name</label> -->
+<!-- 						                                    	<div class="input-group" id="form-operator-name-input-area"> -->
+<!-- 						                                    		<input type="text" id="form-operator-name" class="form-control"> -->
+<!-- 															    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn" type="button">Check</button></span> -->
+<!-- 						                                    	</div> -->
+<!-- 														    </div>  -->
+<!-- 		                                                    <div class="form-group"> -->
+<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label> -->
+<!-- 		                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description" style="height:200px"></div> -->
+<!-- 		                                                    </div> -->
+<!-- 		                                                    <div class="form-group"> -->
+<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label> -->
+<!-- 		                                                        <div class="col-sm-8"> -->
+<%-- 		                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status"> --%>
+<!-- 		                                                        	<div class="checkbox checkbox-primary"> -->
+<%-- 																		<input type="checkbox" name="permission" value="${row.id}"> --%>
+<%-- 																		<label for="checkbox${status.count}"> ${row.name}</label> --%>
+<!-- 																	</div> -->
+<%-- 																	</c:forEach> --%>
+<!-- 		                                                        </div> -->
+<!-- 		                                                    </div> -->
+<!-- 		                                                </form> -->
+<!-- 		                                            </div> -->
+<!-- 		                                            <div class="modal-footer"> -->
+<!-- 		                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button> -->
+<!-- 		                                                <button type="button" class="btn btn-primary" id="modal-add-btn">OK</button> -->
+<!-- 		                                            </div> -->
+<!-- 		                                        </div> -->
+<!-- 		                                    </div> -->
+<!-- 		                                </div> -->
+<!-- 		                            </div> -->
+<!-- 		                        </div> -->
+<!-- 		                    	<div class="hr-line-dashed"></div> -->
+		                    
+<!-- 								<div class="table-responsive"> -->
+<!-- 	                            	<table class="table table-bordered" id="table"></table> -->
+<!-- 	                            </div> -->
+<!-- 		                    </div>end ibox-content -->
+<!-- 		                </div> -->
+<!-- 		            </div> -->
+<!-- 	            </div> -->
+	            
+<!-- 	            <div class="row"> -->
+<!-- 					<div class="col-lg-12"> -->
+<!-- 		                <div class="ibox float-e-margins"> -->
+<!-- 		                    <div class="ibox-content"> -->
+<!-- 		                    	<div class="row" style="padding-top:20px"> -->
+<!-- 		                            <div class="col-md-12 pull-right"> -->
+<!-- 		                            	<div class="col-sm-2"><h3><strong>Regional Group</strong></h3></div> -->
+<!-- 		                            	<div class="col-sm-3"> -->
+<!-- 		                                    <select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;"> -->
+<!-- 		                                    	<option value="none">Select</option> -->
+<%-- 		                                		<c:forEach var="row" items="${circleList}"> --%>
+<%-- 		                                   			<option value="${row.circle_name}">${row.circle_name}</option> --%>
+<%-- 		                                   		</c:forEach> --%>
+<!-- 		                                    </select> -->
+<!-- 		                                </div> -->
+<!-- 		                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn2">Add</button> -->
+<!-- 		                                <div class="modal inmodal" id="form-modal2" tabindex="-1" role="dialog" aria-hidden="true"> -->
+<!-- 		                                    <div class="modal-dialog"> -->
+<!-- 		                                        <div class="modal-content animated fadeIn"> -->
+<!-- 		                                            <div class="modal-header"> -->
+<!-- 		                                                <button type="button" class="close" id="modal-cancel-icon-btn2"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> -->
+<!-- 		                                                <i class="fa fa-folder-open-o modal-icon"></i> -->
+<!-- 		                                                <h4 class="modal-title" id="modal-title2">Create New Group</h4> -->
+<!-- 		                                            </div> -->
+<!-- 		                                            <div class="modal-body"> -->
+<!-- 		                                                <form method="get" class="form-horizontal"> -->
+<!-- 						                                    <div class="form-group"> -->
+<!-- 						                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Group Name</label> -->
+<!-- 						                                    	<div class="input-group" id="form-operator-name-input-area2"> -->
+<!-- 						                                    		<input type="text" id="form-operator-name2" class="form-control"> -->
+<!-- 						                                    		<input type="hidden" id="form-circle-name2" class="form-control"> -->
+<!-- 															    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn2" type="button">Check</button></span> -->
+<!-- 						                                    	</div> -->
+<!-- 														    </div> -->
+<!-- 		                                                    <div class="form-group"> -->
+<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label> -->
+<!-- 		                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description2" style="height:200px"></div> -->
+<!-- 		                                                    </div> -->
+<!-- 		                                                    <div class="form-group"> -->
+<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label> -->
+<!-- 		                                                        <div class="col-sm-8"> -->
+<%-- 		                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status"> --%>
+<!-- 		                                                        	<div class="checkbox checkbox-primary"> -->
+<%-- 																		<input type="checkbox" name="permission2" value="${row.id}"> --%>
+<%-- 																		<label for="checkbox${status.count}"> ${row.name}</label> --%>
+<!-- 																	</div> -->
+<%-- 																	</c:forEach> --%>
+<!-- 		                                                        </div> -->
+<!-- 		                                                    </div> -->
+<!-- 		                                                </form> -->
+<!-- 		                                            </div> -->
+<!-- 		                                            <div class="modal-footer"> -->
+<!-- 		                                                <button type="button" class="btn btn-white" id="modal-cancel-btn2">Cancel</button> -->
+<!-- 		                                                <button type="button" class="btn btn-primary" id="modal-add-btn2">OK</button> -->
+<!-- 		                                            </div> -->
+<!-- 		                                        </div> -->
+<!-- 		                                    </div> -->
+<!-- 		                                </div> -->
+<!-- 		                            </div> -->
+<!-- 		                        </div> -->
+<!-- 		                    	<div class="hr-line-dashed"></div> -->
+		                    
+<!-- 								<div class="table-responsive"> -->
+<!-- 	                            	<table class="table table-bordered" id="table2"></table> -->
+<!-- 	                            </div> -->
+<!-- 		                    </div>end ibox-content -->
+<!-- 		                </div> -->
+<!-- 		            </div> -->
+<!-- 	            </div> -->
+<!--         	</div> -->
+<!--         </div>content body end -->
+<!--     </div>content end -->
+<!-- </div>wrapper end -->
 
 <script src="js/jquery.cookie.js"></script>
-<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 <script src="js/modules/operator.js"></script>
 
 <script type="text/javascript">

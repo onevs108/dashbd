@@ -41,6 +41,7 @@ function initForm(flag, userId) {
 		$('#form-modified-date').attr("disabled", "disabled");
 		$('#form-grade').attr("disabled", "disabled");
 		$('#form-circle').attr("disabled", "disabled");
+		$('#form-memo').attr("disabled", "disabled");
 		
 		$('#save-btn').hide();
 		$('#cancel-btn').hide();
@@ -105,7 +106,7 @@ function changeGrade() {
 function doCheckId() {
 	var userId = $('#form-user-id').val();
 	if (userId == null || userId.length == 0) {
-		alert('Please input your ID');
+		swal("Fail !","Please enter your ID", "warning");
 		return false;
 	}
 	
@@ -120,7 +121,7 @@ function doCheckId() {
 			if (data.result) { // 성공
 				checkUserId = true;
 //				$('#form-user-id-input-area').attr('class', 'input-group has-success');
-				alert('Avaliable!');
+				swal("Success !","Avaliable!", "success !");
 			}
 			else { // 실패
 				checkUserId = false;
@@ -185,40 +186,40 @@ function setElements(user) {
 		$('#checkbox-permission-schedule').attr("checked", true);
 	}else{
 		for (var inx = 0; inx < user.permissions.length; inx++) {
-			switch (user.permissions[inx].id) {
-			case PERMISSION_ID_USER:
-				$('#checkbox-permission-user').attr("checked", true);
-				break;
-			case PERMISSION_ID_PERMISSION:
-				$('#checkbox-permission-permission').attr("checked", true);
-				break;
-			case PERMISSION_ID_CONTENTS:
-				$('#checkbox-permission-contents').attr("checked", true);
-				break;
-			case PERMISSION_ID_OPERATOR:
-				$('#checkbox-permission-operator').attr("checked", true);
-				break;
-			case PERMISSION_ID_BMSC:
-				$('#checkbox-permission-bmsc').attr("checked", true);
-				break;
-			case PERMISSION_ID_SERVICE_AREA:
-				$('#checkbox-permission-service-area').attr("checked", true);
-				break;
-			case PERMISSION_ID_ENB:
-				$('#checkbox-permission-enb').attr("checked", true);
-				break;
-			case PERMISSION_ID_SCHEDULE:
-				$('#checkbox-permission-schedule').attr("checked", true);
-				break;
-			case PERMISSION_ID_SYSTEM:
-				$('#checkbox-permission-system').attr("checked", true);
-				break;
-			case PERMISSION_ID_STATICTIS:
-				$('#checkbox-permission-statictis').attr("checked", true);
-				break;
-			default:
-				break;
-			}
+//			switch (user.permissions[inx].id) {
+//			case PERMISSION_ID_USER:
+//				$('#checkbox-permission-user').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_PERMISSION:
+//				$('#checkbox-permission-permission').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_CONTENTS:
+//				$('#checkbox-permission-contents').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_OPERATOR:
+//				$('#checkbox-permission-operator').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_BMSC:
+//				$('#checkbox-permission-bmsc').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_SERVICE_AREA:
+//				$('#checkbox-permission-service-area').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_ENB:
+//				$('#checkbox-permission-enb').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_SCHEDULE:
+//				$('#checkbox-permission-schedule').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_SYSTEM:
+//				$('#checkbox-permission-system').attr("checked", true);
+//				break;
+//			case PERMISSION_ID_STATICTIS:
+//				$('#checkbox-permission-statictis').attr("checked", true);
+//				break;
+//			default:
+//				break;
+//			}
 		}
 	}
 }
@@ -235,44 +236,44 @@ function doInsert() {
 	var memo = $('#form-memo').val();
 	
 	if (userId == null || userId.length == 0) {
-		alert('Please input the ID');
+		swal("Fail !","Please enter your ID", "warning");
 		$('#form-user-id').focus();
 		return false;
 	}
 	
 	if (!checkUserId) {
-		alert('Please check the ID');
+		swal("Fail !","Please check the ID", "warning");
 		$('#check-id-btn').focus();
 		return false;
 	}
 	
 	if (password == null || password.length == 0) {
-		alert('Please input the password');
+		swal("Fail !","Please enter the password", "warning");
 		$('#form-password').focus();
 		return false;
 	}
 	else {
 		if (password != confirmPassword) {
-			alert('Please check the password');
+			swal("Fail !","Please check the password", "warning");
 			$('#form-confirm-password').focus();
 			return false;
 		}
 	}
 	
 	if (firstName == null || firstName.length == 0) {
-		alert('Please input the FirstName');
+		swal("Fail !","Please enter the FirstName", "warning");
 		$('#form-first-name').focus();
 		return false;
 	}
 	
 	if (lastName == null || lastName.length == 0) {
-		alert('Please input the LastName');
+		swal("Fail !","Please enter the LastName", "warning");
 		$('#form-last-name').focus();
 		return false;
 	}
 	
 	if (department == null || department.length == 0) {
-		alert('Please input the Department');
+		swal("Fail !","Please enter the Department", "warning");
 		$('#form-department').focus();
 		return false;
 	}
