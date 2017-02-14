@@ -375,12 +375,18 @@
 	</select>
 <!--  inbo 작성 쿼리 끝  -->
 
-
-
-
-
-
-
+	<select id="checkBandwidth" parameterType="java.util.Map" resultType="java.util.Map">
+		select said, bandwidth from 
+		(
+			select city_id as said, bandwidth from city
+			where city_id IN (${saidList})
+			
+			union all
+			
+			select hotspot_id as said, bandwidth from hotspot 
+			where hotspot_id IN (${saidList})
+		) T
+	</select>
 
 
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >

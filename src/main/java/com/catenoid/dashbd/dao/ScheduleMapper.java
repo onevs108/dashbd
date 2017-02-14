@@ -1,12 +1,12 @@
 package com.catenoid.dashbd.dao;
 
-import com.catenoid.dashbd.dao.model.Schedule;
-import com.catenoid.dashbd.dao.model.ScheduleExample;
-
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+
+import com.catenoid.dashbd.dao.model.Schedule;
+import com.catenoid.dashbd.dao.model.ScheduleExample;
 
 public interface ScheduleMapper {
 	
@@ -46,4 +46,8 @@ public interface ScheduleMapper {
     int updateByPrimaryKeySelective(Schedule record);
 
     int updateByPrimaryKey(Schedule record);
+    
+	List<Map<String, String>> checkBandwidth(Map<String, String> params);
+    
+    
 }

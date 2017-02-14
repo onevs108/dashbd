@@ -64,12 +64,20 @@ $(document).ready(function()
 		}
 		
 		
-		//$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly><button class="cRemSaid" type="button" id="remSaid">del</button></p>').appendTo(saidListDiv);
-		$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly></p>').appendTo(saidListDiv);
+//		$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly><button class="cRemSaid" type="button" id="remSaid">del</button></p>').appendTo(saidListDiv);
+//		$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly></p>').appendTo(saidListDiv);
 		
-		//<a class="close-link"><i class="fa fa-times"></i></a>	 
-
-		 $("#said").val(saidDefault);
+		//<a class="close-link"><i class="fa fa-times"></i></a>
+		var saidListValue = "";
+		if($("#saidList").val() == ""){
+			saidListValue = said;
+		}else{
+			saidListValue = $("#saidList").val()+","+said;
+		}
+		
+		$("#saidList").val(saidListValue);
+		
+		$("#said").val(saidDefault);
 
 	});
 	
@@ -111,7 +119,7 @@ $(document).ready(function()
 			}
 		});
 	});
-		
+	
 	$("#frmScheduleReg").ajaxForm({
 		dataType : "json",
 		beforeSubmit : function(data, frm, opt) {
@@ -134,6 +142,40 @@ $(document).ready(function()
 			alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
+	
+	$("#btnOK").click(function() {
+		$.ajax({
+			type : "POST",
+			url : "checkBandwidth.do",
+			dataType : "json",
+			data : {saidList: $("#saidList").val(), bandwidth: $("#GBR").val()},
+			async : false,
+			success : function( data ) {
+				if(data.result == "SUCCESS")
+				{
+					$("#frmScheduleReg").submit();
+				}
+				else if(data.result == "bwExceed")
+				{
+					swal({
+		                title: "Warn !",
+		                text: "exceed bandwidth said=" + data.resultObj.said
+		            });
+				}
+				else 
+				{
+					swal({
+		                title: "Warn !",
+		                text: "Not exist said= " + data.resultObj
+		            });
+				}
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	});
+	
 	addScheduleRemoveEvent();
 	addContentRemoveEvent();
 });

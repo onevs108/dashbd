@@ -152,19 +152,48 @@ public class ScheduleMgmtController {
 		return (Map<String, Object>) resultMap;
 	}
 	
+	@RequestMapping(value = "view/checkBandwidth.do")
+	@ResponseBody
+	public Map<String, Object> checkBandwidth(@RequestParam Map<String, String> params, HttpServletRequest req, Locale locale) {
+		Map< String, Object > resultMap = new HashMap< String, Object >();
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		String[] listArray = params.get("saidList").split(",");
+		List<Map<String, String>> bwList = mapper.checkBandwidth(params);
+		
+		for (int i = 0; i < listArray.length; i++) {
+			for (int j = 0; j < bwList.size(); j++) {
+				if(String.valueOf(bwList.get(j).get("said")).equals(listArray[i])){	//bandwidth가 초과할 때 
+				    if(Integer.parseInt(String.valueOf(bwList.get(j).get("bandwidth"))) < Integer.parseInt(params.get("bandwidth"))) {
+						resultMap.put("result", "bwExceed");
+					    resultMap.put("resultObj", bwList.get(j));
+					    return resultMap;
+					}
+				    break;
+				}
+				if(j == bwList.size()-1){	//Said가 존재 하지 않을 때 
+					resultMap.put("result", "noSaid");
+				    resultMap.put("resultObj", listArray[i]);
+				    return resultMap;
+				}
+			}
+		}
+		
+		resultMap.put("result", "SUCCESS");
+		resultMap.put("resultObj", "SUCCESS");
+		
+		return resultMap;
+	}
 	
 	@RequestMapping( value = "/view/getScheduleForMain.do")
 	@ResponseBody
 	public Map< String, Object > getScheduleForMain( @RequestParam Map< String, Object > params,
 	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
 		
-		
 		String searchDate = Utils.getFileDate("yyyy-MM-dd");
 		params.put("searchDate", searchDate);
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		List<Map> list = mapper.selectSchdule(params);
-		
         
         Map< String, Object > returnMap = new HashMap< String, Object >();
         returnMap.put( "resultCode", "1000" );

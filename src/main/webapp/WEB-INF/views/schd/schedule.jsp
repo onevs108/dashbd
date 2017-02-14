@@ -14,6 +14,7 @@
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 	<link href="../resources/css/custom.css" rel="stylesheet">
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
 	<script src="../resourcesRenew/js/jquery.form.js"></script>
@@ -23,7 +24,7 @@
 	
 	<!-- FooTable -->
 	<script src="../resourcesRenew/js/plugins/footable/footable.all.min.js"></script>
-	
+	<script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
 	<!-- Custom and plugin javascript -->
 	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
 	<script src="../resourcesRenew/js/inspinia.js"></script>
@@ -300,21 +301,37 @@
                                 </div>
                                 </div>
                                 <div class="hr-line-dashed"></div>
-                                <div class="form-group">
+                                
+                                
+                                
+                                <div class="row">
                                 	<label class="col-sm-2 control-label">Service Area</label>
-                                    <div class="col-sm-4">
-                                    	<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
-                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+                                    <div class="col-sm-6">
+                                    	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;" readonly>
                                     </div>
                                     <c:if test="${empty mapSchedule.BCID}">
-	                                    <div class="col-sm-4">
-	                                        <button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
-	                                    </div>
+                                    	<div class="row">
+                                    		<div class="col-sm-2">
+	                                    		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
+		                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+		                                    </div>
+	                                    	<div class="col-sm-2"> 
+		                                    	<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
+		                                    </div>
+		                                    <div class="col-sm-4">
+		                                        <button type="button" id="mapAdd" name="mapAdd" class="btn btn-block btn-default">Add Service Area with Map</button>
+		                                    </div>
+								        </div>
                                     </c:if>
+                                </div>
+                                
+                                
+                                
+                                <div class="form-group" style="margin-top: -20px;">
                                 </div>
                                 <div class="form-group">
                                  	<label class="col-sm-2 control-label"> </label>
-	                                 <div class="col-sm-2" id="saidListDiv">
+	                                 <div class="col-sm-2" id="saidListDiv" >
 	                                 <!-- 
 	                                    	<input type="text" id="saidData" name="saidData" class="form-control" value = "123" readonly>
 	                                    	<input type="text" id="saidData" name="saidData" class="form-control" value = "122" readonly>
@@ -505,7 +522,7 @@
                         <div class="form-group">
 				                        	<div class="col-sm-5"></div>
 				                        	<div class="col-sm-">
-					                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnOK" style="margin-left:10px;margin-top:10px">
+					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="margin-left:10px;margin-top:10px">
 					                        	<c:if test="${empty mapSchedule.BCID}">
 					                        	OK
 					                        	</c:if>
