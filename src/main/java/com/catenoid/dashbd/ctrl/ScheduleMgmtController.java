@@ -184,6 +184,22 @@ public class ScheduleMgmtController {
 		return resultMap;
 	}
 	
+	
+	@RequestMapping(value = "view/checkExistSaid.do")
+	@ResponseBody
+	public Map<String, Object> checkExistSaid(@RequestParam Map<String, String> params, HttpServletRequest req, Locale locale) {
+		Map< String, Object > resultMap = new HashMap< String, Object >();
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		int result = mapper.checkExistSaid(params);
+		if(result < 1) {
+			resultMap.put("result", "FAIL");
+		}
+		resultMap.put("result", "SUCCESS");
+		
+		return resultMap;
+	}
+	
 	@RequestMapping( value = "/view/getScheduleForMain.do")
 	@ResponseBody
 	public Map< String, Object > getScheduleForMain( @RequestParam Map< String, Object > params,

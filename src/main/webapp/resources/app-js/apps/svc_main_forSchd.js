@@ -33,13 +33,13 @@ $(document).ready(function()
 		//inbo add START
     });
     
-    $("#selectCircle").on("change", function(e){
+    $("#selectCircle").on("change", function(e) {
     	var url = "/dashbd/hotspot/getCityListFromCircleId.do";
     	if(e.target[0].value == ""){
     		e.target[0].remove();
     	}
     	if($("input[name='radio']:checked").val() == "group"){
-    		url = "/dashbd/hotspot/getCityListFromCircleId.do";
+    		url = "/dashbd/hotspot/getServiceGroupList.do";
     	}
     	var array = e.target[e.target.selectedIndex].value.split("^");
     	var circleId = array[0];
@@ -57,15 +57,58 @@ $(document).ready(function()
     			callTimetable(undefined, circleId);
     			g_ServiceAreaId = circleId;
             	$("#selectCity").html(html);
-            	
+            	$("#selectHotspot").html("");
     		},
     		error : function(xhr, status, error){
     			swal({
     				title: "Fail !",
-    				text: "서버 통신 오류 입니다."
+    				text: "Network Error"
     			});
     		}
     	});
+    });
+    
+    $("#selectCity").on("change", function(e){
+    	if($("input[name='radio']:checked").val() == "group"){
+    		return;
+    	}
+    	var url = "/dashbd/hotspot/getHotSpotListFromCityId.do";
+    	if(e.target[0].value == ""){
+    		e.target[0].remove();
+    	}
+    	var array = e.target[e.target.selectedIndex].value.split("^");
+    	var cityId = array[0];
+    	var cityName = array[1];
+    	$.ajax({
+    		url : url,
+    		type: "post",
+    		data : { "cityId" : cityId },
+    		success : function(data) {
+    			var json = JSON.parse(data).result;
+    			var html = "<option value=''>Select Hotspot</option>";
+    			for (var i = 0; i < json.length; i++) {
+    				html += "<option value='"+json[i].hotspot_id+"^"+json[i].hotspot_name+"'>"+json[i].hotspot_name+"</option>";
+    			}
+    			callTimetable(undefined, cityId);
+    			g_ServiceAreaId = cityId;
+    			$("#selectHotspot").html(html);
+    			
+    		},
+    		error : function(xhr, status, error){
+    			swal({
+    				title: "Fail !",
+    				text: "Network Error"
+    			});
+    		}
+    	});
+    });
+    
+    $("input[name='radio']").click(function(){
+    	if($("input[name='radio']:checked").val() == "group"){
+    		$("#selectHotspot").hide();
+    	}else{
+    		$("#selectHotspot").show();
+    	}
     });
     
     callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);

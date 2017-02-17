@@ -48,6 +48,8 @@ public interface ScheduleMapper {
     int updateByPrimaryKey(Schedule record);
     
 	List<Map<String, String>> checkBandwidth(Map<String, String> params);
+	
+	int checkExistSaid(Map<String, String> params);
     
     
 }

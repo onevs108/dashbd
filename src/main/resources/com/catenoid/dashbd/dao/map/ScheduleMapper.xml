@@ -387,6 +387,19 @@
 			where hotspot_id IN (${saidList})
 		) T
 	</select>
+	
+	<select id="checkExistSaid" parameterType="java.util.Map" resultType="int">
+		select count(*) from 
+		(
+			select city_id as said, bandwidth from city
+			where city_id = ${said}
+			
+			union all
+			
+			select hotspot_id as said, bandwidth from hotspot 
+			where hotspot_id = ${said}
+		) T
+	</select>
 
 
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >

@@ -63,22 +63,35 @@ $(document).ready(function()
 			return;
 		}
 		
-		
-//		$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly><button class="cRemSaid" type="button" id="remSaid">del</button></p>').appendTo(saidListDiv);
-//		$('<p><input type="text" id="saidData" name="saidData" class="form-control" value = "' + said +'" readonly></p>').appendTo(saidListDiv);
-		
-		//<a class="close-link"><i class="fa fa-times"></i></a>
-		var saidListValue = "";
-		if($("#saidList").val() == ""){
-			saidListValue = said;
-		}else{
-			saidListValue = $("#saidList").val()+","+said;
-		}
-		
-		$("#saidList").val(saidListValue);
-		
-		$("#said").val(saidDefault);
-
+		$.ajax({
+			type : "POST",
+			url : "checkExistSaid.do",
+			dataType : "json",
+			data : {said: $("#said").val()},
+			async : false,
+			success : function( data ) {
+				if(data.result == "SUCCESS")
+				{
+					var saidListValue = "";
+					if($("#saidList").val() == ""){
+						saidListValue = said;
+					}else{
+						saidListValue = $("#saidList").val()+","+said;
+					}
+					$("#saidList").val(saidListValue);
+					
+					$("#said").val(saidDefault);
+				}else{
+					swal({
+		                title: "Warn !",
+		                text: "exceed bandwidth said=" + $("#said").val()
+		            });
+				}
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
 	});
 	
 	$("#saidListDiv").on('click', '.cRemSaid', function() {

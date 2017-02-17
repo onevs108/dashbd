@@ -204,3 +204,42 @@ function validationCheck(type, obj) {
 		}
 	}
 }
+
+function getTimeStamp() {
+	  var d = new Date();
+	  var s =
+	    leadingZeros(d.getFullYear(), 4) + '-' +
+	    leadingZeros(d.getMonth() + 1, 2) + '-' +
+	    leadingZeros(d.getDate(), 2) + ' ' +
+
+	    leadingZeros(d.getHours(), 2) + ':' +
+	    leadingZeros(d.getMinutes(), 2) + ':' +
+	    leadingZeros(d.getSeconds(), 2);
+
+	  return s;
+	}
+
+function leadingZeros(n, digits) {
+  var zero = '';
+  n = n.toString();
+
+  if (n.length < digits) {
+    for (i = 0; i < digits - n.length; i++)
+      zero += '0';
+  }
+  return zero + n;
+}
+
+//시간 더하기 계산
+//date : 2016-10-10 23:00
+function getTimeDiff(date, time) {
+	var	startTime = new Date(date.substr(0,4), date.substr(5,2)-1, date.substr(8,2), date.substr(11,2), date.substr(14,2));
+	var	currentTime = new Date(time.substr(0,4), time.substr(5,2)-1, time.substr(8,2), time.substr(11,2), time.substr(14,2));
+	
+	if((currentTime - startTime) > -1) {
+		return true;
+	}
+	return false;
+}
+
+

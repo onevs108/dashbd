@@ -42,6 +42,7 @@
 			
 			getMenuList('SCHEDULE_MGMT');
 		});
+		
 	</script>
     	
     <script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
@@ -191,7 +192,7 @@
 						<div class="ibox-title">
 							<div>
 								<h5>Regional Schedule</h5>
-								<button type="button" class="btn btn-primary btn-xs" id="btn" style="float: right;">Create Regional Schedule</button>
+								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Regional Schedule</button>
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area" style="margin-left: 20px;" checked/>Service Area&nbsp;
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
 							</div>
@@ -209,14 +210,16 @@
                                
                             </select>
                         </div>
+						<div class="col-sm-3">
+							<select id="selectHotspot" class="input-sm form-control input">
+                               
+                            </select>
+                        </div>
 						<div class="ibox-content">
                             <div class="row">
                             	<div class="col-lg-12">
                             	<div class="eepg_timeline">
 	                                <div class="timetable"></div>
-	                            </div>
-	                            <div class="">
-		                            <button type="button" class="btn btn-primary btn-sm" id="btnScheduleDetail">Show Detail</button>
 	                            </div>
                             	</div>
                             </div>

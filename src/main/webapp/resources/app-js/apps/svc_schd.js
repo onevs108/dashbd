@@ -98,7 +98,7 @@ function setTimeline(maxRow, viewStartHour) {
       jQuery(".room-timeline").prepend("<div style='width:100%; overflow: visible;'><hr class='timeline'/></div>") 
     }
 	
-    var timeline = jQuery(".timeline");  
+    var timeline = jQuery(".timeline");
 
     var now = moment();
     var day = parseInt(now.format("e"))
@@ -118,4 +118,5 @@ function setTimeline(maxRow, viewStartHour) {
     .css('left',left+"px")
     .css('height',rowsHeight+"px")
     //.css('top',top+"px") 
+    $('section').css("width", "100%");
 }

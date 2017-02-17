@@ -254,7 +254,7 @@ function setTimeTable(data ){
 		events.push( schedule );
 	}
   		
-	
+	//
 	$('#calendar').fullCalendar({
 		schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
 		defaultView: 'agendaDay',
@@ -308,12 +308,14 @@ function setTimeTable(data ){
 			endTime = endTime.format('YYYY-MM-DD[T]HH:mm:ss');
 			//console.log('endTime', endTime);
 			console.log(content_id ,',', g_name, ',', startTime, ',', endTime );
-			addSchedule(content_id, gTitle, startTime, endTime);
-			//location.reload();
+			if(getTimeDiff(startTime, getTimeStamp())){
+				alert("The start time has already passed")
+				location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+			}
+//			addSchedule(content_id, gTitle, startTime, endTime);
 			
 			var b = $('#calendar').fullCalendar('getDate');
 		 	var searchDate = b.format('YYYY-MM-DD');
-			
 			
 			var title = encodeURI($("#form-title").val());
 			var category =  encodeURI($("#form-category").val());
@@ -401,8 +403,8 @@ function setTimeline(calView) {
 
     var now = moment();
     var day = parseInt(now.format("e"))
-    var width =  10000;
-    var height =  40;
+    var width = 10000;
+    var height = 40;
     var left = 50;
     //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;;
     var position = now.hours() + now.minutes() / 60 ;
