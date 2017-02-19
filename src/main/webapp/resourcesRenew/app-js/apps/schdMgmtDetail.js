@@ -3,6 +3,32 @@ var gTitle = "";
 var gDuration = "";
 var g_name = "";
 var g_delRetrun;
+var currentTime = getTimeStamp();
+
+function getTimeStamp() {
+	var d = new Date();
+	var s =
+	    leadingZeros(d.getFullYear(), 4) + '-' +
+	    leadingZeros(d.getMonth() + 1, 2) + '-' +
+	    leadingZeros(d.getDate(), 2) + ' ' +
+	
+	    leadingZeros(d.getHours(), 2) + ':' +
+	    leadingZeros(d.getMinutes(), 2) + ':' +
+	    leadingZeros(d.getSeconds(), 2);
+	return s;
+}
+
+function leadingZeros(n, digits) {
+	var zero = '';
+	n = n.toString();
+	
+	if (n.length < digits) {
+	  for (i = 0; i < digits - n.length; i++)
+	    zero += '0';
+	}
+	return zero + n;
+}
+
 $(document).ready(function() {
 	
 	ctrl.initialize();
@@ -260,6 +286,7 @@ function setTimeTable(data ){
 		defaultView: 'agendaDay',
 		editable: true, 			// enable draggable events
 		droppable: true, 			// this allows things to be dropped onto the calendar
+		slotDuration: '00:15:00',
 		header: {
 			left: 'prev,next,trash'
 			, center: 'title'
@@ -308,7 +335,7 @@ function setTimeTable(data ){
 			endTime = endTime.format('YYYY-MM-DD[T]HH:mm:ss');
 			//console.log('endTime', endTime);
 			console.log(content_id ,',', g_name, ',', startTime, ',', endTime );
-			if(getTimeDiff(startTime, getTimeStamp())){
+			if(getTimeDiff(startTime, currentTime)){
 				alert("The start time has already passed")
 				location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 			}else{
@@ -323,12 +350,19 @@ function setTimeTable(data ){
 			location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
 		},
 		eventDrop: function(event) { // called when an event (already on the calendar) is moved
-			console.log('eventDrop', event, ',',event.start.format(), ',' , event.end.format() , event.url);
+			console.log('eventDrop', event, ',',event.start.format(), ',' , event.end.format(), event.url);
 			var ret = confirm("It's going to update. are you sure??");
-			if (ret)
-				modifySchedule(event.url, event.start.format(), event.end.format());
-			else
+			if (ret){
+				if(getTimeDiff(event.start.format(), currentTime)){
+					alert("The start time has already passed")
+					location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+				}else{
+					modifySchedule(event.url, event.start.format(), event.end.format());
+				}
+			}	
+			else {
 				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+			}
 		}
 		,eventResize: function(event, delta, revertFunc){
 			console.log('eventResize', event, ',',event.start.format(), ',' , event.end.format() , event.url);
@@ -405,8 +439,8 @@ function setTimeline(calView) {
     var now = moment();
     var day = parseInt(now.format("e"))
     var width = 10000;
-    var height = 40;
-    var left = 50;
+    var height = 80;	//나눠진 분마다 높이 조절
+    var left = 60;
     //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;;
     var position = now.hours() + now.minutes() / 60 ;
     
