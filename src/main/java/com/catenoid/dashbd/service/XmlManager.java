@@ -288,11 +288,10 @@ public class XmlManager {
 			}
 			
 			Element serviceArea = new Element("serviceArea");
-			serviceArea.addContent( new Element("said").setText(params.get("said")));
-			if (saidData != null){
-				for( String said : saidData){
-					serviceArea.addContent( new Element("said").setText(said));
-				}
+//			serviceArea.addContent( new Element("said").setText(params.get("said")));
+			String[] saidArray = paramList.get(6).get(0).split(",");
+			for (int i = 0; i < saidArray.length; i++) {
+				serviceArea.addContent( new Element("said").setText(saidArray[i]));
 			}
 			
 			if ("on".equals(params.get("FileRepair"))){
@@ -329,24 +328,7 @@ public class XmlManager {
 			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
 			
-			Element contentSet = new Element("contentSet");
-			contentSet.setAttribute(new Attribute("contentSetId", "1")); 					
-			contentSet.setAttribute(new Attribute("cancelled", "false"));				
-								
-			Element serviceArea = new Element("serviceArea");
-			serviceArea.addContent(new Element("said").setText(params.get("said")));
-			if (saidData != null){
-				for( String said : saidData){
-					serviceArea.addContent( new Element("said").setText(said));
-				}
-			}
 			
-			Element mpd = new Element("mpd");
-			mpd.setAttribute(new Attribute("changed", "false"));									
-			mpd.addContent(new Element("mpdURI").setText(params.get("mpdURI")));
-			
-			contentSet.addContent(serviceArea);
-			contentSet.addContent(mpd);
 			if ("on".equals(params.get("reportType"))){
 				receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
 				associatedDelivery.addContent(receptionReport);
@@ -359,7 +341,7 @@ public class XmlManager {
 				streaming.addContent(serviceLanguage);
 			
 			streaming.addContent(transferConfig);
-			streaming.addContent(contentSet);
+			
 			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport")))
 				streaming.addContent(associatedDelivery);
 			
@@ -374,23 +356,47 @@ public class XmlManager {
 			//time format ex) 2015-04-10T17:24:09.000+09:00 
 			schedule.setAttribute(new Attribute("start", convertDateFormat(paramList.get(0).get(i))));
 			schedule.setAttribute(new Attribute("stop", convertDateFormat(paramList.get(1).get(i))));
-			for (int j = 0; j < Integer.parseInt(paramList.get(5).get(i)); j++) {	//fileURI 갯수에 따라 동작
-				Element content = new Element("content");
-				content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						//??
-				content.setAttribute(new Attribute("contentType", "text/plain"));							//??
-				content.setAttribute(new Attribute("cancelled", "false"));									//??
-				content.setAttribute(new Attribute("changed", "false"));				
-				content.addContent( new Element("fileURI").setText(paramList.get(2).get(i)));
-				Element deliveryInfo = new Element("deliveryInfo");
-				//time format ex) 2015-04-10T17:24:09.000+09:00
-				if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
-					deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
-					deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));
-					content.addContent(deliveryInfo);
+			if(!SERVICE_TYPE_STREAMING.equals(params.get("serviceType"))){
+				for (int j = 0; j < Integer.parseInt(paramList.get(5).get(i)); j++) {	//fileURI 갯수에 따라 동작
+					Element content = new Element("content");
+					content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						//??
+					content.setAttribute(new Attribute("contentType", "text/plain"));							//??
+					content.setAttribute(new Attribute("cancelled", "false"));									//??
+					content.setAttribute(new Attribute("changed", "false"));				
+					content.addContent( new Element("fileURI").setText(paramList.get(2).get(i)));
+					Element deliveryInfo = new Element("deliveryInfo");
+					//time format ex) 2015-04-10T17:24:09.000+09:00
+					if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
+						deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
+						deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));
+						content.addContent(deliveryInfo);
+					}
+					schedule.addContent(content);
 				}
-				schedule.addContent(content);
+				serviceType.addContent(schedule);
 			}
-			serviceType.addContent(schedule);
+			else
+			{
+				Element contentSet = new Element("contentSet");
+				contentSet.setAttribute(new Attribute("contentSetId", String.valueOf(i+1))); 					
+				contentSet.setAttribute(new Attribute("cancelled", "false"));				
+									
+				Element serviceArea = new Element("serviceArea");
+				
+				String[] saidArray = paramList.get(6).get(i).split(",");
+				for (int j = 0; j < saidArray.length; j++) {
+					serviceArea.addContent( new Element("said").setText(saidArray[j]));
+				}
+				
+				Element mpd = new Element("mpd");
+				mpd.setAttribute(new Attribute("changed", "false"));									
+				mpd.addContent(new Element("mpdURI").setText(paramList.get(7).get(i)));
+				
+				contentSet.addContent(serviceArea);
+				contentSet.addContent(mpd);
+				serviceType.addContent(schedule);
+				serviceType.addContent(contentSet);
+			}
 		}
 		
 		service.addContent(serviceType);

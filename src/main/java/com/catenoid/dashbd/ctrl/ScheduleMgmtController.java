@@ -362,6 +362,8 @@ public class ScheduleMgmtController {
 			@RequestParam(value="deliveryInfo_start", required=false) List<String> deliveryInfo_start,
 			@RequestParam(value="deliveryInfo_end", required=false) List<String> deliveryInfo_end,
 			@RequestParam(value="contentLength", required=false) List<String> contentLength,
+			@RequestParam(value="saidList", required=false) List<String> saidList,
+			@RequestParam(value="mpdURI", required=false) List<String> mpdURI,
             HttpServletRequest req, Locale locale ) {
 		
 		int ret;
@@ -373,6 +375,8 @@ public class ScheduleMgmtController {
 		paramList.add(deliveryInfo_start);
 		paramList.add(deliveryInfo_end);
 		paramList.add(contentLength);
+		paramList.add(saidList);
+		paramList.add(mpdURI);
 		
 		String tmp = params.get("preEmptionCapabiity");
 		

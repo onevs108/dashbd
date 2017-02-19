@@ -10,33 +10,47 @@ $(document).ready(function()
 			$("#bcType_fileDownload").show();
 			$("#bcType_fileDownload2").show();
 			$("#bcType_streaming").hide();
-			$("#bcType_streaming2").hide();
+			$("div[name='bcType_streaming2']").hide();
 			$("div[name='contentStartStop']").show();
 			$("#interval").hide();
 			$("div[name='contentPlus']").show();
+			if($("#addServiceArea").length == 0){
+				$("#serviceAreaRow").append($("#serviceArea").render());
+				addServiceAreaEvent(0);
+			}
 		}else if($(this).val() == "carouselMultiple"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
-			$("#bcType_streaming2").hide();
+			$("div[name='bcType_streaming2']").hide();
 			$("div[name='contentStartStop']").hide();
 			$("#bcType_fileDownload2").hide();
 			$("#interval").show();
 			$("div[name='contentPlus']").show();
+			if($("#addServiceArea").length == 0){
+				$("#serviceAreaRow").append($("#serviceArea").render());
+				addServiceAreaEvent(0);
+			}
 		}else if($(this).val() == "carouselSingle"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
-			$("#bcType_streaming2").hide();
+			$("div[name='bcType_streaming2']").hide();
 			$("div[name='contentStartStop']").hide();
 			$("#bcType_fileDownload2").hide();
 			$("#interval").hide();
 			$("div[name='contentPlus']").hide();
+			if($("#addServiceArea").length == 0){
+				$("#serviceAreaRow").append($("#serviceArea").render());
+				addServiceAreaEvent(0);
+			}
 		}else{
 			$("#bcType_fileDownload").hide();
 			$("#bcType_fileDownload2").hide();
 			$("#bcType_streaming").show();
-			$("#bcType_streaming2").show();
+			$("div[name='bcType_streaming2']").show();
 			$("div[name='contentStartStop']").hide();
 			$("#interval").hide();
+			$("#addServiceArea").remove();
+			addServiceAreaEvent(0);
 		}
 	});
 	
@@ -73,47 +87,6 @@ $(document).ready(function()
 	});
 	
 	var saidListDiv = $('#saidListDiv');
-	
-	$("#saidAdd").click(function() {
-		
-		var said = $("#said").val();
-		var saidDefault = $("#saidDefault").val();
-		
-		if (saidDefault == said){
-			alert ('this said is default.other said input.');
-			return;
-		}
-		
-		$.ajax({
-			type : "POST",
-			url : "checkExistSaid.do",
-			dataType : "json",
-			data : {said: $("#said").val()},
-			async : false,
-			success : function( data ) {
-				if(data.result == "SUCCESS")
-				{
-					var saidListValue = "";
-					if($("#saidList").val() == ""){
-						saidListValue = said;
-					}else{
-						saidListValue = $("#saidList").val()+","+said;
-					}
-					$("#saidList").val(saidListValue);
-					
-					$("#said").val(saidDefault);
-				}else{
-					swal({
-		                title: "Warn !",
-		                text: "SAID-"+$("#said").val()+" is not exist" 
-		            });
-				}
-			},
-			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
-			}
-		});
-	});
 	
 	$("#saidListDiv").on('click', '.cRemSaid', function() {
 		$(this).parents('p').remove();
@@ -178,11 +151,28 @@ $(document).ready(function()
 	});
 	
 	$("#btnOK").click(function() {
+		var saidList = "";
+		if($("#serviceType").val() == "streaming") {
+			var saidListLength = $("input[name='saidList']").length;
+			if(saidListLength > 1){
+				for (var i = 0; i < saidListLength; i++) {
+					if(i < saidListLength-1){
+						saidList += $($("input[name='saidList']")[i]).val() + ",";
+					}else{
+						saidList += $($("input[name='saidList']")[i]).val();
+					}
+				}
+			}else{
+				saidList = $("input[name='saidList']")[0].value;
+			}
+		}else{
+			saidList = $("input[name='saidList']")[0].value;
+		}
 		$.ajax({
 			type : "POST",
 			url : "checkBandwidth.do",
 			dataType : "json",
-			data : {saidList: $("#saidList").val(), bandwidth: $("#GBR").val()},
+			data : {saidList: saidList, bandwidth: $("#GBR").val()},
 			async : false,
 			success : function( data ) {
 				if(data.result == "SUCCESS")
@@ -213,6 +203,53 @@ $(document).ready(function()
 	addScheduleRemoveEvent();
 	addContentRemoveEvent();
 });
+
+function addServiceAreaEvent(idx){
+	$($("button[name='mapAdd']")[idx]).click(function(){
+		$("#circleCiryPop").modal();
+	})
+	
+	$($("button[name='saidAdd']")[idx]).click(function(e) {
+		
+		var said = $($("input[name='said']")[idx]).val();
+		var saidDefault = $($("input[name='saidDefault']")[idx]).val();
+		
+		if (saidDefault == said){
+			alert ('this said is default.other said input.');
+			return;
+		}
+		
+		$.ajax({
+			type : "POST",
+			url : "checkExistSaid.do",
+			dataType : "json",
+			data : {said: said},
+			async : false,
+			success : function( data ) {
+				if(data.result == "SUCCESS")
+				{
+					var saidListValue = "";
+					if($($("input[name='saidList']")[idx]).val() == ""){
+						saidListValue = said;
+					}else{
+						saidListValue = $($("input[name='saidList']")[idx]).val()+","+said;
+					}
+					$($("input[name='saidList']")[idx]).val(saidListValue);
+					
+					$($("input[name='said']")[idx]).val(saidDefault);
+				}else{
+					swal({
+		                title: "Warn !",
+		                text: "SAID-"+said+" is not exist" 
+		            });
+				}
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	});
+}
 
 function addScheduleRemoveEvent(){
 	$(".close-schedule").click(function(e){

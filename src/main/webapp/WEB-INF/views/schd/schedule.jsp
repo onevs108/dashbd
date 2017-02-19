@@ -12,9 +12,12 @@
     <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-	<link href="../resources/css/custom.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/custom.css" rel="stylesheet">
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/plugins/iCheck/custom.css" rel="stylesheet">
+
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
 	<script src="../resourcesRenew/js/jquery.form.js"></script>
@@ -28,6 +31,9 @@
 	<script src="../resourcesRenew/js/plugins/sweetalert/sweetalert.min.js"></script>
 	<!-- Custom and plugin javascript -->
 	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="../resourcesRenew/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="../resourcesRenew/js/plugins/pace/pace.min.js"></script>
 	<script src="../resourcesRenew/js/inspinia.js"></script>
 	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 	<script src="../resourcesRenew/app-js/apps/schedule.js"></script>
@@ -38,6 +44,8 @@
 	<script>
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
+			$("#serviceAreaRow").append($("#serviceArea").render());
+			addServiceAreaEvent(0);
 		});
 		
 		function addFileSchedule() {
@@ -48,7 +56,9 @@
 				$("div[name='contentPlus']").hide();	
 				$("div[name='contentStartStop']").hide();	
 			}else if($("#serviceType").val() == "streaming") {
+				$("div[name='bcType_streaming2']").show();
 				$("div[name='bcType_fileDownload']").hide();
+				addServiceAreaEvent($("div[name='bcType_streaming2']").length-1);
 			}
 		}
 		
@@ -59,6 +69,7 @@
 			$($("#contentLength")[ctIdx]).val($($("div[name='content']")[ctIdx]).children().length);
 			addContentRemoveEvent();
 		}
+		
  	</script>
 
 	<style>
@@ -315,38 +326,10 @@
                                 </div>
                                 <div class="hr-line-dashed"></div>
                                 
-                                <div class="row">
-                                	<label class="col-sm-2 control-label">Service Area</label>
-                                    <div class="col-sm-6">
-                                    	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;" readonly>
-                                    </div>
-                                    <c:if test="${empty mapSchedule.BCID}">
-                                    	<div class="row">
-                                    		<div class="col-sm-2">
-	                                    		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
-		                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
-		                                    </div>
-	                                    	<div class="col-sm-2"> 
-		                                    	<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
-		                                    </div>
-		                                    <div class="col-sm-4">
-		                                        <button type="button" id="mapAdd" name="mapAdd" class="btn btn-block btn-default">Add Service Area with Map</button>
-		                                    </div>
-								        </div>
-                                    </c:if>
+                                <div id="serviceAreaRow">
+                                	
                                 </div>
                                 
-                                <div class="form-group" style="margin-top: -20px;">
-                                </div>
-                                <div class="form-group">
-                                 	<label class="col-sm-2 control-label"> </label>
-	                                 <div class="col-sm-2" id="saidListDiv" >
-	                                 <!-- 
-	                                    	<input type="text" id="saidData" name="saidData" class="form-control" value = "123" readonly>
-	                                    	<input type="text" id="saidData" name="saidData" class="form-control" value = "122" readonly>
-	                                  -->
-	                                 </div>
-                                </div>
                             </form>
                         </div>
                     </div><!-- end ibox-content -->
@@ -374,6 +357,47 @@
 	                                    	</button>
 	                                    </div>
 	                                </div>
+<!-- 	                                <div class="hr-line-dashed"></div> -->
+			                        <div name="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
+			                            <div class="form-group"><label class="col-sm-2 control-label" style="margin-left: 10px;">ContentSet</label>
+			                                <div class="col-sm-8">
+			                                    <div class="form-group">
+			                                    	<div class="row">
+					                                	<label class="col-sm-2 control-label">Service Area</label>
+					                                    <div class="col-sm-6">
+					                                    	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: gainsboro;" readonly>
+					                                    </div>
+					                                    <c:if test="${empty mapSchedule.BCID}">
+					                                    	<div class="row">
+					                                    		<div class="col-sm-2">
+						                                    		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
+							                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+							                                    </div>
+						                                    	<div class="col-sm-2"> 
+							                                    	<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
+							                                    </div>
+							                                    <div class="col-sm-4">
+							                                        <button type="button" id="mapAdd" name="mapAdd" class="btn btn-block btn-default">Add Service Area with Map</button>
+							                                    </div>
+													        </div>
+					                                    </c:if>
+					                                </div>
+			                                    </div>
+			                                    <div class="form-group">
+			                                    	<label class="pull-left" style="padding:7px 0 0 35px">mpd
+			                                    	</label>
+			                                        <div class="col-sm-10">
+			                                        <c:if test="${empty mapSchedule.BCID}">
+			                                        	<input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapContentUrl.url}">
+			                                        </c:if>
+			                                        <c:if test="${not empty mapSchedule.BCID}">
+				                                        <input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}">
+			                                        </c:if>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>
 	                            </div>
                                 <div id="bcType_fileDownload" name="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'streaming'}"> style="display:none"</c:if>>
 	                                <div class="form-group">
@@ -440,25 +464,6 @@
                             </div>
                         </div><!-- end ibox-content -->
                     </div>
-                    	<div class="hr-line-dashed"></div>
-                        <div id="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
-                            <div class="form-group"><label class="col-sm-2 control-label">ContentSet</label>
-                                <div class="col-sm-8">
-                                    <div class="form-group">
-                                    	<label class="pull-left" style="padding:7px 0 0 35px">mpd
-                                    	</label>
-                                        <div class="col-sm-10">
-                                        <c:if test="${empty mapSchedule.BCID}">
-                                        	<input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapContentUrl.url}">
-                                        </c:if>
-                                        <c:if test="${not empty mapSchedule.BCID}">
-	                                        <input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}">
-                                        </c:if>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="hr-line-dashed"></div>
                         
                             <div class="form-group"><label class="col-sm-2 control-label">Associated Delivery</label>
@@ -554,7 +559,7 @@
             </div>
 		</div>
 		<!-- end eEPG for ESPN time -->
-
+		<c:import url="../common/circleTownMgmt.jsp"></c:import>
 	</div>	
 	</form>
 	</div><!-- end wrapper wrapper-content -->
@@ -562,7 +567,6 @@
 	</div><!-- end page-wrapper -->
 
 </div><!-- end wrapper -->
-
 
 </body>
 </html>
@@ -590,6 +594,46 @@
                 	</button>
                 </div>
             </div>
+			<div name="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
+	            <div class="form-group"><label class="col-sm-2 control-label" style="margin-left: 10px;">ContentSet</label>
+	                <div class="col-sm-8">
+	                    <div class="form-group">
+	                    	<div class="row">
+	                  	<label class="col-sm-2 control-label">Service Area</label>
+	                      <div class="col-sm-6">
+	                      	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: gainsboro;" readonly>
+	                      </div>
+	                      <c:if test="${empty mapSchedule.BCID}">
+	                      	<div class="row">
+	                      		<div class="col-sm-2">
+	                       		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
+	                        	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+	                        </div>
+	                       	<div class="col-sm-2"> 
+	                        	<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
+	                        </div>
+	                        <div class="col-sm-4">
+	                            <button type="button" id="mapAdd" name="mapAdd" class="btn btn-block btn-default">Add Service Area with Map</button>
+	                        </div>
+	  						</div>
+	                      </c:if>
+	                  </div>
+	                    </div>
+	                    <div class="form-group">
+	                    	<label class="pull-left" style="padding:7px 0 0 35px">mpd
+	                    	</label>
+	                        <div class="col-sm-10">
+	                        <c:if test="${empty mapSchedule.BCID}">
+	                        	<input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapContentUrl.url}">
+	                        </c:if>
+	                        <c:if test="${not empty mapSchedule.BCID}">
+	                         <input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}">
+	                        </c:if>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
         </div>
            <div id="bcType_fileDownload" name="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'streaming'}"> style="display:none"</c:if>>
             <div class="form-group">
@@ -657,6 +701,27 @@
        	</div>
 </script>
 
-
+<script id="serviceArea" type="text/x-jsrender">
+	<div class="row" id="addServiceArea">
+		<label class="col-sm-2 control-label">Service Area</label>
+		<div class="col-sm-6">
+			<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;" readonly>
+		</div>
+		<c:if test="${empty mapSchedule.BCID}">
+			<div class="row">
+				<div class="col-sm-2">
+					<input type="hidden" class="form-control" id="saidDefault" name="saidDefault" value="${mapSchedule.serviceAreaId}"> 
+					<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+				</div>
+				<div class="col-sm-2">
+					<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
+				</div>
+				<div class="col-sm-4">
+					<button type="button" id="mapAdd" name="mapAdd" class="btn btn-block btn-default">Add Service Area with Map</button>
+				</div>
+			</div>
+		</c:if>
+	</div>
+</script>
 
 
