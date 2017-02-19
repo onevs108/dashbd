@@ -40,6 +40,8 @@ public class Users {
 
     private Date updatedAt;
     
+    private String townName;
+    
     private List<Permission> permissions = new ArrayList<Permission>(); 
 
     public Users() {}
@@ -198,6 +200,11 @@ public class Users {
     	jsonResult.put("gradeName", gradeName);
     	jsonResult.put("memo", memo);
     	jsonResult.put("circleName", circleName);
+    	if(operatorName == null) {
+    		jsonResult.put("townName", gradeName);
+    	} else {
+    		jsonResult.put("townName", operatorName);
+    	}
     	
     	JSONArray jsonArray = new JSONArray();
     	for (Permission perms : permissions)
@@ -226,5 +233,17 @@ public class Users {
 				+ ", updatedAt=" + updatedAt
 				+ ", permissionsSize=" + (permissions == null ? null : permissions.size())
 				+ "]";
+	}
+
+	public String getTownName() {
+		return townName;
+	}
+
+	public void setTownName(String townName) {
+		this.townName = townName;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

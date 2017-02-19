@@ -376,19 +376,66 @@
 	</delete>
 	
 	<select id="selectMemberList" parameterType="HashMap" resultType="com.catenoid.dashbd.dao.model.Users">
-		 SELECT  id
-			, user_id AS userId				
-			, operator_id AS operatorId						
-			, password								
-			, first_name AS firstName		
-			, last_name	AS lastName				
-			, department								
-			, grade								
-			, permission								
-			, memo								
-			, created_at								
-			, updated_at								
-		FROM users
+		SELECT 
+			id, userId, circleName, operatorName, password, firstName, lastName, department, grade, gradeName, permission, memo, createdAt, updatedAt
+		FROM ( SELECT
+				   @ROWNUM := @ROWNUM + 1 AS rownum,
+				   id, userId, circleName, operatorName, password, firstName, lastName, department, grade, gradeName, permission, memo, createdAt, updatedAt
+			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
+					( SELECT  id
+							, user_id AS userId
+							, operator_id AS operatorId
+							, (select circle_name from operator where id = users.operator_id) as circleName
+							, (select town_name from operator where id = users.operator_id) as operatorName
+							, password								
+							, first_name AS firstName		
+							, last_name	AS lastName				
+							, department								
+							, grade							
+							, (select name from grade where id = users.grade) as gradeName	
+							, permission								
+							, memo								
+							, created_at AS createdAt							
+							, updated_at AS updatedAt			
+						FROM users users
+						WHERE user_id != 'admin'
+						<choose>
+							<when test="targetDiv == 'grade'">
+								<if test="grade != '' and grade != null">
+									AND grade = #{grade}
+								</if>
+								<if test="notGrade != '' and notGrade != null">
+									AND (grade != #{notGrade} OR grade is null)
+								</if>
+							</when>
+							<when test="targetDiv == 'operator'">
+								<if test="operatorId != '' and operatorId != null">
+									AND operator_id = #{operatorId}
+								</if>
+								<if test="notOperatorId != '' and notOperatorId != null">
+									AND (operator_id != #{notOperatorId} OR operator_id is null)
+								</if>
+							</when>
+						</choose>
+					  ORDER BY <if test="sort == null">user_id</if>
+					  		   <if test="sort != null">
+					  		       <if test="sort == 'circleName'">city_name</if>
+					  		       <if test="sort == 'townName'">grade, operator_id</if>
+					  		       <if test="sort == 'userId'">user_id</if>
+					  		       <if test="sort == 'lastName'">last_name</if>
+					  		       <if test="sort == 'firstName'">first_name</if>
+					  		       <if test="sort == 'department'">department</if>
+					  		       ${order}
+					  		   </if> ) T
+			 ) R
+		<if test="start != null and start != ''">
+			WHERE rownum BETWEEN #{start} AND #{end}
+		</if>
+	</select>
+	
+	<select id="getMemberListCount" parameterType="HashMap" resultType="int">
+		SELECT  count(user_id)			
+		FROM users users
 		WHERE user_id != 'admin'
 		<choose>
 			<when test="targetDiv == 'grade'">

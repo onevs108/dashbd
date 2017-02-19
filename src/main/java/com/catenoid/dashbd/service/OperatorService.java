@@ -34,4 +34,5 @@ public interface OperatorService {
 	public List<Users> selectMemberList(HashMap<String, Object> param);
 	public Operator selectByGradeName(String operatorName);
 	public Operator selectByOperatorName(String operatorName);
+	public int getMemberListCount(HashMap<String, Object> param);
 }

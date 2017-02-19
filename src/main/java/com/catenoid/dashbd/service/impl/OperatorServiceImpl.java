@@ -353,4 +353,10 @@ public class OperatorServiceImpl implements OperatorService {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		return operatorMapper.selectByOperatorName(operatorName);
 	}
+	
+	@Override
+	public int getMemberListCount(HashMap<String, Object> param) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.getMemberListCount(param);
+	}
 }

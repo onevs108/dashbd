@@ -4,6 +4,7 @@
 
 <html>
 <head>
+	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
 	<jsp:include page="../common/head.jsp" />
 </head>
 <body>
@@ -58,27 +59,6 @@
 																</tr>
 															</thead>
 															<tbody>
-																<tr>
-																	<td>Administrator Group</td>
-																	<td>Manage All menus</td>
-																	<td>
-																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																	</td>
-																</tr>
-																<tr>
-																	<td>National Schedule Operator Group</td>
-																	<td>Manage National Schedule</td>
-																	<td>
-																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																	</td>
-																</tr>
-																<tr>
-																	<td>System Operator Group</td>
-																	<td>Manage the system menu</td>
-																	<td>
-																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																	</td>
-																</tr>
 															</tbody>
 														</table>
 													</div>

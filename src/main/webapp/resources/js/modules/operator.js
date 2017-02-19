@@ -430,7 +430,7 @@ function getOperatorList2(circleName) {
 			sortable: false,
 			visible: false
 		}, {
-			field: 'town_name',
+			field: 'townName',
 			title: 'Group Name',
 			width: '30%',
 			align: 'center',
@@ -457,6 +457,129 @@ function getOperatorList2(circleName) {
 			}
 		}]
 	});
+}
+
+function getOperatorList3(groupId, tabDivId) {
+	$('#' + tabDivId).bootstrapTable('destroy');
+	// 테이블 생성
+	var pageNumber = 1;
+	var table = $('#' + tabDivId).bootstrapTable({
+		method: 'post',
+		url: '/dashbd/api/grade/getMemberList.do',
+		contentType: 'application/json',
+		dataType: 'json',
+		queryParams: function(params) {
+			location.href = '#';
+			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+			params.groupId = groupId; //그룹아이디 부여
+			params.tabDivId = tabDivId; //테이블 구분 값 넘겨줌
+			return params;
+		},
+		cache: false,
+		pagination: true,
+		sidePagination: 'server',
+		pageNumber: pageNumber,
+		pageSize: 5,
+		search: false,
+		showHeader: true,
+		showColumns: false,
+		showRefresh: false,
+		minimumCountColumns: 3,
+		clickToSelect: false,
+		columns: [{
+			field: 'circleName',
+			title: 'Circle',
+			width: '15%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true,
+			formatter: function(value, row, index) {
+				var returnVal = '';
+				if(value == '') returnVal = 'N/A';
+				else returnVal = value;
+				
+				return returnVal;
+			}
+		}, {
+			field: 'id',
+			title: 'Operator ID',
+			width: '10%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: false
+		}, {
+			field: 'townName',
+			title: 'Group',
+			width: '20%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
+		}, {
+			field: 'userId',
+			title: 'ID',
+			width: '10%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
+		}, {
+			field: 'lastName',
+			title: 'Last Name',
+			width: '15%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
+		}, {
+			field: 'firstName',
+			title: 'First Name',
+			width: '15%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
+		}, {
+			field: 'department',
+			title: 'Department',
+			width: '10%',
+			align: 'left',
+			valign: 'middle',
+			sortable: true
+		}, {
+			field: 'command',
+			title: 'Command',
+			width: '15%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			formatter: function(value, row, index) {
+				var html;
+				if(tabDivId == "table3") {
+					html = '<button type="button" class="btn btn-danger btn-xs">Remove from Group</button>';
+				} else {
+					html = '<div class="icheckbox_square-green" style="position: relative;" onclick="checkboxClick(this)">';
+					html += '<ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>'
+				}
+				
+				return html;
+			}
+		}]
+	});
+	$('#table3').on('load-success.bs.table', function (e, data){
+		getOperatorList3(groupId, 'table4');
+    });
+	
+	$('#table4').on('load-success.bs.table', function (e, data){
+		$("#memberListModal").modal("show");
+    });
+}
+
+//custom checkbox click event
+function checkboxClick(obj) {
+	if($(obj).hasClass("checked")) {
+		$(obj).removeClass("checked");
+	} else {
+		$(obj).addClass("checked");
+	}
+	
 }
 
 function closeModal() {
@@ -513,15 +636,16 @@ function callGruopModal(groupDiv, accessDiv, groupName) {
 	}
 }
 
-function callMemberListModal(gradeId) {
+function callMemberListModal(groupId) {
 	$.ajax({
 		url: '/dashbd/api/operator/callMemberListModal.do',
 		method: 'POST',
-		data: {grade : 'test'},
+//		data: {groupName : groupName},
 		success: function(data, textStatus, jqXHR) {
 			$("#memberListArea").empty();
 			$("#memberListArea").html(data);
-			$("#memberListModal").modal("show");
+			
+			getOperatorList3(groupId, 'table3');
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			alert(errorThrown + textStatus);

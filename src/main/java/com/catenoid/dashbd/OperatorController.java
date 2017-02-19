@@ -322,12 +322,68 @@ public class OperatorController {
 	@ResponseBody
 	public ModelAndView callMemberListModal(@RequestParam HashMap<String, Object> param, Model model) {
 		ModelAndView mv = new ModelAndView("operator/memberListModal");
-//		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
-//		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
-//
-//		model.addAttribute("permissionList", permissionList);
-//		model.addAttribute("circleList", circleList);
+		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
+		model.addAttribute("gradeList", gradeList);
+		
 		return mv;
+	}
+	
+	/**
+	 * 멤버리스트 테이블 조회
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/grade/getMemberList.do", method = {RequestMethod.POST}, produces="application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getMemberList(@RequestBody String body) {
+		
+		List<Users> memberList = null;
+		
+		logger.info("-> [body = {}]", body);
+		
+		JSONObject jsonResult = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
+			String tabDivId = (String) requestJson.get("tabDivId");
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
+			int offset = Integer.parseInt(String.valueOf(requestJson.get("offset")));
+			int limit = Integer.parseInt(String.valueOf(requestJson.get("limit")));
+			int groupId = Integer.parseInt(requestJson.get("groupId").equals("")? "0" : (String) requestJson.get("groupId"));
+			
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			param.put("sort", sort);
+			param.put("order", order);
+			param.put("offset", offset);
+			param.put("limit", limit);
+			param.put("start", Integer.toString(offset+1));
+			param.put("end", Integer.toString(offset+limit));
+			
+			if(tabDivId.equals("table3")) {
+				param.put("targetDiv", "grade");
+				param.put("grade", groupId);
+				memberList = operatorServiceImpl.selectMemberList(param);
+			} else if(tabDivId.equals("table4")) {
+				param.put("targetDiv", "grade");
+				param.put("grade", "");
+				param.put("notGrade", groupId);
+				memberList = operatorServiceImpl.selectMemberList(param);
+			}
+			
+			JSONArray rows = new JSONArray();
+			for (Users user : memberList)
+				rows.add(user.toJSONObject());
+			
+			jsonResult.put("rows", rows);
+			int total = operatorServiceImpl.getMemberListCount(param);
+			jsonResult.put("total", total);
+			
+			logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
+		} catch (ParseException e) {
+			logger.error("~~ [An error occurred!]", e);
+		}
+		return jsonResult.toString();
 	}
 	
 	/**

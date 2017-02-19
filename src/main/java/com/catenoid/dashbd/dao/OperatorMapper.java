@@ -42,4 +42,5 @@ public interface OperatorMapper {
 	List<HashMap<String, String>> selectCityFromCircle(HashMap<String, String> param);
 	
 	List<Users> selectMemberList(HashMap<String, Object> param);
+	int getMemberListCount(HashMap<String, Object> param);
 }
