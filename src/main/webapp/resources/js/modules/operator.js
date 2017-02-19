@@ -348,7 +348,7 @@ function getOperatorList() {
 		pagination: true,
 		sidePagination: 'server',
 		pageNumber: pageNumber,
-		pageSize: 4,
+		pageSize: 5,
 		search: false,
 		showHeader: true,
 		showColumns: false,
@@ -381,13 +381,15 @@ function getOperatorList() {
 			field: 'command',
 			title: 'Command',
 			width: '20%',
-			align: 'right',
+			align: 'center',
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
 				if(row.id > 3 && row.id != 9999){
 					var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.description + '\', \'' + row.permission + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 					+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
+				} else {
+					var html = '<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(\'' + row.id + '\')">View Member</button>';
 				}
 				return html;
 			}
@@ -412,7 +414,7 @@ function getOperatorList2(circleName) {
 		pagination: true,
 		sidePagination: 'server',
 		pageNumber: pageNumber,
-		pageSize: 4,
+		pageSize: 5,
 		search: false,
 		showHeader: true,
 		showColumns: false,
@@ -445,7 +447,7 @@ function getOperatorList2(circleName) {
 			field: 'command',
 			title: 'Command',
 			width: '20%',
-			align: 'right',
+			align: 'center',
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
@@ -469,4 +471,43 @@ function closeModal2() {
 	$('#form-operator-description2').val('');
 	$("input[name='permission2']").prop("checked", false);
 	$('#form-modal2').modal('hide');
+}
+
+
+
+function callGruopModal(accessDiv, groupId) {
+	$.ajax({
+		url: '/dashbd/api/operator/callAddGruopModal.do',
+		method: 'POST',
+		data: {
+			accessDiv : accessDiv,
+			groupId : groupId
+		},
+		success: function(data, textStatus, jqXHR) {
+			$("#groupArea").empty();
+			$("#groupArea").html(data);
+			$("#addGroupModal").modal("show");
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
+function callMemberListModal(gradeId) {
+	$.ajax({
+		url: '/dashbd/api/operator/callMemberListModal.do',
+		method: 'POST',
+		data: {grade : 'test'},
+		success: function(data, textStatus, jqXHR) {
+			$("#memberListArea").empty();
+			$("#memberListArea").html(data);
+			$("#memberListModal").modal("show");
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
 }

@@ -279,6 +279,16 @@ function treeInit(data) {
 		}
 	}
 	
+	//도시 아래에 핫스팟이 하나도 없을 경우 newNode 추가
+	var newHotspotNode = '<ul><li class="newNode hotspot" data-init="" data-lat="" data-lng="" data-band=""></li></ul>';
+	for(var i=0; i < $("#treeNode li.city").not(".newNode").length; i++) {
+		var tempCity = $($("#treeNode li.city").not(".newNode")[i]);
+		
+		if(tempCity.find("ul").length == 0) {
+			tempCity.append(newHotspotNode);
+		}
+	}
+	
 	$("#treeNode").bind('ready.jstree', function(e, data) {
         
     }).jstree({

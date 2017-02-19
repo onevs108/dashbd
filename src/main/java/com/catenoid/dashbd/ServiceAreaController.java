@@ -1407,10 +1407,10 @@ public class ServiceAreaController {
 		}
 		else {
 			for (Permission permission : permissions) {
-				if (permission.getRole().equals(Const.ROLE_ENB_MGMT)){
-					embPermission = "OK";
-					break;
-				}
+//				if (permission.getRole().equals(Const.ROLE_ENB_MGMT)){
+//					embPermission = "OK";
+//					break;
+//				}
 			}
 		}
 		resultMap.put( "permissionembs", embPermission );

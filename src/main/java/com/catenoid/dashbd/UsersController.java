@@ -281,10 +281,11 @@ public class UsersController {
 		for(int i = 0; i < townList.size(); i++) {
 			Circle data = townList.get(i);
 			JSONObject obj = new JSONObject();
+			obj.put("id", data.getId());
 			obj.put("circle_id", data.getCircle_id());
 			obj.put("circle_name", data.getCircle_name());
-			obj.put("town_name", data.getCity_name());
-			obj.put("town_code", data.getCity_code());
+			obj.put("town_name", data.getTown_name());
+			obj.put("town_code", data.getTown_code());
 			obj.put("created_at", getFormatDateTime(data.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			obj.put("updated_at", getFormatDateTime(data.getUpdatedAt(), "yyyy-MM-dd HH:mm:ss"));
 			array.add(obj);

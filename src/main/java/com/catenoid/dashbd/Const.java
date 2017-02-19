@@ -25,21 +25,30 @@ public class Const {
 	 * ROLE
 	 */
 	public static final String ROLE_ADMIN 					= "ROLE_ADMIN";
-	public static final String ROLE_USER_MGMT 				= "ROLE_USER_MGMT";
-	public static final String ROLE_PERMISSION_MGMT 		= "ROLE_PERMISSION_MGMT";
-	public static final String ROLE_CONTENTS_MGMT 			= "ROLE_CONTENTS_MGMT";
+//	public static final String ROLE_USER_MGMT 				= "ROLE_USER_MGMT";
+//	public static final String ROLE_PERMISSION_MGMT 		= "ROLE_PERMISSION_MGMT";
+//	public static final String ROLE_CONTENTS_MGMT 			= "ROLE_CONTENTS_MGMT";
+//	public static final String ROLE_OPERATOR_MGMT 			= "ROLE_OPERATOR_MGMT";
+//	public static final String ROLE_BMSC_MGMT				= "ROLE_BMSC_MGMT";
+//	public static final String ROLE_CIRCLE_MGMT				= "ROLE_CIRCLE_MGMT";
+//	public static final String ROLE_HOTSPOT_MGMT			= "ROLE_HOTSPOT_MGMT";
+//	public static final String ROLE_SERVICE_AREA_MGMT 		= "ROLE_SERVICE_AREA_MGMT";
+//	public static final String ROLE_SERVICE_AREA_GROUP_MGMT = "ROLE_SERVICE_AREA_GROUP_MGMT";
+//	public static final String ROLE_ENB_MGMT 				= "ROLE_ENB_MGMT";
+//	public static final String ROLE_SCHEDULE_MGMT 			= "ROLE_SCHEDULE_MGMT";
+//	public static final String ROLE_SYSTEM_MGMT 			= "ROLE_SYSTEM_MGMT";
+//	public static final String ROLE_SYSTEM_STAT_MGMT		= "ROLE_SYSTEM_STAT_MGMT";
+//	public static final String ROLE_SYSTEM_CONF_MGMT		= "ROLE_SYSTEM_CONF_MGMT";
+//	public static final String ROLE_SYSTEM_DB_MGMT			= "ROLE_SYSTEM_DB_MGMT";
 	public static final String ROLE_OPERATOR_MGMT 			= "ROLE_OPERATOR_MGMT";
-	public static final String ROLE_BMSC_MGMT				= "ROLE_BMSC_MGMT";
-	public static final String ROLE_CIRCLE_MGMT				= "ROLE_CIRCLE_MGMT";
-	public static final String ROLE_HOTSPOT_MGMT			= "ROLE_HOTSPOT_MGMT";
+	public static final String ROLE_OPERATOR_GROUP_MGMT 	= "ROLE_OPERATOR_GROUP_MGMT";
+	public static final String ROLE_CONTENTS_MGMT 			= "ROLE_CONTENTS_MGMT";
 	public static final String ROLE_SERVICE_AREA_MGMT 		= "ROLE_SERVICE_AREA_MGMT";
 	public static final String ROLE_SERVICE_AREA_GROUP_MGMT = "ROLE_SERVICE_AREA_GROUP_MGMT";
-	public static final String ROLE_ENB_MGMT 				= "ROLE_ENB_MGMT";
 	public static final String ROLE_SCHEDULE_MGMT 			= "ROLE_SCHEDULE_MGMT";
+	public static final String ROLE_SERVICE_CLASS_MGMT 		= "ROLE_SERVICE_CLASS_MGMT";
+	public static final String ROLE_SESSION_MONITORING 		= "ROLE_SESSION_MONITORING";
 	public static final String ROLE_SYSTEM_MGMT 			= "ROLE_SYSTEM_MGMT";
-	public static final String ROLE_SYSTEM_STAT_MGMT		= "ROLE_SYSTEM_STAT_MGMT";
-	public static final String ROLE_SYSTEM_CONF_MGMT		= "ROLE_SYSTEM_CONF_MGMT";
-	public static final String ROLE_SYSTEM_DB_MGMT			= "ROLE_SYSTEM_DB_MGMT";
 	
 	/**
 	 * menu

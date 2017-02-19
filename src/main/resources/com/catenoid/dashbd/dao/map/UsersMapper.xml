@@ -197,10 +197,11 @@
 	<select id="selectUserListCount" resultType="Integer" parameterType="Map">
 	    SELECT COUNT(*)
 		FROM users
+		WHERE user_id != 'admin'
 		<choose>
 			<when test="searchKeyword != null">
 				<if test="searchColumn.equals('all')">
-					WHERE ( ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
+					AND ( ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
 							OR user_id LIKE CONCAT('%', #{searchKeyword}, '%')
 							OR department LIKE CONCAT('%', #{searchKeyword}, '%') )
 					<if test="operatorId != null">
@@ -208,19 +209,19 @@
 					</if>
 				</if>
 				<if test="searchColumn.equals('name')">
-					WHERE ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
+					AND ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
 					<if test="operatorId != null">
 						AND operator_id = #{operatorId}
 					</if>
 				</if>
 				<if test="searchColumn.equals('userId')">
-					WHERE user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+					AND user_id LIKE CONCAT('%', #{searchKeyword}, '%')
 					<if test="operatorId != null">
 						AND operator_id = #{operatorId}
 					</if>
 				</if>
 				<if test="searchColumn.equals('department')">
-					WHERE department LIKE CONCAT('%', #{searchKeyword}, '%')
+					AND department LIKE CONCAT('%', #{searchKeyword}, '%')
 					<if test="operatorId != null">
 						AND operator_id = #{operatorId}
 					</if>
@@ -228,7 +229,7 @@
 			</when>
 			<otherwise>
 				<if test="operatorId != null">
-					WHERE operator_id = #{operatorId}
+					AND operator_id = #{operatorId}
 				</if>
 			</otherwise>
 		</choose>
@@ -505,6 +506,7 @@
 	    `created_at` AS `created_at`,
 	    `updated_at` AS `updated_at`
     from permission P
+    where id != 13
   </select>
   
   <select id="selectTownFromCircle" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Circle">

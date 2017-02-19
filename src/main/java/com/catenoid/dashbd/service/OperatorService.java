@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
+import com.catenoid.dashbd.dao.model.Users;
 
 @Service
 public interface OperatorService {
@@ -30,4 +31,5 @@ public interface OperatorService {
 	public List<HashMap<String,String>> selectCityFromCircle(HashMap<String, String> param);
 	public List<HashMap<String,String>> selectOperatorFromCircle(HashMap<String, String> param);
 	
+	public List<Users> selectMemberList(HashMap<String, Object> param);
 }
