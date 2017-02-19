@@ -194,8 +194,9 @@ public class ScheduleMgmtController {
 		int result = mapper.checkExistSaid(params);
 		if(result < 1) {
 			resultMap.put("result", "FAIL");
+		}else{
+			resultMap.put("result", "SUCCESS");
 		}
-		resultMap.put("result", "SUCCESS");
 		
 		return resultMap;
 	}

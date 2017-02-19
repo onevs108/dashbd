@@ -4,18 +4,39 @@ $(document).ready(function()
 	displayRatio();
 	
 	$("#serviceType").on("change", function() {
-		//alert($(this).val());
+		
 		if ( $(this).val() == "fileDownload" ) {
 			//filedownload
 			$("#bcType_fileDownload").show();
 			$("#bcType_fileDownload2").show();
 			$("#bcType_streaming").hide();
 			$("#bcType_streaming2").hide();
+			$("div[name='contentStartStop']").show();
+			$("#interval").hide();
+			$("div[name='contentPlus']").show();
+		}else if($(this).val() == "carouselMultiple"){
+			$("#bcType_fileDownload").show();
+			$("#bcType_streaming").hide();
+			$("#bcType_streaming2").hide();
+			$("div[name='contentStartStop']").hide();
+			$("#bcType_fileDownload2").hide();
+			$("#interval").show();
+			$("div[name='contentPlus']").show();
+		}else if($(this).val() == "carouselSingle"){
+			$("#bcType_fileDownload").show();
+			$("#bcType_streaming").hide();
+			$("#bcType_streaming2").hide();
+			$("div[name='contentStartStop']").hide();
+			$("#bcType_fileDownload2").hide();
+			$("#interval").hide();
+			$("div[name='contentPlus']").hide();
 		}else{
 			$("#bcType_fileDownload").hide();
 			$("#bcType_fileDownload2").hide();
 			$("#bcType_streaming").show();
 			$("#bcType_streaming2").show();
+			$("div[name='contentStartStop']").hide();
+			$("#interval").hide();
 		}
 	});
 	
@@ -84,7 +105,7 @@ $(document).ready(function()
 				}else{
 					swal({
 		                title: "Warn !",
-		                text: "exceed bandwidth said=" + $("#said").val()
+		                text: "SAID-"+$("#said").val()+" is not exist" 
 		            });
 				}
 			},

@@ -259,12 +259,33 @@ public class XmlManager {
 		if (serviceId == null){
 			serviceId = "";
 		}
+		
 		Element serviceType = null;
-		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
-			service.setAttribute(new Attribute("serviceType", "fileDownload"));
-			Element fileDownload = new Element("fileDownload");
+		if (SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType")) 
+				|| SERVICE_TYPE_CAROUSEL_MULTIPLE.equals(params.get("serviceType")) 
+				|| SERVICE_TYPE_CAROUSEL_SINGLE.equals(params.get("serviceType"))) {
+			
+			Element fileDownload = null;
+			if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
+				service.setAttribute(new Attribute("serviceType", "fileDownload"));
+				fileDownload = new Element("fileDownload");
+			}else if(SERVICE_TYPE_CAROUSEL_MULTIPLE.equals(params.get("serviceType"))){
+				service.setAttribute(new Attribute("serviceType", "carousel-MultipleFiles"));
+				fileDownload = new Element("carousel-MultipleFiles");
+			}else if(SERVICE_TYPE_CAROUSEL_SINGLE.equals(params.get("serviceType"))){
+				service.setAttribute(new Attribute("serviceType", "carousel-SingleFile"));
+				fileDownload = new Element("carousel-SingleFile");
+			}
+			
 			fileDownload.setAttribute(new Attribute("serviceId", serviceId)); 
 			
+			if (null != params.get("serviceClass") && !"".equals(params.get("serviceClass"))){
+				fileDownload.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));
+			}
+			
+			if (SERVICE_TYPE_CAROUSEL_MULTIPLE.equals(params.get("serviceType"))){
+				fileDownload.setAttribute(new Attribute("retrieveInterval", params.get("retrieveInterval")));
+			}
 			
 			Element serviceArea = new Element("serviceArea");
 			serviceArea.addContent( new Element("said").setText(params.get("said")));
@@ -302,8 +323,9 @@ public class XmlManager {
 			Element streaming = new Element("streaming");
 			streaming.setAttribute(new Attribute("serviceId", serviceId));
 
-			if ( null != params.get("serviceClass") && !"".equals(params.get("serviceClass")))
+			if ( null != params.get("serviceClass") && !"".equals(params.get("serviceClass"))){
 				streaming.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));
+			}
 			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
 			
@@ -361,9 +383,11 @@ public class XmlManager {
 				content.addContent( new Element("fileURI").setText(paramList.get(2).get(i)));
 				Element deliveryInfo = new Element("deliveryInfo");
 				//time format ex) 2015-04-10T17:24:09.000+09:00
-				deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
-				deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));
-				content.addContent(deliveryInfo);
+				if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
+					deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
+					deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));
+					content.addContent(deliveryInfo);
+				}
 				schedule.addContent(content);
 			}
 			serviceType.addContent(schedule);
@@ -374,6 +398,7 @@ public class XmlManager {
 		parameters.addContent(services);
 		
 		doc.getRootElement().addContent(parameters);
+		System.out.println(outString(doc));
 //		return outString(doc);
 		return "NO";
 	}

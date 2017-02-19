@@ -311,8 +311,9 @@ function setTimeTable(data ){
 			if(getTimeDiff(startTime, getTimeStamp())){
 				alert("The start time has already passed")
 				location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+			}else{
+				addSchedule(content_id, gTitle, startTime, endTime);
 			}
-			addSchedule(content_id, gTitle, startTime, endTime);
 			
 			var b = $('#calendar').fullCalendar('getDate');
 		 	var searchDate = b.format('YYYY-MM-DD');
