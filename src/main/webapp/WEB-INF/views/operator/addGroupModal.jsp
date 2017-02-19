@@ -14,6 +14,7 @@
 				</button>
 			</div>
 			<form role="form" id="form" class="form-horizontal">
+				<input type="hidden" id="groupId" name="groupId" value="${operator.id}">
 				<div class="modal-body">
 					<fieldset>
 						<div class="row">
@@ -21,14 +22,14 @@
 								<div class="form-group">
 									<label class="col-sm-4 control-label">Group Name</label>
 									<div class="col-sm-8">
-										<input type="text" placeholder="User ID" class="form-control" name="user">
+										<input type="text" placeholder="" class="form-control" name="groupName" value="${operator.name}">
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="col-sm-4 control-label">Description</label>
 									<div class="col-sm-8">
-										<textarea class="form-control" rows="6"></textarea>
+										<textarea name="groupDescription" class="form-control" rows="6">${operator.description}</textarea>
 									</div>
 								</div>
 								
@@ -36,9 +37,9 @@
 									<div class="form-group">
                                               <label for="product_name">Select Menus to grant</label>
                                               <div class="grant scroll-y white-bg">
-                                              	<ul class="list-group">
+                                              	<ul class="list-group menuArea">
                                               		<c:forEach var="obj" items="${permissionList}" varStatus="status">
-                                              			<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value="${obj.id}"> <i></i> ${obj.name}</label></div></li>
+                                              			<li class="list-group-item"><div class="i-checks"><label> <input type="checkbox" value="${obj.id}" <c:if test="${obj.checkYn == 'Y'}">checked</c:if>> <i></i> ${obj.name}</label></div></li>
                                               		</c:forEach>
                                               	</ul>
                                               </div>
@@ -49,20 +50,21 @@
 							<div class="col-lg-7">
 								<div class="col-sm-12">
 									<div class="form-group">
-                                              <label for="product_name">Member</label>
-                                              <div class="Member scroll-y white-bg">
-                                              	<ul class="list-group select-list">
-                                              		<c:forEach var="obj" items="${initMemberList}" varStatus="status">
-                                              			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>a</span></label></div></li>	
-                                              		</c:forEach>
-                                              	</ul>
-                                              </div>
+                                        <label for="product_name">Member</label>
+                                        <div class="Member scroll-y white-bg">
+                                        	<ul class="list-group select-list initMemberArea">
+                                        		<c:forEach var="obj" items="${initMemberList}" varStatus="status">
+                                        			<c:set value="${obj.userId} (${obj.lastName} ${obj.firstName})" var="iname"/>
+                                        			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value="${obj.userId}" checked> <span>${iname}</span></label></div></li>	
+                                        		</c:forEach>
+                                        	</ul>
+                                        </div>
 									</div>
 									
 									<div class="row p-xxs">
 										<div class="text-center">
-											<button class="btn btn-info btn-circle btn-lg" type="button"><i class="fa fa-arrow-up"></i></button>
-											<button class="btn btn-info btn-circle btn-lg" type="button"><i class="fa fa-arrow-down"></i></button>
+											<button class="btn btn-info btn-circle btn-lg" type="button" onclick="addMmeber('addGroupModal')"><i class="fa fa-arrow-up"></i></button>
+											<button class="btn btn-info btn-circle btn-lg" type="button" onclick="deleteMmeber('addGroupModal')"><i class="fa fa-arrow-down"></i></button>
 										</div>
 									</div>
 									
@@ -94,9 +96,10 @@
 										
 										
                                               <div class="Member scroll-y white-bg">
-                                              	<ul class="list-group select-list">
+                                              	<ul class="list-group select-list addMemberArea">
                                               		<c:forEach var="obj" items="${otherMemberList}" varStatus="status">
-                                              			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value=""> <span>a</span></label></div></li>
+                                              			<c:set value="${obj.userId} (${obj.lastName} ${obj.firstName})" var="oname"/>
+                                              			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value="${obj.userId}"> <span><c:out value="${oname}"/></span></label></div></li>
                                               		</c:forEach>
                                               	</ul>
                                               </div>
@@ -111,7 +114,14 @@
 
 			<div class="modal-footer">
 				<button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary">Add</button>
+				<c:choose>
+					<c:when test="${accessDiv == 'add'}">
+						<button type="button" class="btn btn-primary" onclick="proccessGroup('${groupDiv}', 'add')">Add</button>	
+					</c:when>
+					<c:when test="${accessDiv == 'edit'}">
+						<button type="button" class="btn btn-primary" onclick="proccessGroup('${groupDiv}', 'edit')">Save</button>	
+					</c:when>
+				</c:choose>
 			</div>
 		</div>
 	</div>

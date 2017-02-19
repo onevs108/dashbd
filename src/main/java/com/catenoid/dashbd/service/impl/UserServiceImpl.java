@@ -172,5 +172,11 @@ public class UserServiceImpl implements UserService {
 	public List<Circle> selectTownFromCircle(String circleName) {
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		return usersMapper.selectTownFromCircle(circleName);
+	} 
+	
+	@Override
+	public List<Users> selectUserListByCondition(HashMap<String, Object> param) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		return usersMapper.selectUserListByCondition(param);
 	}
 }

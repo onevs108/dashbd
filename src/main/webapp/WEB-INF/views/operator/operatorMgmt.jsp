@@ -4,6 +4,7 @@
 
 <html>
 <head>
+	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
 	<jsp:include page="../common/head.jsp" />
 </head>
 <body>
@@ -38,7 +39,7 @@
 													<div class="row p-xs">
 														<div class="col-sm-9 m-b-xs"><h4>National Group</h4></div>
 														<div class="col-sm-3 text-right">
-															<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
+															<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('National', 'add')">
 									                            <i class="fa fa-plus-square"> </i> Add Group
 									                        </a>
 														</div>
@@ -58,27 +59,6 @@
 																</tr>
 															</thead>
 															<tbody>
-																<tr>
-																	<td>Administrator Group</td>
-																	<td>Manage All menus</td>
-																	<td>
-																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																	</td>
-																</tr>
-																<tr>
-																	<td>National Schedule Operator Group</td>
-																	<td>Manage National Schedule</td>
-																	<td>
-																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																	</td>
-																</tr>
-																<tr>
-																	<td>System Operator Group</td>
-																	<td>Manage the system menu</td>
-																	<td>
-																		<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(this)">View Member</button>
-																	</td>
-																</tr>
 															</tbody>
 														</table>
 													</div>
@@ -104,7 +84,7 @@
 												<div class="row p-xs">
 													<div class="col-sm-9 m-b-xs"><h4>Regional Group</h4></div>
 													<div class="col-sm-3 text-right">
-														<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
+														<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('Regional','add')">
 								                            <i class="fa fa-plus-square"> </i> Add Group
 								                        </a>
 													</div>

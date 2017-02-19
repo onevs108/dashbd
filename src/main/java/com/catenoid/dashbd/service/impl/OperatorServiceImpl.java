@@ -341,4 +341,22 @@ public class OperatorServiceImpl implements OperatorService {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		return operatorMapper.selectMemberList(param);
 	}
+	
+	@Override
+	public Operator selectByGradeName(String operatorName) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectByGradeName(operatorName);
+	}
+	
+	@Override
+	public Operator selectByOperatorName(String operatorName) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectByOperatorName(operatorName);
+	}
+	
+	@Override
+	public int getMemberListCount(HashMap<String, Object> param) {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.getMemberListCount(param);
+	}
 }

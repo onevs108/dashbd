@@ -416,9 +416,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.catenoid.dashbd.dao.model.Users" >
     update users
     <set >      
-      <if test="operatorId != null" >
-        operator_id = #{operatorId,jdbcType=VARCHAR},
-      </if>
+        operator_id = #{operatorId,jdbcType=INTEGER},
+        grade = #{grade, jdbcType=INTEGER},
       <if test="password != null" >
         password = #{password,jdbcType=VARCHAR},
       </if>
@@ -439,7 +438,13 @@
       </if>      
         updated_at = now(),
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where 1=1
+    <if test="id != 0">
+    	and id = #{id,jdbcType=INTEGER}
+    </if>  
+    <if test="userId != null and userId != ''">
+    	and user_id = #{userId}
+    </if>
   </update>
   <update id="updateByPrimaryKey" parameterType="com.catenoid.dashbd.dao.model.Users" >
     update users
@@ -556,4 +561,16 @@
       	 #{bmscIp}, #{name}, #{serviceId}, #{said}, #{methodCode}, #{methodMsg}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW())
   </insert>
   
+  <select id="selectUserListByCondition" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT	id, user_id, operator_id, password, first_name, last_name								
+			, department, grade, permission, memo, created_at, updated_at								
+		FROM users
+		WHERE 1=1
+		<if test="grade != '' and grade != null">
+			AND grade = #{grade}
+		</if>  
+		<if test="operatorId != '' and operatorId != null">
+			AND operator_id = #{operatorId}
+		</if>
+  </select>
 </mapper>

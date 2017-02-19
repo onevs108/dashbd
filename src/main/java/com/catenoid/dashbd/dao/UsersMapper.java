@@ -4,6 +4,8 @@ import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.dao.model.UsersExample;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,4 +64,6 @@ public interface UsersMapper {
     int insertSystemInterFaceLog(Map<String, String> map);
 
 	List<Circle> selectTownFromCircle(String circleName);
+	
+	List<Users> selectUserListByCondition(HashMap<String, Object> param);
 }

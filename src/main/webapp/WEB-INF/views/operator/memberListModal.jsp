@@ -14,7 +14,7 @@
 			<div class="modal-body white-bg">
 				<h3>National Group</h3>
 				<div class="tb_tpl table-responsive">
-					<table class="table table-striped">
+					<table id="table3" class="table table-striped">
 						<colgroup>
 							<col>
 							<col>
@@ -36,42 +36,22 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>N/A</td>
-								<td>Administrator Group</td>
-								<td>wkim2580</td>
-								<td>Kim</td>
-								<td>Wonhyeung</td>
-								<td>Dev</td>
-								<td>
-									<button type="button" class="btn btn-danger btn-xs">Remove from Group</button>
-								</td>
-							</tr>
-							<tr>
-								<td>N/A</td>
-								<td>Administrator Group</td>
-								<td>wkim2580</td>
-								<td>Kim</td>
-								<td>Wonhyeung</td>
-								<td>Dev</td>
-								<td>
-									<button type="button" class="btn btn-danger btn-xs">Remove from Group</button>
-								</td>
-							</tr>
+							<c:forEach var="obj" items="${initMemberList}" varStatus="status">
+								<tr>
+									<td>N/A</td>
+									<td>${gruopName}</td>
+									<td>${obj.userId}</td>
+									<td>${obj.lastName}</td>
+									<td>${obj.firstName}</td>
+									<td>Dev</td>
+									<td>
+										<button type="button" class="btn btn-danger btn-xs">Remove from Group</button>
+									</td>
+								</tr>
+                      			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value="${obj.userId}" checked> <span>${iname}</span></label></div></li>	
+                      		</c:forEach>
 						</tbody>
 					</table>
-					<!-- s : paging -->
-					<div class="text-right">
-						<div class="btn-group">
-                               <button type="button" class="btn btn-white"><i class="fa fa-chevron-left"></i></button>
-                               <button class="btn btn-white">1</button>
-                               <button class="btn btn-white  active">2</button>
-                               <button class="btn btn-white">3</button>
-                               <button class="btn btn-white">4</button>
-                               <button type="button" class="btn btn-white"><i class="fa fa-chevron-right"></i> </button>
-                           </div>
-                          </div>
-					<!-- e : paging -->
 				</div>
 				<!-- // tb_tpl -->
 				
@@ -86,11 +66,11 @@
 							<div class="form-group">
 								<label class="col-sm-6 control-label">Group</label>
 								<div class="col-sm-6">
-									<select class="form-control">
-										<option value="0">Option 1</option>
-										<option value="1">Option 2</option>
-										<option value="2">Option 3</option>
-										<option value="3">Option 4</option>
+									<select id="gradeList" class="form-control">
+										<option value="">All</option>
+										<c:forEach var="row" items="${gradeList}">
+											<option value="${row.id}">${row.name}</option>
+										</c:forEach>
 									</select>
 								</div>
 							</div>
@@ -100,10 +80,10 @@
 							<div class="col-xs-3">
 								<div class="form-group">
 									<select class="form-control">
-										<option value="0">Option 1</option>
-										<option value="1">Option 2</option>
-										<option value="2">Option 3</option>
-										<option value="3">Option 4</option>
+										<option value="id">ID</option>
+										<option value="first">First Name</option>
+										<option value="last">Last Name</option>
+										<option value="department">Department</option>
 									</select>
 								</div>
 							</div>
@@ -122,7 +102,7 @@
 					</form>
 				</div>
 				<div class="tb_tpl table-responsive">
-					<table class="table table-striped">
+					<table id="table4" class="table table-striped">
 						<colgroup>
 							<col>
 							<col>
@@ -164,26 +144,14 @@
 							</tr>
 						</tbody>
 					</table>
-					<!-- s : paging -->
-					<div class="text-right">
-						<div class="btn-group">
-                               <button type="button" class="btn btn-white"><i class="fa fa-chevron-left"></i></button>
-                               <button class="btn btn-white">1</button>
-                               <button class="btn btn-white  active">2</button>
-                               <button class="btn btn-white">3</button>
-                               <button class="btn btn-white">4</button>
-                               <button type="button" class="btn btn-white"><i class="fa fa-chevron-right"></i></button>
-                           </div>
-                          </div>
-					<!-- e : paging -->
 				</div>
 				<!-- // tb_tpl -->
 			</div>
 
-			<div class="modal-footer">
-				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Save changes</button>
-			</div>
+<!-- 			<div class="modal-footer"> -->
+<!-- 				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button> -->
+<!-- 				<button type="button" class="btn btn-primary">Save changes</button> -->
+<!-- 			</div> -->
 		</div>
 	</div>
 </div>
