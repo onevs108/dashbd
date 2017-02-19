@@ -18,6 +18,8 @@ public class Permission {
 
     private Date updatedAt;
     
+    private String checkYn;
+    
     public Integer getId() {
         return id;
     }
@@ -77,5 +79,13 @@ public class Permission {
     	jsonResult.put("updatedAt", updatedAt);
     	return jsonResult;
     }
+
+	public String getCheckYn() {
+		return checkYn;
+	}
+
+	public void setCheckYn(String checkYn) {
+		this.checkYn = checkYn;
+	}
 
 }

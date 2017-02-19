@@ -38,7 +38,7 @@
 													<div class="row p-xs">
 														<div class="col-sm-9 m-b-xs"><h4>National Group</h4></div>
 														<div class="col-sm-3 text-right">
-															<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
+															<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('National', 'add')">
 									                            <i class="fa fa-plus-square"> </i> Add Group
 									                        </a>
 														</div>
@@ -104,7 +104,7 @@
 												<div class="row p-xs">
 													<div class="col-sm-9 m-b-xs"><h4>Regional Group</h4></div>
 													<div class="col-sm-3 text-right">
-														<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('add')">
+														<a class="btn btn-primary btn-outline" href="#" onclick="callGruopModal('Regional','add')">
 								                            <i class="fa fa-plus-square"> </i> Add Group
 								                        </a>
 													</div>

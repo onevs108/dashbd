@@ -3,25 +3,25 @@ var checkOperatorName = false;
 
 $(function() {
 	// button click event in list
-	$('#modal-open-btn').click(openModal);
-	$('#modal-open-btn2').click(openModal2);
-	$('#modal-add-btn').click(doAdd);
-	$('#modal-add-btn2').click(doAdd2);
-	$('#modal-cancel-btn').click(doModalCancel);
-	$('#modal-cancel-btn2').click(doModalCancel2);
-	$('#modal-cancel-icon-btn').click(doModalCancel);
-	$('#modal-cancel-icon-btn2').click(doModalCancel2);	
-	$('#check-name-btn').click(doCheckName);
-	$('#check-name-btn2').click(doCheckName2);
+//	$('#modal-open-btn').click(openModal);
+//	$('#modal-open-btn2').click(openModal2);
+//	$('#modal-add-btn').click(doAdd);
+//	$('#modal-add-btn2').click(doAdd2);
+//	$('#modal-cancel-btn').click(doModalCancel);
+//	$('#modal-cancel-btn2').click(doModalCancel2);
+//	$('#modal-cancel-icon-btn').click(doModalCancel);
+//	$('#modal-cancel-icon-btn2').click(doModalCancel2);	
+//	$('#check-name-btn').click(doCheckName);
+//	$('#check-name-btn2').click(doCheckName2);
 	// name 입력 or 변경 checkOperatorName 초기화
-	$('#form-operator-name').keypress(function() {
-		checkOperatorName = false;
-		$('#form-operator-name-input-area').attr('class', 'input-group has-warning');
-	});
-	$('#form-operator-name2').keypress(function() {
-		checkOperatorName = false;
-		$('#form-operator-name-input-area2').attr('class', 'input-group has-warning');
-	});
+//	$('#form-operator-name').keypress(function() {
+//		checkOperatorName = false;
+//		$('#form-operator-name-input-area').attr('class', 'input-group has-warning');
+//	});
+//	$('#form-operator-name2').keypress(function() {
+//		checkOperatorName = false;
+//		$('#form-operator-name-input-area2').attr('class', 'input-group has-warning');
+//	});
 });
 
 function openModal() {
@@ -127,37 +127,39 @@ function doModalCancel2() {
 	closeModal2();
 }
 
-function doEdit(id, name, description, permission) {
-	$('#modal-title').html('Edit National Wise Group');
-	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다. 							
-	operatorId = id;
-	$('#form-operator-name').val(name);
-	$('#form-operator-description').val(description);
-	var checkbox = $("input[name='permission']");
-	var permissionArray = permission.split(",");
-	for(var i=0; i < checkbox.length; i++){
-		if(permissionArray.indexOf(checkbox[i].value) > -1){
-			$(checkbox[i]).prop("checked", true);
-		}
-	}
+function doEdit(groupName) {
+	callGruopModal('National', 'edit', groupName);
+//	$('#modal-title').html('Edit National Wise Group');
+//	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다. 							
+//	operatorId = id;
+//	$('#form-operator-name').val(name);
+//	$('#form-operator-description').val(description);
+//	var checkbox = $("input[name='permission']");
+//	var permissionArray = permission.split(",");
+//	for(var i=0; i < checkbox.length; i++){
+//		if(permissionArray.indexOf(checkbox[i].value) > -1){
+//			$(checkbox[i]).prop("checked", true);
+//		}
+//	}
 	$('#form-modal').modal('show');
 }
 
-function doEdit2(id, circleName, name, description, permission) {
-	$('#modal-title2').html('Edit Regional Group');
-	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다. 							
-	operatorId = id;
-	$('#form-circle-name2').val(circleName);
-	$('#form-operator-name2').val(name);
-	$('#form-operator-description2').val(description);
-	var checkbox = $("input[name='permission2']");
-	var permissionArray = permission.split(",");
-	for(var i=0; i < checkbox.length; i++){
-		if(permissionArray.indexOf(checkbox[i].value) > -1){
-			$(checkbox[i]).prop("checked", true);
-		}
-	}
-	$('#form-modal2').modal('show');
+function doEdit2(groupName) {
+	callGruopModal('Regional', 'edit', groupName);
+//	$('#modal-title2').html('Edit Regional Group');
+//	checkOperatorName = true; // 수정 창을 처음 열었을땐 체크 된 상태이다. 							
+//	operatorId = id;
+//	$('#form-circle-name2').val(circleName);
+//	$('#form-operator-name2').val(name);
+//	$('#form-operator-description2').val(description);
+//	var checkbox = $("input[name='permission2']");
+//	var permissionArray = permission.split(",");
+//	for(var i=0; i < checkbox.length; i++){
+//		if(permissionArray.indexOf(checkbox[i].value) > -1){
+//			$(checkbox[i]).prop("checked", true);
+//		}
+//	}
+	$('#form-modal').modal('show');
 }
 
 function doDelete(gradeId, name) {
@@ -171,7 +173,6 @@ function doDelete(gradeId, name) {
 			},
 			success: function(data, textStatus, jqXHR) {
 				if (data.result) { // 성공
-					$('#table').bootstrapTable('destroy');
 					getOperatorList();
 				}
 				else { // 실패
@@ -212,75 +213,75 @@ function doDelete2(operatorId, name) {
 	}
 }
 
-function doCheckName() {
-	var operatorName = $('#form-operator-name').val();
-	if (operatorName == null || operatorName.length == 0) {
-		alert('Please input Operator Name');
-		return false;
-	}
-	
-	$.ajax({
-		url: '/dashbd/api/grade/check.do',
-		method: 'POST',
-		dataType: 'json',
-		data: {
-			operatorName: operatorName
-		},
-		success: function(data, textStatus, jqXHR) {
-			if (data.result) { // 성공
-				checkOperatorName = true;
-				$('#form-operator-name-input-area').attr('class', 'input-group has-success');
-				alert('Avaliable!');
-			}
-			else { // 실패
-				checkOperatorName = false;
-				$('#form-operator-name-input-area').attr('class', 'input-group has-error');
-				alert('Already exist!');
-				$('#form-operator-name').focus();
-			}
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			alert(errorThrown);
-			checkUserId = false;
-			return false;
-		}
-	});
-}
+//function doCheckName() {
+//	var operatorName = $('#form-operator-name').val();
+//	if (operatorName == null || operatorName.length == 0) {
+//		alert('Please input Operator Name');
+//		return false;
+//	}
+//	
+//	$.ajax({
+//		url: '/dashbd/api/grade/check.do',
+//		method: 'POST',
+//		dataType: 'json',
+//		data: {
+//			operatorName: operatorName
+//		},
+//		success: function(data, textStatus, jqXHR) {
+//			if (data.result) { // 성공
+//				checkOperatorName = true;
+//				$('#form-operator-name-input-area').attr('class', 'input-group has-success');
+//				alert('Avaliable!');
+//			}
+//			else { // 실패
+//				checkOperatorName = false;
+//				$('#form-operator-name-input-area').attr('class', 'input-group has-error');
+//				alert('Already exist!');
+//				$('#form-operator-name').focus();
+//			}
+//		},
+//		error: function(jqXHR, textStatus, errorThrown) {
+//			alert(errorThrown);
+//			checkUserId = false;
+//			return false;
+//		}
+//	});
+//}
 
-function doCheckName2() {
-	var operatorName = $('#form-operator-name2').val();
-	if (operatorName == null || operatorName.length == 0) {
-		alert('Please input Group Name');
-		return false;
-	}
-	
-	$.ajax({
-		url: '/dashbd/api/operator/check.do',
-		method: 'POST',
-		dataType: 'json',
-		data: {
-			operatorName: operatorName
-		},
-		success: function(data, textStatus, jqXHR) {
-			if (data.result) { // 성공
-				checkOperatorName = true;
-				$('#form-operator-name-input-area2').attr('class', 'input-group has-success');
-				alert('Avaliable!');
-			}
-			else { // 실패
-				checkOperatorName = false;
-				$('#form-operator-name-input-area2').attr('class', 'input-group has-error');
-				alert('Already exist!');
-				$('#form-operator-name2').focus();
-			}
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			alert(errorThrown);
-			checkUserId = false;
-			return false;
-		}
-	});
-}
+//function doCheckName2() {
+//	var operatorName = $('#form-operator-name2').val();
+//	if (operatorName == null || operatorName.length == 0) {
+//		alert('Please input Group Name');
+//		return false;
+//	}
+//	
+//	$.ajax({
+//		url: '/dashbd/api/operator/check.do',
+//		method: 'POST',
+//		dataType: 'json',
+//		data: {
+//			operatorName: operatorName
+//		},
+//		success: function(data, textStatus, jqXHR) {
+//			if (data.result) { // 성공
+//				checkOperatorName = true;
+//				$('#form-operator-name-input-area2').attr('class', 'input-group has-success');
+//				alert('Avaliable!');
+//			}
+//			else { // 실패
+//				checkOperatorName = false;
+//				$('#form-operator-name-input-area2').attr('class', 'input-group has-error');
+//				alert('Already exist!');
+//				$('#form-operator-name2').focus();
+//			}
+//		},
+//		error: function(jqXHR, textStatus, errorThrown) {
+//			alert(errorThrown);
+//			checkUserId = false;
+//			return false;
+//		}
+//	});
+//}
 
 function callInsert(data) {
 	$.ajax({
@@ -290,7 +291,6 @@ function callInsert(data) {
 		data: data,
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공
-				$('#table').bootstrapTable('destroy');
 				getOperatorList();
 				closeModal();
 				operatorId = null; // 초기화
@@ -315,7 +315,6 @@ function callInsert2(data) {
 		data: data,
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) { // 성공
-				$('#table2').bootstrapTable('destroy');
 				getOperatorList2(circleName);
 				closeModal2();
 				operatorId = null; // 초기화
@@ -332,6 +331,7 @@ function callInsert2(data) {
 }
 
 function getOperatorList() {
+	$('#table').bootstrapTable('destroy');
 	// 테이블 생성
 	var pageNumber = 1;
 	var table = $('#table').bootstrapTable({
@@ -386,7 +386,7 @@ function getOperatorList() {
 			sortable: false,
 			formatter: function(value, row, index) {
 				if(row.id > 3 && row.id != 9999){
-					var html = '<button type="button" onclick="doEdit(\'' + row.id + '\', \'' + row.name + '\', \'' + row.description + '\', \'' + row.permission + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+					var html = '<button type="button" onclick="doEdit(\'' + row.name + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 					+ '<button type="button" onclick="doDelete(\'' + row.id + '\', \'' + row.name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				} else {
 					var html = '<button type="button" class="btn btn-primary btn-xs" onclick="callMemberListModal(\'' + row.id + '\')">View Member</button>';
@@ -451,7 +451,7 @@ function getOperatorList2(circleName) {
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" onclick="doEdit2(\'' + row.id + '\', \'' + row.circle_name + '\', \'' + row.town_name + '\', \'' + row.description + '\', \'' + row.permission + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+				var html = '<button type="button" onclick="doEdit2(\'' + row.town_name + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
 				+ '<button type="button" onclick="doDelete2(\'' + row.id + '\', \'' + row.town_name + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
@@ -475,24 +475,42 @@ function closeModal2() {
 
 
 
-function callGruopModal(accessDiv, groupId) {
-	$.ajax({
-		url: '/dashbd/api/operator/callAddGruopModal.do',
-		method: 'POST',
-		data: {
-			accessDiv : accessDiv,
-			groupId : groupId
-		},
-		success: function(data, textStatus, jqXHR) {
-			$("#groupArea").empty();
-			$("#groupArea").html(data);
-			$("#addGroupModal").modal("show");
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			alert(errorThrown + textStatus);
-			return false;
-		}
-	});
+function callGruopModal(groupDiv, accessDiv, groupName) {
+	var ajaxYn = true;
+	if(groupDiv == 'Regional') {
+		if($("#circleSelect").val() == '')
+			ajaxYn = false;
+	}
+	
+	if(ajaxYn) {
+		$.ajax({
+			url: '/dashbd/api/operator/callAddGruopModal.do',
+			method: 'POST',
+			data: {
+				groupDiv : groupDiv,
+				accessDiv : accessDiv,
+				groupName : groupName
+			},
+			success: function(data, textStatus, jqXHR) {
+				$("#groupArea").empty();
+				$("#groupArea").html(data);
+				
+				if(accessDiv == 'add') {
+					$(".modal-header .modal-title").text("Add " + groupDiv + " Group");
+				} else if(accessDiv == 'edit') {
+					$(".modal-header .modal-title").text("Edit " + groupDiv + " Group");
+				}
+				
+				$("#addGroupModal").modal("show");
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				alert(errorThrown + textStatus);
+				return false;
+			}
+		});
+	} else {
+		swal("Fail !","Please select the circle", "warning");
+	}
 }
 
 function callMemberListModal(gradeId) {
@@ -509,5 +527,142 @@ function callMemberListModal(gradeId) {
 			alert(errorThrown + textStatus);
 			return false;
 		}
+	});
+}
+
+function addMmeber(formId) {
+	if(formId == 'addGroupModal') {
+		var checkList = $("#" + formId + " ul.addMemberArea li");
+		
+		for(var i=0; i < checkList.length; i++) {
+			var tempObj = $(checkList[i]);
+			
+			if(tempObj.find("input[type='checkbox']").prop("checked")) {
+//				tempObj.find("input[type='checkbox']").prop("checked", false);
+				$("#" + formId + " ul.initMemberArea").append(tempObj);
+			}
+		}
+	} else {
+		
+	}
+}
+
+function deleteMmeber(formId) {
+	if(formId == 'addGroupModal') {
+		var checkList = $("#" + formId + " ul.initMemberArea li");
+		
+		for(var i=0; i < checkList.length; i++) {
+			var tempObj = $(checkList[i]);
+			
+			if(tempObj.find("input[type='checkbox']").prop("checked")) {
+//				tempObj.find("input[type='checkbox']").prop("checked", false);
+				$("#" + formId + " ul.addMemberArea").append(tempObj);
+			}
+		}
+	} else {
+		
+	}
+}
+
+/**
+ * accessDiv : nation, region
+ * proccessDiv : add, edit
+ * formId
+ * @param accessDiv
+ * @param proccessDiv
+ * @param formId
+ * @returns
+ */
+function proccessGroup(accessDiv, proccessDiv, formId) {
+	swal({
+		  title: "Are you sure?",
+		  text: "Do you want to proceed with this operation?",
+		  type: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#DD6B55",
+		  confirmButtonText: "Yes",
+		  closeOnConfirm: false
+		},
+	function() {
+		var groupId = $("#groupId").val();
+		var menuListStr = '';
+		var groupName = '';
+		var gruopDescription = '';
+		var memberListStr = '';
+		
+		if(formId != 'memberListModal') { 
+			groupName = $("#addGroupModal [name='groupName']").val();
+			gruopDescription = $("#addGroupModal [name='groupDescription']").val();
+			
+			var menuList = $(".menuArea li input[type='checkbox']");
+			for(var i=0; i < menuList.length; i++) {
+				var tempCheckObj = $(menuList[i]);
+				
+				if(tempCheckObj.prop("checked") == true) 
+					menuListStr += ',' + tempCheckObj.val(); 
+			}
+			
+			if(menuListStr != '')
+				menuListStr = menuListStr.substring(1);
+			
+			var memberList = $("#addGroupModal ul.initMemberArea li input[type='checkbox']");
+			for(var i=0; i < memberList.length; i++) {
+				var tempMemberObj = $(memberList[i]);
+				if(tempMemberObj.prop("checked") == true)
+					memberListStr += ',' + tempMemberObj.val();
+			}
+			
+			if(memberListStr != '')
+				memberListStr = memberListStr.substring(1);
+		}
+		
+		if(groupName == '') {
+			swal("Fail !","Please enter the Group Name", "warning");
+			return;
+		}
+		
+		if(menuListStr == '') {
+			swal("Fail !","Please check the Menu", "warning");
+			return;
+		}
+		
+		$.ajax({
+			url: '/dashbd/api/operator/proccessGroup.do',
+			method: 'POST',
+			data: {
+				accessDiv : accessDiv,
+				proccessDiv : proccessDiv,
+				groupId : groupId,
+				menuListStr : menuListStr,
+				groupName : groupName,
+				gruopDescription : gruopDescription,
+				memberListStr : memberListStr,
+				circleName : $("#circleSelect").val()
+			},
+			success: function(data, textStatus, jqXHR) {
+				if(data.resultCode == 'S') {
+					swal({title:"Success !", text:"Success", type:"success"}, function() {
+						if(accessDiv == 'national') {
+							getOperatorList();
+							$("#addGroupModal").modal("hide");
+							$("#memberListModal").modal("hide");
+						} else if(accessDiv == 'regional') {
+							getOperatorList2($("#circleSelect").val());
+							$("#addGroupModal").modal("hide");
+						}
+					})
+				} 
+				else if(data.resultCode == 'E') {
+					swal("Fail !","Data already exists.", "warning");
+				}
+				else {
+					swal("Fail !","Please contact system administrator", "warning");
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				alert(errorThrown + textStatus);
+				return false;
+			}
+		});
 	});
 }

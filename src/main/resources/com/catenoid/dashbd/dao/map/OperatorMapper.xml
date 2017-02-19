@@ -351,19 +351,19 @@
 	
 	<select id="selectByOperatorName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
 	    SELECT
-	    	id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt
+	    	id, circle_name AS circleName, town_name AS name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt
 		FROM operator
 		WHERE town_name = #{operatorName}
 	</select>
 	
-	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator">
+	<insert id="insertOperator" parameterType="com.catenoid.dashbd.dao.model.Operator" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO operator(<if test="id != null">`id`,</if>circle_name, town_name, `description`, permission, `created_at`, `updated_at`)
 		VALUES (<if test="id != null">#{id},</if>#{circleName}, #{name}, #{description}, #{permission}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
 		circle_name = #{circleName}, town_name = #{name}, description = #{description}, permission = #{permission}, updated_at = NOW()
 	</insert>
 	
-	<insert id="insertGrade" parameterType="com.catenoid.dashbd.dao.model.Operator">
+	<insert id="insertGrade" parameterType="com.catenoid.dashbd.dao.model.Operator" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO grade(<if test="id != null">`id`,</if>`name`, `description`, permission, `created_at`, `updated_at`)
 		VALUES (<if test="id != null">#{id},</if>#{name}, #{description}, #{permission}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
@@ -377,11 +377,11 @@
 	
 	<select id="selectMemberList" parameterType="HashMap" resultType="com.catenoid.dashbd.dao.model.Users">
 		 SELECT  id
-			, user_id								
-			, operator_id								
+			, user_id AS userId				
+			, operator_id AS operatorId						
 			, password								
-			, first_name								
-			, last_name								
+			, first_name AS firstName		
+			, last_name	AS lastName				
 			, department								
 			, grade								
 			, permission								
@@ -389,16 +389,22 @@
 			, created_at								
 			, updated_at								
 		FROM users
-		WHERE 1=1
+		WHERE user_id != 'admin'
 		<choose>
-			<when test="accessDiv == 'grade'">
+			<when test="targetDiv == 'grade'">
 				<if test="grade != '' and grade != null">
 					AND grade = #{grade}
 				</if>
+				<if test="notGrade != '' and notGrade != null">
+					AND (grade != #{notGrade} OR grade is null)
+				</if>
 			</when>
-			<when test="accessDiv == 'operator'">
-				<if test="operator_id != '' and operator_id != null">
-					AND operator_id = #{operator_id}
+			<when test="targetDiv == 'operator'">
+				<if test="operatorId != '' and operatorId != null">
+					AND operator_id = #{operatorId}
+				</if>
+				<if test="notOperatorId != '' and notOperatorId != null">
+					AND (operator_id != #{notOperatorId} OR operator_id is null)
 				</if>
 			</when>
 		</choose>

@@ -1,11 +1,14 @@
 package com.catenoid.dashbd;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,12 +26,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.OperatorService;
 import com.catenoid.dashbd.service.PermissionService;
+import com.catenoid.dashbd.service.UserService;
 import com.google.gson.Gson;
 
 /**
@@ -43,6 +48,10 @@ public class OperatorController {
 	
 	@Autowired
 	private OperatorService operatorServiceImpl;
+	@Autowired
+	private SqlSession sqlSession;
+	@Autowired
+	private UserService userServiceImpl;
 	@Autowired
 	private PermissionService permissionServiceImpl;
 	/**
@@ -257,12 +266,48 @@ public class OperatorController {
 		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
 		
 		if(param.get("accessDiv").equals("edit")) {
-//			List<Circle> circleList = operatorServiceImpl.getCircleListAll();
-//			model.addAttribute("circleList", circleList);
+			Operator operator = null;
+			
+			if(param.get("groupDiv").equals("National")) {
+				operator = operatorServiceImpl.selectByGradeName(param.get("groupName").toString());
+				param.put("targetDiv", "grade");
+				param.put("grade", operator.getId());
+			} else if(param.get("groupDiv").equals("Regional")) {
+				operator = operatorServiceImpl.selectByOperatorName(param.get("groupName").toString());
+				param.put("targetDiv", "operator");
+				param.put("operatorId", operator.getId());
+			}
+			initMemberList = operatorServiceImpl.selectMemberList(param);
+			model.addAttribute("operator", operator);
+			
+			if(param.get("groupDiv").equals("National")) {
+				param.put("grade", "");
+				param.put("notGrade", operator.getId());
+			} else if(param.get("groupDiv").equals("Regional")) {
+				param.put("operatorId", "");
+				param.put("notOperatorId", operator.getId());
+			}
+			otherMemberList = operatorServiceImpl.selectMemberList(param);
+			
+			String permissionStr = operator.getPermission();
+			for(int i=0; i < permissionList.size(); i++) {
+				StringTokenizer stk = new StringTokenizer(permissionStr, ",");
+				
+				Permission tempPermission = permissionList.get(i);
+				String tempPerId = String.valueOf(tempPermission.getId());
+				
+				while(stk.hasMoreTokens()) {
+					if(stk.nextToken().equals(tempPerId)) {
+						tempPermission.setCheckYn("Y");
+					}
+				}
+			}
 		} else if(param.get("accessDiv").equals("add")) {
 			otherMemberList = operatorServiceImpl.selectMemberList(param);
 		}
 		
+		model.addAttribute("groupDiv", param.get("groupDiv").toString().toLowerCase());
+		model.addAttribute("accessDiv", param.get("accessDiv"));
 		model.addAttribute("permissionList", permissionList);
 		model.addAttribute("initMemberList", initMemberList);
 		model.addAttribute("otherMemberList", otherMemberList);
@@ -283,5 +328,213 @@ public class OperatorController {
 //		model.addAttribute("permissionList", permissionList);
 //		model.addAttribute("circleList", circleList);
 		return mv;
+	}
+	
+	/**
+	 * 그룹 추가,수정 메소드
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/operator/proccessGroup.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String proccessGroup(@RequestParam HashMap<String, Object> param) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		JSONObject jsonResult = new JSONObject();
+		
+		logger.info("-> [param = {}]", param);
+		
+		try {
+			String accessDiv = param.get("accessDiv").toString();
+			String proccessDiv = param.get("proccessDiv").toString();
+			int groupId = Integer.parseInt(param.get("groupId").toString().equals("")? "0" : param.get("groupId").toString());
+			String menuListStr = param.get("menuListStr").toString();
+			String groupName = param.get("groupName").toString();
+			String gruopDescription = param.get("gruopDescription").toString();
+			String memberListStr = param.get("memberListStr").toString();
+			
+			//National Group 처리
+			if(accessDiv.equals("national")) {
+				if(proccessDiv.equals("add")) {
+					//그룹명 존재 여부 조회
+					if(operatorServiceImpl.checkGradeName(groupName)) {
+						Operator operator = new Operator();
+						operator.setName(groupName);
+						operator.setDescription(gruopDescription);
+						operator.setPermission(menuListStr);
+						operatorServiceImpl.insertGrade(operator);
+						
+						StringTokenizer stk = new StringTokenizer(menuListStr, ",");
+						List<String> permissions = new ArrayList<String>();
+						while(stk.hasMoreTokens()) {
+							permissions.add(stk.nextToken());
+						}
+						
+						StringTokenizer stk1 = new StringTokenizer(memberListStr, ",");
+						
+						while(stk1.hasMoreTokens()) {
+							String userId = stk1.nextToken();
+							Users record = new Users();
+							record.setUserId(userId);
+							record.setGrade(operator.getId());
+							record.setOperatorId(null);
+							
+							//새로운 그룹으로 유저 정보 변경
+							usersMapper.updateByPrimaryKeySelective(record);
+							//추가할 유저의 기존 권한 삭제
+							usersMapper.deletePermissionOfUser(userId);
+							//권한 추가
+							permissionServiceImpl.insertUserPermission(userId, permissions);
+						}
+						
+						jsonResult.put("resultCode", "S");
+					} else {
+						jsonResult.put("resultCode", "E");
+					}
+				} else if(proccessDiv.equals("edit")) {
+					param.put("grade", groupId);
+					List<Users> initMember = userServiceImpl.selectUserListByCondition(param);
+					
+					if(initMember.size() > 0) {
+						//기존에 추가되어있던 사용자의 권한 모두 삭제
+						for(int i=0; i < initMember.size(); i++) {
+							Users record = new Users();
+							record.setUserId(initMember.get(i).getUserId());
+							record.setGrade(null);
+							record.setOperatorId(null);
+							usersMapper.updateByPrimaryKeySelective(record);
+							usersMapper.deletePermissionOfUser(initMember.get(i).getUserId());
+						}
+					}
+					
+					Operator operator = new Operator();
+					operator.setId(groupId);
+					operator.setName(groupName);
+					operator.setDescription(gruopDescription);
+					operator.setPermission(menuListStr);
+					operatorServiceImpl.insertGrade(operator);
+					
+					StringTokenizer stk = new StringTokenizer(menuListStr, ",");
+					List<String> permissions = new ArrayList<String>();
+					while(stk.hasMoreTokens()) {
+						permissions.add(stk.nextToken());
+					}
+					
+					StringTokenizer stk1 = new StringTokenizer(memberListStr, ",");
+					
+					while(stk1.hasMoreTokens()) {
+						String userId = stk1.nextToken();
+						Users record = new Users();
+						record.setUserId(userId);
+						record.setGrade(operator.getId());
+						record.setOperatorId(null);
+						
+						//새로운 그룹으로 유저 정보 변경
+						usersMapper.updateByPrimaryKeySelective(record);
+						//추가할 유저의 기존 권한 삭제
+						usersMapper.deletePermissionOfUser(userId);
+						//권한 추가
+						permissionServiceImpl.insertUserPermission(userId, permissions);
+					}
+					
+					jsonResult.put("resultCode", "S");
+				}
+			} 
+			//Regional Group 처리
+			else {
+				if(proccessDiv.equals("add")) {
+					//Operator 이름 확인
+					if(operatorServiceImpl.checkOperatorName(groupName)) {
+						Operator operator = new Operator();
+						operator.setCircleName(param.get("circleName").toString());
+						operator.setName(groupName);
+						operator.setDescription(gruopDescription);
+						operator.setPermission(menuListStr);
+						operatorServiceImpl.insertOperator(operator);
+						
+						StringTokenizer stk = new StringTokenizer(menuListStr, ",");
+						List<String> permissions = new ArrayList<String>();
+						while(stk.hasMoreTokens()) {
+							permissions.add(stk.nextToken());
+						}
+						
+						StringTokenizer stk1 = new StringTokenizer(memberListStr, ",");
+						
+						while(stk1.hasMoreTokens()) {
+							String userId = stk1.nextToken();
+							Users record = new Users();
+							record.setUserId(userId);
+							record.setGrade(null);
+							record.setOperatorId(operator.getId());
+							
+							//새로운 그룹으로 유저 정보 변경
+							usersMapper.updateByPrimaryKeySelective(record);
+							//추가할 유저의 기존 권한 삭제
+							usersMapper.deletePermissionOfUser(userId);
+							//권한 추가
+							permissionServiceImpl.insertUserPermission(userId, permissions);
+						}
+						
+						jsonResult.put("resultCode", "S");
+					} else {
+						jsonResult.put("resultCode", "E");
+					}
+				} else if(proccessDiv.equals("edit")) {
+					param.put("operatorId", groupId);
+					List<Users> initMember = userServiceImpl.selectUserListByCondition(param);
+					
+					if(initMember.size() > 0) {
+						//기존에 추가되어있던 사용자의 권한 모두 삭제
+						for(int i=0; i < initMember.size(); i++) {
+							Users record = new Users();
+							record.setUserId(initMember.get(i).getUserId());
+							record.setGrade(null);
+							record.setOperatorId(null);
+							usersMapper.updateByPrimaryKeySelective(record);
+							usersMapper.deletePermissionOfUser(initMember.get(i).getUserId());
+						}
+					}
+					
+					Operator operator = new Operator();
+					operator.setId(groupId);
+					operator.setCircleName(param.get("circleName").toString());
+					operator.setName(groupName);
+					operator.setDescription(gruopDescription);
+					operator.setPermission(menuListStr);
+					operatorServiceImpl.insertOperator(operator);
+					
+					StringTokenizer stk = new StringTokenizer(menuListStr, ",");
+					List<String> permissions = new ArrayList<String>();
+					while(stk.hasMoreTokens()) {
+						permissions.add(stk.nextToken());
+					}
+					
+					StringTokenizer stk1 = new StringTokenizer(memberListStr, ",");
+					
+					while(stk1.hasMoreTokens()) {
+						String userId = stk1.nextToken();
+						Users record = new Users();
+						record.setUserId(userId);
+						record.setGrade(null);
+						record.setOperatorId(operator.getId());
+						
+						//새로운 그룹으로 유저 정보 변경
+						usersMapper.updateByPrimaryKeySelective(record);
+						//추가할 유저의 기존 권한 삭제
+						usersMapper.deletePermissionOfUser(userId);
+						//권한 추가
+						permissionServiceImpl.insertUserPermission(userId, permissions);
+					}
+					
+					jsonResult.put("resultCode", "S");
+				}
+			}
+		} catch(Exception e) {
+			jsonResult.put("resultCode", "F");
+			e.printStackTrace();
+		}
+		
+//		jsonResult.put("result", operatorServiceImpl.checkGradeName(operatorName));
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
 	}
 }
