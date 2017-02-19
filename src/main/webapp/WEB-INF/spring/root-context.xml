@@ -19,32 +19,32 @@
 	<import resource="security/security-context.xml" />
 	
 	<!-- 1. Cron 대상이 되는 클래스 정의 -->
-	<bean id="sessionEMBMS" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<!-- <bean id="sessionEMBMS" class="org.springframework.scheduling.quartz.JobDetailBean">
 	    <property name="jobClass" value="com.catenoid.dashbd.scheduling.QuartzEmbmsSession"/>
  	    <property name="jobDataAsMap">
 			<map>
 				<entry key="init" value-ref="sqlSessionTemplate"/>
 			</map>
 		</property>
-	</bean>
+	</bean> -->
 	
 	<!-- 2. Cron 시간 설정 -->
  	<!--  ** 참조 : Quartz 시간 expression * * * * * ? (*) : 초 분 시 일 월 요일 (년)-->
-	<bean id="cronTriggerSessionEMBMS" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<!-- <bean id="cronTriggerSessionEMBMS" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="sessionEMBMS"/>
-	    <!-- 매 10초마다 (for test) 
+	    매 10초마다 (for test) 
 	    <property name="cronExpression" value="*/10 * * * * ?"/>
 	    	매 5분 마다
 	    <property name="cronExpression" value="0 */5 * * * ?"/> 
 
 	    <property name="cronExpression" value="0 */10 * * * ?"/>
-	    --> 
+	    
 	    <property name="cronExpression" value="*/30 * * * * ?"/>
 	    
-	</bean>
+	</bean> -->
 	
 		<!-- 3. Cron 실행 -->
-	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<!-- <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="triggers">
 	        <list>
 	            <ref bean="cronTriggerSessionEMBMS"/>
@@ -59,6 +59,6 @@
 	            <prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
 	        </props>
 	    </property>
-	</bean>
+	</bean> -->
 </beans>
 
