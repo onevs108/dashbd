@@ -405,8 +405,8 @@ public class XmlManager {
 		
 		doc.getRootElement().addContent(parameters);
 		System.out.println(outString(doc));
-//		return outString(doc);
-		return "NO";
+		return outString(doc);
+//		return "NO";
 	}
 	
 	public String testMaking(){

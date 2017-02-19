@@ -43,9 +43,20 @@
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
+			var serviceType = "${mapSchedule.service}";
 			getMenuList('SCHEDULE_MGMT');
-			$("#serviceAreaRow").append($("#serviceArea").render());
 			addServiceAreaEvent(0);
+			if(serviceType == "streaming") 
+			{
+				
+			}
+			else
+			{
+				$("#serviceAreaRow").append($("#serviceArea").render());
+				$("div[name='bcType_streaming2']").hide();
+			}
+			$("#FileRepair").change();
+			$("#receptionReport").change();
 		});
 		
 		function addFileSchedule() {
@@ -539,12 +550,11 @@
                         <div class="form-group">
 				                        	<div class="col-sm-5"></div>
 				                        	<div class="col-sm-">
-					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="margin-left:10px;margin-top:10px">
 					                        	<c:if test="${empty mapSchedule.BCID}">
-					                        	OK
+					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="margin-left:10px;margin-top:10px">OK
 					                        	</c:if>
 					                        	<c:if test="${not empty mapSchedule.BCID}">
-					                        	UPDATE            	
+					                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnUPDATE" style="margin-left:10px;margin-top:10px">UPDATE            	
 					                        	</c:if>            	
 					                        	</button>
 					                        	
