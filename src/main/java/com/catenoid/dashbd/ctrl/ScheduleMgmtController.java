@@ -325,7 +325,7 @@ public class ScheduleMgmtController {
 	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏�
 	 */
 	@RequestMapping(value = "view/schedule.do")
-	public ModelAndView schedule( @RequestParam Map< String, Object > params) throws UnsupportedEncodingException {
+	public ModelAndView schedule( @RequestParam Map< String, String > params) throws UnsupportedEncodingException {
 		
 		ModelAndView mv = new ModelAndView( "schd/schedule" );
 		logger.info("schedule ");
@@ -336,9 +336,9 @@ public class ScheduleMgmtController {
 		Map<String, String> mapSchedule = mapper.selectSchduleTime(params);
 		
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
-			mapSchedule.put("service_name", "tmpServName");
+			mapSchedule.put("service_name", "testService");
 			mapSchedule.put("language", "en");
-			mapSchedule.put("GBR", "140000000");
+			mapSchedule.put("GBR", "1000");
 			mapSchedule.put("QCI", "1");
 			mapSchedule.put("FileRepair", "off");
 			mapSchedule.put("receptionReport", "off");
@@ -433,11 +433,18 @@ public class ScheduleMgmtController {
 				ret = mapper.updateSchedule(params);
 				
 				//@ insert schedule append said
-				if (saidData != null){
-					for(String said : saidData){
-						params.put("serviceAreaId", said);
-						ret = mapper.insertAddSchedule(params);
-						logger.info("insertAddSchedule ret{}", ret);
+				//일단 첫번째 insert
+				ret = mapper.insertAddSchedule(params);
+				if (saidList.size() > 0){
+					for(int i = 0; i < saidList.size(); i++){
+						if(!saidList.get(i).equals("")){
+							String[] saidArray = saidList.get(i).split(",");
+							for (int j = 0; j < saidArray.length; j++) {
+								params.put("serviceAreaId", saidArray[j]);
+								ret = mapper.insertAddSchedule(params);
+								logger.info("insertAddSchedule ret{}", ret);
+							}
+						}
 					}
 				}
 				logger.info("updateSchedule ret{}", ret);

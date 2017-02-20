@@ -107,6 +107,7 @@ public class UsersController {
 			String searchOperatorId = (String) requestJson.get("searchOperatorId");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
 			String searchColumn = (String) requestJson.get("searchColumn");
+			String searchCircleId = (String) requestJson.get("searchCircleId");
 			String sort = (String) requestJson.get("sort");
 			String order = (String) requestJson.get("order");
 			long offset = (Long) requestJson.get("offset");
@@ -117,9 +118,9 @@ public class UsersController {
 				Users user = (Users) session.getAttribute("USER");
 				if (user != null) {
 					Integer operatorId = searchOperatorId == null || searchOperatorId.isEmpty() ? null : Integer.parseInt(searchOperatorId);
-					JSONArray rows = userServiceImpl.getUserListToJsonArray(searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
+					JSONArray rows = userServiceImpl.getUserListToJsonArray(searchColumn, searchKeyword, operatorId, sort, order, offset, limit, searchCircleId);
 					jsonResult.put("rows", rows);
-					int total = userServiceImpl.getUserListCount(searchColumn, searchKeyword, operatorId);
+					int total = userServiceImpl.getUserListCount(searchColumn, searchKeyword, operatorId, searchCircleId);
 					jsonResult.put("total", total);
 					
 					logger.info("<- [rows = {}], [total = {}]", rows.size(), total);

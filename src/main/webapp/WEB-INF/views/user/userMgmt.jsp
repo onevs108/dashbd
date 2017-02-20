@@ -74,7 +74,7 @@
 																		<select class="form-control" id="search-circle-id">
 																			<option value="">All</option>
 																			<c:forEach items="${circleList}" var="circle">
-																				<option value="${circle.circle_id}">${circle.circle_name}</option>
+																				<option value="${circle.circle_name}">${circle.circle_name}</option>
 																			</c:forEach>
 																		</select>
 																	</div>

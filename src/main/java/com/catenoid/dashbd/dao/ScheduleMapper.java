@@ -13,8 +13,8 @@ public interface ScheduleMapper {
 	/* inbo coding START*/
 	int selectSchduleMaxPosition(Map map);
 	List<Map> selectSchdule(Map map);
-	Map selectSchduleContentURL(Map map);
-	Map selectSchduleTime(Map map);
+	Map<String, String> selectSchduleContentURL(Map<String, String> map);
+	Map<String, String> selectSchduleTime(Map<String, String> map);
 	int addScheduleWithInitContent(Map map);
 	int modifyScheduleTime(Map map);
 	int insertBroadcastInfo(Map map);

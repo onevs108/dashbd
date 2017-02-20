@@ -339,7 +339,7 @@
                                                     <div class="col-sm-6"><input type="text" class="form-control" id="fecRatio" name="fecRatio" value="${mapSchedule.fecRatio}" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> disabled</c:if>>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
+                                                <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'fileDownload'}">style="display:none"</c:if>>
                                                 	<label class="col-sm-6" style="padding-bottom:6px"><i class="fa fa-check text-importance"></i> Segmentation Available Offset</label>
                                                     <div class="col-sm-6"><input type="text" class="form-control" id="segmentAvailableOffset" name="segmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
                                                 </div>
@@ -612,7 +612,7 @@
                 <div class="form-group">
                 	<!-- 스케쥴 버튼 추가버튼 -->
                 	<button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px" onclick="addFileSchedule()">
-                		<input type="hidden" class="form-control" id="contentLength" name="contentLength">
+                		<input type="hidden" class="form-control" id="contentLength" name="contentLength" value="1">
                 		<i class="fa fa-plus"></i>	
                 	</button>
                 </div>

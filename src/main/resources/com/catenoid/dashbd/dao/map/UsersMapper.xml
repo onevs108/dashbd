@@ -152,11 +152,17 @@
 								  <if test="operatorId != null">
 									  AND grade = #{operatorId}
 								  </if>
+								  <if test="searchCircleId != null">
+								  	AND O.circle_name = #{searchCircleId}
+								  </if>
 							  </if>
 							  <if test="searchColumn.equals('name')">
 							  	  WHERE ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
 								  <if test="operatorId != null">
 									  AND grade = #{operatorId}
+								  </if>
+								  <if test="searchCircleId != null">
+								  	AND O.circle_name = #{searchCircleId}
 								  </if>
 							  </if>
 							  <if test="searchColumn.equals('userId')">
@@ -164,11 +170,17 @@
 								  <if test="operatorId != null">
 									  AND grade = #{operatorId}
 								  </if>
+								  <if test="searchCircleId != null">
+								  	AND O.circle_name = #{searchCircleId}
+								  </if>
 							  </if>
 							  <if test="searchColumn.equals('department')">
 							  	  WHERE department LIKE CONCAT('%', #{searchKeyword}, '%')
 							  	  <if test="operatorId != null">
 									  AND grade = #{operatorId}
+								  </if>
+								  <if test="searchCircleId != null">
+								  	AND O.circle_name = #{searchCircleId}
 								  </if>
 							  </if>
 					      </when>
@@ -176,6 +188,9 @@
 					          <if test="operatorId != null">
 					              WHERE grade = #{operatorId}
 					          </if>
+					          <if test="searchCircleId != null">
+							  	AND O.circle_name = #{searchCircleId}
+							  </if>
 					      </otherwise>
 					  </choose>
 					  ORDER BY <if test="sort == null">grade ASC</if>
@@ -195,8 +210,8 @@
 	</select>
 	
 	<select id="selectUserListCount" resultType="Integer" parameterType="Map">
-	    SELECT COUNT(*)
-		FROM users
+	    SELECT COUNT(U.user_id)
+		FROM users U LEFT JOIN operator O ON U.operator_id = O.id
 		WHERE user_id != 'admin'
 		<choose>
 			<when test="searchKeyword != null">
@@ -207,11 +222,17 @@
 					<if test="operatorId != null">
 						AND operator_id = #{operatorId}
 					</if>
+					<if test="searchCircleId != null">
+					  	AND O.circle_name = #{searchCircleId}
+					</if>
 				</if>
 				<if test="searchColumn.equals('name')">
 					AND ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
 					<if test="operatorId != null">
 						AND operator_id = #{operatorId}
+					</if>
+					<if test="searchCircleId != null">
+					  	AND O.circle_name = #{searchCircleId}
 					</if>
 				</if>
 				<if test="searchColumn.equals('userId')">
@@ -219,17 +240,26 @@
 					<if test="operatorId != null">
 						AND operator_id = #{operatorId}
 					</if>
+					<if test="searchCircleId != null">
+					  	AND O.circle_name = #{searchCircleId}
+					</if>
 				</if>
 				<if test="searchColumn.equals('department')">
 					AND department LIKE CONCAT('%', #{searchKeyword}, '%')
 					<if test="operatorId != null">
 						AND operator_id = #{operatorId}
 					</if>
+					<if test="searchCircleId != null">
+					  	AND O.circle_name = #{searchCircleId}
+					</if>
 				</if>
 			</when>
 			<otherwise>
 				<if test="operatorId != null">
 					AND operator_id = #{operatorId}
+				</if>
+				<if test="searchCircleId != null">
+				  	AND O.circle_name = #{searchCircleId}
 				</if>
 			</otherwise>
 		</choose>

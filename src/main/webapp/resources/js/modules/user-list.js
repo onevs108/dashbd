@@ -27,10 +27,13 @@ function getUserList(isBack, isSearch) {
 		searchOperatorId = $.cookie('searchOperatorId');
 		searchKeyword = $.cookie('searchKeyword');
 		searchColumn = $.cookie('searchColumn');
+		searchCircleId = $.cookie('searchCircleId');
 		
 		$('#search-operator-id').val(searchOperatorId);
 		$('#search-column').val(searchColumn);
-		$('#search-keyword').val(searchKeyword);
+		$('#search-keyword').val(searchKeyword); 
+		$('#search-circle-id').val(searchCircleId);
+		
 	}
 	
 	// 테이블 생성
@@ -46,14 +49,17 @@ function getUserList(isBack, isSearch) {
 			var tempSearchOperatorId = $('#search-operator-id').val();
 			var tempSearchColumn = $('#search-column').val();
 			var tempSearchKeyword = $('#search-keyword').val();
+			var tempSearchCircleId = $('#search-circle-id').val();
 			
 			$.cookie('searchOperatorId', tempSearchOperatorId);
 			$.cookie('searchColumn', tempSearchColumn);
-			$.cookie('searchKeyword', tempSearchKeyword);
+			$.cookie('searchKeyword', tempSearchKeyword); 
+			$.cookie('searchCircleId', tempSearchCircleId);
 			
 			params['searchOperatorId'] = tempSearchOperatorId;
 			params['searchColumn'] = tempSearchColumn;
 			params['searchKeyword'] = tempSearchKeyword;
+			params['searchCircleId'] = tempSearchCircleId;
 			
 			return params;
 		},
