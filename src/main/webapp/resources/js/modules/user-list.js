@@ -74,7 +74,14 @@ function getUserList(isBack, isSearch) {
 			width: '20%',
 			align: 'center',
 			valign: 'middle',
-			sortable: true
+			sortable: true,
+			formatter: function(value, row, index) {
+				var returnVal = '';
+				if(value == null) returnVal = 'N/A';
+				else returnVal = value;
+				
+				return returnVal;
+			}
 		}, {
 			field: 'operatorName',
 			title: 'Circle',
@@ -191,6 +198,7 @@ function userFormAccess(accessDiv, userId) {
 		$("#editBtn").show();
 		$("#addBtn").hide();
 		getUserInfo(userId);
+		
 		$("#myModal #form-user-id").prop("readonly", true);
 		$("#myModal #form-check-btn").prop("disalbed", true);
 		$("#myModal input, #myModal select, #myModal textarea").prop("disabled", false);
@@ -287,6 +295,14 @@ function setElements(user) {
 	$('#modal-grade-id').val(user.grade);
 	$('#form-memo').val(user.memo);
 	
+	//Circle Gruop이 아닐 경우 숨김처리 및 초기화
+	if($("#modal-grade-id").val() != 9999) {
+		$("#modal-circle-id").val('');
+		$("#form-circle").val('');
+		$("#modal_circle_area").hide();
+		$("#modal_circle_group").hide();
+	}
+	
 //	if(user.grade == 13){
 //		$('#checkbox-permission-user').attr("checked", true);
 //		$('#checkbox-permission-permission').attr("checked", true);
@@ -362,6 +378,18 @@ function doInsert(accessDiv) {
 		if (grade == null || grade.length == 0) {
 			swal("Fail !","Please select your Group", "warning");
 			return false;
+		} else {
+			if(grade == 9999) {
+				if($("#modal-circle-id").val() == '') {
+					swal("Fail !","Please select your Circle", "warning");
+					return false;
+				}
+				
+				if(operatorId == '') {
+					swal("Fail !","Please select your Circle Group", "warning");
+					return false;
+				}
+			}
 		}
 		
 		if (userId == null || userId.length == 0) {

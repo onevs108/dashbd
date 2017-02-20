@@ -74,19 +74,18 @@
                                               	<div class="col-lg-12">
 												<div class="col-xs-3">
 													<div class="form-group">
-														<select class="form-control">
-															<option value="0">ID</option>
-															<option value="1">Option 2</option>
-															<option value="2">Option 3</option>
-															<option value="3">Option 4</option>
-														</select>
+														<select class="input-sm form-control input-s-sm" id="searchDiv">
+					                                        <option value="id" selected>ID</option>
+					                                        <option value="name">Name</option>
+					                                        <option value="department">Department</option>
+					                                    </select>
 													</div>
 												</div>
 												<div class="col-xs-9">
 													<div class="form-group">
 														<div class="input-group">
-															<input type="text" placeholder="Search" class="form-control"> <span class="input-group-btn">
-																<button type="button" class="btn btn-primary">Search</button>
+															<input type="text" placeholder="Search" class="form-control" id="searchInput"> <span class="input-group-btn">
+																<button type="button" class="btn btn-primary" onclick="searchOtherOperator('addGroupModal')">Search</button>
 															</span>
 														</div>
 													</div>

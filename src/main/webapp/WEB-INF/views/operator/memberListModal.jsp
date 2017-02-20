@@ -36,27 +36,13 @@
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="obj" items="${initMemberList}" varStatus="status">
-								<tr>
-									<td>N/A</td>
-									<td>${gruopName}</td>
-									<td>${obj.userId}</td>
-									<td>${obj.lastName}</td>
-									<td>${obj.firstName}</td>
-									<td>Dev</td>
-									<td>
-										<button type="button" class="btn btn-danger btn-xs">Remove from Group</button>
-									</td>
-								</tr>
-                      			<li class="list-group-item"><div class="i-select"><label> <input type="checkbox" value="${obj.userId}" checked> <span>${iname}</span></label></div></li>	
-                      		</c:forEach>
 						</tbody>
 					</table>
 				</div>
 				<!-- // tb_tpl -->
 				
 				<div class="row p-m">
-					<div class="text-center"><button type="button" class="btn btn-primary"><i class="fa fa-arrow-circle-o-up"></i> Add selected operator to Administrator Group</button></div>
+					<div class="text-center"><button type="button" class="btn btn-primary" onclick="addMmeber('memberListModal', this)"><i class="fa fa-arrow-circle-o-up"></i> Add selected operator to Administrator Group</button></div>
 				</div>
 				
 				<h3>Other Operators</h3>
@@ -66,7 +52,7 @@
 							<div class="form-group">
 								<label class="col-sm-6 control-label">Group</label>
 								<div class="col-sm-6">
-									<select id="gradeList" class="form-control">
+									<select id="searchGrade" class="form-control">
 										<option value="">All</option>
 										<c:forEach var="row" items="${gradeList}">
 											<option value="${row.id}">${row.name}</option>
@@ -79,10 +65,9 @@
 						<div class="col-lg-6">
 							<div class="col-xs-3">
 								<div class="form-group">
-									<select class="form-control">
-										<option value="id">ID</option>
-										<option value="first">First Name</option>
-										<option value="last">Last Name</option>
+									<select class="form-control" id="searchDiv">
+										<option value="id" selected>ID</option>
+										<option value="name">Name</option>
 										<option value="department">Department</option>
 									</select>
 								</div>
@@ -90,9 +75,9 @@
 							<div class="col-xs-9">
 								<div class="form-group">
 									<div class="input-group">
-										<input type="text" placeholder="Search" class="form-control">
+										<input type="text" placeholder="Search" class="form-control" id="searchInput">
 										<span class="input-group-btn">
-											<button type="button" class="btn btn-primary">Search</button>
+											<button type="button" class="btn btn-primary" onclick="searchOtherOperator('memberListModal')">Search</button>
 										</span>
 									</div>
 								</div>
@@ -124,24 +109,6 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>N/A</td>
-								<td>Administrator Group</td>
-								<td>wkim2580</td>
-								<td>Kim</td>
-								<td>Wonhyeung</td>
-								<td>Dev</td>
-								<td><input type="checkbox" checked class="i-checks" name="input[]"></td>
-							</tr>
-							<tr>
-								<td>N/A</td>
-								<td>Administrator Group</td>
-								<td>wkim2580</td>
-								<td>Kim</td>
-								<td>Wonhyeung</td>
-								<td>Dev</td>
-								<td><input type="checkbox" class="i-checks" name="input[]"></td>
-							</tr>
 						</tbody>
 					</table>
 				</div>

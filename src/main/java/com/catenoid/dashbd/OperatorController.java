@@ -323,6 +323,15 @@ public class OperatorController {
 	public ModelAndView callMemberListModal(@RequestParam HashMap<String, Object> param, Model model) {
 		ModelAndView mv = new ModelAndView("operator/memberListModal");
 		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
+		
+		//자신의 group_id는 제외하고 콤보 박스 값을 넘김
+		for(int i=0; i < gradeList.size(); i++) {
+			if(param.get("groupId").toString().equals(String.valueOf(gradeList.get(i).getId()))) {
+				gradeList.remove(i);
+				break;
+			}
+		}
+		
 		model.addAttribute("gradeList", gradeList);
 		
 		return mv;
@@ -352,6 +361,10 @@ public class OperatorController {
 			int limit = Integer.parseInt(String.valueOf(requestJson.get("limit")));
 			int groupId = Integer.parseInt(requestJson.get("groupId").equals("")? "0" : (String) requestJson.get("groupId"));
 			
+			String searchGrade = (String) requestJson.get("searchGrade");
+			String searchDiv = (String) requestJson.get("searchDiv");
+			String searchInput = (String) requestJson.get("searchInput");
+			
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			param.put("sort", sort);
 			param.put("order", order);
@@ -359,6 +372,10 @@ public class OperatorController {
 			param.put("limit", limit);
 			param.put("start", Integer.toString(offset+1));
 			param.put("end", Integer.toString(offset+limit));
+			
+			param.put("searchGrade", searchGrade);
+			param.put("searchDiv", searchDiv);
+			param.put("searchInput", searchInput);
 			
 			if(tabDivId.equals("table3")) {
 				param.put("targetDiv", "grade");
@@ -518,7 +535,7 @@ public class OperatorController {
 							String userId = stk1.nextToken();
 							Users record = new Users();
 							record.setUserId(userId);
-							record.setGrade(null);
+							record.setGrade(9999);
 							record.setOperatorId(operator.getId());
 							
 							//새로운 그룹으로 유저 정보 변경
@@ -569,7 +586,7 @@ public class OperatorController {
 						String userId = stk1.nextToken();
 						Users record = new Users();
 						record.setUserId(userId);
-						record.setGrade(null);
+						record.setGrade(9999);
 						record.setOperatorId(operator.getId());
 						
 						//새로운 그룹으로 유저 정보 변경
@@ -591,6 +608,102 @@ public class OperatorController {
 //		jsonResult.put("result", operatorServiceImpl.checkGradeName(operatorName));
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	} 
+		
+	/**
+	 * National 그룹 추가,삭제 메소드
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/operator/proccessNationalGroup.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String proccessNationalGroup(@RequestParam HashMap<String, Object> param) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		JSONObject jsonResult = new JSONObject();
+		
+		logger.info("-> [param = {}]", param);
+		
+		try {
+			String proccessDiv = param.get("proccessDiv").toString();
+			int groupId = Integer.parseInt(param.get("groupId").toString().equals("")? "0" : param.get("groupId").toString());
+			String memberListStr = param.get("memberListStr").toString();
+			
+			if(proccessDiv.equals("add")) {
+				StringTokenizer stk = new StringTokenizer(memberListStr, ",");
+				
+				while(stk.hasMoreTokens()) {
+					String userId = stk.nextToken();
+					
+					List<String> realPermissions = new ArrayList<String>();
+					List<Permission> permissions = usersMapper.selectPermissionsByUserId(userId);
+					for(Permission per : permissions) {
+						realPermissions.add(per.getId().toString());
+					}
+					
+					Users record = new Users();
+					record.setUserId(userId);
+					record.setGrade(groupId);
+					record.setOperatorId(null);
+					
+					//새로운 그룹으로 유저 정보 변경
+					usersMapper.updateByPrimaryKeySelective(record);
+					//추가할 유저의 기존 권한 삭제
+					usersMapper.deletePermissionOfUser(userId);
+					//권한 추가
+					permissionServiceImpl.insertUserPermission(userId, realPermissions);
+				}
+			} else if(proccessDiv.equals("delete")) {
+				StringTokenizer stk = new StringTokenizer(memberListStr, ",");
+				
+				while(stk.hasMoreTokens()) {
+					String userId = stk.nextToken();
+					
+					Users record = new Users();
+					record.setUserId(userId);
+					record.setGrade(null);
+					record.setOperatorId(null);
+					
+					//그룹 정보 초기화
+					usersMapper.updateByPrimaryKeySelective(record);
+					//삭제할 유저의 기존 권한 삭제(접근 권한 아예 삭제)
+					usersMapper.deletePermissionOfUser(userId);
+				}
+			}
+			
+			jsonResult.put("resultCode", "S");
+		} catch(Exception e) {
+			jsonResult.put("resultCode", "F");
+			e.printStackTrace();
+		}
+		
+//			jsonResult.put("result", operatorServiceImpl.checkGradeName(operatorName));
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
+	
+	/**
+	 * addGruuopModal Search Method
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/operator/getOtherUserList.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String getOtherUserList(@RequestParam HashMap<String, Object> param) {
+		
+		List<Users> memberList = new ArrayList<Users>();
+		JSONObject jsonResult = new JSONObject();
+		
+		param.put("targetDiv", "grade");
+		param.put("grade", "");
+		param.put("notGrade", param.get("groupId"));
+		memberList = operatorServiceImpl.selectMemberList(param);
+	
+		JSONArray rows = new JSONArray();
+		for (Users user : memberList)
+			rows.add(user.toJSONObject());
+	
+		jsonResult.put("rows", rows);
+		
 		return jsonResult.toString();
 	}
 }

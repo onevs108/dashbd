@@ -89,10 +89,9 @@
 															<div class="form-group">
 																<select class="input-sm form-control input-s-sm" id="search-column">
 							                                        <option value="all">All</option>
-							                                        <option value="name">Name</option>
 							                                        <option value="userId">ID</option>
+							                                        <option value="name">Name</option>
 							                                        <option value="department">Department</option>
-			<!-- 				                                        <option value="operator">Operator</option> -->
 							                                    </select>
 															</div>
 														</div>

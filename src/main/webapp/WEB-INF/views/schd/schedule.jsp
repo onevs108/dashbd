@@ -42,10 +42,9 @@
 	
 	<!-- Page-Level Scripts -->
 	<script>
+		var serviceType = "${mapSchedule.service}";
 		$(document).ready(function() {
-			var serviceType = "${mapSchedule.service}";
 			getMenuList('SCHEDULE_MGMT');
-			addServiceAreaEvent(0);
 			if(serviceType == "streaming") 
 			{
 				
@@ -54,6 +53,7 @@
 			{
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				$("div[name='bcType_streaming2']").hide();
+				addServiceAreaEvent(0);
 			}
 			$("#FileRepair").change();
 			$("#receptionReport").change();
@@ -63,10 +63,23 @@
 			$("#fileDownloads").append($("#scheduleForm").render());
 			addScheduleRemoveEvent();
 			addContentRemoveEvent();
-			if($("#serviceType").val() == "carouselSingle"){
+			if(serviceType == "fileDownload")
+			{
+				$("div[name='bcType_streaming2']").hide();
+			}
+			else if($("#serviceType").val() == "carouselMultiple") 
+			{
+				$("div[name='contentStartStop']").hide();
+				$("div[name='bcType_streaming2']").hide();
+			}
+			else if($("#serviceType").val() == "carouselSingle") 
+			{
 				$("div[name='contentPlus']").hide();	
 				$("div[name='contentStartStop']").hide();	
-			}else if($("#serviceType").val() == "streaming") {
+				$("div[name='bcType_streaming2']").hide();
+			}
+			else if($("#serviceType").val() == "streaming") 
+			{
 				$("div[name='bcType_streaming2']").show();
 				$("div[name='bcType_fileDownload']").hide();
 				addServiceAreaEvent($("div[name='bcType_streaming2']").length-1);

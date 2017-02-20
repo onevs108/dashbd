@@ -157,6 +157,11 @@ public class ScheduleMgmtController {
 	public Map<String, Object> checkBandwidth(@RequestParam Map<String, String> params, HttpServletRequest req, Locale locale) {
 		Map< String, Object > resultMap = new HashMap< String, Object >();
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		if(params.get("saidList").equals("")){
+			resultMap.put("result", "SUCCESS");
+			resultMap.put("resultObj", "SUCCESS");
+			return resultMap;
+		}
 		String[] listArray = params.get("saidList").split(",");
 		List<Map<String, String>> bwList = mapper.checkBandwidth(params);
 		

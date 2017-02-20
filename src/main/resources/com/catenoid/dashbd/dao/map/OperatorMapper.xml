@@ -417,6 +417,22 @@
 								</if>
 							</when>
 						</choose>
+						<if test="searchGrade != '' and searchGrade != null">
+							AND grade = #{searchGrade}
+						</if>
+						<if test="searchInput != '' and searchInput != null">
+							<choose>
+								<when test="searchDiv == 'id'">
+									AND user_id LIKE CONCAT('%', #{searchInput}, '%')
+								</when>
+								<when test="searchDiv == 'name'">
+									AND (first_name LIKE CONCAT('%', #{searchInput}, '%') OR last_name LIKE CONCAT('%', #{searchInput}, '%'))
+								</when>
+								<when test="searchDiv == 'department'">
+									AND department LIKE CONCAT('%', #{searchInput}, '%')
+								</when>
+							</choose>
+						</if>
 					  ORDER BY <if test="sort == null">user_id</if>
 					  		   <if test="sort != null">
 					  		       <if test="sort == 'circleName'">city_name</if>
@@ -455,6 +471,22 @@
 				</if>
 			</when>
 		</choose>
+		<if test="searchGrade != '' and searchGrade != null">
+			AND grade = #{searchGrade}
+		</if>
+		<if test="searchInput != '' and searchInput != null">
+			<choose>
+				<when test="searchDiv == 'id'">
+					AND user_id LIKE CONCAT('%', #{searchInput}, '%')
+				</when>
+				<when test="searchDiv == 'name'">
+					AND (first_name LIKE CONCAT('%', #{searchInput}, '%') OR last_name LIKE CONCAT('%', #{searchInput}, '%'))
+				</when>
+				<when test="searchDiv == 'department'">
+					AND department LIKE CONCAT('%', #{searchInput}, '%')
+				</when>
+			</choose>
+		</if>
 	</select>
 	
 </mapper>

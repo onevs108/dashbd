@@ -168,6 +168,7 @@ $(document).ready(function()
 		}else{
 			saidList = $("input[name='saidList']")[0].value;
 		}
+		
 		$.ajax({
 			type : "POST",
 			url : "checkBandwidth.do",

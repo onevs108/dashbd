@@ -291,9 +291,11 @@ public class XmlManager {
 //			serviceArea.addContent( new Element("said").setText(params.get("said")));
 			String[] saidArray = paramList.get(6).get(0).split(",");
 			for (int i = 0; i < saidArray.length; i++) {
-				serviceArea.addContent( new Element("said").setText(saidArray[i]));
+				if(!saidArray[i].equals("")){
+					serviceArea.addContent( new Element("said").setText(saidArray[i]));
+				}
 			}
-			
+			serviceArea.addContent( new Element("said").setText(params.get("said")));
 			if ("on".equals(params.get("FileRepair"))){
 				Element fileRepair= null; 
 				fileRepair = new Element("postFileRepair");
@@ -385,9 +387,11 @@ public class XmlManager {
 				
 				String[] saidArray = paramList.get(6).get(i).split(",");
 				for (int j = 0; j < saidArray.length; j++) {
-					serviceArea.addContent( new Element("said").setText(saidArray[j]));
+					if(!saidArray[i].equals("")){
+						serviceArea.addContent( new Element("said").setText(saidArray[i]));
+					}
 				}
-				
+				serviceArea.addContent( new Element("said").setText(params.get("said")));
 				Element mpd = new Element("mpd");
 				mpd.setAttribute(new Attribute("changed", "false"));									
 				mpd.addContent(new Element("mpdURI").setText(paramList.get(7).get(i)));

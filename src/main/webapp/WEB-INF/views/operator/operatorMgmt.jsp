@@ -115,7 +115,7 @@
 														</colgroup>
 														<thead>
 															<tr>
-																<th>Group Name</th>
+																<th>Area Group Name</th>
 																<th>Description</th>
 																<th>ID</th>
 																<th></th>
