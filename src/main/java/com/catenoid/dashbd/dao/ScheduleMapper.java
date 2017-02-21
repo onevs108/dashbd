@@ -1,5 +1,6 @@
 package com.catenoid.dashbd.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,12 @@ public interface ScheduleMapper {
 	List<Map<String, String>> checkBandwidth(Map<String, String> params);
 	
 	int checkExistSaid(Map<String, String> params);
+	
+	void insertScheduleContent(HashMap<String, String> param);
+	
+	List<HashMap<String, String>> getGroupListFromCircleId(HashMap<String, String> param);
+	
+	List<HashMap<String, String>> getGroupSaidList(HashMap<String, String> param);
     
     
 }

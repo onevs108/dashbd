@@ -15,6 +15,7 @@
 	<link href="../resources/css/style.css" rel="stylesheet">
 	<link href="../resources/css/custom.css" rel="stylesheet">
 	<link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
+	<link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 	
 	<!-- FooTable -->
 	<link href="../resources/css/plugins/footable/footable.core.css" rel="stylesheet">
@@ -24,6 +25,7 @@
     <script src="../resources/js/bootstrap.min.js"></script>
     <script src="../resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="../resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="../resourcesRenew/js/plugins/sweetalert/sweetalert.min.js"></script>
 
     <!-- FooTable -->
     <script src="../resources/js/plugins/footable/footable.all.min.js"></script>
@@ -91,7 +93,7 @@
 			<ul class="nav metismenu" id="side-menu">
 				<li class="nav-header">
 					<div class="dropdown profile-element">
-						<a href="/d	ashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
+						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
 					</div>
 					<div class="logo-element">
 						<img src="/dashbd/resources/img/logo2.png">

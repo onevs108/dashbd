@@ -342,6 +342,7 @@
 	
 	<update id = "updateSchedule" parameterType="java.util.Map">
 		UPDATE schedule	SET
+			service_area_id = #{serviceAreaId},
 			BCID = #{BCID},
 			updated_at = now()
 		WHERE id = #{id}
@@ -353,6 +354,18 @@
 		FROM  schedule 
 		WHERE id =#{id}
 	</insert>
+	
+	<insert id="insertScheduleContent" parameterType="java.util.Map">
+		INSERT INTO schedule_contents
+		(
+			schedule_id, content_id, cancelled, changed, start_time, end_time, created_at, updated_at
+		)
+		values
+		(
+			${scheduleId}, ${contentId}, 0, 0, #{startTime}, #{endTime}, now(), now() 
+		)
+	</insert>
+	
 	<update id = "updateSchedule4Del" parameterType="java.util.Map">
 		UPDATE schedule	SET
 			del_yn = 'Y',
@@ -385,6 +398,16 @@
 			select hotspot_id as said, bandwidth from hotspot 
 			where hotspot_id IN (${saidList})
 		) T
+	</select>
+	
+	<select id="getGroupListFromCircleId" parameterType="HashMap" resultType="HashMap">
+		select * from service_area_group
+		where circle_id = #{circleId}
+	</select>
+	
+	<select id="getGroupSaidList" parameterType="HashMap" resultType="HashMap">
+		select * from service_area_group_sub
+		where group_id = #{cityId}
 	</select>
 	
 	<select id="checkExistSaid" parameterType="java.util.Map" resultType="int">

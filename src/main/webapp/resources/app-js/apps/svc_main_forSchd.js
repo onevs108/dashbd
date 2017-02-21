@@ -34,13 +34,14 @@ $(document).ready(function()
     });
     
     $("#selectCircle").on("change", function(e) {
-    	var url = "/dashbd/hotspot/getCityListFromCircleId.do";
-    	if(e.target[0].value == ""){
-    		e.target[0].remove();
+    	var url = "";
+    	var type = $("input[name='radio']:checked").val();
+    	if(type == "group"){
+    		url = "getGroupListFromCircleId.do";
+    	}else{
+    		url = "/dashbd/hotspot/getCityListFromCircleId.do";
     	}
-    	if($("input[name='radio']:checked").val() == "group"){
-    		url = "/dashbd/hotspot/getServiceGroupList.do";
-    	}
+    	
     	var array = e.target[e.target.selectedIndex].value.split("^");
     	var circleId = array[0];
     	var circleName = array[1];
@@ -51,9 +52,16 @@ $(document).ready(function()
     		success : function(data) {
     			var json = JSON.parse(data).result;
     			var html = "<option value=''>Select City</option>";
-    			for (var i = 0; i < json.length; i++) {
-            		html += "<option value='"+json[i].city_id+"^"+json[i].city_name+"^"+json[i].latitude+"^"+json[i].longitude+"'>"+json[i].city_name+"</option>";
-				}
+    			if(type == "group"){
+    				html = "<option value=''>Select Group</option>";
+    				for (var i = 0; i < json.length; i++) {
+                		html += "<option value='"+json[i].group_id+"^"+json[i].group_name+"^"+json[i].circle_id+"'>"+json[i].group_name+"</option>";
+    				}
+    			}else{
+    				for (var i = 0; i < json.length; i++) {
+                		html += "<option value='"+json[i].city_id+"^"+json[i].city_name+"^"+json[i].latitude+"^"+json[i].longitude+"'>"+json[i].city_name+"</option>";
+    				}
+    			}
     			callTimetable(undefined, circleId);
     			g_ServiceAreaId = circleId;
             	$("#selectCity").html(html);
@@ -69,13 +77,14 @@ $(document).ready(function()
     });
     
     $("#selectCity").on("change", function(e){
-    	if($("input[name='radio']:checked").val() == "group"){
-    		return;
+    	var url = "";
+    	var type = $("input[name='radio']:checked").val();
+    	if(type == "group"){
+    		url = "getGroupSaidList.do";
+    	}else{
+    		url = "/dashbd/hotspot/getHotSpotListFromCityId.do";
     	}
-    	var url = "/dashbd/hotspot/getHotSpotListFromCityId.do";
-    	if(e.target[0].value == ""){
-    		e.target[0].remove();
-    	}
+    	
     	var array = e.target[e.target.selectedIndex].value.split("^");
     	var cityId = array[0];
     	var cityName = array[1];
@@ -85,14 +94,28 @@ $(document).ready(function()
     		data : { "cityId" : cityId },
     		success : function(data) {
     			var json = JSON.parse(data).result;
-    			var html = "<option value=''>Select Hotspot</option>";
-    			for (var i = 0; i < json.length; i++) {
-    				html += "<option value='"+json[i].hotspot_id+"^"+json[i].hotspot_name+"'>"+json[i].hotspot_name+"</option>";
-    			}
-    			callTimetable(undefined, cityId);
-    			g_ServiceAreaId = cityId;
-    			$("#selectHotspot").html(html);
-    			
+    			if(type == "group"){
+    				var said = ""
+    				for (var i = 0; i < json.length; i++) {
+    					if(i == json.length-1){
+    						said += json[i].sub_said;
+    					}else{
+    						said += json[i].sub_said + ","
+    					}
+					}
+    				callTimetable(undefined, said);
+        			g_ServiceAreaId = said;
+    	    	} 
+    			else 
+    	    	{
+        			var html = "<option value=''>Select Hotspot</option>";
+        			for (var i = 0; i < json.length; i++) {
+        				html += "<option value='"+json[i].hotspot_id+"^"+json[i].hotspot_name+"'>"+json[i].hotspot_name+"</option>";
+        			}
+        			callTimetable(undefined, cityId);
+        			g_ServiceAreaId = cityId;
+        			$("#selectHotspot").html(html);
+    	    	}
     		},
     		error : function(xhr, status, error){
     			swal({
@@ -109,6 +132,10 @@ $(document).ready(function()
     	}else{
     		$("#selectHotspot").show();
     	}
+    	$("#selectCircle").val("");
+		$("#selectCity").val("");
+		$("#selectCity").html("");
+    	$("#selectHotspot").html("");
     });
     
     callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);

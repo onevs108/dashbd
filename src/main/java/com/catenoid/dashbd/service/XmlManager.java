@@ -1,8 +1,6 @@
 package com.catenoid.dashbd.service;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -298,8 +296,11 @@ public class XmlManager {
 				if(!saidArray[i].equals("")){
 					serviceArea.addContent( new Element("said").setText(saidArray[i]));
 				}
+			}//111111,9999912 | 111111
+			String[] said = params.get("saidDefault").split(",");
+			for (int i = 0; i < said.length; i++) {
+				serviceArea.addContent( new Element("said").setText(said[i]));
 			}
-			serviceArea.addContent( new Element("said").setText(params.get("said")));
 			if ("on".equals(params.get("FileRepair"))){
 				Element fileRepair= null; 
 				fileRepair = new Element("postFileRepair");
@@ -397,7 +398,10 @@ public class XmlManager {
 						serviceArea.addContent( new Element("said").setText(saidArray[i]));
 					}
 				}
-				serviceArea.addContent( new Element("said").setText(params.get("said")));
+				String[] said = params.get("saidDefault").split(",");
+				for (int k = 0; k < said.length; k++) {
+					serviceArea.addContent( new Element("said").setText(said[k]));
+				}
 				Element mpd = new Element("mpd");
 				mpd.setAttribute(new Attribute("changed", "false"));									
 				mpd.addContent(new Element("mpdURI").setText(paramList.get(7).get(i)));

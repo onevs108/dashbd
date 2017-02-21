@@ -20,10 +20,12 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +41,7 @@ import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.service.XmlManager;
 import com.catenoid.dashbd.util.Utils;
+import com.google.gson.Gson;
 
 
 @Controller
@@ -358,6 +361,44 @@ public class ScheduleMgmtController {
 		return mv;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "view/getGroupListFromCircleId.do")
+	@ResponseBody
+	public String getGroupListFromCircleId(@RequestParam HashMap<String,String> param) {
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+		List<HashMap<String,String>> serviceGroupList = scheduleMapper.getGroupListFromCircleId(param);
+		
+		Gson gson = new Gson();
+		String str = gson.toJson(serviceGroupList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
+		
+		jsonResult.put("result", json);
+		
+		return jsonResult.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "view/getGroupSaidList.do")
+	@ResponseBody
+	public String getGroupSaidList(@RequestParam HashMap<String,String> param) {
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+		List<HashMap<String,String>> groupSaidList = scheduleMapper.getGroupSaidList(param);
+		
+		Gson gson = new Gson();
+		String str = gson.toJson(groupSaidList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
+		
+		jsonResult.put("result", json);
+		
+		return jsonResult.toString();
+	}
+	
 	/**
 	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏� > �벑濡�, �닔�젙
 	 * @param locale
@@ -437,11 +478,23 @@ public class ScheduleMgmtController {
 				ret = mapper.insertBroadcastInfo(params);
 				logger.info("insertBroadcastInfo ret{}", ret);
 				
-				//@ update schedule broadcast id
+				if(params.get("serviceType").equals("streaming")){
+					
+				}
+				else
+				{
+					params.put("serviceAreaId", params.get("serviceAreaId")+","+saidList.get(0));
+				}
+				
+				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
 				
+				//schedule start 갯수만큼
+				for (int i = 0; i < paramList.get(0).size(); i++) {	
+					
+				}
 				//@ insert schedule append said
-				if (saidList.size() > 0) {
+				/*if (saidList.size() > 0) {
 					for(int i = 0; i < saidList.size(); i++){
 						if(!saidList.get(i).equals("")){
 							String[] saidArray = saidList.get(i).split(",");
@@ -452,9 +505,9 @@ public class ScheduleMgmtController {
 							}
 						}
 					}
-				}
+				}*/
 				
-				int result = insertContentInfo(resStr[1], params.get("id"));
+				insertContentInfo(resStr[1], params.get("id"));
 				
 				logger.info("updateSchedule ret{}", ret);
 			}else{
@@ -471,6 +524,7 @@ public class ScheduleMgmtController {
 	
 	@SuppressWarnings("unchecked")
 	public int insertContentInfo(String xmlString, String scheduleId) {
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		int result = 0;
 		
 		try {
@@ -484,15 +538,20 @@ public class ScheduleMgmtController {
 			Element customType = service.getChild(serviceType);
 			
 			List<Element> schedule = customType.getChildren("schedule");
-			for (int i = 0; i < schedule.size(); i++) {
+			List<Element> serviceArea = customType.getChildren("serviceArea");
+
+			for (int i = 0; i < serviceArea.size(); i++) {
 				HashMap<String,String> param = new HashMap<String, String>();
-				param.put("scheduleId", String.valueOf(Integer.parseInt(scheduleId)+1));
+				param.put("scheduleId", String.valueOf(Integer.parseInt(scheduleId)+i));
 				List<Element> content = schedule.get(i).getChildren();
 				for (int j = 0; j < content.size(); j++) {
-					param.put("contentId", content.get(0).getAttributeValue("contentId"));
-					param.put("startTime", content.get(0).getAttributeValue("start"));
-					param.put("endTime", content.get(0).getAttributeValue("stop"));
-					param.put("fileURI", content.get(0).getAttributeValue("fileURI"));
+					param.put("contentId", content.get(j).getAttributeValue("contentId"));
+					if(content.get(j).getAttributeValue("start") != null){
+						param.put("startTime", content.get(j).getAttributeValue("start"));
+						param.put("endTime", content.get(j).getAttributeValue("stop"));
+					}
+					param.put("fileURI", content.get(j).getAttributeValue("fileURI"));
+					mapper.insertScheduleContent(param);
 				}
 			}
 		} catch (UnsupportedEncodingException e) {

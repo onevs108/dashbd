@@ -132,12 +132,12 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-					<div class="dropdown profile-element">
+					<div align="center" class="dropdown profile-element">
 						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
 					</div>
-					<div class="logo-element">
-						<img src="/dashbd/resources/img/logo2.png">
-					</div>
+<!-- 					<div class="logo-element"> -->
+<!-- 						<img src="/dashbd/resources/img/logo2.png"> -->
+<!-- 					</div> -->
 				</li>
             </ul>
         </div>

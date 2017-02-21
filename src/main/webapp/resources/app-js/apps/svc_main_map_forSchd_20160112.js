@@ -387,7 +387,6 @@ function callTimetable(bmscId, serviceAreaId_val){
 			dataType : "json",
 			success : function( data ) {
 				setTimeTable(data);
-		
 			},
 			error : function(request, status, error) {
 				alert("request=" +request +",status=" + status + ",error=" + error);

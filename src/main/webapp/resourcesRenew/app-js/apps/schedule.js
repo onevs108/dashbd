@@ -236,7 +236,7 @@ function addServiceAreaEvent(idx){
 					}
 					$($("input[name='saidList']")[idx]).val(saidListValue);
 					
-					$($("input[name='said']")[idx]).val(saidDefault);
+					$($("input[name='said']")[idx]).val("");
 				}else{
 					swal({
 		                title: "Warn !",

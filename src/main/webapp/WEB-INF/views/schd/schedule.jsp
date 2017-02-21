@@ -395,7 +395,7 @@
 					                                    	<div class="row">
 					                                    		<div class="col-sm-2">
 						                                    		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
-							                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+							                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="">
 							                                    </div>
 						                                    	<div class="col-sm-2"> 
 							                                    	<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
@@ -630,7 +630,7 @@
 	                      	<div class="row">
 	                      		<div class="col-sm-2">
 	                       		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
-	                        	<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+	                        	<input type="text" class="form-control" id="said" name="said" required="required" value="">
 	                        </div>
 	                       	<div class="col-sm-2"> 
 	                        	<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>
@@ -734,7 +734,7 @@
 			<div class="row">
 				<div class="col-sm-2">
 					<input type="hidden" class="form-control" id="saidDefault" name="saidDefault" value="${mapSchedule.serviceAreaId}"> 
-					<input type="text" class="form-control" id="said" name="said" required="required" value="${mapSchedule.serviceAreaId}">
+					<input type="text" class="form-control" id="said" name="said" required="required" value="">
 				</div>
 				<div class="col-sm-2">
 					<button type="button" id="saidAdd" name="saidAdd" class="btn btn-block btn-default">Add</button>

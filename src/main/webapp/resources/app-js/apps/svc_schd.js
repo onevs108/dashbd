@@ -40,7 +40,7 @@ function callTimetable(bmscId, serviceAreaId_val){
 }
 
 
-function setTimeTable(data ){
+function setTimeTable(data){
 	var contents = data.contents;
 	var maxPosition = data.maxPosition;
 	var viewStartHour = data.viewStartHour;
@@ -83,7 +83,7 @@ function setTimeTable(data ){
 		timetable.addEvent(contents[i].NAME, 'position' + position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
 				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
-				 					'', contents[i].serviceId);
+				 					'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID, contents[i].serviceId);
 	}
 	
 	var renderer = new Timetable.Renderer(timetable);
