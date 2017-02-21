@@ -6,6 +6,7 @@
 <%@ page import="com.catenoid.dashbd.util.SessionCounterListener"%>
 
 <div class="row border-bottom">
+	<input type="hidden" id="globalGrade" value="${USER.grade}">
 	<nav class="navbar navbar-static-top" role="navigation"
 		style="margin-bottom: 0;">
 		<div class="navbar-header">

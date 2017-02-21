@@ -166,7 +166,7 @@ function getTownListFromCircle(circleObj) {
 		method: 'POST',
 		dataType: 'json',
 		data: {
-			circleName: $(circleObj).find("option:selected").text()
+			circleName: $(circleObj).val()
 		},
 		success: function(data, textStatus, jqXHR) {
 			if (data.result) {
@@ -192,12 +192,18 @@ function getTownListFromCircle(circleObj) {
 function userFormAccess(accessDiv, userId) {
 	if(accessDiv == 'add') {
 		$(".modal-title").text("Add Operator");
-		$("#modal-grade-id").val('');
-		$("#modal_circle_area").hide();
-		$("#modal_circle_group").hide();
+
+		if($("#globalGrade").val()  == 13) {
+			$("#modal-grade-id").val('');
+			$("#modal_circle_area").hide();
+			$("#modal_circle_group").hide();
+			$("#modal-circle-id").val('');
+			$("#form-circle").empty();
+			$("#form-circle").append('<option value="">Circle Group</option>');
+		}
 		$("#addBtn").show();
 		$("#editBtn").hide();
-		$("#myModal input, #myModal select, #myModal textarea").val('');
+		$("#myModal input, #myModal textarea").val('');
 		$("#myModal input, #myModal select, #myModal textarea, #myModal #form-check-btn").prop("disabled", false);
 	} else if(accessDiv == 'edit') {
 		$(".modal-title").text("Edit Operator");
@@ -206,7 +212,7 @@ function userFormAccess(accessDiv, userId) {
 		getUserInfo(userId);
 		
 		$("#myModal #form-user-id").prop("readonly", true);
-		$("#myModal #form-check-btn").prop("disalbed", true);
+		$("#myModal #form-check-btn").prop("disabled", true);
 		$("#myModal input, #myModal select, #myModal textarea").prop("disabled", false);
 	} else if(accessDiv == 'info') {
 		$(".modal-title").text("Operator" + " \"" + userId + "\" Info");

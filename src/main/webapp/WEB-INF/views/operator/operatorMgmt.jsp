@@ -64,7 +64,6 @@
 													</div>
 													<!-- // tb_tpl -->
 													
-													<div id="groupArea"></div>
 													<!-- MemberList Modal Area -->
 													<div id="memberListArea"></div>
 												</div>
@@ -76,6 +75,9 @@
 									</div>
 									<!-- // row -->
 								</c:if>
+								
+								<!-- Group Modal Area -->
+								<div id="groupArea"></div>
 								<div class="row">
 	
 									<div class="col-lg-12">
@@ -95,10 +97,24 @@
 															<div class="form-group">
 																<label class="col-sm-6 control-label">Select Area</label>
 																<div class="col-sm-6">
-																	<select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;"> -->
-								                                    	<option value="">Circle</option>
-								                                		<c:forEach var="row" items="${circleList}">
-								                                   			<option value="${row.circle_name}">${row.circle_name}</option>
+																	<select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;" <c:if test="${USER.grade ==  9999}">readonly</c:if>> 
+								                                    	<option value="" <c:if test="${USER.grade == 9999}">disabled</c:if>>Circle</option>
+								                                		<c:forEach var="circle" items="${circleList}">
+								                                   			<c:choose>
+																				<c:when test="${USER.grade == 9999}">
+																					<c:choose>
+																						<c:when test="${circle.circle_name == USER.circleName}">
+																							<option value="${circle.circle_name}" selected>${circle.circle_name}</option>
+																						</c:when>
+																						<c:otherwise>
+																							<option value="${circle.circle_name}" disabled>${circle.circle_name}</option>		
+																						</c:otherwise>
+																					</c:choose>
+																				</c:when>
+																				<c:otherwise>
+																					<option value="${circle.circle_name}">${circle.circle_name}</option>		
+																				</c:otherwise>
+																			</c:choose>
 								                                   		</c:forEach>
 								                                    </select>
 																</div>
@@ -125,37 +141,6 @@
 															<tr>
 																<td colspan="3">No matching records found</td>
 															</tr>
-															
-<!-- 															<tr> -->
-<!-- 																<td>Schedule Manager Group</td> -->
-<!-- 																<td>Group that manages Regional Schedule</td> -->
-<!-- 																<td> -->
-<!-- 																	<div class="btn-group"> -->
-<!-- 							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button> -->
-<!-- 							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button> -->
-<!-- 							                                        </div> -->
-<!-- 																</td> -->
-<!-- 															</tr> -->
-<!-- 															<tr> -->
-<!-- 																<td>User Manager Group</td> -->
-<!-- 																<td>Group that manage the user of the circle</td> -->
-<!-- 																<td> -->
-<!-- 																	<div class="btn-group"> -->
-<!-- 							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button> -->
-<!-- 							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button> -->
-<!-- 							                                        </div> -->
-<!-- 																</td> -->
-<!-- 															</tr> -->
-<!-- 															<tr> -->
-<!-- 																<td></td> -->
-<!-- 																<td>Manage the system menu</td> -->
-<!-- 																<td> -->
-<!-- 																	<div class="btn-group"> -->
-<!-- 							                                            <button type="button" onclick="callGruopModal('edit', this)" class="btn-white btn btn-xs">Edit</button> -->
-<!-- 							                                            <button type="button" onclick="" class="btn-white btn btn-xs demo3">Delete</button> -->
-<!-- 							                                        </div> -->
-<!-- 																</td> -->
-<!-- 															</tr> -->
 														</tbody>
 													</table>
 												</div>
@@ -179,138 +164,6 @@
 		<!-- e : page-wrapper -->
 	</div>
 	<!-- e : wrapper -->
-        		
-<!-- 		                    <div class="ibox-content"> -->
-<!-- 		                    	<div class="row" style="padding-top:20px"> -->
-<!-- 		                            <div class="col-md-12 pull-right"> -->
-<!-- 		                            	<div class="col-sm-3"><h3><strong>National Group</strong></h3></div> -->
-<!-- 		                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn">Add</button> -->
-<!-- 		                                <div class="modal inmodal" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true"> -->
-<!-- 		                                    <div class="modal-dialog"> -->
-<!-- 		                                        <div class="modal-content animated fadeIn"> -->
-<!-- 		                                            <div class="modal-header"> -->
-<!-- 		                                                <button type="button" class="close" id="modal-cancel-icon-btn"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> -->
-<!-- 		                                                <i class="fa fa-folder-open-o modal-icon"></i> -->
-<!-- 		                                                <h4 class="modal-title" id="modal-title">Create New Group</h4> -->
-<!-- 		                                            </div> -->
-<!-- 		                                            <div class="modal-body"> -->
-<!-- 		                                                <form method="get" class="form-horizontal"> -->
-<!-- 						                                    <div class="form-group"> -->
-<!-- 						                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Group Name</label> -->
-<!-- 						                                    	<div class="input-group" id="form-operator-name-input-area"> -->
-<!-- 						                                    		<input type="text" id="form-operator-name" class="form-control"> -->
-<!-- 															    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn" type="button">Check</button></span> -->
-<!-- 						                                    	</div> -->
-<!-- 														    </div>  -->
-<!-- 		                                                    <div class="form-group"> -->
-<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label> -->
-<!-- 		                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description" style="height:200px"></div> -->
-<!-- 		                                                    </div> -->
-<!-- 		                                                    <div class="form-group"> -->
-<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label> -->
-<!-- 		                                                        <div class="col-sm-8"> -->
-<%-- 		                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status"> --%>
-<!-- 		                                                        	<div class="checkbox checkbox-primary"> -->
-<%-- 																		<input type="checkbox" name="permission" value="${row.id}"> --%>
-<%-- 																		<label for="checkbox${status.count}"> ${row.name}</label> --%>
-<!-- 																	</div> -->
-<%-- 																	</c:forEach> --%>
-<!-- 		                                                        </div> -->
-<!-- 		                                                    </div> -->
-<!-- 		                                                </form> -->
-<!-- 		                                            </div> -->
-<!-- 		                                            <div class="modal-footer"> -->
-<!-- 		                                                <button type="button" class="btn btn-white" id="modal-cancel-btn">Cancel</button> -->
-<!-- 		                                                <button type="button" class="btn btn-primary" id="modal-add-btn">OK</button> -->
-<!-- 		                                            </div> -->
-<!-- 		                                        </div> -->
-<!-- 		                                    </div> -->
-<!-- 		                                </div> -->
-<!-- 		                            </div> -->
-<!-- 		                        </div> -->
-<!-- 		                    	<div class="hr-line-dashed"></div> -->
-		                    
-<!-- 								<div class="table-responsive"> -->
-<!-- 	                            	<table class="table table-bordered" id="table"></table> -->
-<!-- 	                            </div> -->
-<!-- 		                    </div>end ibox-content -->
-<!-- 		                </div> -->
-<!-- 		            </div> -->
-<!-- 	            </div> -->
-	            
-<!-- 	            <div class="row"> -->
-<!-- 					<div class="col-lg-12"> -->
-<!-- 		                <div class="ibox float-e-margins"> -->
-<!-- 		                    <div class="ibox-content"> -->
-<!-- 		                    	<div class="row" style="padding-top:20px"> -->
-<!-- 		                            <div class="col-md-12 pull-right"> -->
-<!-- 		                            	<div class="col-sm-2"><h3><strong>Regional Group</strong></h3></div> -->
-<!-- 		                            	<div class="col-sm-3"> -->
-<!-- 		                                    <select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;"> -->
-<!-- 		                                    	<option value="none">Select</option> -->
-<%-- 		                                		<c:forEach var="row" items="${circleList}"> --%>
-<%-- 		                                   			<option value="${row.circle_name}">${row.circle_name}</option> --%>
-<%-- 		                                   		</c:forEach> --%>
-<!-- 		                                    </select> -->
-<!-- 		                                </div> -->
-<!-- 		                                <button type="button" class="btn btn-primary pull-right" id="modal-open-btn2">Add</button> -->
-<!-- 		                                <div class="modal inmodal" id="form-modal2" tabindex="-1" role="dialog" aria-hidden="true"> -->
-<!-- 		                                    <div class="modal-dialog"> -->
-<!-- 		                                        <div class="modal-content animated fadeIn"> -->
-<!-- 		                                            <div class="modal-header"> -->
-<!-- 		                                                <button type="button" class="close" id="modal-cancel-icon-btn2"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> -->
-<!-- 		                                                <i class="fa fa-folder-open-o modal-icon"></i> -->
-<!-- 		                                                <h4 class="modal-title" id="modal-title2">Create New Group</h4> -->
-<!-- 		                                            </div> -->
-<!-- 		                                            <div class="modal-body"> -->
-<!-- 		                                                <form method="get" class="form-horizontal"> -->
-<!-- 						                                    <div class="form-group"> -->
-<!-- 						                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Group Name</label> -->
-<!-- 						                                    	<div class="input-group" id="form-operator-name-input-area2"> -->
-<!-- 						                                    		<input type="text" id="form-operator-name2" class="form-control"> -->
-<!-- 						                                    		<input type="hidden" id="form-circle-name2" class="form-control"> -->
-<!-- 															    	<span class="input-group-btn"><button class="btn btn-default" id="check-name-btn2" type="button">Check</button></span> -->
-<!-- 						                                    	</div> -->
-<!-- 														    </div> -->
-<!-- 		                                                    <div class="form-group"> -->
-<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Description</label> -->
-<!-- 		                                                        <div class="col-sm-8"><input type="text" class="form-control" id="form-operator-description2" style="height:200px"></div> -->
-<!-- 		                                                    </div> -->
-<!-- 		                                                    <div class="form-group"> -->
-<!-- 		                                                    	<label class="col-sm-4 control-label"><i class="fa fa-check text-importance"></i> Select Menus to grant</label> -->
-<!-- 		                                                        <div class="col-sm-8"> -->
-<%-- 		                                                        	<c:forEach var="row" items="${permissionList}" varStatus="status"> --%>
-<!-- 		                                                        	<div class="checkbox checkbox-primary"> -->
-<%-- 																		<input type="checkbox" name="permission2" value="${row.id}"> --%>
-<%-- 																		<label for="checkbox${status.count}"> ${row.name}</label> --%>
-<!-- 																	</div> -->
-<%-- 																	</c:forEach> --%>
-<!-- 		                                                        </div> -->
-<!-- 		                                                    </div> -->
-<!-- 		                                                </form> -->
-<!-- 		                                            </div> -->
-<!-- 		                                            <div class="modal-footer"> -->
-<!-- 		                                                <button type="button" class="btn btn-white" id="modal-cancel-btn2">Cancel</button> -->
-<!-- 		                                                <button type="button" class="btn btn-primary" id="modal-add-btn2">OK</button> -->
-<!-- 		                                            </div> -->
-<!-- 		                                        </div> -->
-<!-- 		                                    </div> -->
-<!-- 		                                </div> -->
-<!-- 		                            </div> -->
-<!-- 		                        </div> -->
-<!-- 		                    	<div class="hr-line-dashed"></div> -->
-		                    
-<!-- 								<div class="table-responsive"> -->
-<!-- 	                            	<table class="table table-bordered" id="table2"></table> -->
-<!-- 	                            </div> -->
-<!-- 		                    </div>end ibox-content -->
-<!-- 		                </div> -->
-<!-- 		            </div> -->
-<!-- 	            </div> -->
-<!--         	</div> -->
-<!--         </div>content body end -->
-<!--     </div>content end -->
-<!-- </div>wrapper end -->
 
 <script src="js/jquery.cookie.js"></script>
 <script src="js/modules/operator.js"></script>
@@ -318,32 +171,35 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		getMenuList('OPERATOR_MGMT');
-		getOperatorList();
-		$("#circleSelect").on("change", function(e){
-			getOperatorList2(this.value);
-		});
 		
-		$("input[name='permission']").click(checkSuperAdmin);
-		$("input[name='permission2']").click(checkSuperAdmin);
+		if($("#globalGrade").val() == 13) {
+			getOperatorList();	
+		} else {
+			if($("#circleSelect").val() != '')
+				getOperatorList2($("#circleSelect").val());
+		}
+		
+// 		$("input[name='permission']").click(checkSuperAdmin);
+// 		$("input[name='permission2']").click(checkSuperAdmin);
 		
 	});
 	
-	function checkSuperAdmin() {
-		var selector = "permission"
-		if(this.name == "permission2") {
-			selector += "2";
-		}
-		if(this.value == "13") {
-			if($(this).is(":checked")) {
-				$("input[name='"+selector+"']").attr("disabled", "disabled");
-				$("input[name='"+selector+"']").prop("checked", false);
-				$(this).prop("checked", true);
-	 			this.removeAttribute("disabled");
-			}else{
-				$("input[name='"+selector+"']").removeAttr("disabled", "disabled");	
-			}
-		}
-	}
+// 	function checkSuperAdmin() {
+// 		var selector = "permission"
+// 		if(this.name == "permission2") {
+// 			selector += "2";
+// 		}
+// 		if(this.value == "13") {
+// 			if($(this).is(":checked")) {
+// 				$("input[name='"+selector+"']").attr("disabled", "disabled");
+// 				$("input[name='"+selector+"']").prop("checked", false);
+// 				$(this).prop("checked", true);
+// 	 			this.removeAttribute("disabled");
+// 			}else{
+// 				$("input[name='"+selector+"']").removeAttr("disabled", "disabled");	
+// 			}
+// 		}
+// 	}
 	
 </script>
 

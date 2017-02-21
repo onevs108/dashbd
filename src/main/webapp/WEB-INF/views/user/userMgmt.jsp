@@ -40,25 +40,26 @@
 																<div class="form-group">
 																	<label class="col-sm-6 control-label">Group</label>
 																	<div class="col-sm-6">
-																		<select name="status" id="search-operator-id"  onchange="changeGroup(this, 'main_circle_area')" class="input-sm form-control input-s-sm">
 																		<c:choose>
 																			<c:when test="${USER.grade == 13}">
-																				<option value="">All</option>
-																				<c:forEach var="row" items="${gradeList}">
-																					<option value="${row.id}">${row.name}</option>
-																				</c:forEach>
+																				<select name="status" id="search-operator-id"  onchange="changeGroup(this, 'main_circle_area')" class="input-sm form-control input-s-sm">
+																					<option value="">All</option>
+																					<c:forEach var="row" items="${gradeList}">
+																						<option value="${row.id}">${row.name}</option>
+																					</c:forEach>
 																			</c:when>
 																			<c:otherwise>
-																					<c:forEach items="${operatorList}" var="operator">
-																						<c:choose>
-																							<c:when test="${USER.operatorId == operator.id}">
-																								<option value="${operator.id}" selected="selected">${operator.name}</option>
-																							</c:when>
-																							<c:otherwise>
-																								<option value="${operator.id}">${operator.name}</option>
-																							</c:otherwise>
-																						</c:choose>
-																					</c:forEach>
+																				<select name="status" id="search-operator-id"  onchange="changeGroup(this, 'main_circle_area')" class="input-sm form-control input-s-sm" readonly>
+																				<c:forEach items="${gradeList}" var="row">
+																					<c:choose>
+																						<c:when test="${USER.grade == row.id}">
+																							<option value="${row.id}" selected="selected">${row.name}</option>
+																						</c:when>
+																						<c:otherwise>
+																							<option value="${row.id}" disabled>${row.name}</option>
+																						</c:otherwise>
+																					</c:choose>
+																				</c:forEach>
 																			</c:otherwise>
 																		</c:choose>
 																		</select>
@@ -66,15 +67,29 @@
 																</div>
 															</div>
 															<!-- // col -->
-	
-															<div id="main_circle_area" class="col-lg-6" style="display:none;">
+															
+															<div id="main_circle_area" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
 																<div class="form-group">
 																	<label class="col-sm-6 control-label">Circle</label>
 																	<div class="col-sm-6">
-																		<select class="form-control" id="search-circle-id">
-																			<option value="">All</option>
+																		<select class="form-control" id="search-circle-id" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
+																			<option value="" <c:if test="${USER.grade == 9999}">disabled</c:if>>All</option>
 																			<c:forEach items="${circleList}" var="circle">
-																				<option value="${circle.circle_name}">${circle.circle_name}</option>
+																				<c:choose>
+																					<c:when test="${USER.grade == 9999}">
+																						<c:choose>
+																							<c:when test="${circle.circle_name == USER.circleName}">
+																								<option value="${circle.circle_name}" selected>${circle.circle_name}</option>
+																							</c:when>
+																							<c:otherwise>
+																								<option value="${circle.circle_name}" disabled>${circle.circle_name}</option>		
+																							</c:otherwise>
+																						</c:choose>
+																					</c:when>
+																					<c:otherwise>
+																						<option value="${circle.circle_name}">${circle.circle_name}</option>		
+																					</c:otherwise>
+																				</c:choose>
 																			</c:forEach>
 																		</select>
 																	</div>
@@ -97,10 +112,10 @@
 														</div>
 														<div class="col-xs-9" id="search-keyword-area">
 						                                    <div class="input-group">
-						                                    		<input type="text" placeholder="Search" class="input-sm form-control" id="search-keyword" onkeydown="javascript:if(event.keyCode == 13) $('#go-search').click();"> 
-						                                    		<span class="input-group-btn">
-							                                            <button type="button" class="btn btn-sm btn-primary" id="go-search"> Search</button>
-							                                        </span>
+					                                    		<input type="text" placeholder="Search" class="input-sm form-control" id="search-keyword" onkeydown="javascript:if(event.keyCode == 13) $('#go-search').click();"> 
+					                                    		<span class="input-group-btn">
+						                                            <button type="button" class="btn btn-sm btn-primary" id="go-search"> Search</button>
+						                                        </span>
 						                                    </div>
 														</div>
 													</div>

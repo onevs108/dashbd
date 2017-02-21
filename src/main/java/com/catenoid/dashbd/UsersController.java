@@ -50,9 +50,16 @@ public class UsersController {
 	 * 사용자 관리 페이지 이동
 	 */
 	@RequestMapping(value = "/resources/user.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public String getUserMgmt(@RequestParam(value = "isBack", required = false) Boolean isBack, ModelMap modelMap) {
+	public String getUserMgmt(@RequestParam(value = "isBack", required = false) Boolean isBack, HttpSession session, ModelMap modelMap) {
 		logger.info("-> [isBack = {}]", isBack);
-	
+		
+		Users user = (Users) session.getAttribute("USER");
+		String circleName = user.getCircleName();
+		if(circleName != null) {
+			List<Circle> townList = userServiceImpl.selectTownFromCircle(circleName);
+			modelMap.addAttribute("townList", townList);
+		}
+		
 		modelMap.addAttribute("isBack", isBack == null ? false : isBack);
 		
 		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();

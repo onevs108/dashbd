@@ -127,6 +127,10 @@ $(function() {
 //	closeModal2();
 //}
 
+$("#circleSelect").on("change", function(e){
+	getOperatorList2(this.value);
+});
+
 function doEdit(groupName) {
 	callGruopModal('National', 'edit', groupName);
 //	$('#modal-title').html('Edit National Wise Group');

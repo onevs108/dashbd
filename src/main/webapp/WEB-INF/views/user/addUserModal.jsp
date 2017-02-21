@@ -22,22 +22,23 @@
 								<div class="form-group">
 									<label class="col-sm-6 control-label">Select Group</label>
 									<div class="col-sm-6">
-										<select name="status" onchange="changeGroup(this, 'modal_circle_area')" id="modal-grade-id" class="input-sm form-control input-s-sm">
-										<option value="">Group</option>
 										<c:choose>
 											<c:when test="${USER.grade == 13}">
-												<c:forEach var="row" items="${gradeList}">
-													<option value="${row.id}">${row.name}</option>
-												</c:forEach>
+												<select name="status" id="modal-grade-id" onchange="changeGroup(this, 'modal_circle_area')" class="input-sm form-control input-s-sm">
+													<option value="">Group</option>
+													<c:forEach var="row" items="${gradeList}">
+														<option value="${row.id}">${row.name}</option>
+													</c:forEach>
 											</c:when>
 											<c:otherwise>
-												<c:forEach items="${operatorList}" var="operator">
+												<select name="status" id="modal-grade-id"  onchange="changeGroup(this, 'modal_circle_area')" class="input-sm form-control input-s-sm" readonly>
+												<c:forEach items="${gradeList}" var="row">
 													<c:choose>
-														<c:when test="${USER.operatorId == operator.id}">
-															<option value="${operator.id}" selected="selected">${operator.name}</option>
+														<c:when test="${USER.grade == row.id}">
+															<option value="${row.id}" selected>${row.name}</option>
 														</c:when>
 														<c:otherwise>
-															<option value="${operator.id}">${operator.name}</option>
+															<option value="${row.id}" disabled>${row.name}</option>
 														</c:otherwise>
 													</c:choose>
 												</c:forEach>
@@ -49,24 +50,41 @@
 							</div>
 						</div>
 						<div class="row">
-							<div id="modal_circle_area" class="col-lg-6" style="display:none">
+							<div id="modal_circle_area" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
 								<div class="form-group">
 									<label class="col-sm-6 control-label">Select Circle</label>
 									<div class="col-sm-6">
-										<select class="form-control" id="modal-circle-id" onchange="getTownListFromCircle(this)">
+										<select class="form-control" id="modal-circle-id" onchange="getTownListFromCircle(this)" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
 											<option value="">Circle</option>
 											<c:forEach items="${circleList}" var="circle">
-												<option value="${circle.circle_id}">${circle.circle_name}</option>
+												<c:choose>
+													<c:when test="${USER.grade == 9999}">
+														<c:choose>
+															<c:when test="${circle.circle_name == USER.circleName}">
+																<option value="${circle.circle_name}" selected>${circle.circle_name}</option>
+															</c:when>
+															<c:otherwise>
+																<option value="${circle.circle_name}" disabled>${circle.circle_name}</option>		
+															</c:otherwise>
+														</c:choose>
+													</c:when>
+													<c:otherwise>
+														<option value="${circle.circle_name}">${circle.circle_name}</option>		
+													</c:otherwise>
+												</c:choose>
 											</c:forEach>
 										</select>
 									</div>
 								</div>
 							</div>
-							<div id="modal_circle_group" class="col-lg-6">
+							<div id="modal_circle_group" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
 								<label class="col-sm-6 control-label">Circle Group</label>
 								<div class="col-sm-6">
-                                   	<select class="input-sm form-control input-s-sm" id="form-circle" <c:if test="${USER.grade != 13}">disabled="disabled"</c:if>>
+                                   	<select class="input-sm form-control input-s-sm" id="form-circle">
                                    		<option value="">Circle Group</option>
+                                   		<c:forEach var="cgroup" items="${townList}">
+                                   			<option value="${cgroup.id}">${cgroup.town_name}</option>
+                                   		</c:forEach>
 									</select>
                                 </div>
 							</div>
