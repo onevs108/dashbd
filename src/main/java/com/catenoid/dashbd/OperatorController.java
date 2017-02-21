@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.ibatis.session.SqlSession;
@@ -16,7 +17,11 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +50,9 @@ import com.google.gson.Gson;
 public class OperatorController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OperatorController.class);
+	
+	@Resource(name = "transactionManager") 
+	protected DataSourceTransactionManager txManager;
 	
 	@Autowired
 	private OperatorService operatorServiceImpl;
@@ -413,6 +421,10 @@ public class OperatorController {
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		JSONObject jsonResult = new JSONObject();
 		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED); 
+		TransactionStatus txStatus= txManager.getTransaction(def);
+		
 		logger.info("-> [param = {}]", param);
 		
 		try {
@@ -458,6 +470,7 @@ public class OperatorController {
 							permissionServiceImpl.insertUserPermission(userId, permissions);
 						}
 						
+						txManager.commit(txStatus);
 						jsonResult.put("resultCode", "S");
 					} else {
 						jsonResult.put("resultCode", "E");
@@ -508,6 +521,7 @@ public class OperatorController {
 						permissionServiceImpl.insertUserPermission(userId, permissions);
 					}
 					
+					txManager.commit(txStatus);
 					jsonResult.put("resultCode", "S");
 				}
 			} 
@@ -546,6 +560,7 @@ public class OperatorController {
 							permissionServiceImpl.insertUserPermission(userId, permissions);
 						}
 						
+						txManager.commit(txStatus);
 						jsonResult.put("resultCode", "S");
 					} else {
 						jsonResult.put("resultCode", "E");
@@ -597,10 +612,12 @@ public class OperatorController {
 						permissionServiceImpl.insertUserPermission(userId, permissions);
 					}
 					
+					txManager.commit(txStatus);
 					jsonResult.put("resultCode", "S");
 				}
 			}
 		} catch(Exception e) {
+			txManager.rollback(txStatus);
 			jsonResult.put("resultCode", "F");
 			e.printStackTrace();
 		}
@@ -620,6 +637,10 @@ public class OperatorController {
 	public String proccessNationalGroup(@RequestParam HashMap<String, Object> param) {
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		JSONObject jsonResult = new JSONObject();
+		
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED); 
+		TransactionStatus txStatus= txManager.getTransaction(def);
 		
 		logger.info("-> [param = {}]", param);
 		
@@ -670,8 +691,10 @@ public class OperatorController {
 				}
 			}
 			
+			txManager.commit(txStatus);
 			jsonResult.put("resultCode", "S");
 		} catch(Exception e) {
+			txManager.rollback(txStatus);
 			jsonResult.put("resultCode", "F");
 			e.printStackTrace();
 		}

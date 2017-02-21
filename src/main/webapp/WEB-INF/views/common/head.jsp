@@ -15,7 +15,6 @@
 
 <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
 <link href="css/custom.css" rel="stylesheet">
-<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 
 <!-- Sweet Alert -->
 <link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
@@ -24,7 +23,7 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-table.js"></script>
 <script src="/dashbd/resources/newPublish/js/inspinia.js"></script>
-<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/dashbd/resources/newPublish/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="/dashbd/resources/newPublish/js/plugins/pace/pace.min.js"></script>
 <script src="/dashbd/resources/js/common.js"></script>
@@ -33,4 +32,4 @@
 <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
 
 
-<title>INSPINIA | Dashboard</title>
+<title>INSPINIA | SeSM</title>

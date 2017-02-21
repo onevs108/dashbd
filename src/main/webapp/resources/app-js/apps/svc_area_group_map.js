@@ -16,7 +16,7 @@ $(document).ready(function() {
 function jsTreeSetting() {
 	$.getScript( "/dashbd/resources/js/plugins/jsTree/jstree.min.js" )
 		.done(function( script, textStatus ) {
-			var trList = $("#group_area tr");
+			var trList = $("#group_area li");
 			var group_id = '';
 			
 			for(var i=0; i < trList.length; i++) {
@@ -110,7 +110,8 @@ function treeInit(data) {
 //		}
 //	})
 	.jstree({"checkbox" : {
-	      "keep_selected_style" : false
+	      "keep_selected_style" : false,
+	      "three_state": false
 	       },
 	      'plugins':["checkbox"]
 	    });
@@ -123,48 +124,70 @@ function treeInit(data) {
 
 //최하위 노드를 토대로 단계적으로 노드를 열고 최하위 노드를 체크하는 메소드
 function checkNode(leafNode) {
-	var circleId = leafNode.substring(0, leafNode.indexOf("B"));
-	var cityId = leafNode.substring(leafNode.indexOf("B"), leafNode.indexOf("C"));
-	var hotspotId = leafNode.substring(leafNode.indexOf("C"));
-	
-	for(var i=0; i < $("#treeNode li.circle").length; i++) {
-		var tempNode = $($("#treeNode li.circle")[i]);
+	if(leafNode != '') {
+		var circleId = leafNode.substring(0, leafNode.indexOf("B"));
 		
-		if(tempNode.attr("data-init") == circleId) {
-			if(tempNode.attr("aria-expanded") != 'true') {
-				$("#treeNode").jstree("open_node", tempNode);
-				break;
+		for(var i=0; i < $("#treeNode li.circle").length; i++) {
+			var tempNode = $($("#treeNode li.circle")[i]);
+			
+			if(tempNode.attr("data-init") == circleId) {
+				if(tempNode.attr("aria-expanded") != 'true') {
+					$("#treeNode").jstree("open_node", tempNode);
+					break;
+				}
 			}
 		}
-	}
-	
-	for(var i=0; i < $("#treeNode li.city").length; i++) {
-		var tempNode = $($("#treeNode li.city")[i]);
 		
-		if(tempNode.attr("data-init") == (circleId + cityId)) {
-			if(tempNode.attr("aria-expanded") != 'true') {
-				$("#treeNode").jstree("open_node", tempNode);
-				break;
+		//hotspot
+		if(leafNode.indexOf('C') != -1) {
+			var cityId = leafNode.substring(leafNode.indexOf("B"), leafNode.indexOf("C"));
+			var hotspotId = leafNode.substring(leafNode.indexOf("C"));
+			
+			for(var i=0; i < $("#treeNode li.city").length; i++) {
+				var tempNode = $($("#treeNode li.city")[i]);
+				
+				if(tempNode.attr("data-init") == (circleId + cityId)) {
+					if(tempNode.attr("aria-expanded") != 'true') {
+						$("#treeNode").jstree("open_node", tempNode);
+						break;
+					}
+				}
+			}
+			
+			for(var i=0; i < $("#treeNode li.hotspot").length; i++) {
+				var tempNode = $($("#treeNode li.hotspot")[i]);
+				
+				if(tempNode.attr("data-init") == (circleId + cityId + hotspotId)) {
+					if(tempNode.attr("aria-expanded") != 'true') {
+						tempNode.find("a").click();
+						break;
+					}
+				}
+			}
+		} 
+		//city
+		else {
+			var cityId = leafNode.substring(leafNode.indexOf("B"));
+			
+			for(var i=0; i < $("#treeNode li.city").length; i++) {
+				var tempNode = $($("#treeNode li.city")[i]);
+				
+				if(tempNode.attr("data-init") == (circleId + cityId)) {
+					if(tempNode.attr("aria-expanded") != 'true') {
+						tempNode.find("a").click();
+						break;
+					}
+				}
 			}
 		}
-	}
-	
-	for(var i=0; i < $("#treeNode li.hotspot").length; i++) {
-		var tempNode = $($("#treeNode li.hotspot")[i]);
-		
-		if(tempNode.attr("data-init") == (circleId + cityId + hotspotId)) {
-			if(tempNode.attr("aria-expanded") != 'true') {
-				tempNode.find("a").click();
-				break;
-			}
-		}
-	}
+	} 
 }
 
 //서비스 영억 그룹 테이블 선택시 발동하는 함수
 function selectServiceAreaGroup(obj) {
 	$(obj).css("background", blue);
 	$(obj).css("color", white);
+	$(obj).find("button").css("color", black);
 	$(obj).attr("choiceYn", 'Y');
 	
 	$(obj).siblings().css("background", white);
@@ -178,12 +201,10 @@ function selectServiceAreaGroup(obj) {
 //Circle select 박스 변경 이벤트
 function changeCircle() {
 	if($("#search-circle").val() != '') {
-		//저장버튼 숨김처리
-		$(".proccess-btn").hide();
 		//기존 treeNode 삭제
 		$("#treeNode").empty();
-		
 		$("#selectedCircle").text($("#search-circle option:selected").text() + ' Service Area Group');
+		$("form input, form button").show();
 		
 		$.ajax({
 		    url : "/dashbd/api/getServiceAreaGroupList.do",
@@ -200,12 +221,11 @@ function changeCircle() {
 		        
 		        if( data.length != 0 ) {
 		        	for(var i=0; i < data.length; i++) {
-		        		$("#group_area").append('<tr onclick="selectServiceAreaGroup(this)" data-init="' + data[i].group_id + '" title="' + data[i].group_description + '"><td>' 
-		        				+ data[i].group_name + '</td><td><button type="button" class="btn btn-primary4 btn-sm" onCLick="deleteServiceAreaGroup(this)">Delete</button></td></tr>');
+		        		$("#group_area").append('<li class="list-group-item" onclick="selectServiceAreaGroup(this)" data-init="' + data[i].group_id + '" title="' + data[i].group_description + '">' 
+		        				+ data[i].group_name + '<div class="btn-group pull-right"><button type="button" class="btn btn-w-m btn-xs" onCLick="deleteServiceAreaGroup(this)">Delete</button></div></li>');
 			        }
 		        } 
 		        
-		        $("#group_area").append('<tr><td><input type="text" /></td><td><button type="button" class="btn btn-primary4 btn-sm" onCLick="addServiceAreaGroup(this)">Add</button></td></tr>');
 		        //콤보박스 변경시 트리 셋팅
 		        jsTreeSetting();
 		    },
@@ -219,8 +239,8 @@ function changeCircle() {
 	} else {
 		$("#selectedCircle").text('');
 		$("#group_area").empty();
-        $(".proccess-btn").hide();
         $("#treeNode").empty();
+        $("form input, form button").hide();
 	}
 }
 
@@ -281,42 +301,53 @@ function addServiceAreaGroup(obj) {
 
 //서비스 그룹 삭제 메소드
 function deleteServiceAreaGroup(obj) {
-	var group_id = $(obj).parents("tr").attr("data-init");
+	var group_id = $(obj).parents("li").attr("data-init");
 	
 	if(group_id != '') {
-		$.ajax({
-		    url : "/dashbd/api/deleteServiceAreaGroup.do",
-		    type: "POST",
-		    data : { 
-		    	group_id : group_id
-		    },
-		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-		    success : function(responseData) {
-		        $("#ajax").remove();
-		        var data = JSON.parse(responseData);
-		        
-		        if(data.resultCode == 'S') {
-		        	swal({
-		                title: "Success !",
-		                text: "Success",
-		                type:"success"
-		            },
-		            function() {
-		            	location.reload();
-		            })
-		        } else {
+		swal({
+			  title: "Are you sure?",
+			  text: "Do you want to proceed with this operation?",
+			  type: "warning",
+			  showCancelButton: true,
+			  confirmButtonColor: "#DD6B55",
+			  confirmButtonText: "Yes",
+			  closeOnConfirm: false
+			},
+		function(){
+			$.ajax({
+			    url : "/dashbd/api/deleteServiceAreaGroup.do",
+			    type: "POST",
+			    data : { 
+			    	group_id : group_id
+			    },
+			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			    success : function(responseData) {
+			        $("#ajax").remove();
+			        var data = JSON.parse(responseData);
+			        
+			        if(data.resultCode == 'S') {
+			        	swal({
+			                title: "Success !",
+			                text: "Success",
+			                type:"success"
+			            },
+			            function() {
+			            	changeCircle();
+			            })
+			        } else {
+			        	swal({
+			                title: "Fail !",
+			                text: "Error"
+			            });
+			        }
+			    },
+		        error : function(xhr, status, error) {
 		        	swal({
 		                title: "Fail !",
 		                text: "Error"
 		            });
 		        }
-		    },
-	        error : function(xhr, status, error) {
-	        	swal({
-	                title: "Fail !",
-	                text: "Error"
-	            });
-	        }
+			});
 		});
 	} else {
 		swal({
@@ -345,7 +376,7 @@ $(document).on("click", "#save-btn", function() {
     		
     		if(resultStr != '') {
     			$.ajax({
-    			    url : "/dashbd/api/saveServiceAreaGroupHotspot.do",
+    			    url : "/dashbd/api/saveServiceAreaGroupSub.do",
     			    type: "POST",
     			    data : { 
         				group_id : serviceAreaGroupId,
@@ -382,9 +413,10 @@ $(document).on("click", "#save-btn", function() {
     		} else {
     			swal("Fail !", "Please select data", "error");
     		}
-    	} else {
-    		swal("Cancelled", "Your imaginary file is safe :)", "error");
     	} 
+//    	else {
+//    		swal("Cancelled", "Your imaginary file is safe :)", "error");
+//    	} 
     });
 })
 
@@ -392,18 +424,29 @@ $(document).on("click", "#save-btn", function() {
 function getCheckedHotspotData() {
 	var tempList = [];
 	
-	var hotspotList = $("#treeNode li.hotspot");
-	for(var i=0; i < hotspotList.length; i++) {
-		var tempHotspot = $(hotspotList[i]);
+	var clickedList = $("#treeNode li a.jstree-clicked");
+	for(var i=0; i < clickedList.length; i++) {
+		var tempNode = $(clickedList[i]);
 		
-		if(tempHotspot.attr("aria-selected") == 'true') {
-			var tempObj = {
-				"city_id" : tempHotspot.parent().parent().attr("data-init").substring(tempHotspot.parent().parent().attr("data-init").indexOf("B")+1),
-				"hotspot_id" : tempHotspot.attr("data-init").substring(tempHotspot.attr("data-init").indexOf("C")+1)
-			}
-			
-			tempList.push(tempObj);
+		var parentNode = $($(tempNode).parents("li")[0]);
+		var initData = parentNode.attr("data-init");
+		var sub_div;
+		var sub_said;
+		
+		if(parentNode.hasClass("city")) {
+			sub_div = 'city';
+			sub_said = initData.substring(initData.indexOf("B")+1);
+		} else if(parentNode.hasClass("hotspot")) {
+			sub_div = 'hotspot';
+			sub_said = initData.substring(initData.indexOf("C")+1);
 		}
+		
+		var tempObj = {
+			"sub_div" : sub_div,
+			"sub_said" : sub_said
+		}
+		
+		tempList.push(tempObj);
 	}
 	
 	return (tempList.length > 0)? JSON.stringify(tempList) : '';

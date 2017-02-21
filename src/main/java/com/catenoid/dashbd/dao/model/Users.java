@@ -46,7 +46,7 @@ public class Users {
 
     public Users() {}
     
-    public Users(String userId, Integer operatorId, String password, String firstName, String lastName, String department, Integer grade) {
+    public Users(String userId, Integer operatorId, String password, String firstName, String lastName, String department, Integer grade, String gradeName) {
 		this.userId = userId;
 		this.operatorId = operatorId;
 		this.password = password;

@@ -274,6 +274,7 @@
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="String" >
     select 
     <include refid="Base_Column_List" />, (select max(circle_name) from operator where id = users.operator_id) AS circle_name
+    , (select name from grade where id = users.grade) AS grade_name
     from users
     where user_id = #{userId}
   </select>

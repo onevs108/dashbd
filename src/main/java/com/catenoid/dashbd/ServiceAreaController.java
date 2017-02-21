@@ -3099,8 +3099,8 @@ public class ServiceAreaController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/api/saveServiceAreaGroupHotspot.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void saveServiceAreaGroupHotspot(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/api/saveServiceAreaGroupSub.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void saveServiceAreaGroupSub(HttpServletRequest request, HttpServletResponse response) {
 		JSONObject resultObj = new JSONObject();
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
@@ -3123,8 +3123,9 @@ public class ServiceAreaController {
 			int resultCnt = 0;
 			for(int i=0; i < resultList.length; i++) {
 				HashMap<String, Object> tempMap = resultList[i];
-				insertParam.put("hotspot_id", tempMap.get("hotspot_id"));
-				resultCnt += mapper.insertServiceAreaGroupHotspot(insertParam);
+				insertParam.put("sub_div", tempMap.get("sub_div"));
+				insertParam.put("sub_said", tempMap.get("sub_said"));
+				resultCnt += mapper.insertServiceAreaGroupSub(insertParam);
 			}
 			
 			if(resultCnt > 0) {
