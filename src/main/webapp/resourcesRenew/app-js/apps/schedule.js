@@ -6,7 +6,6 @@ $(document).ready(function()
 	$("#serviceType").on("change", function() {
 		
 		if ( $(this).val() == "fileDownload" ) {
-			//filedownload
 			$("#bcType_fileDownload").show();
 			$("#bcType_fileDownload2").show();
 			$("#bcType_streaming").hide();

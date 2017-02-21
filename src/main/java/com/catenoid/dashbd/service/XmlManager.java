@@ -1,6 +1,8 @@
 package com.catenoid.dashbd.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.HttpNetAgent;
@@ -49,13 +52,14 @@ public class XmlManager {
 	private SqlSession sqlSession;
 //	@Value("#{config['b2.server.ipaddress']}")
 //	private String b2serverIpaddress;
-	
-	public String sendBroadcast(Map<String, String> params, int mode){
+
+	public String[] sendBroadcast(Map<String, String> params, int mode){
 		return sendBroadcast(params, mode, null, null);
 	}
 	
-	public String sendBroadcast(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList){
+	public String[] sendBroadcast(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList){
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		String[] rtvs = new String[2];
 		String respBody = "SUCCESS";
 		String reqBody = "";
 		String bmscIp = params.get("bmscIp");
@@ -66,11 +70,11 @@ public class XmlManager {
 		try {
 			//@set param to XML
 			if (BMSC_XML_RETRIEVE == mode)
-				reqBody= makeXmlRetrieve(params);
+				reqBody = makeXmlRetrieve(params);
 			else if (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)
-				reqBody= makeXmlCreate(params, mode, saidData, paramList);
+				reqBody = makeXmlCreate(params, mode, saidData, paramList);
 			else
-				reqBody= makeXmlDelete(params);
+				reqBody = makeXmlDelete(params);
 			
 			//@ xml send 
 			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
@@ -88,8 +92,9 @@ public class XmlManager {
 			logger.error("", e);
 			respBody = e.getMessage();
 		}
-		
-		return respBody;
+		rtvs[0] = respBody;
+		rtvs[1] = reqBody;		
+		return rtvs;
 	}
 	
 	public boolean isSuccess(String retStr) throws JDOMException, IOException{
@@ -288,7 +293,6 @@ public class XmlManager {
 			}
 			
 			Element serviceArea = new Element("serviceArea");
-//			serviceArea.addContent( new Element("said").setText(params.get("said")));
 			String[] saidArray = paramList.get(6).get(0).split(",");
 			for (int i = 0; i < saidArray.length; i++) {
 				if(!saidArray[i].equals("")){
@@ -368,7 +372,9 @@ public class XmlManager {
 					content.addContent( new Element("fileURI").setText(paramList.get(2).get(i)));
 					Element deliveryInfo = new Element("deliveryInfo");
 					//time format ex) 2015-04-10T17:24:09.000+09:00
-					if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))){
+					ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+//					scheduleMapper.insertContents();
+					if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))) {
 						deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
 						deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));
 						content.addContent(deliveryInfo);

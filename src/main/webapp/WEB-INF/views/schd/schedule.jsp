@@ -212,7 +212,7 @@
     <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
     
 	<div class="row">
-		<!-- eEPG for ESPN time-->
+		<!-- eEPG for ESPN time -->
 		<div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">

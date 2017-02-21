@@ -1,6 +1,8 @@
 package com.catenoid.dashbd.ctrl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.ibatis.session.SqlSession;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -286,11 +292,11 @@ public class ScheduleMgmtController {
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				
-				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
+				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
 	
 				//@ check return XML success
-				if (!xmlManager.isSuccess(resStr))
-					return makeRetMsg("9000", resStr);
+				if (!xmlManager.isSuccess(resStr[0]))
+					return makeRetMsg("9000", resStr[0]);
 		}
 		}catch(Exception e){
 			logger.error("", e);
@@ -334,6 +340,7 @@ public class ScheduleMgmtController {
 		
 		Map<String, String> mapContentUrl = mapper.selectSchduleContentURL(params);
 		Map<String, String> mapSchedule = mapper.selectSchduleTime(params);
+//		List<Map<String, String>> mapContents = mapper.selectSchduleTime(params);
 		
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
 			mapSchedule.put("service_name", "testService");
@@ -345,6 +352,7 @@ public class ScheduleMgmtController {
 			mapSchedule.put("schedule_start", mapSchedule.get("temp_start"));
 			mapSchedule.put("schedule_stop", mapSchedule.get("temp_end"));
 		}
+		
 		mv.addObject( "mapContentUrl", mapContentUrl );
 		mv.addObject( "mapSchedule", mapSchedule );
 		return mv;
@@ -416,11 +424,11 @@ public class ScheduleMgmtController {
 			params.put("deliveryInfo_start", convertMysqlDateFormat(params.get("deliveryInfo_start"), false));
 			params.put("deliveryInfo_end", convertMysqlDateFormat(params.get("deliveryInfo_end"),false));
 			params.put("bmscIp", bmsc.getIpaddress());
-			String resStr = xmlManager.sendBroadcast(params, xmlMode, saidData, paramList);
+			String[] resStr = xmlManager.sendBroadcast(params, xmlMode, saidData, paramList);
 			
 			//@ check return XML success
-			if (!xmlManager.isSuccess(resStr))
-				return makeRetMsg("9000", resStr);
+			if (!xmlManager.isSuccess(resStr[0]))
+				return makeRetMsg("9000", resStr[0]);
 			
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 			
@@ -433,9 +441,7 @@ public class ScheduleMgmtController {
 				ret = mapper.updateSchedule(params);
 				
 				//@ insert schedule append said
-				//일단 첫번째 insert
-				ret = mapper.insertAddSchedule(params);
-				if (saidList.size() > 0){
+				if (saidList.size() > 0) {
 					for(int i = 0; i < saidList.size(); i++){
 						if(!saidList.get(i).equals("")){
 							String[] saidArray = saidList.get(i).split(",");
@@ -447,6 +453,9 @@ public class ScheduleMgmtController {
 						}
 					}
 				}
+				
+				int result = insertContentInfo(resStr[1], params.get("id"));
+				
 				logger.info("updateSchedule ret{}", ret);
 			}else{
 				ret = mapper.updateBroadcastInfo(params);
@@ -458,6 +467,43 @@ public class ScheduleMgmtController {
 			logger.error("", e);
 			return makeRetMsg("9999", e.getMessage());
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public int insertContentInfo(String xmlString, String scheduleId) {
+		int result = 0;
+		
+		try {
+			InputStream stream = new ByteArrayInputStream(xmlString.getBytes("UTF-8"));
+			SAXBuilder builder = new SAXBuilder(); 
+			Document jdomdoc = builder.build(stream);
+			Element root = jdomdoc.getRootElement();
+			Element parameters = (Element) root.getChildren().get(1);
+			Element service = parameters.getChild("services").getChild("service");
+			String serviceType = parameters.getChild("services").getChild("service").getAttribute("serviceType").getValue();
+			Element customType = service.getChild(serviceType);
+			
+			List<Element> schedule = customType.getChildren("schedule");
+			for (int i = 0; i < schedule.size(); i++) {
+				HashMap<String,String> param = new HashMap<String, String>();
+				param.put("scheduleId", String.valueOf(Integer.parseInt(scheduleId)+1));
+				List<Element> content = schedule.get(i).getChildren();
+				for (int j = 0; j < content.size(); j++) {
+					param.put("contentId", content.get(0).getAttributeValue("contentId"));
+					param.put("startTime", content.get(0).getAttributeValue("start"));
+					param.put("endTime", content.get(0).getAttributeValue("stop"));
+					param.put("fileURI", content.get(0).getAttributeValue("fileURI"));
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -488,11 +534,11 @@ public class ScheduleMgmtController {
 				mapBroadcast.put("serviceType", params.get("serviceType"));
 				
 				//@ xmlMake & Send, recv
-				String resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_DELETE);
+				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_DELETE);
 				
 				//@ check return XML success
-				if (!xmlManager.isSuccess(resStr))
-					return makeRetMsg("9000", resStr);
+				if (!xmlManager.isSuccess(resStr[0]))
+					return makeRetMsg("9000", resStr[0]);
 			}
 
 			/*
