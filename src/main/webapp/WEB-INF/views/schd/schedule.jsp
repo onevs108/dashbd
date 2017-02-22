@@ -57,6 +57,39 @@
 			}
 			$("#FileRepair").change();
 			$("#receptionReport").change();
+			
+			$('.circle-map .circle-item').on({
+				'mouseenter' : function(e){
+					$(this).addClass('hover');
+					$('.circle-map > img').addClass('hover');
+					$($(".circle-map").find("img")[0]).addClass("hover");
+				},
+				'mouseleave' : function(e){
+					$(this).removeClass('hover');
+					$('.circle-map > img').removeClass('hover');
+					$($(".circle-map").find("img")[0]).removeClass("hover");
+				},
+				'mousedown' : function(e) {
+					var circle_id = $(this).attr("data-init");
+					var circle_name = $(this).find("span small").text().replace(" Telecom Circle", "");
+					var latitude = $(this).attr("data-lat");
+					var longitude = $(this).attr("data-lng");
+					//좌클릭
+					if(e.button == 0)
+					{
+						moveCityList(circle_id, circle_name, latitude, longitude);
+					}
+					//우클릭
+					else if (e.button == 2) 
+					{
+						addSaidFromMap(circle_id);
+					}
+				},
+				'contextmenu' : function(e) {
+					return false;
+				}
+			});
+			
 		});
 		
 		function addFileSchedule() {
@@ -203,7 +236,7 @@
 	<div class="wrapper wrapper-content">
 	<form class="form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
     <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
-    <input type="hidden" id="contentId" name="contentId" value="${mapSchedule.contentId}">
+<%--     <input type="hidden" id="contentId" name="contentId" value="${mapSchedule.contentId}"> --%>
     <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
     <input type="hidden" id="bmscId" name="bmscId" value="${mapSchedule.bmscId}"/>
     <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
@@ -434,6 +467,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div name="content" class="col-sm-10 col-sm-offset-2">
+                                    	<input type="hidden" name="contentId" value="${mapSchedule.contentId}">
                                         <ul class="schedule-list">
                                         	<div class="ibox-tools">
 				                                <a class="close-content">

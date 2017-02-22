@@ -205,6 +205,7 @@ $(document).ready(function()
 	addContentRemoveEvent();
 });
 
+
 function addServiceAreaEvent(idx){
 	$($("button[name='mapAdd']")[idx]).click(function(){
 		$("#circleCiryPop").modal();

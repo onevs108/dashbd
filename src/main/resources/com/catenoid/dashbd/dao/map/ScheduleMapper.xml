@@ -413,6 +413,11 @@
 	<select id="checkExistSaid" parameterType="java.util.Map" resultType="int">
 		select count(*) from 
 		(
+			select circle_id as said, bandwidth from circle
+			where circle_id = ${said}
+			
+			union all
+			
 			select city_id as said, bandwidth from city
 			where city_id = ${said}
 			

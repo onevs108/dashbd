@@ -1,3 +1,6 @@
+<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
+<script src="/dashbd/resources/app-js/apps/schedule_add_main_map.js"></script>
+
 <div class="modal fade" id="circleCiryPop">
 	<div class="modal-dialog" role="document">
 	<div class="modal-content" style="width: 710px;">
@@ -23,41 +26,12 @@
 									</div>
 		                        </div>
 		                        <div class="ibox-content">
-		                        	<div class="row">
-		                        		<form class="form-horizontal">
-			                        		<div class="col-lg-6">
-												<div class="col-xs-6">
-													<div class="form-group">
-														<select class="form-control">
-															<option value="0">Circle</option>
-															<option value="1">Option 2</option>
-															<option value="2">Option 3</option>
-															<option value="3">Option 4</option>
-														</select>
-													</div>
-												</div>
-												<div class="col-xs-3">
-													<div class="form-group">
-														<div class="input-group">
-															<select data-placeholder="Choose a Country..." class="chosen-select" multiple style="width:250px;" tabindex="4">
-												                <option value="">Select</option>
-												                <option value="United States">United States</option>
-												            </select>
-															<span class="input-group-btn">
-																<button type="button" class="btn btn-primary">Go!</button>
-															</span>
-														</div>
-													</div>
-												</div>
-											</div>
-											<!-- // col -->
-										</form>
-		                        	</div>
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="table-responsive">
 												<div class="india">
 													<jsp:include page="circleImage.jsp" />
+													<div id="map" class="google-map" style="display: none; width:604px; height:709px;"></div>
 												</div>
 											</div>
 										</div>

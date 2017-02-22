@@ -43,7 +43,8 @@
 			$('.footable2').footable();
 			
 			getMenuList('SCHEDULE_MGMT');
-			
+			$($("input[name='radio']")[0]).prop("checked", "true");
+			$("#selectCircle").val("");
 		});
 	</script>
     	

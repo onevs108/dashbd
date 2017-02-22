@@ -356,6 +356,9 @@ public class ScheduleMgmtController {
 			mapSchedule.put("schedule_stop", mapSchedule.get("temp_end"));
 		}
 		
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		List<Circle> circleList = operatorMapper.selectCircleListAll();
+		mv.addObject("circleList", circleList);
 		mv.addObject( "mapContentUrl", mapContentUrl );
 		mv.addObject( "mapSchedule", mapSchedule );
 		return mv;
@@ -418,6 +421,7 @@ public class ScheduleMgmtController {
 			@RequestParam(value="contentLength", required=false) List<String> contentLength,
 			@RequestParam(value="saidList", required=false) List<String> saidList,
 			@RequestParam(value="mpdURI", required=false) List<String> mpdURI,
+			@RequestParam(value="contentId", required=false) List<String> contentId,
             HttpServletRequest req, Locale locale ) {
 		
 		int ret;
@@ -431,6 +435,7 @@ public class ScheduleMgmtController {
 		paramList.add(contentLength);
 		paramList.add(saidList);
 		paramList.add(mpdURI);
+		paramList.add(contentId);
 		
 		String tmp = params.get("preEmptionCapabiity");
 		
@@ -483,7 +488,9 @@ public class ScheduleMgmtController {
 				}
 				else
 				{
-					params.put("serviceAreaId", params.get("serviceAreaId")+","+saidList.get(0));
+					if(!saidList.get(0).equals("")){
+						params.put("serviceAreaId", params.get("serviceAreaId")+","+saidList.get(0));
+					}
 				}
 				
 				//전송 후 본래의 스케쥴 업데이트
@@ -493,6 +500,7 @@ public class ScheduleMgmtController {
 				for (int i = 0; i < paramList.get(0).size(); i++) {	
 					
 				}
+				
 				//@ insert schedule append said
 				/*if (saidList.size() > 0) {
 					for(int i = 0; i < saidList.size(); i++){

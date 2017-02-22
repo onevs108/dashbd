@@ -364,17 +364,18 @@ public class XmlManager {
 			schedule.setAttribute(new Attribute("start", convertDateFormat(paramList.get(0).get(i))));
 			schedule.setAttribute(new Attribute("stop", convertDateFormat(paramList.get(1).get(i))));
 			if(!SERVICE_TYPE_STREAMING.equals(params.get("serviceType"))){
-				for (int j = 0; j < Integer.parseInt(paramList.get(5).get(i)); j++) {	//fileURI 갯수에 따라 동작
+				int contentLength = Integer.parseInt(paramList.get(5).get(i));
+				for (int j = i*contentLength; j < contentLength; j++) {	//content 갯수에 따라 동작
 					Element content = new Element("content");
-					content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						//??
+					content.setAttribute(new Attribute("contentId", paramList.get(8).get(j)));						//??
 					content.setAttribute(new Attribute("contentType", "text/plain"));							//??
 					content.setAttribute(new Attribute("cancelled", "false"));									//??
 					content.setAttribute(new Attribute("changed", "false"));				
-					content.addContent( new Element("fileURI").setText(paramList.get(2).get(i)));
+					content.addContent(new Element("fileURI").setText(paramList.get(2).get(j)));
 					Element deliveryInfo = new Element("deliveryInfo");
-					//time format ex) 2015-04-10T17:24:09.000+09:00
-					ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+//					ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
 //					scheduleMapper.insertContents();
+					//time format ex) 2015-04-10T17:24:09.000+09:00
 					if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))) {
 						deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
 						deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));

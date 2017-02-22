@@ -103,6 +103,11 @@ $(document).ready(function()
     						said += json[i].sub_said + ","
     					}
 					}
+    				if(json.length == 0){
+    					alert("Schedule data is not exist !");
+    					$("#selectCity").val("");
+    					return;
+    				}
     				callTimetable(undefined, said);
         			g_ServiceAreaId = said;
     	    	} 
