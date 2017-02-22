@@ -43,8 +43,8 @@
 			$('.footable2').footable();
 			
 			getMenuList('SCHEDULE_MGMT');
+			
 		});
-		
 	</script>
     	
     <script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
