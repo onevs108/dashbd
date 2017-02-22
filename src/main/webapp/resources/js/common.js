@@ -248,5 +248,3 @@ function getTimeDiff(date, time) {
 	}
 	return false;
 }
-
-

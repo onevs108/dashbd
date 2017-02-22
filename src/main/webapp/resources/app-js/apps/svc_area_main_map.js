@@ -1,6 +1,6 @@
 var map;
 var modalMap;
-var circles = [];
+//var circles = [];
 var cities = [];
 var hotspots = [];
 var modalCities = [];
@@ -30,7 +30,7 @@ $(document).ready(function()
 {
 	jsTreeSetting();
     //json 형태로 변환
-    circlemap = JSON.parse(circlemap);
+//    circlemap = JSON.parse(circlemap);
 });
 
 //처음으로 map을 resize했는지 여부 판단
@@ -50,13 +50,13 @@ function tabChange(tabDiv) {
 		$($("ul.nav.nav-tabs")[0]).removeClass("active");
 		$("#tab-1").removeClass("active");
 		$("#tab-2").addClass("active");
-		$("#map").show();
+//		$("#map").show();
 //		$("#treeNode").hide(); 
 //		$(".search-group").hide();
 		
 		//트리에서 변경된 데이터가 있을 수 있기 떄문에 다시 그려줌
-		circleClear();
-		getNewCircleList();
+//		circleClear();
+//		getNewCircleList();
 		google.maps.event.trigger(map, "resize");
 		map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
 	}
@@ -463,20 +463,20 @@ function initMap() {
 		
 		//circle이 보이는 줌 레벨보다 멀어질 경우 circleList 그림
 		if(currentZoomLevel == 'circle') {
-			if(circles.length == 0) {
-				cityClear('cities');
-				hotspotClear();
-				drawServiceAreaByBmSc();
-			}
+//			if(circles.length == 0) {
+//				cityClear('cities');
+//				hotspotClear();
+//				drawServiceAreaByBmSc();
+//			}
 		} else if(currentZoomLevel == 'city') {
-			circleClear();
+//			circleClear();
 			hotspotClear();
 			
 //			if(cities.length == 0) {
 //				drawServiceAreaByCity(tempCircleObj);
 //			}
 		} else if(currentZoomLevel == 'hotspot') {
-			circleClear();
+//			circleClear();
 			cityClear('cities');
 		}
 	});
@@ -496,7 +496,7 @@ function initMap() {
 	});
 	
 	// 처음 로딩 시 지도에 표시해주는 부분
-	drawServiceAreaByBmSc();
+//	drawServiceAreaByBmSc();
 }
 
 function makeInfoWindow(div, object) {
@@ -599,15 +599,15 @@ function checkZoomLevel(zoom) {
 
 google.maps.event.addDomListener(window, 'load', initMap);
 
-function circleClear() {
-	for(var i=0; i < circles.length; i++) {
-		//서클 클리어
-		var tempCircle = circles[i];
-		tempCircle.setMap(null);
-	}
-	
-	circles = [];
-}
+//function circleClear() {
+//	for(var i=0; i < circles.length; i++) {
+//		//서클 클리어
+//		var tempCircle = circles[i];
+//		tempCircle.setMap(null);
+//	}
+//	
+//	circles = [];
+//}
 
 //도시 삭제(메인 페이지와 모달 페이지를 구분하여 삭제)
 function cityClear(targetCity) {
@@ -640,70 +640,70 @@ function hotspotClear() {
 }
 
 //변경된 서클 리스트를 가지고오는 메소드
-function getNewCircleList() {
-	$.ajax({
-	    url : "/dashbd/api/getNewCircleList.do",
-	    type: "POST",
-	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-	    success : function(responseData) {
-	    	$("#ajax").remove();
-	        var data = JSON.parse(responseData);
-	        
-	        circlemap = data;
-	        drawServiceAreaByBmSc();
-	    }, 
-	    error : function(xhr, status, error) {
-        	swal({
-                title: "Fail !",
-                text: "Error"
-            });
-        }
-	});
-}
+//function getNewCircleList() {
+//	$.ajax({
+//	    url : "/dashbd/api/getNewCircleList.do",
+//	    type: "POST",
+//	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+//	    success : function(responseData) {
+//	    	$("#ajax").remove();
+//	        var data = JSON.parse(responseData);
+//	        
+//	        circlemap = data;
+//	        drawServiceAreaByBmSc();
+//	    }, 
+//	    error : function(xhr, status, error) {
+//        	swal({
+//                title: "Fail !",
+//                text: "Error"
+//            });
+//        }
+//	});
+//}
 
 //서클 리스트를 지도상에 그려주는 메소드
-function drawServiceAreaByBmSc() {
-	for (var circle in circlemap) {
-		//위도 경도를 숫자값으로 변경하여 셋팅
-		circlemap[circle].center.lat = Number(circlemap[circle].center.lat);
-		circlemap[circle].center.lng = Number(circlemap[circle].center.lng);
-		
-	    // Add the circle for this circle to the map.
-		var cityCircle = new google.maps.Circle({
-	      strokeColor: red,
-	      strokeOpacity: 0.8,
-	      strokeWeight: 2,
-	      fillColor: red,
-	      fillOpacity: 0.35,
-	      map: map,
-	      center: circlemap[circle].center,
-	      radius: Math.sqrt(circlemap[circle].population) * 100,
-	      said : circlemap[circle].circle_id,
-	      name : circlemap[circle].circle_name
-	    });
-	    
-	    cityCircle.addListener('click', function() {
-	    	//선택된 object를 전역변수에 담음(추후 추가시에 부모 노드로 사용)
-	    	upperObj = this;
-	    	drawServiceAreaByCity(this);
-		});
-	    
-	    cityCircle.addListener('rightclick', function(event) {
-	    	var contentString = makeInfoWindow('edit', this);
-			
-			//이전에 열린 infoWindow가 있을 경우 닫아줌
-			if(tempInfoWindow != undefined)
-				tempInfoWindow.close();
-			
-			var infowindow = new google.maps.InfoWindow({ content: contentString
-							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
-			infowindow.open(map, this);
-			tempInfoWindow = infowindow
-		});
-	    
-	    circles.push(cityCircle);
-	}
-}
+//function drawServiceAreaByBmSc() {
+//	for (var circle in circlemap) {
+//		//위도 경도를 숫자값으로 변경하여 셋팅
+//		circlemap[circle].center.lat = Number(circlemap[circle].center.lat);
+//		circlemap[circle].center.lng = Number(circlemap[circle].center.lng);
+//		
+//	    // Add the circle for this circle to the map.
+//		var cityCircle = new google.maps.Circle({
+//	      strokeColor: red,
+//	      strokeOpacity: 0.8,
+//	      strokeWeight: 2,
+//	      fillColor: red,
+//	      fillOpacity: 0.35,
+//	      map: map,
+//	      center: circlemap[circle].center,
+//	      radius: Math.sqrt(circlemap[circle].population) * 100,
+//	      said : circlemap[circle].circle_id,
+//	      name : circlemap[circle].circle_name
+//	    });
+//	    
+//	    cityCircle.addListener('click', function() {
+//	    	//선택된 object를 전역변수에 담음(추후 추가시에 부모 노드로 사용)
+//	    	upperObj = this;
+//	    	drawServiceAreaByCity(this);
+//		});
+//	    
+//	    cityCircle.addListener('rightclick', function(event) {
+//	    	var contentString = makeInfoWindow('edit', this);
+//			
+//			//이전에 열린 infoWindow가 있을 경우 닫아줌
+//			if(tempInfoWindow != undefined)
+//				tempInfoWindow.close();
+//			
+//			var infowindow = new google.maps.InfoWindow({ content: contentString
+//							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+//			infowindow.open(map, this);
+//			tempInfoWindow = infowindow
+//		});
+//	    
+//	    circles.push(cityCircle);
+//	}
+//}
 
 //도시 리스트를 찍어주는 메소드
 function drawServiceAreaByCity(circle) {
@@ -974,7 +974,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 			        	if(tabDiv == 'map') {
 			        		if(currentZoomLevel == 'circle') {
 			        			circleClear();
-			        			getNewCircleList();
+//			        			getNewCircleList();
 			        			google.maps.event.trigger(map, "resize");
 			        			map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
 				        	} else if(currentZoomLevel == 'city') {
@@ -996,7 +996,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 			        		}
 			        		
 			        		circleClear();
-			        		getNewCircleList();
+//			        		getNewCircleList();
 			        	}
 			        } 
 			        else if(data.resultCode == 'E') {

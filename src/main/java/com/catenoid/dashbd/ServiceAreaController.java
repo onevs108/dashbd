@@ -2677,24 +2677,24 @@ public class ServiceAreaController {
 		ModelAndView mv = new ModelAndView("serviceAreaMain");
 		
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
-		
 		List<Circle> circleList = operatorMapper.selectCircleListAll();
+		mv.addObject("circleList", circleList);
 		
-		JSONObject circlemap = new JSONObject();
-		
-		for (Circle circle : circleList) {
-			JSONObject jsonObj1 = new JSONObject();
-			JSONObject jsonObj2 = new JSONObject();
-			jsonObj2.put("lat", circle.getLatitude());
-			jsonObj2.put("lng", circle.getLongitude());
-			jsonObj1.put("center", jsonObj2);
-			jsonObj1.put("population", "1500000");
-			jsonObj1.put("circle_id", circle.getCircle_id());
-			jsonObj1.put("circle_name", circle.getCircle_name());
-			circlemap.put(circle.getCircle_id(), jsonObj1);
-		}
-		
-		mv.addObject("circlemap", circlemap);
+//		JSONObject circlemap = new JSONObject();
+//		
+//		for (Circle circle : circleList) {
+//			JSONObject jsonObj1 = new JSONObject();
+//			JSONObject jsonObj2 = new JSONObject();
+//			jsonObj2.put("lat", circle.getLatitude());
+//			jsonObj2.put("lng", circle.getLongitude());
+//			jsonObj1.put("center", jsonObj2);
+//			jsonObj1.put("population", "1500000");
+//			jsonObj1.put("circle_id", circle.getCircle_id());
+//			jsonObj1.put("circle_name", circle.getCircle_name());
+//			circlemap.put(circle.getCircle_id(), jsonObj1);
+//		}
+//		
+//		mv.addObject("circlemap", circlemap);
 		
 		return mv;
 	}

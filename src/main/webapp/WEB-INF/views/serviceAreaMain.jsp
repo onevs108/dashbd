@@ -76,7 +76,8 @@
 													</div>
 												</div>
 												<div id="tab-2" class="tab-pane">
-													<div id="map" class="google-map tab-pane" style="display:none;"></div>
+													<jsp:include page="common/circleImage.jsp" />
+													<div id="map" class="google-map" style="display:none;"></div>
 												</div>
 											</div>
 										</div>
@@ -121,10 +122,26 @@
 <!-- <script src="js/common.js"></script> -->
    
 <script type="text/javascript">
-	var circlemap = '${circlemap}';
-	
 	$(document).ready(function() {
 		getMenuList('SERVICE_AREA_MGMT');
+		
+		//circle image mouse over control
+		$('.circle-map .circle-item').on({
+			'mouseenter' : function(e){
+				$(this).addClass('hover');
+				$('.circle-map > img').addClass('hover');
+				$($(".circle-map").find("img")[0]).addClass("hover");
+			},
+			'mouseleave' : function(e){
+				$(this).removeClass('hover');
+				$('.circle-map > img').removeClass('hover');
+				$($(".circle-map").find("img")[0]).removeClass("hover");
+			},
+			'click' : function(e) {
+				var circle_id = $(this).attr("data-init");
+				var circle_name = $(this).find("span small").text().replace(" Telecom Circle", "");
+			}
+		});
 	});
 </script>
 </body>

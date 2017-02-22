@@ -201,9 +201,9 @@
   </update>
   
 	<select id="selectCircleListAll" resultType="com.catenoid.dashbd.dao.model.Circle">
-		SELECT circle_id, circle_name, description, latitude, longitude 
+		SELECT circle_id, circle_name, description, latitude, longitude, sort
 		FROM circle
-		ORDER BY length(circle_name) ASC, circle_name ASC
+		ORDER BY sort
 	</select>
   
 	<select id="selectTownListAll" resultType="com.catenoid.dashbd.dao.model.Circle">

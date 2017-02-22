@@ -20,6 +20,7 @@ public class Circle {
     private Date createdAt;
     private Date updatedAt;
     private Integer totalCount;
+    private Integer sort;
     
     public String getTown_name() {
 		return town_name;
@@ -130,6 +131,7 @@ public class Circle {
 		jsonResult.put("description", description);
 		jsonResult.put("permission", permission);
 		jsonResult.put("bandwidth", bandwidth);
+		jsonResult.put("sort", sort);
 		jsonResult.put("createdAt", Utils.getFormatDateTime(createdAt, "yyyy-MM-dd HH:mm:ss"));
 		jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
 		return jsonResult;
@@ -139,7 +141,7 @@ public class Circle {
 	public String toString() {
 		return "Operator [id=" + id + ", circle_id=" + circle_id + ", circle_name=" + circle_name + ", town_name=" + town_name
 				+ ", town_code=" + town_code + ", latitude=" + latitude + ", longitude=" + longitude + ", longitude=" + longitude
-				+ ", description=" + description + ", permission=" + permission + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", description=" + description + ", permission=" + permission + ", sort=" + sort + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 	public Integer getId() {
@@ -148,5 +150,13 @@ public class Circle {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 }
