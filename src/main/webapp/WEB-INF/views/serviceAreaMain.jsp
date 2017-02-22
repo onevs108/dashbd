@@ -77,7 +77,7 @@
 												</div>
 												<div id="tab-2" class="tab-pane">
 													<jsp:include page="common/circleImage.jsp" />
-													<div id="map" class="google-map" style="display:none;"></div>
+													<div id="map" class="google-map" style="display:none; width:604px; height:709px;"></div>
 												</div>
 											</div>
 										</div>
@@ -140,6 +140,18 @@
 			'click' : function(e) {
 				var circle_id = $(this).attr("data-init");
 				var circle_name = $(this).find("span small").text().replace(" Telecom Circle", "");
+				var lat = $(this).attr("data-lat");
+				var lng = $(this).attr("data-lng");
+				
+				//데이터 처리 후 이전 내용을 불러오기 위한 전역변수에 셋팅
+				upperCircle = {
+					said : circle_id,
+					name : circle_name,
+					lat : lat,
+					lng : lng
+				}
+				
+				drawServiceAreaByCity(upperCircle);
 			}
 		});
 	});

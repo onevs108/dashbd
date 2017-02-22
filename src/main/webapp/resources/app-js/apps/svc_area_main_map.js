@@ -20,7 +20,9 @@ var black = '#000000';
 
 //최근 클릭된 InfoWindow를 담는 변수
 var tempInfoWindow;
-//마지막으로 클릭된 상위 Object를 담는 변수
+//마지막으로 클릭된 상위 Object를 담는 변수(circle)
+var upperCircle;
+//마지막으로 클릭된 상위 Object를 담는 변수(city)
 var upperObj;
 
 //현재 줌레벨을 담고있는 변수 선언
@@ -42,6 +44,7 @@ function tabChange(tabDiv) {
 		$("#tab-1").addClass("active");
 		$("#tab-2").removeClass("active");
 		$("#map").hide();
+		$(".circle-map").hide();
 //		$("#treeNode").show();
 //		$(".search-group").show();
 		jsTreeSetting();
@@ -50,15 +53,13 @@ function tabChange(tabDiv) {
 		$($("ul.nav.nav-tabs")[0]).removeClass("active");
 		$("#tab-1").removeClass("active");
 		$("#tab-2").addClass("active");
+		$(".circle-map").show();
 //		$("#map").show();
 //		$("#treeNode").hide(); 
 //		$(".search-group").hide();
 		
-		//트리에서 변경된 데이터가 있을 수 있기 떄문에 다시 그려줌
 //		circleClear();
 //		getNewCircleList();
-		google.maps.event.trigger(map, "resize");
-		map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
 	}
 }
 
@@ -463,18 +464,19 @@ function initMap() {
 		
 		//circle이 보이는 줌 레벨보다 멀어질 경우 circleList 그림
 		if(currentZoomLevel == 'circle') {
-//			if(circles.length == 0) {
-//				cityClear('cities');
-//				hotspotClear();
+			cityClear('cities');
+			hotspotClear();
+			
+			$("#map").hide();
+			$(".circle-map").show();
 //				drawServiceAreaByBmSc();
-//			}
 		} else if(currentZoomLevel == 'city') {
 //			circleClear();
 			hotspotClear();
 			
-//			if(cities.length == 0) {
-//				drawServiceAreaByCity(tempCircleObj);
-//			}
+			if(cities.length == 0) {
+				drawServiceAreaByCity(upperCircle);
+			}
 		} else if(currentZoomLevel == 'hotspot') {
 //			circleClear();
 			cityClear('cities');
@@ -579,14 +581,14 @@ function checkZoomLevel(zoom) {
 	var zoomLevel = '';
 	
 	//circle level
-	if(zoom < 8) {
+	if(zoom < 6) {
 		zoomLevel = 'circle';
-		map.setOptions({ maxZoom: 7 });
+		map.setOptions({ maxZoom: 5 });
 	} 
 	//city level
-	else if(zoom < 10) {
+	else if(zoom < 9) {
 		zoomLevel = 'city';
-		map.setOptions({ maxZoom: 9 });
+		map.setOptions({ maxZoom: 8 });
 	} 
 	//hotspot level
 	else {
@@ -707,6 +709,11 @@ function hotspotClear() {
 
 //도시 리스트를 찍어주는 메소드
 function drawServiceAreaByCity(circle) {
+	$(".circle-map").hide();
+	$("#map").show();
+	
+	google.maps.event.trigger(map, "resize");
+	
 	$.ajax({
 	    url : "/dashbd/api/getCitiesInCircle.do",
 	    type: "POST",
@@ -722,7 +729,7 @@ function drawServiceAreaByCity(circle) {
 	        //도시 기본 줌 사이즈로 셋팅
 	        map.setZoom(9);
 	        //서클의 위도 경도로 이동
-	        map.setCenter(new google.maps.LatLng(circle.center.lat(), circle.center.lng()));
+	        map.setCenter(new google.maps.LatLng(circle.lat, circle.lng));
 	        
 	        for (var city in data) {
 	        	var cityCircle = new google.maps.Circle({
@@ -882,10 +889,17 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 		$("form[name='serviceAreaForm'] input[name='currentZoomLevel']").val(currentZoomLevel);
 		
 		if(currentZoomLevel != 'circle') {
-			//city, hotspot 마냥 상위 노드가 필요할 경우에만 셋팅
-			if(upperObj != undefined) {
-				$("form[name='serviceAreaForm'] input[name='upper_said']").val(upperObj.said);
-				$("form[name='serviceAreaForm'] input[name='upper_name']").val(upperObj.name);
+			if(currentZoomLevel == 'city') {
+				//city, hotspot 마냥 상위 노드가 필요할 경우에만 셋팅
+				if(upperCircle != undefined) {
+					$("form[name='serviceAreaForm'] input[name='upper_said']").val(upperCircle.said);
+					$("form[name='serviceAreaForm'] input[name='upper_name']").val(upperCircle.name);
+				}
+			} else if(currentZoomLevel == 'hotspot') {
+				if(upperObj != undefined) {
+					$("form[name='serviceAreaForm'] input[name='upper_said']").val(upperObj.said);
+					$("form[name='serviceAreaForm'] input[name='upper_name']").val(upperObj.name);
+				}
 			}
 		}
 		
@@ -980,7 +994,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 				        	} else if(currentZoomLevel == 'city') {
 				        		tempInfoWindow.close(); //InfoWindow 닫아줌
 				        		cityClear('cities');
-				        		drawServiceAreaByCity(upperObj);
+				        		drawServiceAreaByCity(upperCircle);
 				        	} else if(currentZoomLevel == 'hotspot') {
 				        		tempInfoWindow.close(); //InfoWindow 닫아줌
 				        		hotspotClear();

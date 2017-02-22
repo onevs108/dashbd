@@ -5,13 +5,13 @@
 	<c:forEach var="circle" items="${circleList}" varStatus="status">
 		<c:choose>
 			<c:when test="${circle.sort != 99}">
-				<a class="circle-item item${circle.sort}" data-init="${circle.circle_id}">
+				<a class="circle-item item${circle.sort}" data-init="${circle.circle_id}" data-lat="${circle.latitude}" data-lng="${circle.longitude}">
 					<img src="/dashbd/resources/newPublish/img/subpage/img_india_item_${circle.circle_id}.png" alt="" />
 					<span><small class="text-muted">${circle.circle_name} Telecom Circle</small></span>
 				</a>
 			</c:when>
 			<c:when test="${circle.sort == 99}">
-				<a class="circle-item item9" data-init="${circle.circle_id}" onclick="moveToCircle()">
+				<a class="circle-item item9" data-init="${circle.circle_id}" data-lat="${circle.latitude}" data-lng="${circle.longitude}">
 					<img src="/dashbd/resources/newPublish/img/subpage/img_india_item_${circle.circle_id}.png" alt="" />
 					<span><small class="text-muted">${circle.circle_name} Telecom Circle</small></span>
 				</a>
