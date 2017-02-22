@@ -101,7 +101,7 @@
 	{
 	    list-style-type: none;
 	}
-	</style>
+	</style> 
 	
 </head>
 <body>
@@ -109,14 +109,12 @@
     <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
-               <li class="nav-header">
-				<div class="dropdown profile-element">
+            	<li class="nav-header">
+				<div class="dropdown profile-element" align="center">
 					<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
 				</div>
-				<div class="logo-element">
-					<img src="/dashbd/resources/img/logo2.png">
-				</div>
 				</li>
+			</ul>
         </div>
     </nav>
 <div id="page-wrapper" class="gray-bg">

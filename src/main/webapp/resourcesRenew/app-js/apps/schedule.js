@@ -5,8 +5,8 @@ $(document).ready(function()
 	
 	$("#serviceType").on("change", function() {
 		
-		if ( $(this).val() == "fileDownload" ) {
-			$("#bcType_fileDownload").show();
+		if($(this).val() == "fileDownload"){
+			$("div[name='bcType_fileDownload']").show();
 			$("#bcType_fileDownload2").show();
 			$("#bcType_streaming").hide();
 			$("div[name='bcType_streaming2']").hide();
@@ -42,6 +42,7 @@ $(document).ready(function()
 				addServiceAreaEvent(0);
 			}
 		}else{
+			$("div[name='bcType_fileDownload']").hide();
 			$("#bcType_fileDownload").hide();
 			$("#bcType_fileDownload2").hide();
 			$("#bcType_streaming").show();

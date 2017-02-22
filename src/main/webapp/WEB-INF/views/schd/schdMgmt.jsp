@@ -51,14 +51,11 @@
 	<script src="../resources/app-js/config.js"></script>
 	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
 	
-	
-	
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="../resources/js/markerwithlabel.js"></script>
 	<script src="../resources/app-js/apps/svc_schd.js"></script>
 	<script src="../resources/app-js/apps/svc_main_forSchd.js"></script>
 	<script src="../resources/app-js/apps/svc_main_map_forSchd.js"></script>
-	
         
 	<style type="text/css">
 	.labels {
