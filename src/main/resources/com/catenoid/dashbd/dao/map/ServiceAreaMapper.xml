@@ -1509,13 +1509,13 @@
 	</insert>
 
 	<select id="getTreeNodeData" parameterType="HashMap" resultType="HashMap">
-		SELECT result.node_id, result.pnode_id, result.name, result.node_div, IF(hotspot.hotspot_id IS NULL, 0, 1) as checkYn, latitude, longitude, circle_id, bandwidth
+		SELECT result.node_id, result.pnode_id, result.name, result.node_div, IF(sags.sub_said IS NULL, 0, 1) as checkYn, latitude, longitude, circle_id, bandwidth
 		FROM (
-		    SELECT 'A' AS node_id, null AS pnode_id, 'Circles' as name, 'root' AS node_div, '' AS hotspot_id, '' AS latitude, '' AS longitude, '' AS circle_id, '' AS bandwidth
+		    SELECT 'A' AS node_id, null AS pnode_id, 'Circles' as name, 'root' AS node_div, '' AS compare_id, '' AS latitude, '' AS longitude, '' AS circle_id, '' AS bandwidth
 		    UNION ALL
 		    SELECT CONCAT('A', circle_id) AS node_id, 'A' AS pnode_id
 		        , circle_name AS name, 'circle' AS node_div
-		        , '' AS hotspot_id
+		        , '' AS compare_id
 		        , latitude, longitude
 		        , circle_id
 		        , '' AS bandwidth
@@ -1523,7 +1523,7 @@
 		    UNION ALL
 		    SELECT CONCAT('A', circle_id, 'B', city_id) AS node_id, CONCAT('A', circle_id) AS pnode_id
 		        , city_name AS name, 'city' AS node_div
-		        , '' AS hotspot_id
+		        , city_id AS compare_id
 		        , latitude, longitude
 		        , circle_id
 		        , bandwidth
@@ -1531,7 +1531,7 @@
 		    UNION ALL
 		    SELECT CONCAT('A', circle_id, 'B', city_id, 'C', hotspot_id) AS node_id, CONCAT('A', circle_id, 'B', city_id) AS pnode_id
 		        , hotspot_name AS name, 'hotspot' AS node_div
-		        , hotspot_id AS hotspot_id
+		        , hotspot_id AS compare_id
 		        , latitude, longitude
 		        , circle_id
 		        , bandwidth
@@ -1543,11 +1543,11 @@
 		    ) sub_result
 		) result
 		LEFT JOIN (
-		  SELECT hotspot_id
-		  FROM service_area_group_hotspot
+		  SELECT sub_said
+		  FROM service_area_group_sub
 		  WHERE group_id = #{group_id}
-		) hotspot
-		ON result.hotspot_id = hotspot.hotspot_id
+		) sags
+		ON result.compare_id = sags.sub_said
 		<if test="circle_id != null and circle_id != ''">
 			WHERE result.circle_id = #{circle_id}
 		</if>
@@ -1560,12 +1560,12 @@
 	</delete>
 	
 	<delete id="deleteServiceAreaGroupHotspot" parameterType="HashMap">
-		DELETE FROM service_area_group_hotspot
+		DELETE FROM service_area_group_sub
 		WHERE group_id = #{group_id}
 	</delete>
 	
-	<insert id="insertServiceAreaGroupHotspot" parameterType="HashMap">
-		INSERT INTO service_area_group_hotspot
-		VALUES(#{group_id}, #{hotspot_id}, now())
+	<insert id="insertServiceAreaGroupSub" parameterType="HashMap">
+		INSERT INTO service_area_group_sub
+		VALUES(#{group_id}, #{sub_div}, #{sub_said}, now())
 	</insert>
 </mapper>

@@ -10,7 +10,7 @@
 	<nav class="navbar navbar-static-top" role="navigation"
 		style="margin-bottom: 0;">
 		<div class="navbar-header">
-			<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"> <i class="fa fa-bars"></i></a> <span class="navbar-form-custom">Dashboard (eMBMS Schedule Manager)</span>
+			<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"> <i class="fa fa-bars"></i></a> <span class="navbar-form-custom">SeSM (<c:choose><c:when test="${USER.gradeName != null}">${USER.gradeName}</c:when><c:otherwise>Administrator Group</c:otherwise></c:choose>)</span>
 		</div>
 
 		<ul class="nav navbar-top-links navbar-right">
@@ -18,7 +18,7 @@
 				<div class="profile-element">
 					<span class="clear">
 						<span class="block m-t-xs">
-							<strong class="font-bold">David Williams (Administrator)</strong>
+							<strong class="font-bold">${USER.lastName} ${USER.firstName} (${USER.department})</strong>
 						</span>
 					</span>
 				</div>
@@ -31,7 +31,7 @@
 
 <div class="row border-bottom white-bg dashboard-header">
 	<div class="session">
-		<h2>Dashboard Main</h2>
+		<h2>SeSM Main</h2>
 		<div class="pull-right">
 			<span>Num Sessions:<%=SessionCounterListener.getActiveSessions() %></span>
 			<span>

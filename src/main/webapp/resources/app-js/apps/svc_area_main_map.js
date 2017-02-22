@@ -39,16 +39,20 @@ function tabChange(tabDiv) {
 	if(tabDiv == '1') {
 		$($("ul.nav.nav-tabs")[0]).addClass("active");
 		$($("ul.nav.nav-tabs")[1]).removeClass("active");
+		$("#tab-1").addClass("active");
+		$("#tab-2").removeClass("active");
 		$("#map").hide();
-		$("#treeNode").show();
-		$(".search-group").show();
+//		$("#treeNode").show();
+//		$(".search-group").show();
 		jsTreeSetting();
 	} else if(tabDiv == '2') {
 		$($("ul.nav.nav-tabs")[1]).addClass("active");
 		$($("ul.nav.nav-tabs")[0]).removeClass("active");
+		$("#tab-1").removeClass("active");
+		$("#tab-2").addClass("active");
 		$("#map").show();
-		$("#treeNode").hide(); 
-		$(".search-group").hide();
+//		$("#treeNode").hide(); 
+//		$(".search-group").hide();
 		
 		//트리에서 변경된 데이터가 있을 수 있기 떄문에 다시 그려줌
 		circleClear();
@@ -108,6 +112,16 @@ function treeInit(data) {
             //tree를 그릴때 input box 삽입
             this.redraw_node = function(obj, deep, callback) {
                 obj = parent.redraw_node.call(this, obj, deep, callback);
+                
+                var customDiv = document.createElement('DIV');
+            	customDiv.setAttribute('name', 'customDiv');
+            	customDiv.style.marginRight = '50px';
+            	customDiv.style.float = 'right';
+            	
+            	var customDiv2 = document.createElement('DIV');
+            	customDiv2.setAttribute('name', 'customDiv2');
+            	customDiv2.style.float = 'right';
+                
                 if(!$(obj).hasClass('root')) {
                 	var marginDefault = '20px';
                 	var componentMargin = '2px';
@@ -122,67 +136,81 @@ function treeInit(data) {
                 	inp0.setAttribute('name','name');
                 	inp0.setAttribute('placeholder', nodeLevel + ' Name');
                 	inp0.className = "jstree-inp";
-                	inp0.style.width = '80px';
+                	inp0.style.width = '200px';
+                	inp0.style.height = '20px';
+                	inp0.style.border = '1px solid #e5e6e7';
                 	var inp1 = document.createElement('INPUT');
                     inp1.setAttribute('type','text');
                     inp1.setAttribute('name','said');
                     inp1.setAttribute('title', 'said'); 
                     inp1.setAttribute('readonly', 'readonly');
                     inp1.setAttribute('onblur', 'validationCheck(\'number\', this)');
-                    inp1.className = "jstree-inp";
-                    inp1.style.width = '60px';
-                    inp1.style.marginLeft = marginDefault;
+                    inp1.className = "jstree-inp input-sm";
+                    inp1.style.width = '120px';
+                    inp1.style.height = '20px';
+                    inp1.style.marginLeft = componentMargin;
+                    inp1.style.border = '1px solid #e5e6e7';
                     var inp2 = document.createElement('INPUT');
                     inp2.setAttribute('type','text');
                     inp2.setAttribute('name','lat');
                     inp2.setAttribute('title', 'latitude');
                     inp2.setAttribute('onblur', 'validationCheck(\'number\',  this)');
-                    inp2.className = "jstree-inp";
-                    inp2.style.width = '80px';
+                    inp2.className = "jstree-inp input-sm";
+                    inp2.style.width = '120px';
+                    inp2.style.height = '20px';
                     inp2.style.marginLeft = componentMargin;
+                    inp2.style.border = '1px solid #e5e6e7';
                     var inp3 = document.createElement('INPUT');
                     inp3.setAttribute('type','text');
                     inp3.setAttribute('name','lng');
                     inp3.setAttribute('title', 'longitude');
                     inp3.setAttribute('onblur', 'validationCheck(\'number\',  this)');
-                    inp3.className = "jstree-inp";
-                    inp3.style.width = '80px';
+                    inp3.className = "jstree-inp input-sm";
+                    inp3.style.width = '120px';
+                    inp3.style.height = '20px';
                     inp3.style.marginLeft = componentMargin;
+                    inp3.style.border = '1px solid #e5e6e7';
                     var inp4 = document.createElement('INPUT');
                     inp4.setAttribute('type','text');
                     inp4.setAttribute('name','bandwidth');
                     inp4.setAttribute('title', 'bandwidth');
                     inp4.setAttribute('onblur', 'validationCheck(\'number\',  this)');
-                    inp4.className = "jstree-inp";
-                    inp4.style.width = '80px';
-                    inp4.style.marginLeft = componentMargin;
+                    inp4.className = "jstree-inp input-sm";
+                    inp4.style.width = '120px';
+                    inp4.style.height = '20px';
+                    inp4.style.marginLeft = marginDefault;
+                    inp4.style.border = '1px solid #e5e6e7';
+                    
+                    var btnGruop = document.createElement('div');
+                    btnGruop.className = 'btn-group';
                     
                     var btn1 = document.createElement('BUTTON');
                     btn1.setAttribute('type','button');
                     btn1.setAttribute('onclick', 'callSetLocationModalMap(this, \'serviceArea\', \'' + nodeLevel.toLowerCase() + '\', \'' + $(obj).attr("data-lat") + '\', \'' + $(obj).attr("data-lng") + '\')');
-                    btn1.className = "btn btn-success btn-xs button-edit";
+                    btn1.className = "btn-white btn btn-xs";
                     btn1.style.marginLeft = componentMargin;
                     btn1.textContent = 'Map';
                     
                     var btn2 = document.createElement('BUTTON');
                     btn2.setAttribute('type','button');
                     btn2.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'edit\', this)');
-                    btn2.className = "btn btn-success btn-xs button-edit";
+                    btn2.className = "btn-white btn btn-xs";
                     btn2.style.marginLeft = componentMargin;
                     btn2.textContent = 'Edit';
                     
                     var btn3 = document.createElement('BUTTON');
                     btn3.setAttribute('type','button');
                     btn3.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'delete\', this)');
-                    btn3.className = "btn btn-success btn-xs button-edit";
+                    btn3.className = "btn-white btn btn-xs";
                     btn3.style.marginLeft = componentMargin;
                     btn3.textContent = 'Delete';
                     
                     var btn4 = document.createElement('BUTTON');
                     btn4.setAttribute('type','button');
                     btn4.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'add\', this)');
-                    btn4.className = "btn btn-success btn-xs button-edit";
+                    btn4.className = "btn-white btn btn-xs";
                     btn4.style.marginLeft = componentMargin;
+                    btn4.style.marginRight = '50px';
                     btn4.textContent = 'Add';
                     
                     //해당 아이디 값 셋팅
@@ -216,27 +244,57 @@ function treeInit(data) {
                     }
                     
                     //최종적으로 input과 button을 노드에 붙임
-                    if(!$(obj).hasClass('root')) {
-                        //신규 노드일 경우 Add 버튼 추가 그 외에는 edit, delete 버튼 추가
-                        if($(obj).hasClass('newNode')) {
-                        	$(obj).find("a").remove();
-                        	obj.append(inp0);
-                        	obj.append(inp1);
-                            obj.append(inp2);
-                            obj.append(inp3);
-                            if(nodeLevel != 'Circle') obj.append(inp4);
-                            obj.append(btn1);
-                        	obj.append(btn4);
-                        } else {
-                        	obj.append(inp1);
-                            obj.append(inp2);
-                            obj.append(inp3);
-                            if(nodeLevel != 'Circle') obj.append(inp4);
-                            obj.append(btn1);
-                        	obj.append(btn2);
-                            obj.append(btn3);
-                        }
+                	obj.append(customDiv);
+                	
+                    //신규 노드일 경우 Add 버튼 추가 그 외에는 edit, delete 버튼 추가
+                    if($(obj).hasClass('newNode')) {
+                    	$($(obj).find("a")[0]).remove();
+                    	$(obj).append(inp0);
+                    	if(nodeLevel != 'Circle') $($(obj).find("div[name='customDiv']")[0]).append(inp4);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(inp1);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(inp2);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(inp3);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(btnGruop);
+                    	$($(obj).find('.btn-group')[0]).append(btn1);
+                    	$($(obj).find('.btn-group')[0]).append(btn4); 
+                    } else {
+                    	if(nodeLevel != 'Circle') $($(obj).find("div[name='customDiv']")[0]).append(inp4);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(inp1);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(inp2);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(inp3);
+                    	$($(obj).find("div[name='customDiv']")[0]).append(btnGruop);
+                    	$($(obj).find('.btn-group')[0]).append(btn1);
+                    	$($(obj).find('.btn-group')[0]).append(btn2);
+                    	$($(obj).find('.btn-group')[0]).append(btn3);
                     }
+                } else {
+                	var lab1 = document.createElement('LABEL');
+                	lab1.style.height = '20px';
+                	lab1.style.marginRight = '50px';
+                	lab1.style.marginBottom = '0px';
+                	lab1.textContent = 'Bandwidth';
+                	var lab2 = document.createElement('LABEL');
+                	lab2.style.height = '20px';
+                	lab2.style.marginRight = '90px';
+                	lab2.style.marginBottom = '0px';
+                	lab2.textContent = 'SAID';
+                	var lab3 = document.createElement('LABEL');
+                	lab3.style.height = '20px';
+                	lab3.style.marginRight = '70px';
+                	lab3.style.marginBottom = '0px';
+                	lab3.textContent = 'Latitude';
+                	var lab4 = document.createElement('LABEL');
+                	lab4.style.height = '20px';
+                	lab4.style.marginRight = '225px';
+                	lab4.style.marginBottom = '0px';
+                	lab4.textContent = 'Longitude';
+                	
+                	
+                	obj.append(customDiv2);
+                	$($(obj).find("div[name='customDiv2']")[0]).append(lab1);
+                	$($(obj).find("div[name='customDiv2']")[0]).append(lab2);
+                	$($(obj).find("div[name='customDiv2']")[0]).append(lab3);
+                	$($(obj).find("div[name='customDiv2']")[0]).append(lab4);
                 }
                 return obj;
             };
@@ -269,6 +327,7 @@ function treeInit(data) {
 				if($(compareNode).html().indexOf("ul") == -1) {
 					//첫 노드일 경우 가상 노드를 주어 새롭게 추가할 수 있도록 함
 					var firstNode = '<li class="newNode ' + node.node_div + '" data-init="" data-lat="" data-lng="" data-band=""></li>';
+					if(node.node_div == 'circle') firstNode = ''; //circle은 firstNode 안 넣어줌
 					$(compareNode).append('<ul>' + firstNode + liStr + '</ul>');
 				} else {
 					$($(compareNode).find("ul")[0]).append(liStr);
@@ -290,7 +349,7 @@ function treeInit(data) {
 	}
 	
 	$("#treeNode").bind('ready.jstree', function(e, data) {
-        
+		
     }).jstree({
 	    "conditionalselect" : function (node, event) {
 	      return false;
@@ -325,6 +384,7 @@ function searchTreeNode() {
 		$(".jstree-ocl").remove();
         $('#treeNode li.newNode').remove();
         $('#treeNode li').removeClass("searchPNode");
+        $('#treeNode li a.jstree-search').parents("li").addClass("searchPNode");
         
         if($("#searchType").val() != '') {
         	for(var i=0; i < $('#treeNode li a.jstree-search').length; i++) {
@@ -345,22 +405,41 @@ function searchTreeNode() {
             			$(tempObj.find("a")[0]).removeClass("jstree-search");
             			i--;
             		}
+            	} else if($("#searchType").val() == 'hotspot') {
+            		if(!tempObj.hasClass('hotspot')) {
+            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+            			i--;
+            		}
+            	}
+            	
+            	if($(tempObj.find("a")[0]).parent().siblings().length != 0) {
+            		if($(tempObj.find("a")[0]).parent().siblings().find("a.jstree-search").length == 0) {
+                		$($($(tempObj).parents('li')[0]).find("a")[0]).removeClass("jstree-search");
+                		$($(tempObj).parents('li')[0]).removeClass("searchPNode");
+                	}
             	}
             }
         }
         
-        $('#treeNode li a.jstree-search').parents("li").addClass("searchPNode");
         $('#treeNode li a').not(".jstree-search").parent().not(".root, .searchPNode").remove();	
         
-        for(var i=0; i < $("#treeNode li.circle").length; i++) {
-        	var tempCircleObj = $($("#treeNode li.circle")[i]);
-        	tempCircleObj.append(tempCircleObj.find("ul")[0]);
-        }
-        
-        for(var i=0; i < $("#treeNode li.city").length; i++) {
-        	var tempCityObj = $($("#treeNode li.city")[i]);
-        	tempCityObj.append(tempCityObj.find("ul")[0]);
-        }
+//        for(var i=0; i < $("#treeNode li.circle").length; i++) {
+//        	var tempCircleObj = $($("#treeNode li.circle")[i]);
+//        	tempCircleObj.append(tempCircleObj.find("ul")[0]);
+//        }
+//        
+//        for(var i=0; i < $("#treeNode li.city").length; i++) {
+//        	var tempCityObj = $($("#treeNode li.city")[i]);
+//        	tempCityObj.append(tempCityObj.find("ul")[0]);
+//        }
+	}
+	
+	//no data proccess
+	if($("#treeNode li").not(".root").length == 0) {
+		$("#treeNode ul li").remove();
+		$("#treeNode").append("<span>No Data</span>");
+	} else {
+		$("#treeNode li.root").append($("#treeNode li.root ul")[0]);
 	}
 }
 
@@ -857,13 +936,12 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 			
 			sendData = {
 				'proccessDiv' : treeBtn.innerHTML.toLowerCase(),
-//				'proccessDiv' : 'test',
 				'currentZoomLevel' : objLevel,
-				'said' : $(treeBtn).siblings("input[name='said']").val(),
+				'said' : $(treeBtn).parent().siblings("input[name='said']").val(),
 				'name' : name,
-				'lat' : $(treeBtn).siblings("input[name='lat']").val(),
-				'lng' : $(treeBtn).siblings("input[name='lng']").val(),
-				'bandwidth' : $(treeBtn).siblings("input[name='bandwidth']").val(),
+				'lat' : $(treeBtn).parent().siblings("input[name='lat']").val(),
+				'lng' : $(treeBtn).parent().siblings("input[name='lng']").val(),
+				'bandwidth' : $(treeBtn).parent().siblings("input[name='bandwidth']").val(),
 				'upper_said' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($(treeBtn).parents("li")[1]).find("input[name='said']")[0].value,
 				'upper_name' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($($(treeBtn).parents("li")[1]).find("a")[0]).text()
 			}

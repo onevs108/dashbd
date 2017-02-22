@@ -23,7 +23,7 @@
 <body class="gray-bg">
     <div class="middle-box text-center loginscreen animated fadeInDown">
         <div>
-            <h3>Dashboard Sign in</h3>
+            <img src="/dashbd/resources/newPublish/img/common/img_logo.png" alt=""><h3>SeSM Sign in</h3>
             <form class="m-t" role="form" id="loginForm" action="/dashbd/authentication" method="post" autocomplete="off">
                 <div class="form-group">
                     <input type="text" id="userId" name="userId" class="form-control" placeholder="Username" required autofocus>

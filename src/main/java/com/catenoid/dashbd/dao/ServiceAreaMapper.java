@@ -140,7 +140,7 @@ public interface ServiceAreaMapper {
     
     int deleteServiceAreaGroupHotspot(HashMap<String, Object> insertParam);
     
-    int insertServiceAreaGroupHotspot(HashMap<String, Object> insertParam);
+    int insertServiceAreaGroupSub(HashMap<String, Object> insertParam);
 
 	List<HashMap<String, String>> getServiceAreaOperator1(OperatorSearchParam searchParam);
     
