@@ -23,7 +23,7 @@
 									<label class="col-sm-6 control-label">Select Group</label>
 									<div class="col-sm-6">
 										<c:choose>
-											<c:when test="${USER.grade == 13}">
+											<c:when test="${USER.grade == 13 || USER.grade == 1 || USER.grade == 2 || USER.grade == 3}">
 												<select name="status" id="modal-grade-id" onchange="changeGroup(this, 'modal_circle_area')" class="input-sm form-control input-s-sm">
 													<option value="">Group</option>
 													<c:forEach var="row" items="${gradeList}">

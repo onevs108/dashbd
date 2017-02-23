@@ -49,7 +49,7 @@
                             	<div class="form-group">
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Grade</label>
 									<div class="col-sm-3">
-                                    	<select class="input-sm form-control input-s-sm" id="form-grade" <c:if test="${USER.grade != 13}">disabled="disabled"</c:if>>
+                                    	<select class="input-sm form-control input-s-sm" id="form-grade" <c:if test="${USER.grade != 13 && USER.grade != 1 && USER.grade != 2 && USER.grade != 3}">disabled="disabled"</c:if>>
 											<c:forEach var="row" items="${gradeList}">
 												<option value="${row.id}">${row.name}</option>
 											</c:forEach>
@@ -61,7 +61,7 @@
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Select Circle</label>
                                     <div class="col-sm-3">
                                     	<c:choose>
-											<c:when test="${USER.grade == 13 or USER.grade == 9999}"> <!-- admin 또는 Circle 소속일때 -->
+											<c:when test="${USER.grade == 13 or USER.grade == 1 or USER.grade == 2 or USER.grade == 3 or USER.grade == 9999}"> <!-- admin 또는 Circle 소속일때 -->
 												<select name="status" id="form-operator-id" class="input-sm form-control input-s-sm">
 													<option value="">Please Select</option>
 													<c:forEach items="${circleList}" var="row">
@@ -80,7 +80,7 @@
                                     </div>
                                     <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> Circle Group</label>
 									<div class="col-sm-3">
-                                    	<select class="input-sm form-control input-s-sm" id="form-circle" <c:if test="${USER.grade != 13}">disabled="disabled"</c:if>>
+                                    	<select class="input-sm form-control input-s-sm" id="form-circle" <c:if test="${USER.grade != 13 && USER.grade != 1 && USER.grade != 2 && USER.grade != 3}">disabled="disabled"</c:if>>
                                     		
 										</select>
 	                                </div>
