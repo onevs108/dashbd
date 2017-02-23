@@ -1,6 +1,7 @@
 package com.catenoid.dashbd;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.OperatorService;
+import com.catenoid.dashbd.service.PermissionService;
 import com.catenoid.dashbd.service.UserService;
 
 /**
@@ -45,6 +47,8 @@ public class UsersController {
 	private UserService userServiceImpl;
 	@Autowired
 	private OperatorService operatorServiceImpl;
+	@Autowired
+	private PermissionService permissionServiceImpl;
 	
 	/**
 	 * 사용자 관리 페이지 이동
@@ -195,8 +199,10 @@ public class UsersController {
 		
 		// 사용자를 등록 or 수정하려는 사용자가 올바른 사용자인지 확인한다.
 		// 이 확인 작업은 Security가 대신 해줄수 없기 때문에 직접 해준다.
-		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN)
+		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN){
+			insertPermission(user);
 			jsonResult.put("result", userServiceImpl.insertUser(user));
+		}	
 		else if (userOfSession.getGrade() == Const.USER_GRADE_USER) {
 			// 등록 작업을 수행하는 사용자의 등급이 일반 사용자인데 super admin을 등록시킬순 없다.
 			// 이는 고의로 super admin 을 등록시키려는 경우다.
@@ -204,17 +210,48 @@ public class UsersController {
 				logger.info("~~ [Incorrect grade!]");
 			else {
 				// 사용자를 등록 or 수정하려는 사용자가 일반 사용자인 경우 등록 or 수정 대상의 Operator와 일치해야 한다.
-				if (userOfSession.getOperatorId() == user.getOperatorId())
+				if (userOfSession.getOperatorId() == user.getOperatorId()){
+					insertPermission(user);
 					jsonResult.put("result", userServiceImpl.insertUser(user));
-				else
+				}
+				else{
 					logger.info("~~ [Incorrect operator!]");
+				}
 			}
 		}
-		else
+		else{
+			if (user.getGrade() == Const.USER_GRADE_ADMIN)
+				logger.info("~~ [Incorrect grade!]");
+			else {
+				// 사용자를 등록 or 수정하려는 사용자가 일반 사용자인 경우 등록 or 수정 대상의 Operator와 일치해야 한다.
+				if (userOfSession.getOperatorId().equals(user.getOperatorId())){
+					insertPermission(user);
+					jsonResult.put("result", userServiceImpl.insertUser(user));
+				}else{
+					logger.info("~~ [Incorrect operator!]");
+				}
+			}
 			logger.info("~~ [Incorrect grade of session!]");
+		}
+			
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
+	}
+	
+	public void insertPermission(Users addUser) {
+		Operator operator = null;
+		if(addUser.getOperatorId() != null){
+			operator = operatorServiceImpl.getOperator(addUser.getOperatorId());
+		}else{
+			operator = operatorServiceImpl.getOperator(addUser.getGrade());
+		}
+		String[] permission = operator.getPermission().split(",");
+		List<String> permissions = new ArrayList<String>();
+		for (int i = 0; i < permission.length; i++) {
+			permissions.add(permission[i]);
+		}
+		permissionServiceImpl.insertUserPermission(addUser.getUserId(), permissions);
 	}
 	
 	/**

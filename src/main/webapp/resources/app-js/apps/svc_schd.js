@@ -78,16 +78,26 @@ function setTimeTable(data){
 		if (position == beforPosition && position != 0 )
 			position--;
 		var serviceId = contents[i].serviceId;
+		if(serviceId == undefined){
+			serviceId = "-";
+		}
 		beforPosition = position;
-		console.log('idx=', i ,', position =' , position);
 		timetable.addEvent(contents[i].NAME, 'position' + position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
 				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
-				 					'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID, contents[i].serviceId);
+				 					'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID, serviceId);
+		
 	}
 	
 	var renderer = new Timetable.Renderer(timetable);
 	renderer.draw('.timetable');
+	for (var i = 0; i < $(".time-entry").length; i++) {
+		if($($(".time-entry")[i]).children().text().indexOf("(-)") > -1){
+			$($(".time-entry")[i]).css("background-color", "red");
+		}
+		$(".time-entry")[i].title = "contentName : " + $(".time-entry")[i].title +"\nserviceType : "+contents[i].service +"\nsaid : "+contents[i].service_area_id;   
+	}
+	
 	setTimeline(maxPosition, viewStartHour);
 }
 

@@ -478,7 +478,7 @@
                                                 <div class="well" style="margin-bottom: 0px;">
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">File URI</label>
-                                                        <div class="col-md-10">
+                                                        <div class="col-md-9">
                                                          <c:if test="${empty mapSchedule.BCID}">
                                                          	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
                                                          </c:if>

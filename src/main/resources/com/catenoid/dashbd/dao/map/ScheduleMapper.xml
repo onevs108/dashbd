@@ -29,6 +29,7 @@
 	
 	<select id="selectSchdule" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT ID
+				, service_area_id
 				, NAME
 				, BCID
 				, start_comp 
@@ -62,6 +63,7 @@
 				, DATE_FORMAT(end_date , '%d') end_day
 				, DATE_FORMAT(end_date , '%H') end_hour
 				, DATE_FORMAT(end_date , '%i') end_mins
+				, service
 				, serviceId
 			FROM 
 			(
@@ -69,10 +71,12 @@
 		         DATE_FORMAT(s.start_date, '%H%i%s') start_comp,     
 		         DATE_FORMAT(s.end_date, '%H%i%s') end_comp,
 		         s.ID,
+		         s.service_area_id,
 				 s.NAME,
 				 s.BCID,
 				 s.start_date,
 		         s.end_date,
+		         b.service,
 		         b.serviceId
 		      FROM schedule s left join broadcast_info b on s.BCID = b.BCID
 		      WHERE
@@ -390,6 +394,11 @@
 	<select id="checkBandwidth" parameterType="java.util.Map" resultType="java.util.Map">
 		select said, bandwidth from 
 		(
+			select circle_id as said, bandwidth from circle
+			where circle_id IN (${saidList})
+			
+			union all
+			
 			select city_id as said, bandwidth from city
 			where city_id IN (${saidList})
 			

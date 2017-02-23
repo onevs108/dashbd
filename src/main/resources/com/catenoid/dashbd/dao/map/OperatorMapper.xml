@@ -67,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, description, created_at, updated_at
+    id, circle_name, description, created_at, updated_at
   </sql>
   <sql id="Circle_Column_List" >
     id, circle_name, town_name, town_code, latitude, longitude, description, created_at as createdAt, updated_at as updatedAt
@@ -88,7 +88,7 @@
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List" />, permission
     from operator
     where id = #{id,jdbcType=INTEGER}
   </select>

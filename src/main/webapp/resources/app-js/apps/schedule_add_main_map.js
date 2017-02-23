@@ -1793,7 +1793,7 @@ function drawCity(cityMap, color, circleId, circleTitle) {
 	    });
 	    
 	    townCircle.addListener('rightclick', function(e){
-	    	
+	    	addSaidFromMap(this.id);
 	    });
 	    
 	    townCircle.addListener('click', function(e) {
