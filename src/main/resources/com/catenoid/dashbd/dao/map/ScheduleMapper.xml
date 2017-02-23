@@ -90,6 +90,12 @@
 				<if test="searchDate != null and searchDate !=''" >
 					AND DATE_FORMAT(s.start_date , '%Y-%m-%d') = #{searchDate}
 				</if> 
+				<if test="serviceType != null and serviceType !=''" >
+					AND b.service = #{serviceType}
+				</if> 
+				<if test="serviceClass != null and serviceClass !=''" >
+					AND b.serviceClass = #{serviceClass}
+				</if> 
 			) x
  			order by start_date asc
 	</select>
@@ -107,7 +113,6 @@
 		</if> 
   	</sql>
 	
-	
 	<select id="selectSchduleContentURL" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT url
 		FROM
@@ -115,6 +120,7 @@
 		WHERE c.id = s.content_id
 		AND s.id =#{id}
 	</select>
+	
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT id
 				, bmscId as bmscId
@@ -166,6 +172,7 @@
 			WHERE 1=1
 			AND id = #{id}
 	</select>
+	
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
 			(bmscId,service_area_id, content_id, name, start_date, end_date)
@@ -342,6 +349,37 @@
 		FROM broadcast_info 
 		WHERE 1=1
 		AND BCID = #{BCID}
+	</select>
+	
+	<select id="selectBroadcastToday" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			BCID
+			, serviceId
+			, service_name 		as name
+			, transactionId		
+			, serviceClass 			 
+			, language			as serviceLanguage 
+			, GBR	
+			, QCI	
+			, level	
+			, preEmptionCapabiity	
+			, preEmptionVulnerability
+			, fecType			
+			, fecRatio			
+			, segmentAvailableOffset
+			, said				
+			, DATE_FORMAT(schedule_start, '%Y%m%d%H%i%s') schedule_start
+			, DATE_FORMAT(schedule_stop,  '%Y%m%d%H%i%s') schedule_stop
+			, reportType		
+			, offsetTime	
+			, randomTime	
+			, fileURI	
+			, DATE_FORMAT(deliveryInfo_start, '%Y%m%d%H%i%s') deliveryInfo_start
+			, DATE_FORMAT(deliveryInfo_end,   '%Y%m%d%H%i%s') deliveryInfo_end	
+			, mpdURI			
+			, samplePercentage	 
+		FROM broadcast_info 
+		WHERE schedule_start > #{searchDate}
 	</select>
 	
 	<update id = "updateSchedule" parameterType="java.util.Map">

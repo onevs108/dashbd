@@ -18,9 +18,13 @@ default_service_area += "</tfoot>";
 default_service_area += "</table>";
 default_service_area += "</div>";
 
+var glovalSaid = "";
+
 $(document).ready(function()
 {
-	
+	$('#scheduleSearch').click(function(){
+		callTimetable(undefined, glovalSaid);
+	});
 	//getServiceAreaBmSc(1, $('#operator option:selected').val());
     $('#operator').change(function(){
         //alert( $('#operator option:selected').val() );
@@ -62,6 +66,7 @@ $(document).ready(function()
                 		html += "<option value='"+json[i].city_id+"^"+json[i].city_name+"^"+json[i].latitude+"^"+json[i].longitude+"'>"+json[i].city_name+"</option>";
     				}
     			}
+    			glovalSaid = circleId;
     			callTimetable(undefined, circleId);
     			g_ServiceAreaId = circleId;
             	$("#selectCity").html(html);
@@ -108,6 +113,7 @@ $(document).ready(function()
     					$("#selectCity").val("");
     					return;
     				}
+    				glovalSaid = said;
     				callTimetable(undefined, said);
         			g_ServiceAreaId = said;
     	    	} 
@@ -117,6 +123,7 @@ $(document).ready(function()
         			for (var i = 0; i < json.length; i++) {
         				html += "<option value='"+json[i].hotspot_id+"^"+json[i].hotspot_name+"'>"+json[i].hotspot_name+"</option>";
         			}
+        			glovalSaid = cityId;
         			callTimetable(undefined, cityId);
         			g_ServiceAreaId = cityId;
         			$("#selectHotspot").html(html);
@@ -129,6 +136,16 @@ $(document).ready(function()
     			});
     		}
     	});
+    });
+    
+    $("#selectHotspot").on("change", function(e){
+    	var array = e.target[e.target.selectedIndex].value.split("^");
+    	var hotspotId = array[0];
+    	var hotspotName = array[1];
+    	
+    	glovalSaid = hotspotId;
+		callTimetable(undefined, hotspotId);
+		g_ServiceAreaId = hotspotId;
     });
     
     $("input[name='radio']").click(function(){

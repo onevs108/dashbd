@@ -23,6 +23,8 @@ function callTimetable(bmscId, serviceAreaId_val){
 			bmscId : bmscId
 			, serviceAreaId : serviceAreaId_val
 			, searchDate	: searchDate
+			, serviceType	: $("#serviceType").val()
+			, serviceClass	: $("#serviceClass").val()
 		};
 		
 		$.ajax({
@@ -93,14 +95,13 @@ function setTimeTable(data){
 	renderer.draw('.timetable');
 	for (var i = 0; i < $(".time-entry").length; i++) {
 		if($($(".time-entry")[i]).children().text().indexOf("(-)") > -1){
-			$($(".time-entry")[i]).css("background-color", "red");
+			$($(".time-entry")[i]).css("background-color", "#3CAEFF");
 		}
 		$(".time-entry")[i].title = "contentName : " + $(".time-entry")[i].title +"\nserviceType : "+contents[i].service +"\nsaid : "+contents[i].service_area_id;   
 	}
 	
 	setTimeline(maxPosition, viewStartHour);
 }
-
 
 function setTimeline(maxRow, viewStartHour) {
    	

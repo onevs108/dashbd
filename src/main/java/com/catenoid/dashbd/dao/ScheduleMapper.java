@@ -57,6 +57,7 @@ public interface ScheduleMapper {
 	List<HashMap<String, String>> getGroupListFromCircleId(HashMap<String, String> param);
 	
 	List<HashMap<String, String>> getGroupSaidList(HashMap<String, String> param);
+	List<HashMap<String, String>> selectBroadcastToday(String searchDate);
     
     
 }

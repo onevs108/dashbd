@@ -191,39 +191,76 @@
 					<div class="ibox float-e-margins ibox-title">
 						<div class="ibox-title">
 							<div>
-								<h5>Regional Schedule</h5>
-								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Regional Schedule</button>
+								<h5>Schedule</h5>
+								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Schedule</button>
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area" style="margin-left: 20px;" checked/>Service Area&nbsp;
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
 							</div>
 						</div>
-						<div class="col-sm-3">
-                       		<select id="selectCircle" class="input-sm form-control input">
-                               <option value="">Select Circle</option>
-                               <c:forEach var="row" items="${circleList}">
-                               	<option value="${row.circle_id}^${row.circle_name}">${row.circle_name}</option>
-                               </c:forEach>
-                            </select>
-						</div>
-						<div class="col-sm-3">
-							<select id="selectCity" class="input-sm form-control input">
-                               
-                            </select>
-                        </div>
-						<div class="col-sm-3">
-							<select id="selectHotspot" class="input-sm form-control input">
-                               
-                            </select>
-                        </div>
-						<div class="ibox-content">
-                            <div class="row">
-                            	<div class="col-lg-12">
-                            	<div class="eepg_timeline">
-	                                <div class="timetable"></div>
+						<div class="row" style="margin-left: 1px;">
+							<div class="form-group">
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Circle</label>
+								<div class="col-sm-3" style="width: 20%;">
+		                       		<select id="selectCircle" class="input-sm form-control input">
+		                               <option value="">Select Circle</option>
+		                               <c:forEach var="row" items="${circleList}">
+		                               	<option value="${row.circle_id}^${row.circle_name}">${row.circle_name}</option>
+		                               </c:forEach>
+		                            </select>
+								</div>
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">City</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="selectCity" class="input-sm form-control input">
+		                               
+		                            </select>
+		                        </div>
+		                        <label class="col-sm-2" style="margin-top: 5px;width: 12%;">Hot Spot</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="selectHotspot" class="input-sm form-control input">
+		                               
+		                            </select>
+		                        </div>
+	                        </div>
+		                </div>
+		                <hr style="margin-top: 10px;margin-bottom: 10px;">
+		                <div class="row" style="margin-left: 1px;margin-bottom: 10px;">
+							<div class="form-group">
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Service Type</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="serviceType" class="input-sm form-control input">
+		                               <option value="">All</option>
+		                               <option value="fileDownload">File Download</option>
+                                       <option value="streaming">Streaming</option>
+                                       <option value="carouselMultiple">Carousel Multiple Files</option>
+                                       <option value="carouselSingle">Carousel Single File</option>
+		                            </select>
 	                            </div>
-                            	</div>
-                            </div>
-                        </div><!-- end ibox-content -->
+	                            <label class="col-sm-2" style="margin-top: 5px;width: 12%;">Service Class</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="serviceClass" class="input-sm form-control input">
+		                               <option value="">Select Class</option>
+		                               <c:forEach var="row" items="${scList}">
+		                               	<option value="${row.serviceClass}">${row.serviceClass}</option>
+		                               </c:forEach>
+		                            </select>
+	                            </div>
+								<div class="col-sm-2" style="width: 15%;">
+									<button id="scheduleSearch" class="btn btn-primary btn-sm">Search</button>
+	                            </div>
+							</div>
+						</div>
+		                <div class="form-group">
+		                	<div class="ibox-content">
+	                            <div class="row">
+	                            	<div class="col-lg-12">
+	                            	<div class="eepg_timeline">
+		                                <div class="timetable"></div>
+		                            </div>
+	                            	</div>
+	                            </div>
+	                        </div>
+	                    </div>   
+						<!-- end ibox-content -->
 					</div>
 				</div>
 			</div>

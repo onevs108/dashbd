@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,6 +69,7 @@ public class ScheduleMgmtController {
 		try
 		{
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			ScheduleMapper schedulemapper = sqlSession.getMapper(ScheduleMapper.class);
 			OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 			
 			Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
@@ -90,9 +90,13 @@ public class ScheduleMgmtController {
 			List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
 			
 			List<Circle> circleList = operatorMapper.selectCircleListAll();
+			String searchDate = Utils.getFileDate("yyyy-MM-dd");
+			List<HashMap<String, String>> scList = schedulemapper.selectBroadcastToday(searchDate);
 			mv.addObject("circleList", circleList);
 			mv.addObject("OperatorList", result);
 			mv.addObject("BmscList", bmscs);
+			mv.addObject("searchDate", searchDate); 
+			mv.addObject("scList", scList); 
 			
 			//logger.info("GBRSum=", exampleGBRSum());
 //			String transId = makeTransId();
@@ -105,10 +109,6 @@ public class ScheduleMgmtController {
 //				throw new Exception(resStr);
 			//@ parsing
 //			Map<String, String> xmlParam = xmlManager.paringRetrieve(resStr);
-			
-			//@ db insert
-			String searchDate = Utils.getFileDate("yyyy-MM-dd");
-			mv.addObject("searchDate", searchDate); 
 			
 		}catch(Exception e){
 			logger.error("", e);
