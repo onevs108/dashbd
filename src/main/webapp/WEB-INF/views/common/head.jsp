@@ -32,4 +32,4 @@
 <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
 
 
-<title>INSPINIA | SeSM</title>
+<title>SeSM</title>
