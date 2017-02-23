@@ -220,7 +220,7 @@
 							OR user_id LIKE CONCAT('%', #{searchKeyword}, '%')
 							OR department LIKE CONCAT('%', #{searchKeyword}, '%') )
 					<if test="operatorId != null">
-						AND operator_id = #{operatorId}
+						AND grade = #{operatorId}
 					</if>
 					<if test="searchCircleId != null">
 					  	AND O.circle_name = #{searchCircleId}
@@ -229,7 +229,7 @@
 				<if test="searchColumn.equals('name')">
 					AND ( first_name LIKE CONCAT('%', #{searchKeyword}, '%') OR last_name LIKE CONCAT('%', #{searchKeyword}, '%') )
 					<if test="operatorId != null">
-						AND operator_id = #{operatorId}
+						AND grade = #{operatorId}
 					</if>
 					<if test="searchCircleId != null">
 					  	AND O.circle_name = #{searchCircleId}
@@ -238,7 +238,7 @@
 				<if test="searchColumn.equals('userId')">
 					AND user_id LIKE CONCAT('%', #{searchKeyword}, '%')
 					<if test="operatorId != null">
-						AND operator_id = #{operatorId}
+						AND grade = #{operatorId}
 					</if>
 					<if test="searchCircleId != null">
 					  	AND O.circle_name = #{searchCircleId}
@@ -247,7 +247,7 @@
 				<if test="searchColumn.equals('department')">
 					AND department LIKE CONCAT('%', #{searchKeyword}, '%')
 					<if test="operatorId != null">
-						AND operator_id = #{operatorId}
+						AND grade = #{operatorId}
 					</if>
 					<if test="searchCircleId != null">
 					  	AND O.circle_name = #{searchCircleId}
@@ -256,7 +256,7 @@
 			</when>
 			<otherwise>
 				<if test="operatorId != null">
-					AND operator_id = #{operatorId}
+					AND grade = #{operatorId}
 				</if>
 				<if test="searchCircleId != null">
 				  	AND O.circle_name = #{searchCircleId}

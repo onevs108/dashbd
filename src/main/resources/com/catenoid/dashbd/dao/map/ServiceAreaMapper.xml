@@ -1518,7 +1518,7 @@
 		        , '' AS compare_id
 		        , latitude, longitude
 		        , circle_id
-		        , '' AS bandwidth
+		        , bandwidth AS bandwidth
 		    FROM circle
 		    UNION ALL
 		    SELECT CONCAT('A', circle_id, 'B', city_id) AS node_id, CONCAT('A', circle_id) AS pnode_id

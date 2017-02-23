@@ -2832,6 +2832,7 @@ public class ServiceAreaController {
 						param.put("circleName", param.get("name"));
 						param.put("latitude", param.get("lat"));
 						param.put("longitude", param.get("lng"));
+						param.put("bandwidth", param.get("bandwidth"));
 						resultCnt = circleMapper.insertCircle(param);
 					} else if(currentZoomLevel.equals("city")) {
 						param.put("cityId", param.get("said"));
@@ -2865,6 +2866,7 @@ public class ServiceAreaController {
 					param.put("circleName", param.get("name"));
 					param.put("latitude", param.get("lat"));
 					param.put("longitude", param.get("lng"));
+					param.put("bandwidth", param.get("bandwidth"));
 					resultCnt = circleMapper.insertCircle(param);
 				} else if(currentZoomLevel.equals("city")) {
 					param.put("cityId", param.get("said"));

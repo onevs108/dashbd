@@ -49,7 +49,7 @@
 																	<div class="col-xs-4">
 																		<div class="form-group">
 																			<select id="searchType" class="form-control">
-											                                    <option value="">선택</option>
+											                                    <option value="">Select</option>
 											                                    <option value="circle">Circle</option>
 											                                    <option value="city">City</option>
 											                                    <option value="circleCity">Circle & City</option>

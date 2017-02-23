@@ -10,7 +10,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>INSPINIA | Login</title>
+    <title>SeSM</title>
 
     <link href="/dashbd/resources/newPublish/css/bootstrap.min.css" rel="stylesheet">
     <link href="/dashbd/resources/newPublish/font-awesome/css/font-awesome.css" rel="stylesheet">

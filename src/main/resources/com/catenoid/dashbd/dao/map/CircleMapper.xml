@@ -123,10 +123,10 @@
 	</insert>
 
 	<insert id="insertCircle" parameterType="HashMap">
-		INSERT INTO circle (circle_id, circle_name, description, latitude, longitude, created_at, updated_at) 
-		VALUES (#{circleId}, #{circleName}, #{circleName}, ${latitude}, ${longitude}, NOW(), NOW())
+		INSERT INTO circle (circle_id, circle_name, description, latitude, longitude, bandwidth, created_at, updated_at) 
+		VALUES (#{circleId}, #{circleName}, #{circleName}, #{latitude}, #{longitude}, #{bandwidth}, NOW(), NOW())
 		ON DUPLICATE KEY UPDATE
-		circle_name = #{circleName}, description = #{circleName}, latitude = ${latitude}, longitude = ${longitude}, updated_at = NOW()
+		circle_name = #{circleName}, description = #{circleName}, latitude = #{latitude}, longitude = #{longitude}, bandwidth = #{bandwidth}, updated_at = NOW()
 	</insert>
 
 	<delete id="deleteCircle" parameterType="String">

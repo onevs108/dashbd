@@ -241,33 +241,33 @@ function treeInit(data) {
                         inp1.setAttribute('value', said);
                         inp2.setAttribute('value', $(obj).attr("data-lat"));
                         inp3.setAttribute('value', $(obj).attr("data-lng"));
-                        inp4.setAttribute('value', ($(obj).attr("data-band") == 'undefined'? '' : $(obj).attr("data-band")));
+                        inp4.setAttribute('value', $(obj).attr("data-band"));
                     }
                     
-                    //최종적으로 input과 button을 노드에 붙임
-                	obj.append(customDiv);
-                	
                     //신규 노드일 경우 Add 버튼 추가 그 외에는 edit, delete 버튼 추가
                     if($(obj).hasClass('newNode')) {
                     	$($(obj).find("a")[0]).remove();
                     	$(obj).append(inp0);
-                    	if(nodeLevel != 'Circle') $($(obj).find("div[name='customDiv']")[0]).append(inp4);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(inp1);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(inp2);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(inp3);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(btnGruop);
-                    	$($(obj).find('.btn-group')[0]).append(btn1);
-                    	$($(obj).find('.btn-group')[0]).append(btn4); 
+                    	customDiv.append(inp4);
+                    	customDiv.append(inp1);
+                    	customDiv.append(inp2);
+                    	customDiv.append(inp3);
+                    	btnGruop.append(btn1);
+                    	btnGruop.append(btn4); 
+                    	customDiv.append(btnGruop);
                     } else {
-                    	if(nodeLevel != 'Circle') $($(obj).find("div[name='customDiv']")[0]).append(inp4);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(inp1);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(inp2);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(inp3);
-                    	$($(obj).find("div[name='customDiv']")[0]).append(btnGruop);
-                    	$($(obj).find('.btn-group')[0]).append(btn1);
-                    	$($(obj).find('.btn-group')[0]).append(btn2);
-                    	$($(obj).find('.btn-group')[0]).append(btn3);
+                    	customDiv.append(inp4);
+                    	customDiv.append(inp1);
+                    	customDiv.append(inp2);
+                    	customDiv.append(inp3);
+                    	btnGruop.append(btn1);
+                    	btnGruop.append(btn2);
+                    	btnGruop.append(btn3);
+                    	customDiv.append(btnGruop);
                     }
+                    
+                    //최종적으로 input과 button을 노드에 붙임
+                	obj.append(customDiv);
                 } else {
                 	var lab1 = document.createElement('LABEL');
                 	lab1.style.height = '20px';
@@ -290,12 +290,11 @@ function treeInit(data) {
                 	lab4.style.marginBottom = '0px';
                 	lab4.textContent = 'Longitude';
                 	
-                	
+                	customDiv2.append(lab1);
+                	customDiv2.append(lab2);
+                	customDiv2.append(lab3);
+                	customDiv2.append(lab4);
                 	obj.append(customDiv2);
-                	$($(obj).find("div[name='customDiv2']")[0]).append(lab1);
-                	$($(obj).find("div[name='customDiv2']")[0]).append(lab2);
-                	$($(obj).find("div[name='customDiv2']")[0]).append(lab3);
-                	$($(obj).find("div[name='customDiv2']")[0]).append(lab4);
                 }
                 return obj;
             };
@@ -377,70 +376,87 @@ function searchTreeNode() {
 	var searchString = $("#search-input").val();
 	
 	if(searchString == '') {
-		$('#treeNode').jstree('search', searchString);
+		jsTreeSetting();
+//		$('#treeNode').jstree('search', searchString);
 		//제일 처음 노드 오픈
-		$("#treeNode").jstree("open_node", $("#treeNode .root"));
+//		$("#treeNode").jstree("open_node", $("#treeNode .root"));
 	} else {
 		$('#treeNode').jstree('search', searchString);
+		
 		$(".jstree-ocl").remove();
         $('#treeNode li.newNode').remove();
         $('#treeNode li').removeClass("searchPNode");
         $('#treeNode li a.jstree-search').parents("li").addClass("searchPNode");
+        $($('#treeNode li.root a')[0]).removeClass("jstree-search");
         
         if($("#searchType").val() != '') {
-        	for(var i=0; i < $('#treeNode li a.jstree-search').length; i++) {
-            	var tempObj = $($("#treeNode li a.jstree-search")[i]).parent();
+            var searchList = $('#treeNode li a.jstree-search');
+            
+        	for(var i=0; i < searchList.length; i++) {
+            	var tempObj = $(searchList[i]).parent();
             	
             	if($("#searchType").val() == 'circle') {
             		if(!tempObj.hasClass('circle')) {
             			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            			i--;
             		}
             	} else if($("#searchType").val() == 'city') {
             		if(!tempObj.hasClass('city')) {
             			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            			i--;
             		}
             	} else if($("#searchType").val() == 'circleCity') {
-            		if(!tempObj.hasClass('circle') && !tempObj.hasClass('city')) {
+            		if(tempObj.hasClass('hotspot')) {
             			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            			i--;
             		}
             	} else if($("#searchType").val() == 'hotspot') {
             		if(!tempObj.hasClass('hotspot')) {
             			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            			i--;
             		}
             	}
             	
-            	if($(tempObj.find("a")[0]).parent().siblings().length != 0) {
-            		if($(tempObj.find("a")[0]).parent().siblings().find("a.jstree-search").length == 0) {
-                		$($($(tempObj).parents('li')[0]).find("a")[0]).removeClass("jstree-search");
+            	if(!tempObj.find('a').hasClass('jstree-search') && $(tempObj).siblings().length != 0) {
+            		if($(tempObj).siblings().find("a.jstree-search").length == 0) {
                 		$($(tempObj).parents('li')[0]).removeClass("searchPNode");
                 	}
             	}
             }
         }
-        
-        $('#treeNode li a').not(".jstree-search").parent().not(".root, .searchPNode").remove();	
-        
-//        for(var i=0; i < $("#treeNode li.circle").length; i++) {
-//        	var tempCircleObj = $($("#treeNode li.circle")[i]);
-//        	tempCircleObj.append(tempCircleObj.find("ul")[0]);
-//        }
-//        
-//        for(var i=0; i < $("#treeNode li.city").length; i++) {
-//        	var tempCityObj = $($("#treeNode li.city")[i]);
-//        	tempCityObj.append(tempCityObj.find("ul")[0]);
-//        }
+        var test = $('#treeNode li').not('.searchPNode').find('a').not(".jstree-search").parent();
+        for(var i=0; i < test.length; i++) {
+        	var temp = $(test[i]);
+        	
+        	if($("#" + temp[0].id).length > 0)
+        		$("#" + temp[0].id).remove()
+        	
+        }
 	}
 	
 	//no data proccess
 	if($("#treeNode li").not(".root").length == 0) {
 		$("#treeNode ul li").remove();
 		$("#treeNode").append("<span>No Data</span>");
-	} else {
-		$("#treeNode li.root").append($("#treeNode li.root ul")[0]);
+	} 
+	//custom input layer proccess
+	else {
+		var tempUlObjList = $("#treeNode ul");
+		for(var i=0; i < tempUlObjList.length; i++) {
+			var tempUlObj = $(tempUlObjList[i]);
+			
+			if(i == 0) 
+				$("#treeNode li.root").append($("#treeNode li.root ul")[0]);
+			else 
+				tempUlObj.parent().append(tempUlObj)
+		}
+		
+		$("#treeNode li a").not(".jstree-search").siblings("div[name='customDiv']").remove();
+		
+		var etcRemoveTargetList = $("#treeNode li").not(".root").find("a").not(".jstree-search");
+		for(var i=0; i < etcRemoveTargetList.length; i++) {
+			var tempObj = $(etcRemoveTargetList[i]).parent();
+			
+			if(tempObj.find("li").length == 0)
+				tempObj.remove();
+			
+		}
 	}
 }
 
@@ -943,7 +959,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 			var name;
 			
 			if(treeBtn.innerHTML.toLowerCase() == 'add') {
-				name = $($(treeBtn).parents("li")[0]).find("input")[0].value;
+				name = $($(treeBtn).parents("li")[0]).find("input[name='name']")[0].value;
 			} else {
 				name = $($($(treeBtn).parents("li")[0]).find("a")[0]).text();
 			}
@@ -1009,7 +1025,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 			        			$($(treeBtn).parents("li")[0]).remove();
 			        		}
 			        		
-			        		circleClear();
+//			        		circleClear();
 //			        		getNewCircleList();
 			        	}
 			        } 
