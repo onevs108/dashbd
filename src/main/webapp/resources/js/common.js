@@ -248,3 +248,30 @@ function getTimeDiff(date, time) {
 	}
 	return false;
 }
+
+
+//시간 초 더하기
+//date : 2016-10-10 23:00
+function getTimeAddSecond(date, second) {
+	var	d = new Date(date.substr(0,4), date.substr(5,2)-1, date.substr(8,2), date.substr(11,2), date.substr(14,2), date.substr(17,2));
+	d.setSeconds(d.getSeconds()+second);
+	
+	var s =
+		leadingZeros(d.getFullYear(), 4) + '-' +
+		leadingZeros(d.getMonth() + 1, 2) + '-' +
+		leadingZeros(d.getDate(), 2) + ' ' + d.toTimeString().substr(0,8);
+	return s;
+}
+
+//시간 초 더하기 + 가드타임
+//date : 2016-10-10 23:00
+function getTimeAddSecond15Guard(date, second) {
+	var	d = new Date(date.substr(0,4), date.substr(5,2)-1, date.substr(8,2), date.substr(11,2), date.substr(14,2), date.substr(17,2));
+	d.setSeconds(second+15);
+	
+	var s =
+		leadingZeros(d.getFullYear(), 4) + '-' +
+		leadingZeros(d.getMonth() + 1, 2) + '-' +
+		leadingZeros(d.getDate(), 2) + ' ' + d.toTimeString().substr(0,8);
+	return s;
+}

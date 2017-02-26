@@ -55,7 +55,7 @@
 	
 	
 	<select id="selectContents" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT cid, title, category, duration , 
+		SELECT cid, title, category, duration , url,
 				(select path from contents_images where cid = content_id and type = 'thumbnail' order by id desc limit 1) path
 				, (select count(*) from contents
 							WHERE 1=1
@@ -68,7 +68,7 @@
 					)as totalCount 
 		FROM 
 		(
-			select id cid, title, category, duration
+			select id cid, title, category, duration, url
 			from contents
 		) x
 		WHERE 1=1
@@ -79,6 +79,22 @@
 			AND category like concat('%',#{category} , '%')
 		</if>
 		limit #{page}, #{perPage}
+	</select>
+	
+	<select id="selectContentsCount" parameterType="java.util.Map" resultType="int">
+		SELECT count(*)
+		FROM 
+		(
+			select id cid, title, category, duration, url
+			from contents
+		) x
+		WHERE 1=1
+		<if test="title != null and title !=''" >
+			AND title like concat('%',#{title} , '%')
+		</if>
+		<if test="category != null and category !=''" >
+			AND category like concat('%',#{category} , '%')
+		</if>
 	</select>
 	
   <insert id = "insertContent" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">

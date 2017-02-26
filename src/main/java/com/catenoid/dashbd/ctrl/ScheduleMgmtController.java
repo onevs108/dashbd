@@ -338,7 +338,7 @@ public class ScheduleMgmtController {
 		
 		ModelAndView mv = new ModelAndView( "schd/schedule" );
 		logger.info("schedule ");
-		
+		String mode = "update";
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		
 		Map<String, String> mapContentUrl = mapper.selectSchduleContentURL(params);
@@ -346,6 +346,7 @@ public class ScheduleMgmtController {
 //		List<Map<String, String>> mapContents = mapper.selectSchduleTime(params);
 		
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
+			mode = "new";
 			mapSchedule.put("service_name", "testService");
 			mapSchedule.put("language", "en");
 			mapSchedule.put("GBR", "1000");
@@ -358,6 +359,7 @@ public class ScheduleMgmtController {
 		
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		List<Circle> circleList = operatorMapper.selectCircleListAll();
+		mv.addObject("mode", mode);
 		mv.addObject("circleList", circleList);
 		mv.addObject( "mapContentUrl", mapContentUrl );
 		mv.addObject( "mapSchedule", mapSchedule );
@@ -478,10 +480,8 @@ public class ScheduleMgmtController {
 			
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 			
-			if (bcid == null || "".equals(bcid)){
+			if (bcid == null || "".equals(bcid)) {
 				//@ insert broadcast_info  with flag which createBroadcast is successed or not
-				ret = mapper.insertBroadcastInfo(params);
-				logger.info("insertBroadcastInfo ret{}", ret);
 				
 				if(params.get("serviceType").equals("streaming")){
 					
@@ -493,6 +493,7 @@ public class ScheduleMgmtController {
 					}
 				}
 				
+				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
 				

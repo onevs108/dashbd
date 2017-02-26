@@ -361,8 +361,8 @@ public class XmlManager {
 			schedule.setAttribute(new Attribute("index", String.valueOf(i+1)));
 			schedule.setAttribute(new Attribute("cancelled", "false"));
 			//time format ex) 2015-04-10T17:24:09.000+09:00 
-			schedule.setAttribute(new Attribute("start", convertDateFormat(paramList.get(0).get(i))));
-			schedule.setAttribute(new Attribute("stop", convertDateFormat(paramList.get(1).get(i))));
+			schedule.setAttribute(new Attribute("start", convertDateFormatNew(paramList.get(0).get(i))));
+			schedule.setAttribute(new Attribute("stop", convertDateFormatNew(paramList.get(1).get(i))));
 			if(!SERVICE_TYPE_STREAMING.equals(params.get("serviceType"))){
 				int contentLength = Integer.parseInt(paramList.get(5).get(i));
 				for (int j = i*contentLength; j < contentLength; j++) {	//content 갯수에 따라 동작
@@ -377,8 +377,8 @@ public class XmlManager {
 //					scheduleMapper.insertContents();
 					//time format ex) 2015-04-10T17:24:09.000+09:00
 					if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))) {
-						deliveryInfo.setAttribute(new Attribute("start", convertDateFormat(paramList.get(3).get(i))));
-						deliveryInfo.setAttribute(new Attribute("end", convertDateFormat(paramList.get(4).get(i))));
+						deliveryInfo.setAttribute(new Attribute("start", convertDateFormatNew(paramList.get(3).get(j))));
+						deliveryInfo.setAttribute(new Attribute("end", convertDateFormatNew(paramList.get(4).get(j))));
 						content.addContent(deliveryInfo);
 					}
 					schedule.addContent(content);
@@ -551,6 +551,21 @@ public class XmlManager {
 		return retStr;
 		
 	}
+	
+	private String convertDateFormatNew(String dateTime){
+		String retStr = "";
+		
+		try {
+			retStr = dateTime.replace(" ", "T");
+			retStr += ".000+09:00";
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+				
+		return retStr;
+		
+	}
+	
     public static String getFileDate(String format) {
 
         Calendar cal = Calendar.getInstance();

@@ -48,6 +48,7 @@ import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.ContentService;
 import com.catenoid.dashbd.service.UserService;
+import com.google.gson.Gson;
 
 @Controller
 public class ContentMgmtController {
@@ -154,6 +155,32 @@ public class ContentMgmtController {
 		return (Map<String, Object>) resultMap;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@RequestMapping( value = "/view/getContentTable.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String getContentTable(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
+		
+		ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
+        
+		int offset = Integer.parseInt(String.valueOf(params.get("offset")));
+		int limit = Integer.parseInt(String.valueOf(params.get("limit")));
+		params.put("page", offset);
+		params.put("perPage", limit);
+		
+        JSONObject jsonResult = new JSONObject();
+		
+		List<Map> contentList = mapper.selectContents(params);
+		
+		Gson gson = new Gson();
+		String str = gson.toJson(contentList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
+		
+		jsonResult.put("rows", json);
+		jsonResult.put("total", mapper.selectContentsCount(params));
+		
+		return jsonResult.toString();
+        
+	}
 	
 	@RequestMapping( value = "/view/addContent.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	public ModelAndView addContent( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {

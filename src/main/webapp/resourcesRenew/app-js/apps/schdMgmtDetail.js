@@ -89,6 +89,7 @@ function loadContentList(page){
 		}
 	});
 }
+
 function setDragEventFunction(){
 	$('#external-events .fc-event').each(function() {
 		// store data so the calendar knows to render an event upon drop

@@ -4,6 +4,7 @@ import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ContentsExample;
 import com.catenoid.dashbd.dao.model.Users;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,4 +55,6 @@ public interface ContentsMapper {
     int updateByPrimaryKeyWithBLOBs(Contents record);
 
     int updateByPrimaryKey(Contents record);
+    
+	int selectContentsCount(HashMap<String, Object> params);
 }

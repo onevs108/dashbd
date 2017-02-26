@@ -21,7 +21,9 @@
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
 	<script src="../resourcesRenew/js/jquery.form.js"></script>
+	<script src="/dashbd/resources/js/jquery.cookie.js"></script>
 	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
+	<script src="../resourcesRenew/js/bootstrap-table.js"></script>
 	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 	<script src="../resourcesRenew/js/jsrender.min.js"></script>
@@ -43,8 +45,10 @@
 	<!-- Page-Level Scripts -->
 	<script>
 		var serviceType = "${mapSchedule.service}";
+		var mode = "${mode}";
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
+			$("button[name='addSchedule']").hide();
 			if(serviceType == "streaming") 
 			{
 				
@@ -54,6 +58,7 @@
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				$("div[name='bcType_streaming2']").hide();
 				addServiceAreaEvent(0);
+				addSearchContentEvent(0);
 			}
 			$("#FileRepair").change();
 			$("#receptionReport").change();
@@ -120,11 +125,16 @@
 		}
 		
 		function addFileContent(e) {
-			var ctIdx = $("button[name='addContent']").index(e);	//스케쥴 갯수(index)
+			var ctIdx = $("button[name='addContent']").index(e);					//스케쥴 갯수(index)
 			var content = $($("div[name='content']")[ctIdx]).children().last();
 			$(content).after(content.clone());
+			var lastContent = $($("div[name='content']")[ctIdx]).children().last();
+			$(lastContent).find("input[name='fileURI']").val("");
+			$(lastContent).find("input[name='deliveryInfo_start']").val("");
+			$(lastContent).find("input[name='deliveryInfo_end']").val("");
 			$($("#contentLength")[ctIdx]).val($($("div[name='content']")[ctIdx]).children().length);
 			addContentRemoveEvent();
+			addSearchContentEvent($($("#contentLength")[ctIdx]).val()-1);
 		}
 		
  	</script>
@@ -406,7 +416,7 @@
 	                                <div class="col-sm-1">
 	                                    <div class="form-group">
 	                                    	<!-- 스케쥴 버튼 추가버튼 -->
-	                                    	<button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px" onclick="addFileSchedule()">
+	                                    	<button type="button" name="addSchedule" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px" onclick="addFileSchedule()">
 	                                    		<input type="hidden" class="form-control" id="contentLength" name="contentLength" value="1">
 	                                    		<i class="fa fa-plus"></i>	
 	                                    	</button>
@@ -414,8 +424,9 @@
 	                                </div>
 <!-- 	                                <div class="hr-line-dashed"></div> -->
 			                        <div name="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
-			                            <div class="form-group"><label class="col-sm-2 control-label" style="margin-left: 10px;">ContentSet</label>
-			                                <div class="col-sm-8">
+			                            <div class="form-group">
+			                            	<label class="col-sm-3 control-label" style="margin-top: 15px;width: 18%;">ContentSet</label>
+			                                <div class="col-sm-8" style="margin-top: 15px;">
 			                                    <div class="form-group">
 			                                    	<div class="row">
 					                                	<label class="col-sm-2 control-label">Service Area</label>
@@ -467,7 +478,6 @@
                                 </div>
                                 <div class="form-group">
                                     <div name="content" class="col-sm-10 col-sm-offset-2">
-                                    	<input type="hidden" name="contentId" value="${mapSchedule.contentId}">
                                         <ul class="schedule-list">
                                         	<div class="ibox-tools">
 				                                <a class="close-content">
@@ -479,13 +489,15 @@
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">File URI</label>
                                                         <div class="col-md-9">
-                                                         <c:if test="${empty mapSchedule.BCID}">
-                                                         	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
-                                                         </c:if>
-                                                        	<c:if test="${not empty mapSchedule.BCID}">
-                                                        		<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapSchedule.fileURI}">
-                                                        	</c:if>
+	                                                        <input type="hidden" name="contentId" value="${mapSchedule.contentId}">
+	                                                        <c:if test="${empty mapSchedule.BCID}">
+	                                                         	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
+	                                                        </c:if>
+	                                                        <c:if test="${not empty mapSchedule.BCID}">
+	                                                        	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapSchedule.fileURI}">
+	                                                        </c:if>
                                                         </div>
+                                                       	<button type="button" name="searchContent" style="margin-top: 4px;margin-left: 5px;width: 50px;" style="margin-top: 5px;" class="col-sm-1 btn btn-primary btn-xs">Search</button>
                                                         <div name="contentStartStop">
 	                                                        <label class="col-md-2 control-label">Start</label>
 	                                                        <div class="col-md-4">
@@ -620,7 +632,7 @@
 	</div><!-- end wrapper wrapper-content -->
 
 	</div><!-- end page-wrapper -->
-
+	<jsp:include page="contentList.jsp"></jsp:include>
 </div><!-- end wrapper -->
 
 </body>
@@ -643,7 +655,7 @@
             <div class="col-sm-1">
                 <div class="form-group">
                 	<!-- 스케쥴 버튼 추가버튼 -->
-                	<button type="button" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px" onclick="addFileSchedule()">
+                	<button type="button" name="addSchedule" class="btn btn-xs btn-primary" style="margin:7px 0 0 13px" onclick="addFileSchedule()">
                 		<input type="hidden" class="form-control" id="contentLength" name="contentLength" value="1">
                 		<i class="fa fa-plus"></i>	
                 	</button>

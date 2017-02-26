@@ -232,7 +232,7 @@
 			, #{fecType}
 			, #{fecRatio}
 			, #{segmentAvailableOffset}
-			, #{said}
+			, #{serviceAreaId}
 			, str_to_date(#{schedule_start}, '%Y%m%d%H%i%s')
 			, str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s')
 			, #{reportType}

@@ -17,6 +17,7 @@ $(document).ready(function()
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				addServiceAreaEvent(0);
 			}
+			addSearchContentEvent(0);
 		}else if($(this).val() == "carouselMultiple"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
@@ -29,6 +30,7 @@ $(document).ready(function()
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				addServiceAreaEvent(0);
 			}
+			addSearchContentEvent(0);
 		}else if($(this).val() == "carouselSingle"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
@@ -41,6 +43,7 @@ $(document).ready(function()
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				addServiceAreaEvent(0);
 			}
+			addSearchContentEvent(0);
 		}else{
 			$("div[name='bcType_fileDownload']").hide();
 			$("#bcType_fileDownload").hide();
@@ -204,6 +207,118 @@ $(document).ready(function()
 	addScheduleRemoveEvent();
 	addContentRemoveEvent();
 });
+
+function addSearchContentEvent(idx) {
+	$($("button[name='searchContent']")[idx]).click(function(){
+		$("#idx").val(idx);
+		$("#contentList").modal();
+	})
+}
+
+/*function loadContentList(page){
+	var param = {
+			title : $("#form-title").val(),
+			category : $("#form-category").val(),
+			page : page
+		};
+	$.ajax({
+		type : "POST",
+		url : "getContents.do",
+		data : param,
+		dataType : "json",
+		success : function( data ) {
+			getContents(data.contents, page);
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}*/
+
+function getContentList() {
+	$('#table').bootstrapTable('destroy');
+	var pageNumber = 1;
+	var table = $('#table').bootstrapTable({
+		method: 'post',
+		url: 'getContentTable.do',
+		contentType: 'application/json',
+		dataType: 'json',
+		queryParams: function(params) {
+			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+//			params['pageNumber'] = (params.offset / params.limit) + 1;
+			params['title'] = $("#form-title").val(),
+			params['category'] = $("#form-category").val()
+			return params;
+		},
+		cache: false,
+		pagination: true,
+		sidePagination: 'server',
+		pageNumber: pageNumber,
+		pageSize: 5,
+		search: false,
+		showHeader: true,
+		showColumns: false,
+		showRefresh: false,
+		minimumCountColumns: 3,
+		clickToSelect: false,
+		columns: [{
+			field: 'cid',
+			title: 'cid',
+			width: '40%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: false
+		},{
+			field: 'title',
+			title: 'Title',
+			width: '40%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true,
+			formatter: function(value, row, index) {
+				var html = '<a onclick="setContentInfo('+row.cid+', \''+row.url+'\', '+row.duration+')">'+value+'</a>';
+				return html;
+			}
+		}, {
+			field: 'category',
+			title: 'Category',
+			width: '30%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true
+		}, {
+			field: 'duration',
+			title: 'duration',
+			width: '30%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false
+		}]
+	});
+}
+
+function setContentInfo(cid, url, duration){
+	var idx = $("#idx").val();
+	$($("input[name='contentId']")[idx]).val(cid);
+	$($("input[name='fileURI']")[idx]).val(url);
+	var scheduleStart;
+	if(idx == 0){
+		scheduleStart = $("#schedule_start").val();
+	}else{
+		scheduleStart = $($("input[name='deliveryInfo_end']")[idx-1]).val();
+	}
+	
+	$($("input[name='deliveryInfo_start']")[idx]).val(getTimeAddSecond(scheduleStart, 15));
+	var contentStart = $($("input[name='deliveryInfo_start']")[idx]).val();
+	$($("input[name='deliveryInfo_end']")[idx]).val(getTimeAddSecond(contentStart, duration));
+	var contentEnd = $($("input[name='deliveryInfo_end']")[idx]).val();
+	$("#schedule_stop").val(getTimeAddSecond(contentEnd, 15));
+	
+	$("#contentList").modal("hide");
+}
 
 
 function addServiceAreaEvent(idx){
