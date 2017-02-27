@@ -9,6 +9,7 @@
 <head>
 	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
 	<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<style type="text/css">
 		.main .main-sch .tb_tpl1 #table > tbody>tr > td > table thead th {
 		    padding: 3px 8px;
@@ -47,6 +48,7 @@
 								<div class="ibox-content">
 									<div class="row">
 										<form class="form-horizontal">
+											<input type="hidden" id="circleListStr" value="all">
 											<div class="col-lg-8">
 												<div class="form-group">
 													<label class="col-sm-2 control-label">Service Type</label>
@@ -60,7 +62,7 @@
 																<option value="single">Carousel – Single File</option>
 															</select>
 															<span class="input-group-btn">
-																<a href="#" class="btn btn-w-m btn-link"><i class="fa fa-link"></i> <u>Select Service Area</u></a>
+																<a href="#" class="btn btn-w-m btn-link"><i class="fa fa-link"></i> <u onclick="choiceServiceArea()">Select Service Area</u></a>
 															</span>
 														</div>
 													</div>
@@ -218,6 +220,9 @@
 		</div>
 	</div>
 	
+	<jsp:include page="serviceModal.jsp" />
+	<jsp:include page="common/circleModal.jsp" />
+	
 	<!-- Custom and plugin javascript -->
 	<script src="/dashbd/resources/newPublish/js/plugins/video/responsible-video.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
@@ -230,6 +235,8 @@
 	<script src="js/jquery.cookie.js"></script>
 	<script>
 		$(document).ready(function() {
+			jsTreeSetting();
+			
 			$('#data_1.input-group.date').datepicker({
                 todayBtn: "linked",
                 keyboardNavigation: false,
@@ -300,6 +307,7 @@
 					params.searchDateFrom = $("#searchDateFrom").val();
 					params.searchDateTo = $("#searchDateTo").val();
 					params.searchKeyword = $("#searchKeyword").val();
+					params.circleListStr = $("#circleListStr").val();
 // 					if(initYn) {
 // 						params.searchDateFrom = '';
 // 						params.searchDateTo =  '';
@@ -359,7 +367,7 @@
 					formatter: function(value, row, index) {
 						var html = '';
 						if(row.subCnt > 0) 
-							html += '<span style="cursor: pointer;" onclick="callSubScheduleData(this, \'' + row.layerDiv + '\', \'' + row.psaid + '\')"><i class="fa fa-plus-square"></i></span> ' + value;
+							html += '<span style="cursor: pointer;" onclick="callSubScheduleData(this, \'' + row.layerDiv + '\', \'' + row.psaid + '\')"><i class="fa fa-plus-square"></i>' + value + '</span> ';
 						else
 							html = value;
 						
@@ -373,8 +381,13 @@
 					valign: 'middle',
 					sortable: true,
 					formatter: function(value, row, index) {
-						var onair = row.onAirYn == 'Y'? 'onair' : ''; 
- 						var html = '<i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a>'; 						
+						if(value != undefined && value != '') {
+							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
+	 						var html = '<i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a>';	
+						} else {
+							var html = '';
+						}
+						 						
 						return html;
 					}
 				}, {
@@ -427,7 +440,10 @@
 					valign: 'middle',
 					sortable: true,
 					formatter: function(value, row, index) {
-						return value + '%';
+						if(value != undefined) var html = value + '%'
+						else var html = '';
+						
+						return html;
 					}
 				}, {
 					field: 'deleveryType',
@@ -456,10 +472,6 @@
 				tableHtml += '<table class="table table-striped">';
 				tableHtml += '<colgroup><col style="width: 11.8%;"><col style="width: 12%;">';
 				tableHtml += '<col><col><col><col><col><col><col><col></colgroup>';
-				tableHtml += '<thead><tr><th>' + (layerDiv == 'city'? 'City' : 'Hotspot') + '</th><th>Service ID</th><th>Service Name</th><th>Service type</th>';
-				tableHtml += '<th>Schedule Type</th><th>Start time</th><th>Stop time</th><th>GBR</th><th>FEC (%)</th>';
-				tableHtml += '<th>Delivery Type</th><th>#of Viewers</th></tr></thead>';
-				tableHtml += '<tbody>';
 				
 				$.ajax({
 				    url : "/dashbd/api/getRegionalSubSchedule.do",
@@ -478,6 +490,11 @@
 				        $("#ajax").remove();
 				        var data = JSON.parse(responseData).resultList;
 				        
+				        tableHtml += '<thead><tr><th>' + (data[0].layerDiv == 'hotspot'? 'City' : 'Hotspot') + '</th><th>Service ID</th><th>Service Name</th><th>Service type</th>';
+						tableHtml += '<th>Schedule Type</th><th>Start time</th><th>Stop time</th><th>GBR</th><th>FEC (%)</th>';
+						tableHtml += '<th>Delivery Type</th><th>#of Viewers</th></tr></thead>';
+						tableHtml += '<tbody>';
+				        
 				        for(var i=0; i < data.length; i++) {
 				        	var row = data[i];
 				        	var nRow = data[i+1];
@@ -486,16 +503,16 @@
 				        	
 				        	var proceedYn = true;
 				        	if(row.subCnt > 0) {
-				        		if(i != data.length-1 && (layerDiv == 'city'? row.cityName : row.hotspotName) == (layerDiv == 'city'? nRow.cityName : nRow.hotspotName)) 
+				        		if(i != data.length-1 && (row.layerDiv == 'hotspot'? row.cityName : row.hotspotName) == (row.layerDiv == 'hotspot'? nRow.cityName : nRow.hotspotName)) 
 				        			proceedYn = false;
 				        	} else 
 				        		proceedYn = false;
 				        		
 							if(proceedYn) {
 								tableHtml += '<td><span style="cursor: pointer;" onclick="callSubScheduleData(this, \'hotspot\', \'' 
-									+ row.cityId + '\')"><i class="fa fa-plus-square"></i></span> ' + (layerDiv == 'city'? row.cityName : row.hotspotName) + '</td>';
+									+ row.cityId + '\')"><i class="fa fa-plus-square"></i> ' + (row.layerDiv == 'hotspot'? row.cityName : row.hotspotName) + '</span></td>';
 							} else {
-								tableHtml += '<td>' + (layerDiv == 'city'? row.cityName : row.hotspotName) + "</td>"
+								tableHtml += '<td>' + (row.layerDiv == 'hotspot'? row.cityName : row.hotspotName) + "</td>"
 							}
 							
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
@@ -539,12 +556,113 @@
 		}
 		
 		function callDetailLayerPopup(serviceType, serviceId) {
+			$("#serviceModal").modal('show');
+			
 			if(serviceType == 'streaming') {
-				debugger;
+				
 			} else {
 				
 			}
-		}		
+		}
+		
+		function choiceServiceArea() {
+			$("#circleModal").modal('show');
+		}
+		
+		function jsTreeSetting() {
+			$.getScript( "/dashbd/resources/js/plugins/jsTree/jstree.min.js" )
+				.done(function( script, textStatus ) {
+					$.ajax({
+					    url : "/dashbd/api/getTreeNodeData.do",
+					    type: "POST",
+					    data : { 
+					    	circle_id : ''
+					    },
+					    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+					    success : function(responseData) {
+					        $("#ajax").remove();
+					        var data = JSON.parse(responseData);
+					        
+					        $("#treeNode").jstree("destroy").empty();
+					        treeInit(data);
+					    },
+				        error : function(xhr, status, error) {
+				        	swal({
+				                title: "Fail !",
+				                text: "Error"
+				            });
+				        }
+					});
+				});
+		}
+		
+		//jsTree Init Function
+		function treeInit(data) {
+			var treeData = data.resultList;
+			for(var i=0; i < treeData.length; i++) {
+				var node = treeData[i];
+				
+				//root를 그려줌(Circles)
+				if(i == 0) {
+					$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
+					continue;
+				}
+				
+				//현재 붙여넣어 줄 노드의 구분값을 판단하여 그에 따른 상위 노드만 모아서 부모 노드를 찾음
+				var divClass = '';
+				if(node.node_div == 'circle') divClass='root';
+				
+				for(var j=0; j < $('#treeNode li.' + divClass).length; j++) {
+					var compareNode = $('#treeNode li.' + divClass)[j];
+					
+					if($(compareNode).attr("data-init") == node.pnode_id) {
+						
+						var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' + node.latitude + '" data-lng="' + node.longitude + '">' + node.name + '</li>';
+						
+						if($(compareNode).html().indexOf("ul") == -1) {
+							$(compareNode).append('<ul>' + liStr + '</ul>');
+						} else {
+							$($(compareNode).find("ul")[0]).append(liStr);
+						}
+						
+						break;
+					}
+				}
+			}
+			
+			$('#treeNode').bind('ready.jstree', function (event, data) {
+				$('#treeNode ul li').each(function() {
+			        $("#treeNode").jstree('check_node', $(this));
+			    });
+			})
+			.jstree({"checkbox" : {
+			      "keep_selected_style" : false,
+// 			      "three_state": false
+			       },
+			      'plugins':["checkbox"]
+			    });
+			
+			//제일 처음 노드 오픈
+			$("#treeNode").jstree("open_node", $($("#treeNode li")[0]));
+		}
+		
+		function choiceArea() {
+			var circleListStr = '';
+			
+			var allNode = $("#treeNode ul li").not(".root");			
+			for(var i=0; i < allNode.length; i++) {
+				var tempObj = $(allNode[i]);
+				
+				if(tempObj.find("a").hasClass("jstree-clicked")) {
+					circleListStr += ',' + tempObj.attr("data-init").substring(1);
+				}
+			}
+			
+			circleListStr = circleListStr.substring(1); 
+			$("#circleListStr").val(circleListStr);
+			
+			$("#circleModal").modal("hide");
+		}
 	</script>
 </body>
 </html>

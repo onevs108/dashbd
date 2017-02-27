@@ -1398,6 +1398,7 @@ public class ServiceAreaController {
 			String searchDateFrom = (String) requestJson.get("searchDateFrom");
 			String searchDateTo = (String) requestJson.get("searchDateTo");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
+			String circleListStr = (String) requestJson.get("circleListStr");
 			
 			//All이 아닐 경우 From To Date Reset
 			if(searchSchedule.equals("")) {
@@ -1425,6 +1426,7 @@ public class ServiceAreaController {
 			searchParam.put("searchDateFrom", searchDateFrom);
 			searchParam.put("searchDateTo", searchDateTo);
 			searchParam.put("searchKeyword", searchKeyword);
+			searchParam.put("circleListStr", circleListStr);
 			
 			JSONArray rows = new JSONArray();
 			
@@ -1491,7 +1493,15 @@ public class ServiceAreaController {
 				resultObj.put("resultCode", "S");
 				resultObj.put("resultList", resultList);
 			} else {
-				resultObj.put("resultCode", "F");
+				searchParam.put("layerDiv", "directHotspot");
+				resultList = mapper.getRegionalSubSchedule(searchParam);
+				
+				if(resultList.size() > 0) {
+					resultObj.put("resultCode", "S");
+					resultObj.put("resultList", resultList);
+				} else {
+					resultObj.put("resultCode", "F");
+				}
 			}
 			
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
