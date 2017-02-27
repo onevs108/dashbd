@@ -8,6 +8,19 @@
 <html>
 <head>
 	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
+	<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<style type="text/css">
+		.main .main-sch .tb_tpl1 #table > tbody>tr > td > table thead th {
+		    padding: 3px 8px;
+		    background-color: #6f6f6f;
+		    text-align : left;
+		}
+		.main .main-sch .tb_tpl1 #table > tbody > tr > td> table {
+		    border-top: solid 2px #000;
+		    border-bottom: solid 1px #000; 
+		}
+	</style>
+	
 	<jsp:include page="common/head.jsp" />
 </head>
 <body>
@@ -15,7 +28,7 @@
 		<!-- sidebar -->
 		<jsp:include page="common/leftTab.jsp" />
 		
-		<div id="page-wrapper" class="gray-bg dashbard-1">
+		<div id="page-wrapper" class="gray-bg dashbard-1" style="min-height: 1014px;">
 			<jsp:include page="common/header.jsp" />	
 			<!-- s : wrapper -->
 			<div class="wrapper wrapper-content">
@@ -39,12 +52,12 @@
 													<label class="col-sm-2 control-label">Service Type</label>
 													<div class="col-sm-10">
 														<div class="input-group">
-															<select class="input-sm form-control input-s-sm inline">
-																<option value="0">All</option>
-																<option value="1">Streaming</option>
-																<option value="2">File download</option>
-																<option value="3">Carousel – Multiple Files</option>
-																<option value="3">Carousel – Single File</option>
+															<select id="searchServiceType" class="input-sm form-control input-s-sm inline">
+																<option value="">All</option>
+																<option value="streaming">Streaming</option>
+																<option value="fileDownload">File download</option>
+																<option value="multiple">Carousel – Multiple Files</option>
+																<option value="single">Carousel – Single File</option>
 															</select>
 															<span class="input-group-btn">
 																<a href="#" class="btn btn-w-m btn-link"><i class="fa fa-link"></i> <u>Select Service Area</u></a>
@@ -58,9 +71,9 @@
 														<div class="row">
 															<div class="col-lg-12">
 																<div class="m-b">
-																	<label class="checkbox-inline i-checks"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="option1" name="a" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> All</label>
-																	<label class="checkbox-inline i-checks"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="option1" name="a" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> On-Air</label>
-																	<label class="checkbox-inline i-checks"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="option1" name="a" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Today</label>
+																	<label class="checkbox-inline i-checks" onclick="radioCheck('')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="" name="searchSchedule" style="position: absolute; opacity: 0;" checked><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> All</label>
+																	<label class="checkbox-inline i-checks" onclick="radioCheck('onair')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="onair" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> On-Air</label>
+																	<label class="checkbox-inline i-checks" onclick="radioCheck('today')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="today" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Today</label>
 																</div>
 															</div>
 														</div>
@@ -71,7 +84,7 @@
 																	<label class="col-sm-2 control-label">From</label>
 																	<div class="col-sm-10">
 																		<div class="input-group date" id="data_1">
-										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateFrom" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${beforeDate}" />'>
 										                                </div>
 																	</div>
 																</div>
@@ -84,7 +97,7 @@
 																	<label class="col-sm-2 control-label">To</label>
 																	<div class="col-sm-10">
 																		<div class="input-group date" id="data_2">
-										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateTo" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
 										                                </div>
 																	</div>
 																</div>
@@ -96,24 +109,24 @@
 													<label class="col-sm-2 control-label">Search</label>
 													<div class="col-sm-10">
 														<div class="input-group">
-															<input type="text" placeholder="Keyword" class="form-control">
+															<input type="text" placeholder="Keyword" id="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) searchRegionalSchedule(false);">
 															<span class="input-group-btn">
-																<button type="button" class="btn btn-primary">검색</button>
+																<button type="button" class="btn btn-primary" onclick="searchRegionalSchedule(false)">검색</button>
 															</span>
 														</div>
 													</div>
 												</div>
 											</div>
 											<div class="col-lg-4 profile-content today">
-												<h2 class="text-center"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
+												<h2 class="text-left"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
 												<div id="clock" class="light">
 													<div class="digits"></div>
 												</div>
-												<h3 class="font-bold no-margins text-center total">
+												<h3 class="font-bold no-margins text-left total">
 													<div class="panel panel-primary">
 														<div class="panel-heading">Total Users</div>
 														<div class="panel-body">
-															<p class="text-info">123</p>
+															<p class="text-info">${total_users}</p>
 														</div>
 													</div>
 												</h3>
@@ -135,8 +148,8 @@
 									</div>
 								</div>
 								<div class="ibox-content">
-									<div class="table-responsive tb_tpl">
-										<table class="table table-striped">
+									<div class="table-responsive tb_tpl1">
+										<table id="table" class="table table-striped">
 											<colgroup>
 												<col>
 												<col style="width: 9.5%;">
@@ -152,7 +165,7 @@
 												<col>
 											</colgroup>
 											<thead>
-												<tr>
+												<tr class="headTr">
 													<th></th>
 													<th>Circle</th>
 													<th>Service ID</th>
@@ -168,86 +181,30 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr>
-													<td><i class="fa fa-plus-square"></i></td>
-													<td>Mumbai</td>
-													<td><i class="ondisp"></i> urn”3gpp:jio:82</td>
-													<td>SonySiz</td>
-													<td>Streaming</td>
-													<td>Single Sessi0n</td>
-													<td>2017=01-01T09:00:00</td>
-													<td>2017=01=01T12:00:000</td>
-													<td>1.2Mbps</td>
-													<td>14%</td>
-													<td>Unicats</td>
-													<td>14,093</td>
-												</tr>
-
-												<!-- s : Slide Content -->
-												<tr style="display: none;">
-													<td colspan="12">
-														<table class="table table-striped">
-															<colgroup>
-																<col style="width: 11.8%;">
-																<col style="width: 12%;">
-																<col>
-																<col>
-																<col>
-																<col>
-																<col>
-																<col>
-																<col>
-																<col>
-																<col>
-															</colgroup>
-															<thead>
-																<tr>
-																	<th>Circle</th>
-																	<th>Service ID</th>
-																	<th>Service Name</th>
-																	<th>Service type</th>
-																	<th>Schedule Type</th>
-																	<th>Start time</th>
-																	<th>Stop time</th>
-																	<th>GBR</th>
-																	<th>FEC (%)</th>
-																	<th>Delivery Type</th>
-																	<th>#of Viewers</th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td>Mumbai</td>
-																	<td><i class="ondisp"></i> urn”3gpp:jio:82</td>
-																	<td>SonySiz</td>
-																	<td>Streaming</td>
-																	<td>Single Sessi0n</td>
-																	<td>2017=01-01T09:00:00</td>
-																	<td>2017=01=01T12:00:000</td>
-																	<td>1.2Mbps</td>
-																	<td>14%</td>
-																	<td>Unicats</td>
-																	<td>14,093</td>
-																</tr>
-																<tr>
-																	<td>Mumbai</td>
-																	<td><i class="ondisp onair"></i> urn”3gpp:jio:82</td>
-																	<td>SonySiz</td>
-																	<td>Streaming</td>
-																	<td>Single Sessi0n</td>
-																	<td>2017=01-01T09:00:00</td>
-																	<td>2017=01=01T12:00:000</td>
-																	<td>1.2Mbps</td>
-																	<td>14%</td>
-																	<td>Unicats</td>
-																	<td>14,093</td>
-																</tr>
-															</tbody>
-														</table>
-													</td>
-												</tr>
-												<!-- e : Slide Content -->
-
+<%-- 												<c:forEach var="obj" items="${resultList}" varStatus="status"> --%>
+<%-- 													<c:choose> --%>
+<%-- 														<c:when test="${obj.onAirYn == 'Y'}"> --%>
+<%-- 															<c:set value="onair" var="onairYn"/> --%>
+<%-- 														</c:when> --%>
+<%-- 														<c:otherwise> --%>
+<%-- 															<c:set value="" var="onairYn"/> --%>
+<%-- 														</c:otherwise> --%>
+<%-- 													</c:choose> --%>
+													<tr name="tr${status.index}">
+														<td><c:if test="${obj.subCnt > 0}"><span style="cursor: pointer;" onclick="callSubScheduleData(this, '${obj.layerDiv}', '${obj.psaid}')"><i class="fa fa-plus-square"></i></span></c:if></td>
+														<td name="circleName">${obj.circleName}</td>
+														<td name="serviceId"><i class="ondisp ${onairYn}"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup('${obj.scheduleType}', '${obj.serviceId}')">${obj.serviceId}</a></td>
+														<td name="serviceName">${obj.serviceName}</td>
+														<td name="service">${obj.service}</td>
+														<td name="scheduleType">${obj.scheduleType}</td>
+														<td name="scheduleStart">${obj.scheduleStart}</td>
+														<td name="scheduleStop">${obj.scheduleStop}</td>
+														<td name="gbr">${obj.gbr}</td>
+														<td name="fecRatio">${obj.fecRatio}%</td>
+														<td name="deleveryType">${obj.deleveryType}</td>
+														<td name="viewers">${obj.viewers}</td>
+													</tr>												
+<%-- 												</c:forEach> --%>
 											</tbody>
 										</table>
 									</div>
@@ -261,16 +218,7 @@
 		</div>
 	</div>
 	
-	<!-- Mainly scripts -->
-	<!-- Mainly scripts -->
-	<script src="/dashbd/resources/newPublish/js/jquery-2.1.1.js"></script>
-	<script src="/dashbd/resources/newPublish/js/bootstrap.min.js"></script>
-	<script src="/dashbd/resources/newPublish/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="/dashbd/resources/newPublish/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
 	<!-- Custom and plugin javascript -->
-	<script src="/dashbd/resources/newPublish/js/inspinia.js"></script>
-	<script src="/dashbd/resources/newPublish/js/plugins/pace/pace.min.js"></script>
 	<script src="/dashbd/resources/newPublish/js/plugins/video/responsible-video.js"></script>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
 	<script src="/dashbd/resources/newPublish/js/plugins/digitalclock/script.js"></script>
@@ -278,7 +226,8 @@
     <script src="/dashbd/resources/newPublish/js/plugins/iCheck/icheck.min.js"></script>
     <!-- Data picker -->
 	<script src="/dashbd/resources/newPublish/js/plugins/datapicker/bootstrap-datepicker.js"></script>
-
+	
+	<script src="js/jquery.cookie.js"></script>
 	<script>
 		$(document).ready(function() {
 			$('#data_1.input-group.date').datepicker({
@@ -301,31 +250,301 @@
                 radioClass: 'iradio_square-green',
             });
 			
-			function toggleTable() {
-				var toggleBtn = $('.tb_tpl > table > tbody > tr:even'), detail = $('.tb_tpl > table > tbody > tr:odd');
-				detail.hide();
-
-				toggleBtn.click(function(e) {
-					if ($(this).find(".fa").hasClass(
-							"fa-plus-square")) {
-						$(this).find(".fa").removeClass(
-								"fa-plus-square");
-						$(this).find(".fa").addClass(
-								"fa-minus-square");
-					} else {
-						$(this).find(".fa").removeClass(
-								"fa-minus-square");
-						$(this).find(".fa").addClass(
-								"fa-plus-square");
-					}
-					e.preventDefault();
-					$(this).next('tr').toggle();
-				});
-			}
-
-			toggleTable();
 			getMenuList('MAIN');
+			searchRegionalSchedule(true);
+			
+			$('#table').on('load-success.bs.table', function (e, obj) {
+				arrangementTrData(obj.rows);
+			});
 		});
+		
+		function radioCheck(value) {
+			if(value != '') {
+				$($("#searchDateFrom").parents(".row")[0]).hide();
+				$($("#searchDateTo").parents(".row")[0]).hide();
+			} else {
+				$($("#searchDateFrom").parents(".row")[0]).show();
+				$($("#searchDateTo").parents(".row")[0]).show();
+			}
+		}
+		
+		function arrangementTrData(rows) {
+			var trList = $("table tr").not(".headTr");
+			for(var i=0; i < trList.length; i++) {
+				if(i == trList.length -2) break;
+				
+				var tempObj = rows[i];
+				var tempNextObj = rows[i+1];
+				
+				if(tempObj.circleName == tempNextObj.circleName
+					&& $(trList[i]).find("i").hasClass("fa-plus-square")) {
+					$(trList[i]).find("i.fa.fa-plus-square").remove();
+				}
+			}
+		}
+		
+		function searchRegionalSchedule(initYn) {
+			$('#table').bootstrapTable('destroy');
+			// 테이블 생성
+			var pageNumber = 1;
+			var table = $('#table').bootstrapTable({
+				method: 'post',
+				url: '/dashbd/api/searchRegionalSchedule.do',
+				contentType: 'application/json',
+				dataType: 'json',
+				queryParams: function(params) {
+					location.href = '#';
+					pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+					params.searchServiceType = $("#searchServiceType").val();
+					params.searchSchedule = $("form input[type='radio'][name='searchSchedule']:checked").val();
+					params.searchDateFrom = $("#searchDateFrom").val();
+					params.searchDateTo = $("#searchDateTo").val();
+					params.searchKeyword = $("#searchKeyword").val();
+// 					if(initYn) {
+// 						params.searchDateFrom = '';
+// 						params.searchDateTo =  '';
+// 					}
+					return params;
+				},
+				cache: false,
+				pagination: true,
+				sidePagination: 'server',
+				pageNumber: pageNumber,
+				pageSize: 10,
+				search: false,
+				showHeader: true,
+				showColumns: false,
+				showRefresh: false,
+				minimumCountColumns: 3,
+				clickToSelect: false,
+				columns: [{
+					field: 'circleId',
+					title: '',
+					width: '0%',
+					align: 'left',
+					valign: 'middle',
+					sortable: false,
+					visible: false
+				}, { 
+					field: 'psaid',
+					title: '',
+					width: '0%',
+					align: 'left',
+					valign: 'middle',
+					sortable: false,
+					visible: false
+				}, { 
+					field: 'layerDiv',
+					title: '',
+					width: '0%',
+					align: 'left',
+					valign: 'middle',
+					sortable: false,
+					visible: false
+				}, {
+					field: 'onAirYn',
+					title: 'onAirYn',
+					width: '0%',
+					align: 'left',
+					valign: 'middle',
+					sortable: false,
+					visible: false
+				}, { 
+					field: 'circleName',
+					title: 'Circle',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true,
+					formatter: function(value, row, index) {
+						var html = '';
+						if(row.subCnt > 0) 
+							html += '<span style="cursor: pointer;" onclick="callSubScheduleData(this, \'' + row.layerDiv + '\', \'' + row.psaid + '\')"><i class="fa fa-plus-square"></i></span> ' + value;
+						else
+							html = value;
+						
+						return html;
+					}
+				}, {
+					field: 'serviceId',
+					title: 'Service ID',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true,
+					formatter: function(value, row, index) {
+						var onair = row.onAirYn == 'Y'? 'onair' : ''; 
+ 						var html = '<i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a>'; 						
+						return html;
+					}
+				}, {
+					field: 'serviceName',
+					title: 'Service Name',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}, {
+					field: 'service',
+					title: 'Service Type',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}, {
+					field: 'scheduleType',
+					title: 'Schedule Type',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}, {
+					field: 'scheduleStart',
+					title: 'Start Time',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}, {
+					field: 'scheduleStop',
+					title: 'Stop Time',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}, {
+					field: 'gbr',
+					title: 'GBR',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}, {
+					field: 'fecRatio',
+					title: 'FEC (%)',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true,
+					formatter: function(value, row, index) {
+						return value + '%';
+					}
+				}, {
+					field: 'deleveryType',
+					title: 'Delevery Type',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}, {
+					field: 'viewers',
+					title: '#of Viewers',
+					width: '10%',
+					align: 'left',
+					valign: 'middle',
+					sortable: true
+				}]
+			});
+		}
+		
+		function callSubScheduleData(targetObj, layerDiv, psaid) {
+			if($(targetObj).find("i.fa-plus-square").length > 0) {
+				targetObj = $(targetObj).parents("tr")[0];
+				
+				var tableHtml = '';
+				tableHtml += '<tr name="sub' + $(targetObj).attr("data-index") + '" style="display: table-row;"><td colspan="12">';
+				tableHtml += '<table class="table table-striped">';
+				tableHtml += '<colgroup><col style="width: 11.8%;"><col style="width: 12%;">';
+				tableHtml += '<col><col><col><col><col><col><col><col></colgroup>';
+				tableHtml += '<thead><tr><th>' + (layerDiv == 'city'? 'City' : 'Hotspot') + '</th><th>Service ID</th><th>Service Name</th><th>Service type</th>';
+				tableHtml += '<th>Schedule Type</th><th>Start time</th><th>Stop time</th><th>GBR</th><th>FEC (%)</th>';
+				tableHtml += '<th>Delivery Type</th><th>#of Viewers</th></tr></thead>';
+				tableHtml += '<tbody>';
+				
+				$.ajax({
+				    url : "/dashbd/api/getRegionalSubSchedule.do",
+				    type: "POST",
+				    data : { 
+				    	layerDiv : layerDiv,
+				    	psaid : psaid,
+				    	searchServiceType : $("#searchServiceType").val(),
+				    	searchSchedule : $("form input[type='radio'][name='searchSchedule']:checked").val(),
+				    	searchDateFrom : $("#searchDateFrom").val(),
+				    	searchDateTo : $("#searchDateTo").val(), 
+				    	searchKeyword : $("#searchKeyword").val()
+				    },
+				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+				    success : function(responseData) {
+				        $("#ajax").remove();
+				        var data = JSON.parse(responseData).resultList;
+				        
+				        for(var i=0; i < data.length; i++) {
+				        	var row = data[i];
+				        	var nRow = data[i+1];
+				        	
+				        	tableHtml += '<tr>';
+				        	
+				        	var proceedYn = true;
+				        	if(row.subCnt > 0) {
+				        		if(i != data.length-1 && (layerDiv == 'city'? row.cityName : row.hotspotName) == (layerDiv == 'city'? nRow.cityName : nRow.hotspotName)) 
+				        			proceedYn = false;
+				        	} else 
+				        		proceedYn = false;
+				        		
+							if(proceedYn) {
+								tableHtml += '<td><span style="cursor: pointer;" onclick="callSubScheduleData(this, \'hotspot\', \'' 
+									+ row.cityId + '\')"><i class="fa fa-plus-square"></i></span> ' + (layerDiv == 'city'? row.cityName : row.hotspotName) + '</td>';
+							} else {
+								tableHtml += '<td>' + (layerDiv == 'city'? row.cityName : row.hotspotName) + "</td>"
+							}
+							
+							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
+							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a></td>'; 						
+							
+							tableHtml += '<td>' + row.serviceName + '</td>';
+							tableHtml += '<td>' + row.service + '</td>';
+							tableHtml += '<td>' + row.scheduleType + '</td>';
+							tableHtml += '<td>' + row.scheduleStart + '</td>';
+							tableHtml += '<td>' + row.scheduleStop + '</td>';
+							tableHtml += '<td>' + row.gbr + '</td>';
+							tableHtml += '<td>' + row.fecRatio + '%</td>';
+							tableHtml += '<td>' + row.deleveryType + '</td>';
+							tableHtml += '<td>' + row.viewers + '</td>';
+							tableHtml += '</tr>';
+				        }
+				       	
+				        tableHtml += '</tbody></table></td></tr>';
+						$(targetObj).after(tableHtml);
+						$(targetObj).find("i.fa-plus-square").addClass("fa-minus-square");
+						$(targetObj).find("i.fa-plus-square").removeClass("fa-plus-square");
+				    },
+			        error : function(xhr, status, error) {
+			        	swal({
+			                title: "Fail !",
+			                text: "Error"
+			            });
+			        }
+				});
+				
+			} else if($(targetObj).find("i.fa-minus-square").length > 0) {
+				targetObj = $(targetObj).parents("tr")[0]
+				
+				var trSubName = 'sub' + $(targetObj).attr("data-index");
+				$("#table").find("tr[name='" + trSubName + "']").remove();
+				$(targetObj).find("i.fa-minus-square").addClass("fa-plus-square");
+				$(targetObj).find("i.fa-minus-square").removeClass("fa-minus-square");
+			} else {
+				
+			}
+		}
+		
+		function callDetailLayerPopup(serviceType, serviceId) {
+			if(serviceType == 'streaming') {
+				debugger;
+			} else {
+				
+			}
+		}		
 	</script>
 </body>
 </html>

@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -1356,29 +1357,149 @@ public class ServiceAreaController {
 		ModelAndView mv = new ModelAndView("main");
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
-		Integer perPage = 50;
+		mv.addObject("total_users", "123");
 		
-		OperatorSearchParam searchParam = new OperatorSearchParam();
-		searchParam.setPage((page-1) * perPage);
-		searchParam.setPerPage(perPage);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, -7);
+		Date date = calendar.getTime();
 		
-		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
-		
-		Operator initOperator = result.get(0);
-		
-		searchParam = new OperatorSearchParam();
-		searchParam.setPage((page-1) * perPage);
-		searchParam.setPerPage(perPage);
-		searchParam.setOperatorId(initOperator.getId());
-		
-		List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
-		
-		mv.addObject("OperatorList", result);
-		mv.addObject("BmscList", bmscs);
+		mv.addObject("beforeDate", date);
 		
 		return mv;
-	}
+	} 
+	
+	/**
+	 * 메인 화면 조회 메소드
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/searchRegionalSchedule.do", method = {RequestMethod.POST}, produces="application/json;charset=UTF-8;")
+	@ResponseBody
+	public String searchRegionalSchedule(@RequestBody String body) {
+		logger.info("-> [body = {}]", body);
+		
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		
+		try {
+			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
+
+			String sort = (String) requestJson.get("sort");
+			String order = (String) requestJson.get("order");
+			long offset = (Long) requestJson.get("offset");
+			long limit = (Long) requestJson.get("limit");
+			
+			String searchServiceType = (String) requestJson.get("searchServiceType");
+			String searchSchedule = (String) requestJson.get("searchSchedule");
+			String searchDateFrom = (String) requestJson.get("searchDateFrom");
+			String searchDateTo = (String) requestJson.get("searchDateTo");
+			String searchKeyword = (String) requestJson.get("searchKeyword");
+			
+			//All이 아닐 경우 From To Date Reset
+			if(searchSchedule.equals("")) {
+				if(!searchDateFrom.equals("")) {
+					String[] tempSearchDateFrom = searchDateFrom.split("/");
+					searchDateFrom = tempSearchDateFrom[2] + tempSearchDateFrom[0] + tempSearchDateFrom[1];
+				}
+				
+				if(!searchDateTo.equals("")) {
+					String[] tempSearchDateTo = searchDateTo.split("/");
+					searchDateTo = tempSearchDateTo[2] + tempSearchDateTo[0] + tempSearchDateTo[1];
+				}
+			} else {
+				searchDateFrom = "";
+				searchDateTo = "";
+			}
+			
+			HashMap<String, Object> searchParam = new HashMap<String, Object>();
+			searchParam.put("sort", sort);
+			searchParam.put("order", order);
+			searchParam.put("start", offset+1);
+			searchParam.put("end", offset + limit);
+			searchParam.put("searchServiceType", searchServiceType);
+			searchParam.put("searchSchedule", searchSchedule);
+			searchParam.put("searchDateFrom", searchDateFrom);
+			searchParam.put("searchDateTo", searchDateTo);
+			searchParam.put("searchKeyword", searchKeyword);
+			
+			JSONArray rows = new JSONArray();
+			
+			Gson json = new Gson();
+			List<HashMap<String, Object>> resultList = mapper.selectRegionalSchedule(searchParam);
+			for(HashMap<String, Object> map : resultList) {
+				String tempJsonStr = json.toJson(map);
+				rows.add(json.fromJson(tempJsonStr, JSONObject.class));
+			}
+			
+			jsonResult.put("rows", rows);
+			
+			int total = mapper.selectRegionalScheduleCount(searchParam);
+			jsonResult.put("total", total);
+			
+			logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
+		} catch (Exception e) {
+			logger.error("~~ [An error occurred!]", e);
+		}
+		return jsonResult.toString();
+	} 
+	
+	/**
+	 * 메인 화면 서브 스케쥴 데이터 조회 메소드
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/getRegionalSubSchedule.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getRegionalSubSchedule(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject resultObj = new JSONObject();
+		
+		try {
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			String layerDiv = request.getParameter("layerDiv");
+			String psaid = request.getParameter("psaid");
+			String searchServiceType = request.getParameter("searchServiceType");
+			String searchSchedule = request.getParameter("searchSchedule");
+			String searchDateFrom = request.getParameter("searchDateFrom");
+			String searchDateTo = request.getParameter("searchDateTo");
+			String searchKeyword = request.getParameter("searchKeyword");
+			
+			if(!searchDateFrom.equals("")) {
+				String[] tempSearchDateFrom = searchDateFrom.split("/");
+				searchDateFrom = tempSearchDateFrom[2] + tempSearchDateFrom[0] + tempSearchDateFrom[1];
+			}
+			
+			if(!searchDateTo.equals("")) {
+				String[] tempSearchDateTo = searchDateTo.split("/");
+				searchDateTo = tempSearchDateTo[2] + tempSearchDateTo[0] + tempSearchDateTo[1];
+			}
+			
+			
+			HashMap< String, Object > searchParam = new HashMap();
+			searchParam.put("layerDiv", layerDiv);
+			searchParam.put("psaid", psaid);
+			searchParam.put("searchServiceType", searchServiceType);
+			searchParam.put("searchSchedule", searchSchedule);
+			searchParam.put("searchDateFrom", searchDateFrom);
+			searchParam.put("searchDateTo", searchDateTo);
+			searchParam.put("searchKeyword", searchKeyword);
+			List<HashMap<String, Object>> resultList = mapper.getRegionalSubSchedule(searchParam);
+				
+			if(resultList.size() > 0) {
+				resultObj.put("resultCode", "S");
+				resultObj.put("resultList", resultList);
+			} else {
+				resultObj.put("resultCode", "F");
+			}
+			
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(resultObj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	} 
 	
 	@RequestMapping( value = "/resources/mainembmsList.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody

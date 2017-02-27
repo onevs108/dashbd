@@ -143,5 +143,10 @@ public interface ServiceAreaMapper {
     int insertServiceAreaGroupSub(HashMap<String, Object> insertParam);
 
 	List<HashMap<String, String>> getServiceAreaOperator1(OperatorSearchParam searchParam);
-    
+	
+	List<HashMap<String, Object>> selectRegionalSchedule(HashMap<String, Object> param);
+	
+	int selectRegionalScheduleCount(HashMap<String, Object> param);
+	
+    List<HashMap<String, Object>> getRegionalSubSchedule(HashMap<String, Object> searchParam);
 }
