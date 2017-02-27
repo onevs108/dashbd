@@ -304,6 +304,7 @@ function setContentInfo(cid, url, duration){
 	var idx = $("#idx").val();
 	$($("input[name='contentId']")[idx]).val(cid);
 	$($("input[name='fileURI']")[idx]).val(url);
+	$($("input[name='duration']")[idx]).val(duration);
 	var scheduleStart;
 	if(idx == 0){
 		scheduleStart = $("#schedule_start").val();
@@ -317,9 +318,38 @@ function setContentInfo(cid, url, duration){
 	var contentEnd = $($("input[name='deliveryInfo_end']")[idx]).val();
 	$("#schedule_stop").val(getTimeAddSecond(contentEnd, 15));
 	
-	$("#contentList").modal("hide");
+	if(idx < $("input[name='contentId']").length - 1){
+		SetContentTime(Number(idx));
+	} else {
+		$("#contentList").modal("hide");
+	}
+	
 }
 
+function SetContentTime(idx) {	
+	var contentLength = $("input[name='contentId']").length;
+	var contentEnd;
+	var setScheduleFlag = true;
+	for (var i = idx; i < contentLength; i++) {
+		if($($("input[name='duration']")[i+1]).val() == ""){
+			setScheduleFlag = false;
+			break;
+		}
+		if($($("input[name='duration']")[i+1]).val() == undefined){
+			break;
+		}
+		contentEnd = $($("input[name='deliveryInfo_end']")[i]).val();
+		var contentStartNext = getTimeAddSecond(contentEnd, 15);
+		$($("input[name='deliveryInfo_start']")[i+1]).val(contentStartNext);
+		var duration = $($("input[name='duration']")[i+1]).val();
+		contentEnd = getTimeAddSecond(contentStartNext, duration)
+		$($("input[name='deliveryInfo_end']")[i+1]).val(contentEnd);
+	}
+	if(setScheduleFlag){
+		$("#schedule_stop").val(getTimeAddSecond(contentEnd, 15));
+	}
+	$("#contentList").modal("hide");
+}
 
 function addServiceAreaEvent(idx){
 	$($("button[name='mapAdd']")[idx]).click(function(){

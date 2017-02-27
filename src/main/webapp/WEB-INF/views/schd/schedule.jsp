@@ -490,6 +490,7 @@
                                                         <label class="col-md-2 control-label">File URI</label>
                                                         <div class="col-md-9">
 	                                                        <input type="hidden" name="contentId" value="${mapSchedule.contentId}">
+	                                                        <input type="hidden" name="duration" value="">
 	                                                        <c:if test="${empty mapSchedule.BCID}">
 	                                                         	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
 	                                                        </c:if>
