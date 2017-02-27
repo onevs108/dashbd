@@ -8,12 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Mgmt</title>
 
-    <link href="../resources/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../resources/css/style.css" rel="stylesheet">
-    <link href="../resources/css/animate.css" rel="stylesheet">
-    <link href="../resources/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="../resources/css/custom.css" rel="stylesheet">
-    <link href="../resources/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/style.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
+    <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
 
 	<script src="../resources/js/jquery-2.1.1.js"></script>
 	<script src="../resources/js/jquery.cookie.js"></script>
@@ -42,11 +42,8 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
 				<li class="nav-header">
-					<div class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="../resources/img/logo_small.png"></a>
-					</div>
 					<div class="logo-element">
-						<img src="../resources/img/logo2.png">
+						<img src="/dashbd/resources/newPublish/img/common/img_logo.png">
 					</div>
 				</li>
             </ul>

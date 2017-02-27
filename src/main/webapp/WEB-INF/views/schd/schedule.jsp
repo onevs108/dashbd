@@ -45,7 +45,8 @@
 	<!-- Page-Level Scripts -->
 	<script>
 		var serviceType = "${mapSchedule.service}";
-		var mode = "${mode}";
+		var contentJson = ${contentList};
+		var viewMode = "${mode}";
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
 			$("button[name='addSchedule']").hide();
@@ -94,8 +95,24 @@
 					return false;
 				}
 			});
-			
+			if(viewMode == "update") {
+				for (var i = 0; i < contentJson.length; i++) {
+					if(i != 0) {
+						$("button[name='addContent']").click();	
+					}
+					$($("input[name='contentId']")[i]).val(contentJson[i].content_id);
+					$($("input[name='fileURI']")[i]).val(contentJson[i].url);
+					$($("input[name='deliveryInfo_start']")[i]).val(contentJson[i].start_time);
+					$($("input[name='deliveryInfo_end']")[i]).val(contentJson[i].end_time);
+				}
+			}
+			$("#searchContentStream").click(searchStreaming);
 		});
+		
+		function searchStreaming() {
+			$("#type").val("streaming");
+			$("#contentList").modal();
+		}
 		
 		function addFileSchedule() {
 			$("#fileDownloads").append($("#scheduleForm").render());
@@ -450,16 +467,21 @@
 					                                </div>
 			                                    </div>
 			                                    <div class="form-group">
-			                                    	<label class="pull-left" style="padding:7px 0 0 35px">mpd
-			                                    	</label>
-			                                        <div class="col-sm-10">
-			                                        <c:if test="${empty mapSchedule.BCID}">
-			                                        	<input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapContentUrl.url}">
-			                                        </c:if>
-			                                        <c:if test="${not empty mapSchedule.BCID}">
-				                                        <input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}">
-			                                        </c:if>
-			                                        </div>
+			                                    	<div class="row">
+			                                    		<input type="hidden" id="contentSetId" name="contentSetId" value="${mapSchedule.contentId}">
+			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 35px">mpd</label>
+				                                        <div class="col-sm-8">
+				                                        <c:if test="${empty mapSchedule.BCID}">
+				                                        	<input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapContentUrl.url}">
+				                                        </c:if>
+				                                        <c:if test="${not empty mapSchedule.BCID}">
+					                                        <input type="text" class="form-control" id="mpdURI" name="mpdURI" value="${mapSchedule.mpdURI}">
+				                                        </c:if>
+				                                        </div>
+				                                        <div class="col-sm-2">
+				                                        	<button type="button" id="searchContentStream" style="margin-top: 4px;margin-left: 5px;width: 50px;" style="margin-top: 5px;" class="btn btn-primary btn-xs">Search</button>
+				                                        </div>
+			                                    	</div>
 			                                    </div>
 			                                </div>
 			                            </div>

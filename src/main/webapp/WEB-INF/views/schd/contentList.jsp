@@ -39,6 +39,7 @@
 											<div class="table-responsive">
 												<div class="india">
 													<input type="hidden" id="idx">
+													<input type="hidden" id="type">
 													<table class="footable table table-stripped toggle-arrow-tiny" style="margin:0;" id="table">
                                            				
                                    					</table>

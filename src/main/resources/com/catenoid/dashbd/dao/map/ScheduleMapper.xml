@@ -121,6 +121,22 @@
 		AND s.id =#{id}
 	</select>
 	
+	
+	<select id="selectSchduleContentList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT  schedule_id,
+				content_id,
+				cancelled, 
+				changed,   
+				url,
+				mpd,       
+				DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') start_time,
+				DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') end_time,  
+				created_at,
+				updated_at 
+		FROM schedule_contents
+		WHERE schedule_id = #{id}
+	</select>
+	
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT id
 				, bmscId as bmscId
@@ -386,6 +402,7 @@
 		UPDATE schedule	SET
 			service_area_id = #{serviceAreaId},
 			BCID = #{BCID},
+			end_date = str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s'),
 			updated_at = now()
 		WHERE id = #{id}
 	</update>
@@ -400,11 +417,17 @@
 	<insert id="insertScheduleContent" parameterType="java.util.Map">
 		INSERT INTO schedule_contents
 		(
-			schedule_id, content_id, cancelled, changed, start_time, end_time, created_at, updated_at
+			schedule_id, content_id, cancelled, changed, 
+			<if test="fileURI != null">url,</if><if test="mpdURI != null">mpd,</if>
+			<if test="startTime != null">start_time,</if><if test="endTime != null">end_time,</if> 
+			created_at, updated_at
 		)
 		values
 		(
-			${scheduleId}, ${contentId}, 0, 0, #{startTime}, #{endTime}, now(), now() 
+			${scheduleId}, ${contentId}, 0, 0,
+			<if test="fileURI != null">#{fileURI},</if><if test="mpdURI != null">#{mpdURI},</if>
+			<if test="startTime != null">#{startTime},</if><if test="endTime != null">#{endTime},</if> 
+			now(), now()
 		)
 	</insert>
 	

@@ -211,6 +211,7 @@ $(document).ready(function()
 function addSearchContentEvent(idx) {
 	$($("button[name='searchContent']")[idx]).click(function(){
 		$("#idx").val(idx);
+		$("#type").val("fileDownload");
 		$("#contentList").modal();
 	})
 }
@@ -291,7 +292,7 @@ function getContentList() {
 			visible: true
 		}, {
 			field: 'duration',
-			title: 'duration',
+			title: 'duration(sec)',
 			width: '30%',
 			align: 'center',
 			valign: 'middle',
@@ -302,28 +303,35 @@ function getContentList() {
 
 function setContentInfo(cid, url, duration){
 	var idx = $("#idx").val();
-	$($("input[name='contentId']")[idx]).val(cid);
-	$($("input[name='fileURI']")[idx]).val(url);
-	$($("input[name='duration']")[idx]).val(duration);
-	var scheduleStart;
-	if(idx == 0){
-		scheduleStart = $("#schedule_start").val();
-	}else{
-		scheduleStart = $($("input[name='deliveryInfo_end']")[idx-1]).val();
-	}
-	
-	$($("input[name='deliveryInfo_start']")[idx]).val(getTimeAddSecond(scheduleStart, 15));
-	var contentStart = $($("input[name='deliveryInfo_start']")[idx]).val();
-	$($("input[name='deliveryInfo_end']")[idx]).val(getTimeAddSecond(contentStart, duration));
-	var contentEnd = $($("input[name='deliveryInfo_end']")[idx]).val();
-	$("#schedule_stop").val(getTimeAddSecond(contentEnd, 15));
-	
-	if(idx < $("input[name='contentId']").length - 1){
-		SetContentTime(Number(idx));
-	} else {
+	var type = $("#type").val();
+	if(type == "streaming") {
+		$("#contentSetId").val(cid);
+		$("input[name='mpdURI']").val(url);
 		$("#contentList").modal("hide");
 	}
-	
+	else{
+		$($("input[name='contentId']")[idx]).val(cid);
+		$($("input[name='fileURI']")[idx]).val(url);
+		$($("input[name='duration']")[idx]).val(duration);
+		var scheduleStart;
+		if(idx == 0){
+			scheduleStart = $("#schedule_start").val();
+		}else{
+			scheduleStart = $($("input[name='deliveryInfo_end']")[idx-1]).val();
+		}
+		
+		$($("input[name='deliveryInfo_start']")[idx]).val(getTimeAddSecond(scheduleStart, 15));
+		var contentStart = $($("input[name='deliveryInfo_start']")[idx]).val();
+		$($("input[name='deliveryInfo_end']")[idx]).val(getTimeAddSecond(contentStart, duration));
+		var contentEnd = $($("input[name='deliveryInfo_end']")[idx]).val();
+		$("#schedule_stop").val(getTimeAddSecond(contentEnd, 15));
+		
+		if(idx < $("input[name='contentId']").length - 1){
+			SetContentTime(Number(idx));
+		} else {
+			$("#contentList").modal("hide");
+		}
+	}
 }
 
 function SetContentTime(idx) {	

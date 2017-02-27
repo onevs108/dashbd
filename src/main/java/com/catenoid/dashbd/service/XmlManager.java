@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.HttpNetAgent;
@@ -388,17 +387,19 @@ public class XmlManager {
 			else
 			{
 				Element contentSet = new Element("contentSet");
-				contentSet.setAttribute(new Attribute("contentSetId", String.valueOf(i+1))); 					
+				contentSet.setAttribute(new Attribute("contentSetId", params.get("contentSetId"))); 					
 				contentSet.setAttribute(new Attribute("cancelled", "false"));				
 									
 				Element serviceArea = new Element("serviceArea");
-				
-				String[] saidArray = paramList.get(6).get(i).split(",");
-				for (int j = 0; j < saidArray.length; j++) {
-					if(!saidArray[i].equals("")){
-						serviceArea.addContent( new Element("said").setText(saidArray[i]));
+				if(paramList.get(6).size() != 0){
+					String[] saidArray = paramList.get(6).get(i).split(",");
+					for (int j = 0; j < saidArray.length; j++) {
+						if(!saidArray[i].equals("")){
+							serviceArea.addContent( new Element("said").setText(saidArray[i]));
+						}
 					}
 				}
+				
 				String[] said = params.get("saidDefault").split(",");
 				for (int k = 0; k < said.length; k++) {
 					serviceArea.addContent( new Element("said").setText(said[k]));
@@ -552,6 +553,7 @@ public class XmlManager {
 		
 	}
 	
+	//2017-02-27T16:00:00.000+09:00
 	private String convertDateFormatNew(String dateTime){
 		String retStr = "";
 		

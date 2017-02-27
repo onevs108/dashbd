@@ -8,23 +8,23 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Schedule Mgmt</title>
 	
-	<link href="../resources/css/bootstrap.min.css" rel="stylesheet">
-	<link href="../resources/font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
 	
-	<link href="../resources/css/animate.css" rel="stylesheet">
-	<link href="../resources/css/style.css" rel="stylesheet">
-	<link href="../resources/css/custom.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/animate.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/style.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/custom.css" rel="stylesheet">
 	<link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
 	<link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 	
 	<!-- FooTable -->
-	<link href="../resources/css/plugins/footable/footable.core.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
 
     <!-- Mainly scripts -->
-    <script src="../resources/js/jquery-2.1.1.js"></script>
-    <script src="../resources/js/bootstrap.min.js"></script>
-    <script src="../resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="../resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
+    <script src="../resourcesRenew/js/bootstrap.min.js"></script>
+    <script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="../resourcesRenew/js/plugins/sweetalert/sweetalert.min.js"></script>
 
     <!-- FooTable -->
@@ -49,14 +49,14 @@
 	</script>
     	
     <script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
-	<script src="../resources/app-js/config.js"></script>
+	<script src="../resourcesRenew/app-js/config.js"></script>
 	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
 	
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="../resources/js/markerwithlabel.js"></script>
 	<script src="../resources/app-js/apps/svc_schd.js"></script>
 	<script src="../resources/app-js/apps/svc_main_forSchd.js"></script>
-	<script src="../resources/app-js/apps/svc_main_map_forSchd.js"></script>
+	<script src="../resourcesRenew/app-js/apps/svc_main_map_forSchd.js"></script>
         
 	<style type="text/css">
 	.labels {
@@ -90,11 +90,8 @@
 		<div class="sidebar-collapse">
 			<ul class="nav metismenu" id="side-menu">
 				<li class="nav-header">
-					<div class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
-					</div>
 					<div class="logo-element">
-						<img src="/dashbd/resources/img/logo2.png">
+						<img src="/dashbd/resources/newPublish/img/common/img_logo.png">
 					</div>
 				</li>
 			</ul>

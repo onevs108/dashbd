@@ -331,19 +331,19 @@ public class ScheduleMgmtController {
 	}
 	
 	/**
-	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏�
+	 * 스케쥴 상세
 	 */
 	@RequestMapping(value = "view/schedule.do")
 	public ModelAndView schedule( @RequestParam Map< String, String > params) throws UnsupportedEncodingException {
-		
-		ModelAndView mv = new ModelAndView( "schd/schedule" );
-		logger.info("schedule ");
+		ModelAndView mv = new ModelAndView("schd/schedule");
 		String mode = "update";
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		
 		Map<String, String> mapContentUrl = mapper.selectSchduleContentURL(params);
+		List<Map<String, String>> contentList = mapper.selectSchduleContentList(params);
 		Map<String, String> mapSchedule = mapper.selectSchduleTime(params);
-//		List<Map<String, String>> mapContents = mapper.selectSchduleTime(params);
+		List<Circle> circleList = operatorMapper.selectCircleListAll();
 		
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
 			mode = "new";
@@ -357,12 +357,14 @@ public class ScheduleMgmtController {
 			mapSchedule.put("schedule_stop", mapSchedule.get("temp_end"));
 		}
 		
-		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
-		List<Circle> circleList = operatorMapper.selectCircleListAll();
+		Gson gson = new Gson();
+		String str = gson.toJson(contentList);
+		
 		mv.addObject("mode", mode);
 		mv.addObject("circleList", circleList);
-		mv.addObject( "mapContentUrl", mapContentUrl );
-		mv.addObject( "mapSchedule", mapSchedule );
+		mv.addObject("contentList", str);
+		mv.addObject("mapContentUrl", mapContentUrl);
+		mv.addObject("mapSchedule", mapSchedule);
 		return mv;
 	}
 	
@@ -548,21 +550,33 @@ public class ScheduleMgmtController {
 			
 			List<Element> schedule = customType.getChildren("schedule");
 			List<Element> serviceArea = customType.getChildren("serviceArea");
-
-			for (int i = 0; i < serviceArea.size(); i++) {
-				HashMap<String,String> param = new HashMap<String, String>();
-				param.put("scheduleId", String.valueOf(Integer.parseInt(scheduleId)+i));
-				List<Element> content = schedule.get(i).getChildren();
-				for (int j = 0; j < content.size(); j++) {
-					param.put("contentId", content.get(j).getAttributeValue("contentId"));
-					if(content.get(j).getAttributeValue("start") != null){
-						param.put("startTime", content.get(j).getAttributeValue("start"));
-						param.put("endTime", content.get(j).getAttributeValue("stop"));
+			HashMap<String,String> param = new HashMap<String, String>();
+			param.put("scheduleId", scheduleId);
+			if(serviceType.equals("streaming")) 
+			{
+				Element contentSet = customType.getChild("contentSet");
+				
+				Element mpd = contentSet.getChild("mpd");
+				param.put("contentId", contentSet.getAttributeValue("contentSetId"));
+				param.put("mpdURI", mpd.getChild("mpdURI").getText());
+			}
+			else 
+			{
+				for (int i = 0; i < serviceArea.size(); i++) {
+					List<Element> content = schedule.get(i).getChildren();
+					for (int j = 0; j < content.size(); j++) {
+						List<Element> child = content.get(j).getChildren();
+						param.put("contentId", content.get(j).getAttributeValue("contentId"));
+						if(child.get(1).getAttributeValue("start") != null){
+							param.put("startTime", convertDateFormat(child.get(1).getAttributeValue("start")));
+							param.put("endTime", convertDateFormat(child.get(1).getAttributeValue("end")));
+						}
+						param.put("fileURI", child.get(0).getText());
 					}
-					param.put("fileURI", content.get(j).getAttributeValue("fileURI"));
-					mapper.insertScheduleContent(param);
 				}
 			}
+			
+			mapper.insertScheduleContent(param);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -675,4 +689,19 @@ public class ScheduleMgmtController {
 		Map <String, String> retmap = mapper.selectGBRSum(params);
 		return String.valueOf(retmap.get("GBRSum"));
 	}
+
+	//2017-02-27T16:00:00.000+09:00 --> 2017-02-27 16:00:00
+	private String convertDateFormat(String dateTime){
+		String retStr = "";
+		
+		try {
+			retStr = dateTime.substring(0,19).replace("T", " ");
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+				
+		return retStr;
+		
+	}
+	
 }

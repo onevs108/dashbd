@@ -58,6 +58,7 @@ public interface ScheduleMapper {
 	
 	List<HashMap<String, String>> getGroupSaidList(HashMap<String, String> param);
 	List<HashMap<String, String>> selectBroadcastToday(String searchDate);
+	List<Map<String, String>> selectSchduleContentList(Map<String, String> params);
     
     
 }
