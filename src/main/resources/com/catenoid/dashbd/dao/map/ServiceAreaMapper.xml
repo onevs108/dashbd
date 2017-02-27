@@ -1670,7 +1670,7 @@
 					  		       <if test="sort == 'deleveryType'"></if>
 					  		       <if test="sort == 'viewers'"></if>
 					  		       ${order}
-					  		   </if> ) T
+					  		   </if> , scheduleStart desc) T
 			 ) R
 		WHERE rownum BETWEEN #{start} AND #{end}
 	</select>
@@ -1858,6 +1858,7 @@
 				ORDER BY hotspotId
 			</when>
 		</choose>
+		, scheduleStart DESC
 	</select>
 </mapper>
 
