@@ -16,8 +16,13 @@
 			<form role="form" id="form" class="form-horizontal">
 				<div class="modal-body">
 					<fieldset>
-						<div class="row">
-							
+						<div id="streamingArea" class="row">
+							 <video id="Video1" controls loop autoplay >
+						     	<source src="http://ie.microsoft.com/testdrive/ieblog/2011/nov/pp4_blog_demo.mp4" type="video/mp4" />           
+						     </video>
+						</div>
+						<div id="infoArea" class="row" style="display:none;">
+							TEST
 						</div>
 					</fieldset>
 				</div>

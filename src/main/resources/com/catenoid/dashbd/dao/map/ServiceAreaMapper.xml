@@ -1599,23 +1599,57 @@
 						      FROM (
 						          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
 						          FROM (
-						          	  SELECT circle.circle_id, circle.circle_name, 'circle' as layerDiv
-						              FROM circle circle
-						              INNER JOIN broadcast_info broad
-						              ON circle.circle_id = broad.said
-						              UNION ALL
-						              SELECT city.circle_id, city.circle_name, 'city' as layerDiv
-						              FROM city city
-						              INNER JOIN broadcast_info broad
-						              ON city.city_id = broad.said
-						              UNION ALL
-						              SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv
-						              FROM city city
-						              INNER JOIN hotspot hotspot
-						              ON city.city_id = hotspot.city_id
-						              INNER JOIN broadcast_info broad
-						              ON broad.said = hotspot.hotspot_id    
-						          ) t
+						          	  SELECT *
+										FROM (
+										    SELECT circle.circle_id, circle.circle_name, 'circle' as layerDiv, broad.*
+										    FROM circle circle
+										    INNER JOIN broadcast_info broad
+										    ON circle.circle_id = broad.said
+										    UNION ALL
+										    SELECT city.circle_id, city.circle_name, 'city' as layerDiv, broad.*
+										    FROM city city
+										    INNER JOIN broadcast_info broad
+										    ON city.city_id = broad.said
+										    UNION ALL
+										    SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv, broad.*
+										    FROM city city
+										    INNER JOIN hotspot hotspot
+										    ON city.city_id = hotspot.city_id
+										    INNER JOIN broadcast_info broad
+										    ON broad.said = hotspot.hotspot_id    
+										) t1
+										WHERE 1=1
+										<if test="searchServiceType != null and searchServiceType != ''">
+											AND service = #{searchServiceType}
+										</if>
+										<if test="searchSchedule != null and searchSchedule != ''">
+											<choose>
+												<when test="searchSchedule == 'onair'">
+													AND now() between schedule_start and schedule_stop
+												</when>
+												<when test="searchSchedule == 'today'">
+													<![CDATA[
+													AND (date_format(now(), '%Y%m%d') = date_format(schedule_start, '%Y%m%d')
+														OR date_format(now(), '%Y%m%d') < date_format(schedule_stop, '%Y%m%d'))
+													]]>
+												</when>
+											</choose>
+										</if>
+										<if test="searchDateFrom != null and searchDateFrom != ''">
+											<![CDATA[
+											AND date_format(schedule_start, '%Y%m%d') >= #{searchDateFrom}
+											]]>
+										</if>
+										<if test="searchDateTo != null and searchDateTo != ''">
+											<![CDATA[
+											AND date_format(schedule_stop, '%Y%m%d') <= #{searchDateTo}
+											]]>
+										</if>
+										<if test="searchKeyword != null and searchKeyword != ''">
+											AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+													OR service_name LIKE CONCAT('%', #{searchKeyword}, '%'))
+										</if>
+						          ) t2
 						          GROUP BY circle_id, circle_name
 						      ) cityhotspot
 						      LEFT JOIN (
@@ -1632,35 +1666,6 @@
 						      ) circle
 						      ON cityhotspot.circle_id = circle.circle_id
 						      WHERE 1=1
-						        <if test="searchServiceType != null and searchServiceType != ''">
-									AND IFNULL(service, #{searchServiceType}) = #{searchServiceType}
-								</if>
-								<if test="searchSchedule != null and searchSchedule != ''">
-									<choose>
-										<when test="searchSchedule == 'onair'">
-											AND now() between IFNULL(scheduleStart, now()) and IFNULL(scheduleStop, now())
-										</when>
-										<when test="searchSchedule == 'today'">
-											<![CDATA[
-											AND (date_format(now(), '%Y%m%d') = date_format(IFNULL(scheduleStart, now()), '%Y%m%d')
-												OR date_format(now(), '%Y%m%d') < date_format(IFNULL(scheduleStop, now()), '%Y%m%d'))
-											]]>
-										</when>
-									</choose>
-								</if>
-								<if test="searchDateFrom != null and searchDateFrom != ''">
-									<![CDATA[
-									AND date_format(IFNULL(scheduleStart, #{searchDateFrom}), '%Y%m%d') >= #{searchDateFrom}
-									]]>
-								</if>
-								<if test="searchDateTo != null and searchDateTo != ''">
-									<![CDATA[
-									AND date_format(IFNULL(scheduleStop, #{searchDateTo}), '%Y%m%d') <= #{searchDateTo}
-									]]>
-								</if>
-								<if test="searchKeyword != null and searchKeyword != ''">
-									
-								</if>
 						      ORDER BY circle.circle_id
 						) result
 						WHERE 
@@ -1672,6 +1677,36 @@
 								circleId IN (${circleListStr})
 							</otherwise>
 						</choose>
+						<if test="searchServiceType != null and searchServiceType != ''">
+							AND IFNULL(service, #{searchServiceType}) = #{searchServiceType}
+						</if>
+						<if test="searchSchedule != null and searchSchedule != ''">
+							<choose>
+								<when test="searchSchedule == 'onair'">
+									AND now() between IFNULL(scheduleStart, now()) and IFNULL(scheduleStop, now())
+								</when>
+								<when test="searchSchedule == 'today'">
+									<![CDATA[
+									AND (date_format(now(), '%Y%m%d') = date_format(IFNULL(scheduleStart, now()), '%Y%m%d')
+										OR date_format(now(), '%Y%m%d') < date_format(IFNULL(scheduleStop, now()), '%Y%m%d'))
+									]]>
+								</when>
+							</choose>
+						</if>
+						<if test="searchDateFrom != null and searchDateFrom != ''">
+							<![CDATA[
+							AND date_format(IFNULL(scheduleStart, #{searchDateFrom}), '%Y%m%d') >= #{searchDateFrom}
+							]]>
+						</if>
+						<if test="searchDateTo != null and searchDateTo != ''">
+							<![CDATA[
+							AND date_format(IFNULL(scheduleStop, #{searchDateTo}), '%Y%m%d') <= #{searchDateTo}
+							]]>
+						</if>
+						<if test="searchKeyword != null and searchKeyword != ''">
+							AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+								OR serviceName LIKE CONCAT('%', #{searchKeyword}, '%'))
+						</if>
 					    ORDER BY <if test="sort == null">circleId</if>
 					  		   <if test="sort != null">
 					  		       <if test="sort == 'circleName'">circleName</if>
@@ -1712,23 +1747,57 @@
 		      FROM (
 		          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
 		          FROM (
-		          	  SELECT circle.circle_id, circle.circle_name, 'circle' as layerDiv
-		              FROM circle circle
-		              INNER JOIN broadcast_info broad
-		              ON circle.circle_id = broad.said
-		              UNION ALL
-		              SELECT city.circle_id, city.circle_name, 'city' as layerDiv
-		              FROM city city
-		              INNER JOIN broadcast_info broad
-		              ON city.city_id = broad.said
-		              UNION ALL
-		              SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv
-		              FROM city city
-		              INNER JOIN hotspot hotspot
-		              ON city.city_id = hotspot.city_id
-		              INNER JOIN broadcast_info broad
-		              ON broad.said = hotspot.hotspot_id    
-		          ) t
+		          	  SELECT *
+						FROM (
+						    SELECT circle.circle_id, circle.circle_name, 'circle' as layerDiv, broad.*
+						    FROM circle circle
+						    INNER JOIN broadcast_info broad
+						    ON circle.circle_id = broad.said
+						    UNION ALL
+						    SELECT city.circle_id, city.circle_name, 'city' as layerDiv, broad.*
+						    FROM city city
+						    INNER JOIN broadcast_info broad
+						    ON city.city_id = broad.said
+						    UNION ALL
+						    SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv, broad.*
+						    FROM city city
+						    INNER JOIN hotspot hotspot
+						    ON city.city_id = hotspot.city_id
+						    INNER JOIN broadcast_info broad
+						    ON broad.said = hotspot.hotspot_id    
+						) t1
+						WHERE 1=1
+						<if test="searchServiceType != null and searchServiceType != ''">
+							AND service = #{searchServiceType}
+						</if>
+						<if test="searchSchedule != null and searchSchedule != ''">
+							<choose>
+								<when test="searchSchedule == 'onair'">
+									AND now() between schedule_start and schedule_stop
+								</when>
+								<when test="searchSchedule == 'today'">
+									<![CDATA[
+									AND (date_format(now(), '%Y%m%d') = date_format(schedule_start, '%Y%m%d')
+										OR date_format(now(), '%Y%m%d') < date_format(schedule_stop, '%Y%m%d'))
+									]]>
+								</when>
+							</choose>
+						</if>
+						<if test="searchDateFrom != null and searchDateFrom != ''">
+							<![CDATA[
+							AND date_format(schedule_start, '%Y%m%d') >= #{searchDateFrom}
+							]]>
+						</if>
+						<if test="searchDateTo != null and searchDateTo != ''">
+							<![CDATA[
+							AND date_format(schedule_stop, '%Y%m%d') <= #{searchDateTo}
+							]]>
+						</if>
+						<if test="searchKeyword != null and searchKeyword != ''">
+							AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+								OR service_name LIKE CONCAT('%', #{searchKeyword}, '%'))
+						</if>
+		          ) t2
 		          GROUP BY circle_id, circle_name
 		      ) cityhotspot
 		      LEFT JOIN (
@@ -1745,35 +1814,6 @@
 		      ) circle
 		      ON cityhotspot.circle_id = circle.circle_id
 		      WHERE 1=1
-		        <if test="searchServiceType != null and searchServiceType != ''">
-					AND IFNULL(service, #{searchServiceType}) = #{searchServiceType}
-				</if>
-				<if test="searchSchedule != null and searchSchedule != ''">
-					<choose>
-						<when test="searchSchedule == 'onair'">
-							AND now() between IFNULL(scheduleStart, now()) and IFNULL(scheduleStop, now())
-						</when>
-						<when test="searchSchedule == 'today'">
-							<![CDATA[
-							AND (date_format(now(), '%Y%m%d') = date_format(IFNULL(scheduleStart, now()), '%Y%m%d')
-								OR date_format(now(), '%Y%m%d') < date_format(IFNULL(scheduleStop, now()), '%Y%m%d'))
-							]]>
-						</when>
-					</choose>
-				</if>
-				<if test="searchDateFrom != null and searchDateFrom != ''">
-					<![CDATA[
-					AND date_format(IFNULL(scheduleStart, #{searchDateFrom}), '%Y%m%d') >= #{searchDateFrom}
-					]]>
-				</if>
-				<if test="searchDateTo != null and searchDateTo != ''">
-					<![CDATA[
-					AND date_format(IFNULL(scheduleStop, #{searchDateTo}), '%Y%m%d') <= #{searchDateTo}
-					]]>
-				</if>
-				<if test="searchKeyword != null and searchKeyword != ''">
-					
-				</if>
 		      ORDER BY circle.circle_id
 		) result
 		WHERE
@@ -1785,6 +1825,36 @@
 				circleId IN (${circleListStr})
 			</otherwise>
 		</choose>
+		<if test="searchServiceType != null and searchServiceType != ''">
+			AND IFNULL(service, #{searchServiceType}) = #{searchServiceType}
+		</if>
+		<if test="searchSchedule != null and searchSchedule != ''">
+			<choose>
+				<when test="searchSchedule == 'onair'">
+					AND now() between IFNULL(scheduleStart, now()) and IFNULL(scheduleStop, now())
+				</when>
+				<when test="searchSchedule == 'today'">
+					<![CDATA[
+					AND (date_format(now(), '%Y%m%d') = date_format(IFNULL(scheduleStart, now()), '%Y%m%d')
+						OR date_format(now(), '%Y%m%d') < date_format(IFNULL(scheduleStop, now()), '%Y%m%d'))
+					]]>
+				</when>
+			</choose>
+		</if>
+		<if test="searchDateFrom != null and searchDateFrom != ''">
+			<![CDATA[
+			AND date_format(IFNULL(scheduleStart, #{searchDateFrom}), '%Y%m%d') >= #{searchDateFrom}
+			]]>
+		</if>
+		<if test="searchDateTo != null and searchDateTo != ''">
+			<![CDATA[
+			AND date_format(IFNULL(scheduleStop, #{searchDateTo}), '%Y%m%d') <= #{searchDateTo}
+			]]>
+		</if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+				OR serviceName LIKE CONCAT('%', #{searchKeyword}, '%'))
+		</if>
 	</select>
 	
 	<select id="getRegionalSubSchedule" parameterType="HashMap" resultType="HashMap">
@@ -1897,7 +1967,8 @@
 			]]>
 		</if>
 		<if test="searchKeyword != null and searchKeyword != ''">
-			
+			AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+				OR serviceName LIKE CONCAT('%', #{searchKeyword}, '%'))
 		</if>
 		<choose>
 			<when test="layerDiv == 'city'">

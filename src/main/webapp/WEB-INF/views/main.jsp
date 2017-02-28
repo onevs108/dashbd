@@ -516,7 +516,7 @@
 							}
 							
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
-							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a></td>'; 						
+							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a></td>'; 						
 							
 							tableHtml += '<td>' + row.serviceName + '</td>';
 							tableHtml += '<td>' + row.service + '</td>';
@@ -550,16 +550,6 @@
 				$("#table").find("tr[name='" + trSubName + "']").remove();
 				$(targetObj).find("i.fa-minus-square").addClass("fa-plus-square");
 				$(targetObj).find("i.fa-minus-square").removeClass("fa-minus-square");
-			} else {
-				
-			}
-		}
-		
-		function callDetailLayerPopup(serviceType, serviceId) {
-			$("#serviceModal").modal('show');
-			
-			if(serviceType == 'streaming') {
-				
 			} else {
 				
 			}
@@ -662,6 +652,20 @@
 			$("#circleListStr").val(circleListStr);
 			
 			$("#circleModal").modal("hide");
+		}
+		
+		function callDetailLayerPopup(onAirYn, serviceType, serviceId) {
+			if(onAirYn == 'Y' && serviceType == 'streaming') {
+				$("#streamingArea").show();
+				$("#infoArea").hide();
+				$(".modal-title").text("Streaming Info");
+			} else {
+				$("#streamingArea").hide();
+				$("#infoArea").show();
+				$(".modal-title").text("Service Info");
+			}
+			
+			$("#serviceModal").modal('show');		
 		}
 	</script>
 </body>
