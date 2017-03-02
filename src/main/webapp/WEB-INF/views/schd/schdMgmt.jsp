@@ -45,18 +45,17 @@
 			getMenuList('SCHEDULE_MGMT');
 			$($("input[name='radio']")[0]).prop("checked", "true");
 			$("#selectCircle").val("");
+			
 		});
 	</script>
     	
     <script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
-	<script src="../resourcesRenew/app-js/config.js"></script>
 	<script src="../resourcesRenew/js/timetable/timetable.min.js"></script>
 	
 	<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDVeFXi2ufABZk2qH359_JnHJ-BlHrkrCo"></script>
 	<script src="../resources/js/markerwithlabel.js"></script>
 	<script src="../resources/app-js/apps/svc_schd.js"></script>
 	<script src="../resources/app-js/apps/svc_main_forSchd.js"></script>
-	<script src="../resourcesRenew/app-js/apps/svc_main_map_forSchd.js"></script>
         
 	<style type="text/css">
 	.labels {
@@ -86,17 +85,7 @@
 
 <body>
 <div id="wrapper">
-	<nav class="navbar-default navbar-static-side" role="navigation">
-		<div class="sidebar-collapse">
-			<ul class="nav metismenu" id="side-menu">
-				<li class="nav-header">
-					<div class="logo-element">
-						<img src="/dashbd/resources/newPublish/img/common/img_logo.png">
-					</div>
-				</li>
-			</ul>
-		</div>
-	</nav>
+	<jsp:include page="../common/leftTab.jsp" />
 
 	<div id="page-wrapper" class="gray-bg">
         <div class="row border-bottom">
@@ -190,12 +179,13 @@
 							<div>
 								<h5>Schedule</h5>
 								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Schedule</button>
-								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area" style="margin-left: 20px;" checked/>Service Area&nbsp;
+								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="national" style="margin-left: 20px;" checked/>National&nbsp;
+								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area" />Service Area&nbsp;
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
 							</div>
 						</div>
 						<div class="row" style="margin-left: 1px;">
-							<div class="form-group">
+							<div id="selectArea" class="form-group" style="display: none;">
 								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Circle</label>
 								<div class="col-sm-3" style="width: 20%;">
 		                       		<select id="selectCircle" class="input-sm form-control input">
@@ -205,13 +195,13 @@
 		                               </c:forEach>
 		                            </select>
 								</div>
-								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">City</label>
+								<label id="selectCityLabel" class="col-sm-2" style="margin-top: 5px;width: 12%;">City</label>
 								<div class="col-sm-3" style="width: 20%;">
 									<select id="selectCity" class="input-sm form-control input">
 		                               
 		                            </select>
 		                        </div>
-		                        <label class="col-sm-2" style="margin-top: 5px;width: 12%;">Hot Spot</label>
+		                        <label id="selectHotspotLabel" class="col-sm-2" style="margin-top: 5px;width: 12%;">Hot Spot</label>
 								<div class="col-sm-3" style="width: 20%;">
 									<select id="selectHotspot" class="input-sm form-control input">
 		                               
