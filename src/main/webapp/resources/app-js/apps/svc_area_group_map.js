@@ -103,12 +103,12 @@ function treeInit(data) {
 			var tempHotspotNode = tempCheckNodeList[i];
 			checkNode(tempHotspotNode);
 		}
+		
+		$(".jstree-icon.jstree-themeicon").remove();
 	})
-//	.bind('changed.jstree', function(evt, data) {
-//		if(data.node.li_attr.class == 'hotspot') { 
-//			data.instance.set_icon(data.node, '/dashbd/resources/img/icon/ico_number_1_3.png')
-//		}
-//	})
+	.bind('before_open.jstree', function(evt, data) {
+		$(".jstree-icon.jstree-themeicon").remove();
+	})
 	.jstree({"checkbox" : {
 	      "keep_selected_style" : false,
 	      "three_state": false
@@ -187,7 +187,7 @@ function checkNode(leafNode) {
 function selectServiceAreaGroup(obj) {
 	$(obj).css("background", blue);
 	$(obj).css("color", white);
-	$(obj).find("button").css("color", black);
+	$(obj).find("button").css("color", white);
 	$(obj).attr("choiceYn", 'Y');
 	
 	$(obj).siblings().css("background", white);

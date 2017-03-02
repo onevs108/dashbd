@@ -355,18 +355,22 @@ function treeInit(data) {
 		}
 	}
 	
-	$("#treeNode").bind('ready.jstree', function(e, data) {
-		
-    }).jstree({
-	    "conditionalselect" : function (node, event) {
-	      return false;
-	    },
-	    "search": {
-            "case_insensitive": true,
-            "show_only_matches" : true
-        },
-	    "plugins" : [ "conditionalselect" , "nohover", "inp", "search", "types"]
-	  });
+	$("#treeNode")
+		.bind('before_open.jstree', function(evt, data) {
+			$(".jstree-icon.jstree-themeicon").remove();
+		})
+		.bind('ready.jstree', function(e, data) {
+			$(".jstree-icon.jstree-themeicon").remove();
+	    }).jstree({
+		    "conditionalselect" : function (node, event) {
+		      return false;
+		    },
+		    "search": {
+	            "case_insensitive": true,
+	            "show_only_matches" : true
+	        },
+		    "plugins" : [ "conditionalselect" , "nohover", "inp", "search", "types"]
+		  });
 	
 	//제일 처음 노드 오픈
 	$("#treeNode").jstree("open_node", $("#treeNode .root"));
@@ -469,6 +473,8 @@ function searchTreeNode() {
 			
 		}
 	}
+	
+	$(".jstree-icon.jstree-themeicon").remove();
 }
 
 //메인 화면의 모달 로드
