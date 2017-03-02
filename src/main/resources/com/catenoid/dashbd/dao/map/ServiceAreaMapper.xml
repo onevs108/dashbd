@@ -1492,6 +1492,7 @@
 			, group_description
 		FROM service_area_group
 		WHERE circle_id = #{circle_id}
+		order by group_name
 	</select>
 	
 	<select id="checkServiceAreaGroupName" parameterType="HashMap" resultType="int">

@@ -8,12 +8,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Mgmt</title>
 
-    <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/style.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
-    <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/font-awesome/css/font-awesome.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/css/animate.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/css/style.css" rel="stylesheet">
+	
+	<!-- Toastr style -->
+	<link href="/dashbd/resources/newPublish/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+	
+	<!-- Time Table -->
+	<link href="/dashbd/resources/newPublish/css/plugins/timetable/timetablejs.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/css/plugins/digitalclock/style.css" rel="stylesheet">
+	
+	<link href="../resources/css/custom.css" rel="stylesheet">
+	
+	<!-- Sweet Alert -->
+	<link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 
 	<script src="../resources/js/jquery-2.1.1.js"></script>
 	<script src="../resources/js/jquery.cookie.js"></script>
@@ -38,17 +48,7 @@
 <div id="wrapper">
 
     <!-- sidebar -->
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-				<li class="nav-header">
-					<div class="logo-element">
-						<img src="/dashbd/resources/newPublish/img/common/img_logo.png">
-					</div>
-				</li>
-            </ul>
-        </div>
-    </nav><!-- sidebar end -->
+    <jsp:include page="../common/leftTab.jsp" />
 
     <!-- content -->
     <div id="page-wrapper" class="gray-bg">
