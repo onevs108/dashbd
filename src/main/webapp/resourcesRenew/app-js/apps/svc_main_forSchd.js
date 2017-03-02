@@ -23,7 +23,7 @@ var glovalSaid = "";
 $(document).ready(function()
 {
 	$('#scheduleSearch').click(function(){
-		callTimetable(undefined, glovalSaid, $("input[name='radio']:checked").val());
+		callTimetable(undefined, glovalSaid);
 	});
 	//getServiceAreaBmSc(1, $('#operator option:selected').val());
     $('#operator').change(function(){
@@ -49,11 +49,6 @@ $(document).ready(function()
     	var array = e.target[e.target.selectedIndex].value.split("^");
     	var circleId = array[0];
     	var circleName = array[1];
-    	if(circleId == ""){
-    		$("#selectCity").html(html);
-        	$("#selectHotspot").html("");
-    		return;
-    	}
     	$.ajax({
     		url : url,
     		type: "post",
@@ -72,7 +67,7 @@ $(document).ready(function()
     				}
     			}
     			glovalSaid = circleId;
-    			callTimetable(undefined, circleId, "area");
+    			callTimetable(undefined, circleId);
     			g_ServiceAreaId = circleId;
             	$("#selectCity").html(html);
             	$("#selectHotspot").html("");
@@ -98,10 +93,6 @@ $(document).ready(function()
     	var array = e.target[e.target.selectedIndex].value.split("^");
     	var cityId = array[0];
     	var cityName = array[1];
-    	if(cityId == ""){
-    		$("#selectHotspot").html(html);
-    		return;
-    	}
     	$.ajax({
     		url : url,
     		type: "post",
@@ -133,7 +124,7 @@ $(document).ready(function()
         				html += "<option value='"+json[i].hotspot_id+"^"+json[i].hotspot_name+"'>"+json[i].hotspot_name+"</option>";
         			}
         			glovalSaid = cityId;
-        			callTimetable(undefined, cityId, "area");
+        			callTimetable(undefined, cityId);
         			g_ServiceAreaId = cityId;
         			$("#selectHotspot").html(html);
     	    	}
@@ -181,10 +172,9 @@ $(document).ready(function()
 		$("#selectCity").val("");
 		$("#selectCity").html("");
     	$("#selectHotspot").html("");
-    	$('#scheduleSearch').click();
     });
     
-    callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId, "national");
+    callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId);
     
 });
 

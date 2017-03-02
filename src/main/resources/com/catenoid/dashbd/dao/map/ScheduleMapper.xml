@@ -30,24 +30,25 @@
 	<select id="selectSchdule" parameterType="java.util.Map" resultType="java.util.Map">
 			SELECT ID
 				, service_area_id
+				, service_group_id
+				, national_yn
 				, NAME
 				, BCID
 				, start_comp 
  				, end_comp
- 				, (SELECT count(*) FROM schedule WHERE
-				 	del_yn = 'N'
+ 				, (SELECT count(*) FROM schedule 
+ 					WHERE del_yn = 'N'
 			    	<if test="serviceAreaId != null and serviceAreaId !=''" >
-						AND service_area_id = #{serviceAreaId}
-					</if>
-					<if test="bmscId != null and bmscId !=''" >
-						AND service_area_id in (SELECT service_area_id FROM bmsc_service_area WHERE bmsc_id = #{bmscId})
+						AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
+							<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
+							<if test="type == 'national'">national_yn = 'Y'</if> 
 					</if>
 					<if test="searchDate != null and searchDate !=''" >
 						AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
-					</if> 
+					</if>
 				<![CDATA[
  					AND start_comp > DATE_FORMAT(start_date, '%H%i%s') 
-					AND start_comp < DATE_FORMAT(end_date, '%H%i%s')  
+					AND start_comp < DATE_FORMAT(end_date, '%H%i%s')
 				]]>
  				  ) depthPosition
 				, DATE_FORMAT(start_date, '%Y-%m-%dT%H:%i:%s') start_date
@@ -72,20 +73,21 @@
 		         DATE_FORMAT(s.end_date, '%H%i%s') end_comp,
 		         s.ID,
 		         s.service_area_id,
+				 s.service_group_id,
+				 s.national_yn, 
 				 s.NAME,
 				 s.BCID,
 				 s.start_date,
 		         s.end_date,
 		         b.service,
 		         b.serviceId
-		      FROM schedule s left join broadcast_info b on s.BCID = b.BCID
+		      FROM schedule s left join broadcast_info b on s.BCID = b.BCID 
 		      WHERE
 			 	s.del_yn = 'N'
 		    	<if test="serviceAreaId != null and serviceAreaId !=''" >
-					AND s.service_area_id = #{serviceAreaId}
-				</if>
-				<if test="bmscId != null and bmscId !=''" >
-					AND s.service_area_id in (SELECT service_area_id FROM bmsc_service_area WHERE bmsc_id = #{bmscId})
+		    		AND <if test="type == 'area'">instr(CONCAT(',', s.service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
+						<if test="type == 'group'">s.service_group_id = #{serviceAreaId}</if>
+						<if test="type == 'national'">s.national_yn = 'Y'</if>
 				</if>
 				<if test="searchDate != null and searchDate !=''" >
 					AND DATE_FORMAT(s.start_date , '%Y-%m-%d') = #{searchDate}
@@ -95,7 +97,7 @@
 				</if> 
 				<if test="serviceClass != null and serviceClass !=''" >
 					AND b.serviceClass = #{serviceClass}
-				</if> 
+				</if>
 			) x
  			order by start_date asc
 	</select>
@@ -141,18 +143,17 @@
 			SELECT id
 				, bmscId as bmscId
 				, service_area_id as serviceAreaId
+				, service_group_id as serviceGroupId
+				, ifnull(national_yn, '') as nationalYN
 				, content_id as contentId
 				, name
 				, s.BCID
 				, DATE_FORMAT(start_date, '%Y-%m-%d') searchDate
 				, DATE_FORMAT(start_date, '%Y-%m-%d %H:%i:%s') start_date
 				, DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') end_date
-
 				, DATE_FORMAT(start_date , '%H') start_hour
 				, DATE_FORMAT(start_date , '%i') start_mins
 				, DATE_FORMAT(start_date , '%s') start_second
-				
-
 				, DATE_FORMAT(end_date , '%H') end_hour
 				, DATE_FORMAT(end_date , '%i') end_mins
 				, DATE_FORMAT(end_date , '%s') end_second
@@ -183,6 +184,7 @@
 				, DATE_FORMAT(deliveryInfo_end, '%Y-%m-%d %H:%i:%s') deliveryInfo_end
 				, b.mpdURI
 				, b.samplePercentage
+				, b.retrieve_interval
 			FROM schedule s 
 			left join broadcast_info b on s.BCID = b.BCID
 			WHERE 1=1
@@ -191,13 +193,23 @@
 	
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
-			(bmscId,service_area_id, content_id, name, start_date, end_date)
+		(	 
+			bmscId,
+			<if test="type == 'national'">service_area_id, national_yn, </if>
+			<if test="type == 'area'">service_area_id, </if>
+			<if test="type == 'group'">service_group_id, </if> 
+			content_id, name, 
+			start_date, end_date
+		)
 		VALUES
-			(#{bmscId}, #{serviceAreaId}, #{contentId}, #{titleName}
-						, str_to_date(#{startTime}, '%Y%m%d%H%i%s')
-						, str_to_date(#{endTime}, '%Y%m%d%H%i%s')
-				
-			)
+		(	  
+			#{bmscId},
+			<if test="type == 'national'">#{serviceAreaId}, 'Y', </if>
+			<if test="type != 'national'">#{serviceAreaId}, </if>
+			#{contentId}, #{titleName}, 
+			str_to_date(#{startTime}, '%Y%m%d%H%i%s'), 
+			str_to_date(#{endTime}, '%Y%m%d%H%i%s') 
+		)
 	</insert>
 	
 	<update id = "modifyScheduleTime" parameterType="java.util.Map">
@@ -209,7 +221,8 @@
 	</update>
 		
 	<insert id = "insertBroadcastInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="BCID">
-		INSERT INTO broadcast_info(transactionId
+		INSERT INTO broadcast_info(
+			  transactionId
 			, serviceId 
 			, service
 			, service_name
@@ -234,6 +247,7 @@
 			, deliveryInfo_end
 			, mpdURI
 			, samplePercentage
+			, retrieve_interval
 		)VALUES(#{transactionId}
 			, #{serviceId}
 			, #{serviceType}
@@ -259,6 +273,7 @@
 			, str_to_date(#{deliveryInfo_end}, '%Y%m%d%H%i%s')
 			, #{mpdURI}
 			, #{samplePercentage}
+			, #{retrieveInterval}
 		)
 	</insert>
 	<update id="updateBroadcastInfo" parameterType="java.util.Map">
@@ -331,6 +346,12 @@
 			<if test="samplePercentage != null and samplePercentage !=''" >
 				, samplePercentage	= #{samplePercentage} 
 			</if>
+			<if test="samplePercentage != null and samplePercentage !=''" >
+				, samplePercentage	= #{samplePercentage} 
+			</if>
+			<if test="retrieveInterval != null and retrieveInterval !=''" >
+				, retrieve_interval	= #{retrieveInterval} 
+			</if>
 		WHERE 1=1
 		AND BCID = #{BCID}
 	</update>
@@ -362,6 +383,7 @@
 			, DATE_FORMAT(deliveryInfo_end,   '%Y%m%d%H%i%s') deliveryInfo_end	
 			, mpdURI			
 			, samplePercentage	 
+			, retrieve_interval	 
 		FROM broadcast_info 
 		WHERE 1=1
 		AND BCID = #{BCID}
@@ -369,31 +391,7 @@
 	
 	<select id="selectBroadcastToday" parameterType="java.util.Map" resultType="java.util.Map">
 		SELECT 
-			BCID
-			, serviceId
-			, service_name 		as name
-			, transactionId		
-			, serviceClass 			 
-			, language			as serviceLanguage 
-			, GBR	
-			, QCI	
-			, level	
-			, preEmptionCapabiity	
-			, preEmptionVulnerability
-			, fecType			
-			, fecRatio			
-			, segmentAvailableOffset
-			, said				
-			, DATE_FORMAT(schedule_start, '%Y%m%d%H%i%s') schedule_start
-			, DATE_FORMAT(schedule_stop,  '%Y%m%d%H%i%s') schedule_stop
-			, reportType		
-			, offsetTime	
-			, randomTime	
-			, fileURI	
-			, DATE_FORMAT(deliveryInfo_start, '%Y%m%d%H%i%s') deliveryInfo_start
-			, DATE_FORMAT(deliveryInfo_end,   '%Y%m%d%H%i%s') deliveryInfo_end	
-			, mpdURI			
-			, samplePercentage	 
+			distinct serviceClass
 		FROM broadcast_info 
 		WHERE schedule_start > #{searchDate}
 	</select>
