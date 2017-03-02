@@ -24,7 +24,7 @@
 	<jsp:include page="common/leftTab.jsp" />
 	
 	<div id="page-wrapper" class="gray-bg dashbard-1">
-		<jsp:include page="common/header.jsp" />	
+		<c:import url="/resources/header.do"></c:import>
 		
 		<!-- content body -->
 		<div class="wrapper wrapper-content">

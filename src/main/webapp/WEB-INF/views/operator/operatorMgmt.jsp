@@ -15,8 +15,8 @@
 
     <!-- content -->
     <div id="page-wrapper" class="gray-bg">
-    	<jsp:include page="../common/header.jsp" />	
-    	
+<%--     	<jsp:include page="../common/header.jsp" />	 --%>
+		<c:import url="/resources/header.do"></c:import>
 		<!-- content body -->
         <div class="wrapper wrapper-content">
         	<div class="operatorB">

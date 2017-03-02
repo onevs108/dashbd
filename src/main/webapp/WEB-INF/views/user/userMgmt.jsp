@@ -12,8 +12,7 @@
 	<jsp:include page="../common/leftTab.jsp" />
 	
 	<div id="page-wrapper" class="gray-bg dashbard-1">
-		<jsp:include page="../common/header.jsp" />	
-		
+		<c:import url="/resources/header.do"></c:import>
 		<!-- content body -->
         <div class="wrapper wrapper-content">
         	<div class="operatorA">
@@ -164,7 +163,6 @@
 		<jsp:include page="../common/footer.jsp" />
 	</div>
 </div>
-<jsp:include page="addUserModal.jsp" />
 
 <script src="js/jquery.cookie.js"></script>
 <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>

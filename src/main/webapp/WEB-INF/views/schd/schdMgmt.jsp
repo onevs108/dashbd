@@ -91,7 +91,7 @@
 			<ul class="nav metismenu" id="side-menu">
 				<li class="nav-header">
 					<div class="logo-element">
-						<img src="/dashbd/resources/newPublish/img/common/img_logo.png">
+						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/newPublish/img/common/img_logo.png" alt=""></a>
 					</div>
 				</li>
 			</ul>
@@ -99,87 +99,7 @@
 	</nav>
 
 	<div id="page-wrapper" class="gray-bg">
-        <div class="row border-bottom">
-			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-				<div class="navbar-header" style="padding-bottom: 10px;">
-					<h2 style="margin-left: 15px;"><strong>Schedule Mgmt</strong></h2>
-					<span style="margin-left: 15px;">
-						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> Schedule Mgmt</strong>
-					</span>
-				</div><!-- end navbar-header -->
-		        
-				<ul class="nav navbar-top-links navbar-right">
-					<li>
-						<a>
-							<i class="fa fa-user"></i><span id="navbar-user-name"></span>
-						</a>
-					</li>
-					<li class="dropdown">
-						<ul class="dropdown-menu dropdown-alerts">
-							<li>
-								<a href="mailbox.html">
-									<div>
-										<i class="fa fa-envelope fa-fw"></i> You have 16 messages
-										<span class="pull-right text-muted small">4 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="profile.html">
-									<div>
-										<i class="fa fa-twitter fa-fw"></i> 3 New Followers
-										<span class="pull-right text-muted small">12 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="grid_options.html">
-									<div>
-										<i class="fa fa-upload fa-fw"></i> Server Rebooted
-										<span class="pull-right text-muted small">4 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<div class="text-center link-block">
-									<a href="notifications.html">
-										<strong>See All Alerts</strong>
-										<i class="fa fa-angle-right"></i>
-									</a>
-								</div>
-							</li>
-						</ul>
-					</li>
-		
-					<li>
-						<a href="/dashbd/out">
-							<i class="fa fa-sign-out"></i> Log out
-						</a>
-					</li>
-					<li>
-						<img src="../resources/img/samsung_small.png">
-					</li>
-				</ul>
-			</nav>
-		</div><!-- end border-bottom -->
-        
-<!--         <div class="row wrapper border-bottom white-bg page-heading"> -->
-<!-- 			<div class="col-lg-12"> -->
-<!-- 				<h2><strong>Schedule Mgmt</strong></h2> -->
-<!-- 				<ol class="breadcrumb"> -->
-<!-- 				    <li> -->
-<!-- 					   <a href="/dashbd/resources/main.do">Home</a> -->
-<!-- 				    </li> -->
-<!-- 				    <li class="active"> -->
-<!-- 					   <strong>Schedule Mgmt</strong> -->
-<!-- 				    </li> -->
-<!-- 				</ol> -->
-<!-- 			</div> -->
-<!-- 		</div>end row wrapper border-bottom white-bg page-heading -->
-
+		<c:import url="/resources/header.do"></c:import>
 		<div class="wrapper wrapper-content">
 		<input type="hidden" id="searchDate" name="searchDate" value="${searchDate}">
 			<!-- Schedule Mgmt -->
