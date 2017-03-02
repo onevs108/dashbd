@@ -176,12 +176,12 @@ $(document).ready(function()
     	else
     	{
     		$("#selectArea").hide();
+    		$('#scheduleSearch').click();
     	}
     	$("#selectCircle").val("");
 		$("#selectCity").val("");
 		$("#selectCity").html("");
     	$("#selectHotspot").html("");
-    	$('#scheduleSearch').click();
     });
     
     callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId, "national");
