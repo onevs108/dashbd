@@ -443,7 +443,7 @@ function searchTreeNode() {
 	
 	//no data proccess
 	if($("#treeNode li").not(".root").length == 0) {
-		swal({title:"Fail !", text:"Please enter the keyword", type:"warning"}, function() {
+		swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
 			jsTreeSetting();
 		})
 		
@@ -768,19 +768,15 @@ function drawServiceAreaByCity(circle) {
 	        map.setCenter(new google.maps.LatLng(circle.lat, circle.lng));
 	        
 	        for (var city in data) {
-	        	var cityCircle = new google.maps.Circle({
-	  	  	      strokeColor: data[city].color,
-	  	  	      strokeOpacity: 0.8,
-	  	  	      strokeWeight: 2,
-	  	  	      fillColor: data[city].color,
-	  	  	      fillOpacity: 0.35,
-	  	  	      map: map,
-	  	  	      center: data[city].center,
-	  	  	      radius: Math.sqrt(data[city].population) * 10,
-	  	  	      said:data[city].city_id,
-	  	  	      name:data[city].city_name,
-	  	  	      bandwidth:data[city].bandwidth
-	  	  	    });
+	        	var cityCircle = new google.maps.Marker({
+		  	  	      map: map,
+		  	  	      position: data[city].center,
+		  	  	      icon : '/dashbd/resources/img/icon/ico_number_1_3.png',
+		  	  	      title: data[city].city_name,
+			  	  	  said:data[city].city_id,
+			  	  	  name:data[city].city_name,
+			  	  	  bandwidth:data[city].bandwidth
+		  	  	});
 	        	
 	        	//매인 맵에 city circle을 넣어줄 경우
 //	        	if(targetCity == 'cities') {
@@ -873,13 +869,13 @@ function drawServiceAreaByHotspot(city) {
 	        //도시 기본 줌 사이즈로 셋팅
 	        map.setZoom(14);
 	        //서클의 위도 경도로 이동
-	        map.setCenter(new google.maps.LatLng(city.center.lat(), city.center.lng()));
+	        map.setCenter(new google.maps.LatLng(city.position.lat(), city.position.lng()));
 	        
 	        for (var hotspot in data) {
 	        	var hotspotMarker = new google.maps.Marker({
 	  	  	      map: map,
 	  	  	      position: data[hotspot].center,
-	  	  	      icon : '/dashbd/resources/img/icon/ico_number_1_3.png',
+	  	  	      icon : '/dashbd/resources/img/icon/enb_blue_on.png',
 	  	  	      title: data[hotspot].hotspot_name,
 		  	  	  said:data[hotspot].hotspot_id,
 		  	  	  name:data[hotspot].hotspot_name,
