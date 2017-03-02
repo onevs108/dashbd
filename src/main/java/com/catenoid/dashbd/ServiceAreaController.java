@@ -3062,7 +3062,7 @@ public class ServiceAreaController {
 		
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		
-		List<Circle> circleList = operatorMapper.selectCircleListAll();
+		List<Circle> circleList = operatorMapper.selectCircleListNameAll();
 		mv.addObject("circleList", circleList);
 		
 		return mv;

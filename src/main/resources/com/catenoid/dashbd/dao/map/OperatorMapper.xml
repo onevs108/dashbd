@@ -205,6 +205,12 @@
 		FROM circle
 		ORDER BY sort
 	</select>
+	
+	<select id="selectCircleListNameAll" resultType="com.catenoid.dashbd.dao.model.Circle">
+		SELECT circle_id, circle_name, description, latitude, longitude, sort
+		FROM circle
+		ORDER BY circle_name
+	</select>
   
 	<select id="selectTownListAll" resultType="com.catenoid.dashbd.dao.model.Circle">
 		SELECT id, circle_name, town_name, town_code, latitude, longitude, description, permission, created_at as createdAt, updated_at as updatedAt

@@ -35,4 +35,6 @@ public interface OperatorService {
 	public Operator selectByGradeName(String operatorName);
 	public Operator selectByOperatorName(String operatorName);
 	public int getMemberListCount(HashMap<String, Object> param);
+	
+	public List<Circle> getCircleListNameAll();
 }

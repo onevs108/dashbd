@@ -359,4 +359,13 @@ public class OperatorServiceImpl implements OperatorService {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		return operatorMapper.getMemberListCount(param);
 	}
+	
+	/**
+	 * 모든 Operator 리스트 리턴
+	 */
+	@Override
+	public List<Circle> getCircleListNameAll() {
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
+		return operatorMapper.selectCircleListNameAll();
+	}
 }

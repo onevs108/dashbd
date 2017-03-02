@@ -13,6 +13,12 @@
 	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<link href="/dashbd/resources/newPublish/css/plugins/chosen/chosen.css" rel="stylesheet"> 
 	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
+	
+	<style type="text/css">
+		.jstree-node {
+			font-size:14px
+		}
+	</style>
 </head>
 <body>
 <div id="wrapper">
@@ -39,7 +45,7 @@
 											<div class="col-lg-12">
 												<div class="form-group">
 													<select class="input-sm form-control input-s-sm" id="search-circle" onchange="changeCircle()">
-					                            		<option value="">Select Circle</option>
+					                            		<option value="">Select Area</option>
 					                            		<c:forEach var="obj" items="${circleList}" varStatus="status">
 					                            			<option value="${obj.circle_id}">${obj.circle_name}</option>
 					                            		</c:forEach>

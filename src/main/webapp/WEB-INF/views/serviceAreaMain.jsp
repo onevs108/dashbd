@@ -11,6 +11,12 @@
 	
  	<!-- JSTree -->
 	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
+	
+	<style type="text/css">
+		.jstree-node {
+			font-size:14px
+		}
+	</style>
 </head>
 <body>
 <div id="wrapper">
@@ -54,6 +60,7 @@
 											                                    <option value="city">City</option>
 											                                    <option value="circleCity">Circle & City</option>
 											                                    <option value="hotspot">Hotspot</option>
+<!-- 											                                    <option value="said">SAID</option> -->
 											                                </select>
 																		</div>
 																	</div>
@@ -76,6 +83,7 @@
 													</div>
 												</div>
 												<div id="tab-2" class="tab-pane">
+													<div id="mapDescriptArea" style="margin:10 0 10 0">Click the area t to view the Cities</div>
 													<jsp:include page="common/circleImage.jsp" />
 													<div id="map" class="google-map" style="display:none; width:604px; height:709px;"></div>
 												</div>

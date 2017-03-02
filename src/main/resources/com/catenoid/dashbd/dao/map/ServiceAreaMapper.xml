@@ -1520,29 +1520,27 @@
 		        , circle_id
 		        , bandwidth AS bandwidth
 		    FROM circle
-		    <if test="circle_id != null and circle_id != ''">
-		    	UNION ALL
-			    SELECT CONCAT('A', circle_id, 'B', city_id) AS node_id, CONCAT('A', circle_id) AS pnode_id
-			        , city_name AS name, 'city' AS node_div
-			        , city_id AS compare_id
-			        , latitude, longitude
-			        , circle_id
-			        , bandwidth
-			    FROM city
-			    UNION ALL
-			    SELECT CONCAT('A', circle_id, 'B', city_id, 'C', hotspot_id) AS node_id, CONCAT('A', circle_id, 'B', city_id) AS pnode_id
-			        , hotspot_name AS name, 'hotspot' AS node_div
-			        , hotspot_id AS compare_id
-			        , latitude, longitude
-			        , circle_id
-			        , bandwidth
-			    FROM (
-			      SELECT mst.circle_id, mst.city_id, slv.hotspot_id, slv.hotspot_name, slv.latitude , slv.longitude, slv.bandwidth
-			      FROM city mst
-			      INNER JOIN hotspot slv
-			      ON mst.city_id = slv.city_id
-			    ) sub_result
-		    </if>
+	    	UNION ALL
+		    SELECT CONCAT('A', circle_id, 'B', city_id) AS node_id, CONCAT('A', circle_id) AS pnode_id
+		        , city_name AS name, 'city' AS node_div
+		        , city_id AS compare_id
+		        , latitude, longitude
+		        , circle_id
+		        , bandwidth
+		    FROM city
+		    UNION ALL
+		    SELECT CONCAT('A', circle_id, 'B', city_id, 'C', hotspot_id) AS node_id, CONCAT('A', circle_id, 'B', city_id) AS pnode_id
+		        , hotspot_name AS name, 'hotspot' AS node_div
+		        , hotspot_id AS compare_id
+		        , latitude, longitude
+		        , circle_id
+		        , bandwidth
+		    FROM (
+		      SELECT mst.circle_id, mst.city_id, slv.hotspot_id, slv.hotspot_name, slv.latitude , slv.longitude, slv.bandwidth
+		      FROM city mst
+		      INNER JOIN hotspot slv
+		      ON mst.city_id = slv.city_id
+		    ) sub_result
 		) result
 		LEFT JOIN (
 		  SELECT sub_said

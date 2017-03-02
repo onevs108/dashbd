@@ -222,7 +222,8 @@ function changeCircle() {
 		        if( data.length != 0 ) {
 		        	for(var i=0; i < data.length; i++) {
 		        		$("#group_area").append('<li class="list-group-item" onclick="selectServiceAreaGroup(this)" data-init="' + data[i].group_id + '" title="' + data[i].group_description + '">' 
-		        				+ data[i].group_name + '<div class="btn-group pull-right"><button type="button" class="btn btn-w-m btn-xs" onCLick="deleteServiceAreaGroup(this)">Delete</button></div></li>');
+		        				+ data[i].group_name + '<div class="btn-group pull-right"><button type="button" class="btn btn-w-m btn-xs"'
+		        					+ 'style="color: rgb(255, 255, 255); background-color: rgb(255, 0, 0);" onCLick="deleteServiceAreaGroup(this)">Delete</button></div></li>');
 			        }
 		        } 
 		        
@@ -246,7 +247,7 @@ function changeCircle() {
 
 //서비스 그룹 생성 메소드
 function addServiceAreaGroup(obj) {
-	var group_name = $(obj).parent().siblings().find("input").val();
+	var group_name = $(obj).parent().siblings().val();
 	
 	if(group_name != '') {
 		$.ajax({

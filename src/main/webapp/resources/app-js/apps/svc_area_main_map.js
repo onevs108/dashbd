@@ -54,6 +54,7 @@ function tabChange(tabDiv) {
 		$("#tab-1").removeClass("active");
 		$("#tab-2").addClass("active");
 		$(".circle-map").show();
+		$("#mapDescriptArea").text('Click the area t to view the Cities');
 //		$("#map").show();
 //		$("#treeNode").hide(); 
 //		$(".search-group").hide();
@@ -190,6 +191,8 @@ function treeInit(data) {
                     btn1.setAttribute('onclick', 'callSetLocationModalMap(this, \'serviceArea\', \'' + nodeLevel.toLowerCase() + '\', \'' + $(obj).attr("data-lat") + '\', \'' + $(obj).attr("data-lng") + '\')');
                     btn1.className = "btn-white btn btn-xs";
                     btn1.style.marginLeft = componentMargin;
+                    btn1.style.color = 'rgb(255,255,255)';
+                    btn1.style.backgroundColor = '#1ab394';
                     btn1.textContent = 'Map';
                     
                     var btn2 = document.createElement('BUTTON');
@@ -197,6 +200,8 @@ function treeInit(data) {
                     btn2.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'edit\', this)');
                     btn2.className = "btn-white btn btn-xs";
                     btn2.style.marginLeft = componentMargin;
+                    btn2.style.color = 'rgb(255,255,255)';
+                    btn2.style.backgroundColor = '#337ab7';
                     btn2.textContent = 'Edit';
                     
                     var btn3 = document.createElement('BUTTON');
@@ -204,6 +209,8 @@ function treeInit(data) {
                     btn3.setAttribute('onclick', 'serviceAreaProccess(\'tree\', \'delete\', this)');
                     btn3.className = "btn-white btn btn-xs";
                     btn3.style.marginLeft = componentMargin;
+                    btn3.style.color = 'rgb(255,255,255)';
+                    btn3.style.backgroundColor = '#ed5565';
                     btn3.textContent = 'Delete';
                     
                     var btn4 = document.createElement('BUTTON');
@@ -365,12 +372,12 @@ function treeInit(data) {
 	$("#treeNode").jstree("open_node", $("#treeNode .root"));
 }
 
-$(document).on("keydown", "#search-input", function(event) {
-	//Enter입력시에만 조회
-	if(event.keyCode == 13) {
-		searchTreeNode();
-    }
-})
+//$(document).on("keydown", "#search-input", function(event) {
+//	//Enter입력시에만 조회
+//	if(event.keyCode == 13) {
+//		searchTreeNode();
+//    }
+//})
 
 function searchTreeNode() {
 	var searchString = $("#search-input").val();
@@ -432,8 +439,12 @@ function searchTreeNode() {
 	
 	//no data proccess
 	if($("#treeNode li").not(".root").length == 0) {
-		$("#treeNode ul li").remove();
-		$("#treeNode").append("<span>No Data</span>");
+		swal({title:"Fail !", text:"Please enter the keyword", type:"warning"}, function() {
+			jsTreeSetting();
+		})
+		
+//		$("#treeNode ul li").remove();
+//		$("#treeNode").append("<span>No Data</span>");
 	} 
 	//custom input layer proccess
 	else {
@@ -485,17 +496,20 @@ function initMap() {
 			
 			$("#map").hide();
 			$(".circle-map").show();
+			$("#mapDescriptArea").text('Click the area t to view the Cities');
 //				drawServiceAreaByBmSc();
 		} else if(currentZoomLevel == 'city') {
 //			circleClear();
 			hotspotClear();
 			
 			if(cities.length == 0) {
+				$("#mapDescriptArea").text('Click the city to view the hotspots. Click empty space to add a city');
 				drawServiceAreaByCity(upperCircle);
 			}
 		} else if(currentZoomLevel == 'hotspot') {
 //			circleClear();
 			cityClear('cities');
+			$("#mapDescriptArea").text('Click empty space to add a hotspot');
 		}
 	});
 	
@@ -602,9 +616,9 @@ function checkZoomLevel(zoom) {
 		map.setOptions({ maxZoom: 5 });
 	} 
 	//city level
-	else if(zoom < 9) {
+	else if(zoom < 10) {
 		zoomLevel = 'city';
-		map.setOptions({ maxZoom: 8 });
+		map.setOptions({ maxZoom: 9 });
 	} 
 	//hotspot level
 	else {
