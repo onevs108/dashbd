@@ -89,7 +89,7 @@ public class ScheduleMgmtController {
 			
 			List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
 			
-			List<Circle> circleList = operatorMapper.selectCircleListAll();
+			List<Circle> circleList = operatorMapper.selectCircleListNameAll();
 			String searchDate = Utils.getFileDate("yyyy-MM-dd");
 			List<HashMap<String, String>> scList = schedulemapper.selectBroadcastToday(searchDate);
 			mv.addObject("circleList", circleList);
@@ -321,11 +321,12 @@ public class ScheduleMgmtController {
 	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
 		logger.info("schdMgmtDetail {}", params);
 		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
-		mv.addObject( "serviceAreaId", params.get("serviceAreaId")); 
-		mv.addObject( "bmscId", params.get("bmscId"));
+		mv.addObject("serviceAreaId", params.get("serviceAreaId")); 
+		mv.addObject("bmscId", params.get("bmscId"));
 		mv.addObject("searchDate", params.get("searchDate"));
 		mv.addObject("title", params.get("title"));
 		mv.addObject("category", params.get("category"));
+		mv.addObject("type", params.get("type"));
 		
 		return mv;
 	}
@@ -337,6 +338,7 @@ public class ScheduleMgmtController {
 	public ModelAndView schedule( @RequestParam Map< String, String > params) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView("schd/schedule");
 		String mode = "update";
+		String type = "area";
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		
@@ -360,6 +362,15 @@ public class ScheduleMgmtController {
 		Gson gson = new Gson();
 		String str = gson.toJson(contentList);
 		
+		if(mapSchedule.get("nationalYN").equals("Y")){
+			type = "national";
+		}else if(mapSchedule.get("serviceGroupId") == null){
+			type = "area";
+		}else{
+			type = "group";
+		}
+		
+		mv.addObject("type", type);
 		mv.addObject("mode", mode);
 		mv.addObject("circleList", circleList);
 		mv.addObject("contentList", str);
@@ -567,9 +578,11 @@ public class ScheduleMgmtController {
 					for (int j = 0; j < content.size(); j++) {
 						List<Element> child = content.get(j).getChildren();
 						param.put("contentId", content.get(j).getAttributeValue("contentId"));
-						if(child.get(1).getAttributeValue("start") != null){
-							param.put("startTime", convertDateFormat(child.get(1).getAttributeValue("start")));
-							param.put("endTime", convertDateFormat(child.get(1).getAttributeValue("end")));
+						if(serviceType.equals("fileDownload")){
+							if(child.get(1).getAttributeValue("start") != null){
+								param.put("startTime", convertDateFormat(child.get(1).getAttributeValue("start")));
+								param.put("endTime", convertDateFormat(child.get(1).getAttributeValue("end")));
+							}
 						}
 						param.put("fileURI", child.get(0).getText());
 					}

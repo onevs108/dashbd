@@ -56,10 +56,10 @@
 			}
 			else
 			{
-				$("#serviceAreaRow").append($("#serviceArea").render());
-				$("div[name='bcType_streaming2']").hide();
-				addServiceAreaEvent(0);
-				addSearchContentEvent(0);
+// 				$("#serviceAreaRow").append($("#serviceArea").render());
+// 				$("div[name='bcType_streaming2']").hide();
+// 				addServiceAreaEvent(0);
+// 				addSearchContentEvent(0);
 			}
 			$("#FileRepair").change();
 			$("#receptionReport").change();
@@ -166,17 +166,7 @@
 </head>
 <body>
 <div id="wrapper">
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-            	<li class="nav-header">
-				<div class="dropdown profile-element" align="center">
-					<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
-				</div>
-				</li>
-			</ul>
-        </div>
-    </nav>
+    <jsp:include page="../common/leftTab.jsp" />
 <div id="page-wrapper" class="gray-bg">
 	<div class="row border-bottom">
         <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -263,41 +253,49 @@
 	<div class="wrapper wrapper-content">
 	<form class="form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
     <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
-<%--     <input type="hidden" id="contentId" name="contentId" value="${mapSchedule.contentId}"> --%>
+    <input type="hidden" id="type" name="type" value="${type}">
     <input type="hidden" id="BCID" name="BCID" value="${mapSchedule.BCID}">
     <input type="hidden" id="bmscId" name="bmscId" value="${mapSchedule.bmscId}"/>
     <input type="hidden" id="serviceAreaId" name="serviceAreaId" value="${mapSchedule.serviceAreaId}"/>
     <input type="hidden" id="searchDate" name="searchDate" value="${mapSchedule.searchDate}"/>
+    <input type="hidden" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
     
 	<div class="row">
 		<!-- eEPG for ESPN time -->
 		<div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h3>Schedule for Service Area ${mapSchedule.serviceAreaId}</h3>
+                    <h3>Schedule for Service
+                    	<c:choose>
+                    		<c:when test="${mapSchedule.nationalYN == 'Y'}">National</c:when>
+                    		<c:otherwise>
+                    			<c:if test="${not empty mapSchedule.serviceAreaId}">Area ${mapSchedule.serviceAreaId}</c:if>
+                    			<c:if test="${not empty mapSchedule.serviceGroupId}">Group ${mapSchedule.serviceGroupId}</c:if>
+                    		</c:otherwise>
+                    	</c:choose> 
+                    </h3>
                 </div>
                 <div class="ibox-content">
                     <div class="row">
                         <div class="form-group">
                             <label class="col-sm-2 text-right"><h4 style="padding-top:5px"><i class="fa fa-circle text-success"></i> Select</h4></label>
                             <div class="col-sm-4">
-                                 <c:if test="${empty mapSchedule.BCID}">
+                                <c:if test="${empty mapSchedule.BCID}">
 					                <select class="input-sm form-control input-s-sm" id="serviceType" name="serviceType">
 		                    	</c:if>
 	                        	<c:if test="${not empty mapSchedule.BCID}">
-	                        		<input type="hidden" id=serviceType" name="serviceType" value="${mapSchedule.service}">
-	                        		<select class="input-sm form-control input-s-sm" disabled>            	
+	                        		<select id="serviceType" class="input-sm form-control input-s-sm" disabled>            	
 	                        	</c:if>
                        	        	   <option value="fileDownload" <c:if test="${mapSchedule.service eq 'fileDownload'}"> selected</c:if>>File Download</option>
                                        <option value="streaming" <c:if test="${mapSchedule.service eq 'streaming'}">selected</c:if>>Streaming</option>
                                        <option value="carouselMultiple" <c:if test="${mapSchedule.service eq 'carouselMultiple'}">selected</c:if>>Carousel Multiple Files</option>
                                        <option value="carouselSingle" <c:if test="${mapSchedule.service eq 'carouselSingle'}">selected</c:if>>Carousel Single File</option>
-                                   </select>
+                                	</select>
                             </div>
                             <div id="interval" style="display: none; margin-right: 35px;">
 	                            <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Retrieve Interval</label>
 	                       	    <div class="col-sm-3">
-	                       	    	<input type="text" class="form-control" id="retrieveInterval" name="retrieveInterval" alt='retrieveInterval'>
+	                       	    	<input type="text" class="form-control" id="retrieveInterval" name="retrieveInterval" alt='retrieveInterval' value="${mapSchedule.retrieve_interval}">
 	                       	    </div>
                        	    </div>
                         </div><!-- end form-group -->
@@ -450,10 +448,9 @@
 					                                    <div class="col-sm-6">
 					                                    	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: gainsboro;" readonly>
 					                                    </div>
-					                                    <c:if test="${empty mapSchedule.BCID}">
+					                                    <c:if test="${empty mapSchedule.BCID and type == 'area'}">
 					                                    	<div class="row">
 					                                    		<div class="col-sm-2">
-						                                    		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
 							                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="">
 							                                    </div>
 						                                    	<div class="col-sm-2"> 
@@ -696,7 +693,6 @@
 	                      <c:if test="${empty mapSchedule.BCID}">
 	                      	<div class="row">
 	                      		<div class="col-sm-2">
-	                       		<input type="hidden" class="form-control" id="saidDefault" name="saidDefault"  value="${mapSchedule.serviceAreaId}">
 	                        	<input type="text" class="form-control" id="said" name="said" required="required" value="">
 	                        </div>
 	                       	<div class="col-sm-2"> 
@@ -797,10 +793,9 @@
 		<div class="col-sm-6">
 			<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;" readonly>
 		</div>
-		<c:if test="${empty mapSchedule.BCID}">
+		<c:if test="${empty mapSchedule.BCID and type == 'area'}">
 			<div class="row">
 				<div class="col-sm-2">
-					<input type="hidden" class="form-control" id="saidDefault" name="saidDefault" value="${mapSchedule.serviceAreaId}"> 
 					<input type="text" class="form-control" id="said" name="said" required="required" value="">
 				</div>
 				<div class="col-sm-2">

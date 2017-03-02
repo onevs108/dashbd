@@ -51,6 +51,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,6 +87,8 @@ import com.catenoid.dashbd.dao.model.ServiceAreaEnbSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaSchedule;
 import com.catenoid.dashbd.dao.model.ServiceAreaScheduleExample;
 import com.catenoid.dashbd.dao.model.Users;
+import com.catenoid.dashbd.service.OperatorService;
+import com.catenoid.dashbd.service.UserService;
 import com.catenoid.dashbd.util.ErrorCodes;
 import com.google.gson.Gson;
 
@@ -111,6 +114,12 @@ public class ServiceAreaController {
 	
 	@Value("#{config['main.contents.max']}")
 	private Integer contentMax;
+	
+	@Autowired
+	private UserService userServiceImpl;
+	
+	@Autowired
+	private OperatorService operatorServiceImpl;
 	
 	@RequestMapping(value = "api/service_area.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	@ResponseBody
@@ -1359,7 +1368,6 @@ public class ServiceAreaController {
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		mv.addObject("total_users", "123");
 		
-
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, -7);
 		Date date = calendar.getTime();
@@ -1368,7 +1376,28 @@ public class ServiceAreaController {
 		
 		return mv;
 	} 
-	
+
+	@RequestMapping(value = "/resources/header.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+	public String getUserMgmt(@RequestParam(value = "isBack", required = false) Boolean isBack, HttpSession session, ModelMap modelMap) {
+		logger.info("-> [isBack = {}]", isBack);
+		
+		Users user = (Users) session.getAttribute("USER");
+		String circleName = user.getCircleName();
+		if(circleName != null) {
+			List<Circle> townList = userServiceImpl.selectTownFromCircle(circleName);
+			modelMap.addAttribute("townList", townList);
+		}
+		
+		modelMap.addAttribute("isBack", isBack == null ? false : isBack);
+		
+		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
+		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+		
+		modelMap.addAttribute("gradeList", gradeList);
+		modelMap.addAttribute("circleList", circleList);
+		
+		return "common/header";
+	}
 	/**
 	 * 메인 화면 조회 메소드
 	 * @param request

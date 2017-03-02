@@ -43,12 +43,8 @@ function setAllCircleSaid() {
 }
 
 function callTimetable(bmscId, serviceAreaId_val, type){
-	if(type == "national"){
-		serviceAreaId_val = setAllCircleSaid();
-	}
-	if(serviceAreaId_val == ""){
-		alert('Please, choose ServiceArea.');
-		return;
+	if(type != "group"){
+		type = "area";
 	}
 	var param = {
 			  bmscId 		: bmscId

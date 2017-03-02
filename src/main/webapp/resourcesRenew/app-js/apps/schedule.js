@@ -4,7 +4,6 @@ $(document).ready(function()
 	displayRatio();
 	
 	$("#serviceType").on("change", function() {
-		
 		if($(this).val() == "fileDownload"){
 			$("div[name='bcType_fileDownload']").show();
 			$("#bcType_fileDownload2").show();
@@ -146,7 +145,7 @@ $(document).ready(function()
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
 			var bmscId= $("#bmscId").val();
-			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId;
+			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -206,6 +205,8 @@ $(document).ready(function()
 	
 	addScheduleRemoveEvent();
 	addContentRemoveEvent();
+	$("#serviceType").change();
+	
 });
 
 function addSearchContentEvent(idx) {

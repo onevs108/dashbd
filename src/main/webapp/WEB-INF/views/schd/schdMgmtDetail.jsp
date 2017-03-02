@@ -18,7 +18,7 @@
     <link href="../resourcesRenew/css/plugins/fullcalendar/scheduler.css" rel="stylesheet" media='print' />
     <link href="../resourcesRenew/css/plugins/timePicki/timepicki.css" rel="stylesheet" media='print' />
     
-	<link href="../resources/css/custom.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/custom.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/datapicker/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
 
@@ -126,19 +126,7 @@
 </head>
 <body>
 <div id="wrapper">
-
-    <!-- sidebar -->
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-                <li class="nav-header">
-					<div align="center" class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
-					</div>
-				</li>
-            </ul>
-        </div>
-    </nav><!-- sidebar end -->
+    <jsp:include page="../common/leftTab.jsp" />
 
     <!-- content -->
     <div id="page-wrapper" class="gray-bg">
@@ -235,6 +223,7 @@
             <input type="hidden" id="searchDate" name="searchDate" value="${searchDate}"/>
             <input type="hidden" id="category" name="category" value="${category}"/>
             <input type="hidden" id="title" name="title" value="${title}"/>
+            <input type="hidden" id="type" name="type" value="${type}"/>
             
             <div class="col-lg-12">
                     <div class="ibox float-e-margins">

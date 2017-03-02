@@ -30,7 +30,20 @@
 		<jsp:include page="common/leftTab.jsp" />
 		
 		<div id="page-wrapper" class="gray-bg dashbard-1" style="min-height: 1014px;">
-			<jsp:include page="common/header.jsp" />	
+<%-- 			<jsp:include page="common/header.jsp" />	 --%>
+			<c:import url="/resources/header.do"></c:import>
+			<div class="row border-bottom white-bg dashboard-header">
+				<div class="session">
+					<h2>SeSM Main</h2>
+					<div class="pull-right">
+						<span>Num Sessions:</span>
+						<span>
+							<span class="onDisp on1"></span><!-- 활성화일때 클래스 on1, on2 -->
+							<span class="onDisp"></span>
+						</span>
+					</div>
+				</div>
+			</div>
 			<!-- s : wrapper -->
 			<div class="wrapper wrapper-content">
 				<div class="main-sch">

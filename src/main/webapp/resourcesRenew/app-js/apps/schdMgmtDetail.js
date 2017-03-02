@@ -50,7 +50,8 @@ var ctrl = {
 	initialize : function() {
 		
 		var param = {
-				serviceAreaId : $('#serviceAreaId').val()
+				 serviceAreaId 	: $('#serviceAreaId').val()
+				,type 			: $("#type").val()
 				/*, searchDate : $('#searchDate').val()*/
 			};
 			
@@ -132,7 +133,6 @@ function getContents(data, page){
 		var category = data[i].category;
 		var duration = data[i].duration;
 		var path = data[i].path;
-		// console.log((new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0]);
 		duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
 		
 		$div1.attr("class","feed-element");
@@ -237,10 +237,8 @@ function setTimeTable(data ){
 		var id = contents[i].ID;
 		var name = contents[i].NAME;
 		var broadcast_info_id = contents[i].BCID;
-		//console.log(broadcast_info_id);
 		if (typeof broadcast_info_id == 'undefined')
 			broadcast_info_id = '';
-		//console.log(broadcast_info_id,'------','\n');
 		var start_date = contents[i].start_date;
 		var end_date = contents[i].end_date;
 		var url = "schedule.do?id=" + id + "&BCID=" + broadcast_info_id;
@@ -248,7 +246,6 @@ function setTimeTable(data ){
 		var start4compare = replaceAll4Time(start_date);
 		var end4compare = replaceAll4Time(end_date);
 		var serviceId = contents[i].serviceId;
-		//console.log('current=', now4compare , ', start_date=', start4compare, ', end_date=', end4compare);
 		if (broadcast_info_id == null || broadcast_info_id == ""){
 			if (now4compare < start4compare ){
 				//미래
@@ -312,7 +309,6 @@ function setTimeTable(data ){
 		eventLimit: true, // allow "more" link when too many events
 		events: events,
 		drop: function(event, dayDelta, minuteDelta,allDay,revertFunc) {
-			console.log('drop');
 			content_id = $(this).attr("data-id");
 			gTitle = $(this).attr("data-title");
 			gDuration = $(this).attr("data-duration");
@@ -321,24 +317,20 @@ function setTimeTable(data ){
 		},
 		
 		eventReceive: function(event) { // called when a proper external event is dropped
-			console.log('eventReceive', event, ',' , event.start.format(), ',' , content_id);
 			g_name = event.title;
 			var startTime = event.start.format();
 			var hours = gDuration.substring(0,2);
 			var minutes = gDuration.substring(4,5);
 			var seconds = gDuration.substring(7,8);
-			console.log('hour=', hours, 'minutes=', minutes, 'second=', seconds);
 			
 			var endTime = moment(startTime).add(hours, 'hours');
 			endTime = moment(endTime).add(minutes, 'minutes');
 			endTime = moment(endTime).add(seconds, 'seconds');
 			
 			endTime = endTime.format('YYYY-MM-DD[T]HH:mm:ss');
-			//console.log('endTime', endTime);
-			console.log(content_id ,',', g_name, ',', startTime, ',', endTime );
 			if(getTimeDiff(startTime, currentTime)){
 				alert("The start time has already passed")
-				location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+				location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 			}else{
 				addSchedule(content_id, gTitle, startTime, endTime);
 			}
@@ -348,36 +340,31 @@ function setTimeTable(data ){
 			
 			var title = encodeURI($("#form-title").val());
 			var category =  encodeURI($("#form-category").val());
-			location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+			location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 		},
 		eventDrop: function(event) { // called when an event (already on the calendar) is moved
-			console.log('eventDrop', event, ',',event.start.format(), ',' , event.end.format(), event.url);
 			var ret = confirm("It's going to update. are you sure??");
 			if (ret){
 				if(getTimeDiff(event.start.format(), currentTime)){
 					alert("The start time has already passed")
-					location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+					location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 				}else{
 					modifySchedule(event.url, event.start.format(), event.end.format());
 				}
 			}	
 			else {
-				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 			}
 		}
 		,eventResize: function(event, delta, revertFunc){
-			console.log('eventResize', event, ',',event.start.format(), ',' , event.end.format() , event.url);
-			console.log('delta', delta, 'revertFunc', revertFunc);
 			var ret = confirm("It's going to update. are you sure??");
 			
 			if (ret)
 				modifySchedule(event.url, event.start.format(), event.end.format());
 			else
-				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category;
+				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 		}
 		, eventDragStop: function( event, jsEvent, ui, view ) { 
-			console.log('eventDragStop');
-			//console.log(event.url, ',', jsEvent.clientX, ',', jsEvent.clientY);
 			
 			var trashEl = jQuery('#calendarTrash');
 		    var ofs = trashEl.offset();
@@ -392,7 +379,6 @@ function setTimeTable(data ){
 		    	
 		        //alert('SIII');
 		    	deleteSchedule(event.url);
-		    	console.log('DragStop=', g_delRetrun)
 		    	//alert(Boolean(ret) + ',' + ret);
 		    	if ( g_delRetrun == 1)
 		    		$('#calendar').fullCalendar('removeEvents', event._id);
@@ -411,7 +397,6 @@ function setTimeTable(data ){
 	    }
 		*/
 		, viewRender: function(view, element){
-			console.log('viewRender', view, element);
 			var now4compare = replaceAll4Day(moment().format());
 			var viewDay4compare = replaceAll4Day(view.start.format());
 			// console.log(now4compare , viewDay4compare);
@@ -429,7 +414,6 @@ function setTimeTable(data ){
 	 fbg.append('<div id="calendarTrash" style="float: right; padding-top: 2px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>');
 }
 function setTimeline(calView) {
-    console.log('calView.name =',calView.name )
 	
    if(jQuery(".timeline").length == 0){
       jQuery(".fc-time-grid-container").prepend("<div style='width:100%;overflow: visible;'><hr class='timeline'/></div>") 
@@ -445,10 +429,7 @@ function setTimeline(calView) {
     //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;;
     var position = now.hours() + now.minutes() / 60 ;
     
-    console.log('now.hours()=',now.hours(), ', width=',width,', height=',height,', left=',left,', position=',position);
-    
     var top = height * position;
-    console.log('top=',top);
     
     timeline
     .css('width',width+"px")
@@ -464,8 +445,6 @@ function modifySchedule(url, startTime, endTime){
 	
 	if (typeof BCID == 'undefined')
 		BCID = "";
-	
-	console.log('modifySchedule:', id,',' ,BCID);
 	
 	var param = {
 			scheduleId : id,
@@ -501,14 +480,11 @@ function deleteSchedule(url){
 	if (typeof BCID == 'undefined')
 		BCID = "";
 	
-	console.log('del url=',url,', id=', id, ',BCID=',BCID);
-	
 	var param = {
 			id : id,
 			BCID : BCID,
 			bmscId : $("#bmscId").val()
 	};
-	console.log('del param=', param);
 	$.ajax({
 		type : "POST",
 		url : "delSchedule.do",
@@ -517,7 +493,6 @@ function deleteSchedule(url){
 		async: false,
 		success : function( data ) {
 			g_delRetrun = outMsgForAjax(data)
-			console.log('return=', g_delRetrun);
 			
 			//location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 		},
@@ -529,7 +504,6 @@ function deleteSchedule(url){
 }
 	
 function addSchedule(content_id, g_name, startTime, endTime){
-	console.log("bmscId="+$("#bmscId").val());
 	
 	var param = {
 			serviceAreaId : $("#serviceAreaId").val(),
@@ -537,7 +511,8 @@ function addSchedule(content_id, g_name, startTime, endTime){
 			contentId : content_id,
 			titleName : g_name,
 			startTime : startTime,
-			endTime: endTime
+			endTime: endTime,
+			type: $("#type").val()
 		};
 		
 	$.ajax({
