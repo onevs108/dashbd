@@ -104,10 +104,10 @@ function treeInit(data) {
 			checkNode(tempHotspotNode);
 		}
 		
-		$(".jstree-icon.jstree-themeicon").remove();
+//		$(".jstree-icon.jstree-themeicon").remove();
 	})
 	.bind('before_open.jstree', function(evt, data) {
-		$(".jstree-icon.jstree-themeicon").remove();
+//		$(".jstree-icon.jstree-themeicon").remove();
 	})
 	.jstree({"checkbox" : {
 	      "keep_selected_style" : false,
