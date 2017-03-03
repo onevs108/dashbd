@@ -8,7 +8,15 @@
 		         (
 		            SELECT count(*) FROM schedule s  
 		            WHERE       
-		            <include refid="schedule_where" />
+		            del_yn = 'N'
+			    	<if test="serviceAreaId != null and serviceAreaId !=''" >
+						AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
+							<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
+							<if test="type == 'national'">national_yn = 'Y'</if> 
+					</if>
+					<if test="searchDate != null and searchDate !=''" >
+						AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
+					</if>
 		            <![CDATA[                  
 		            AND start_comp > DATE_FORMAT(start_date, '%H%i%s')      
 		            AND start_comp < DATE_FORMAT(end_date, '%H%i%s')
@@ -21,7 +29,15 @@
 		         DATE_FORMAT(end_date, '%H%i%s') end_comp      
 		      FROM schedule s
 		      WHERE         
-		         <include refid="schedule_where" />         
+	          del_yn = 'N'
+		    	<if test="serviceAreaId != null and serviceAreaId !=''" >
+					AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
+						<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
+						<if test="type == 'national'">national_yn = 'Y'</if> 
+				</if>
+				<if test="searchDate != null and searchDate !=''" >
+					AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
+				</if>   
 		   ) x
 		) a
 

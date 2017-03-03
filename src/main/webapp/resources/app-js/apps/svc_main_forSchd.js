@@ -50,7 +50,7 @@ $(document).ready(function()
     	var circleId = array[0];
     	var circleName = array[1];
     	if(circleId == ""){
-    		$("#selectCity").html(html);
+    		$("#selectCity").html("");
         	$("#selectHotspot").html("");
     		return;
     	}
@@ -99,7 +99,7 @@ $(document).ready(function()
     	var cityId = array[0];
     	var cityName = array[1];
     	if(cityId == ""){
-    		$("#selectHotspot").html(html);
+    		$("#selectHotspot").html("");
     		return;
     	}
     	$.ajax({
@@ -157,7 +157,7 @@ $(document).ready(function()
 		g_ServiceAreaId = hotspotId;
     });
     
-    $("input[name='radio']").click(function(){
+    $("input[name='radio']").click(function() {
     	var radioType = $("input[name='radio']:checked").val();
     	if(radioType == "group")
     	{

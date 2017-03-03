@@ -105,6 +105,10 @@
 					$($("input[name='deliveryInfo_start']")[i]).val(contentJson[i].start_time);
 					$($("input[name='deliveryInfo_end']")[i]).val(contentJson[i].end_time);
 				}
+			}else if("new"){
+				for (var i = 0; i < $("input[name='saidList']").length; i++) {
+					$("input[name='saidList']")[i].placeholder = "";
+				}
 			}
 			$("#searchContentStream").click(searchStreaming);
 		});
@@ -446,7 +450,7 @@
 			                                    	<div class="row">
 					                                	<label class="col-sm-2 control-label">Service Area</label>
 					                                    <div class="col-sm-6">
-					                                    	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: gainsboro;" readonly>
+					                                    	<input type="text" class="form-control" id="saidList" name="saidList" placeholder="${mapSchedule.serviceAreaId}" style="height: 75px;background-color: gainsboro;" readonly>
 					                                    </div>
 					                                    <c:if test="${empty mapSchedule.BCID and type == 'area'}">
 					                                    	<div class="row">
@@ -688,7 +692,7 @@
 	                    	<div class="row">
 	                  	<label class="col-sm-2 control-label">Service Area</label>
 	                      <div class="col-sm-6">
-	                      	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: gainsboro;" readonly>
+	                      	<input type="text" class="form-control" id="saidList" name="saidList" placeholder="${mapSchedule.serviceAreaId}" style="height: 75px;background-color: gainsboro;" readonly>
 	                      </div>
 	                      <c:if test="${empty mapSchedule.BCID}">
 	                      	<div class="row">
@@ -791,7 +795,7 @@
 	<div class="row" id="addServiceArea">
 		<label class="col-sm-2 control-label">Service Area</label>
 		<div class="col-sm-6">
-			<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;" readonly>
+			<input type="text" class="form-control" id="saidList" name="saidList" placeholder="${mapSchedule.serviceAreaId}" style="height: 75px;" readonly>
 		</div>
 		<c:if test="${empty mapSchedule.BCID and type == 'area'}">
 			<div class="row">

@@ -8,15 +8,16 @@ $(function() {
 
 	searchDate = $("#searchDate").val();
 	//callTimetable(g_ServiceAreaId, searchDate);
-	
+
 	$("#btnScheduleDetail").click(function() {
 		var type = $("input[name='radio']:checked").val();
+		if(type == "national"){
+			g_ServiceAreaId = setAllCircleSaid();
+		}
 		if (g_ServiceAreaId == '' || g_ServiceAreaId == undefined){
 			if(type != "national"){
 				alert('Please, choose ServiceArea.');
 				return;
-			}else{
-				g_ServiceAreaId = setAllCircleSaid();
 			}
 		}
 		if(g_ServiceGroupId != '') {
@@ -119,19 +120,23 @@ function setTimeTable(data){
 		timetable.addEvent(contents[i].NAME, 'position' + position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
 				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
-				 					'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID, serviceId);
-		
+				 					'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID+'&type='+$("input[name='radio']:checked").val(), serviceId);
 	}
 	
 	var renderer = new Timetable.Renderer(timetable);
 	renderer.draw('.timetable');
 	for (var i = 0; i < $(".time-entry").length; i++) {
-		if($($(".time-entry")[i]).children().text().indexOf("(-)") > -1){
-			$($(".time-entry")[i]).css("background-color", "#3CAEFF");
+		for (var j = 0; j < contents.length; j++) {
+			if(contents[j].ID == $(".time-entry")[i].href.split("&")[0].split("=")[1]){
+				if($($(".time-entry")[i]).children().text().indexOf("(-)") > -1){
+					$($(".time-entry")[i]).css("background-color", "#3CAEFF");
+				}
+				$(".time-entry")[i].title = "contentName : " + $(".time-entry")[i].title +"\nserviceType : "+contents[j].service +"\nsaid : "+contents[j].service_area_id;
+				continue;
+			}
 		}
-		$(".time-entry")[i].title = "contentName : " + $(".time-entry")[i].title +"\nserviceType : "+contents[i].service +"\nsaid : "+contents[i].service_area_id;   
 	}
-	
+//	$("time").css("width", "100%");
 	setTimeline(maxPosition, viewStartHour);
 }
 
