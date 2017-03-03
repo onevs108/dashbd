@@ -54,20 +54,20 @@
 																<div class="col-lg-6"><a>
 																	<div class="col-xs-4">
 																		<div class="form-group">
-																			<select id="searchType" class="form-control">
+																			<select id="searchType" name="searchType" class="form-control">
 											                                    <option value="">Select</option>
 											                                    <option value="circle">Circle</option>
 											                                    <option value="city">City</option>
 											                                    <option value="circleCity">Circle & City</option>
 											                                    <option value="hotspot">Hotspot</option>
-<!-- 											                                    <option value="said">SAID</option> -->
+											                                    <option value="said">SAID</	option>
 											                                </select>
 																		</div>
 																	</div>
 																	<div class="col-xs-8">
 																		<div class="form-group">
 																			<div class="input-group">
-																				<input type="text" id="search-input" class="form-control">
+																				<input type="text" id="search-input" name='search-input' class="form-control">
 																				<span class="input-group-btn">
 																					<button type="button" onclick="searchTreeNode()" class="btn btn-primary">Search</button>
 																				</span>

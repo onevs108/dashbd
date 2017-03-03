@@ -1512,36 +1512,82 @@
 	<select id="getTreeNodeData" parameterType="HashMap" resultType="HashMap">
 		SELECT result.node_id, result.pnode_id, result.name, result.node_div, IF(sags.sub_said IS NULL, 0, 1) as checkYn, latitude, longitude, circle_id, bandwidth
 		FROM (
-		    SELECT 'A' AS node_id, null AS pnode_id, 'Circles' as name, 'root' AS node_div, '' AS compare_id, '' AS latitude, '' AS longitude, '' AS circle_id, '' AS bandwidth
-		    UNION ALL
-		    SELECT CONCAT('A', circle_id) AS node_id, 'A' AS pnode_id
-		        , circle_name AS name, 'circle' AS node_div
-		        , '' AS compare_id
-		        , latitude, longitude
-		        , circle_id
-		        , bandwidth AS bandwidth
-		    FROM circle
-	    	UNION ALL
-		    SELECT CONCAT('A', circle_id, 'B', city_id) AS node_id, CONCAT('A', circle_id) AS pnode_id
-		        , city_name AS name, 'city' AS node_div
-		        , city_id AS compare_id
-		        , latitude, longitude
-		        , circle_id
-		        , bandwidth
-		    FROM city
-		    UNION ALL
-		    SELECT CONCAT('A', circle_id, 'B', city_id, 'C', hotspot_id) AS node_id, CONCAT('A', circle_id, 'B', city_id) AS pnode_id
-		        , hotspot_name AS name, 'hotspot' AS node_div
-		        , hotspot_id AS compare_id
-		        , latitude, longitude
-		        , circle_id
-		        , bandwidth
-		    FROM (
-		      SELECT mst.circle_id, mst.city_id, slv.hotspot_id, slv.hotspot_name, slv.latitude , slv.longitude, slv.bandwidth
-		      FROM city mst
-		      INNER JOIN hotspot slv
-		      ON mst.city_id = slv.city_id
-		    ) sub_result
+		    SELECT rootTreeView.*
+	        FROM rootTreeView
+	        UNION
+	        SELECT circleTreeView.*
+	        FROM circleTreeView
+	        <if test="searchType != '' and searchType != null">
+	        	INNER JOIN (
+		            SELECT SUBSTRING(node_id, 1, IF(INSTR(node_id, 'B') = 0, 9999999999, INSTR(node_id, 'B')-1)) as compare_node_id
+		            FROM treeView
+		            WHERE 1=1
+		            <choose>
+		            	<when test="searchType == 'circle'">
+		            		AND node_div = 'circle'
+		            		AND name LIKE CONCAT('%', #{searchInput}, '%')	
+		            	</when>
+		            	<when test="searchType != 'said'">
+		            		AND name LIKE CONCAT('%', #{searchInput}, '%')	
+		            	</when>
+		            	<otherwise>
+		            		AND said = #{searchInput}
+		            	</otherwise>
+		            </choose>
+		        ) circleTemp
+		        ON circleTreeView.node_id = circleTemp.compare_node_id
+	        </if>
+	        <if test="searchType != 'circle'">
+	        	UNION
+		        SELECT cityTreeView.*
+		        FROM cityTreeView
+		        <if test="searchType != '' and searchType != null">
+		        	INNER JOIN (
+			            SELECT SUBSTRING(node_id, 1, IF(INSTR(node_id, 'C') = 0, 9999999999, INSTR(node_id, 'C')-1)) as compare_node_id
+			            FROM treeView
+			            WHERE 1=1
+			              <choose>
+			              		<when test="searchType == 'city'">
+				            		AND node_div = 'city'
+				            		AND name LIKE CONCAT('%', #{searchInput}, '%')	
+				            	</when>
+				            	<when test="searchType != 'said'">
+				            		AND name LIKE CONCAT('%', #{searchInput}, '%')	
+				            	</when>
+				            	<otherwise>
+				            		AND said = #{searchInput}
+				            	</otherwise>
+				            </choose>
+			        ) cityTemp
+			        ON cityTreeView.node_id = cityTemp.compare_node_id
+		        </if>
+	        </if>
+	        <if test="searchType != 'circle' and searchType != 'city'
+	        			and searchType != 'circleCity'">
+	        	UNION
+		        SELECT hotspotTreeView.*
+		        FROM hotspotTreeView
+		        <if test="searchType != '' and searchType != null">
+		        	INNER JOIN (
+			            SELECT node_id as compare_node_id
+			            FROM treeView
+			            WHERE 1=1
+			              <choose>
+			              		<when test="searchType == 'hotspot'">
+				            		AND node_div = 'hotspot'
+				            		AND name LIKE CONCAT('%', #{searchInput}, '%')	
+				            	</when>
+				            	<when test="searchType != 'said'">
+				            		AND name LIKE CONCAT('%', #{searchInput}, '%')	
+				            	</when>
+				            	<otherwise>
+				            		AND said = #{searchInput}
+				            	</otherwise>
+				            </choose>
+			        ) hotspotTemp
+			        ON hotspotTreeView.node_id = hotspotTemp.compare_node_id
+		        </if>
+	        </if>
 		) result
 		LEFT JOIN (
 		  SELECT sub_said

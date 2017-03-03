@@ -71,15 +71,27 @@ function jsTreeSetting() {
 			    url : "/dashbd/api/getTreeNodeData.do",
 			    type: "POST",
 			    data : { 
-			    	gruop_id : ''
+			    	gruop_id : '',
+			    	searchType : $("#searchType").val(),
+			    	searchInput : $("#search-input").val()
 			    },
 			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 			    success : function(responseData) {
 			        $("#ajax").remove();
 			        var data = JSON.parse(responseData);
 			        
-			        $("#treeNode").jstree("destroy").empty();
-			        treeInit(data);
+			        if(data.resultList.length != 1) {
+				        $("#treeNode").jstree("destroy").empty();
+				        treeInit(data);
+			        } else {
+			        	$("li.root").remove();
+			        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
+			        		$("#search-input").val('');
+			        		$("#searchType").val('');
+			    			jsTreeSetting();
+			    		})
+			        }
+			        
 			    },
 		        error : function(xhr, status, error) {
 		        	swal({
@@ -345,6 +357,16 @@ function treeInit(data) {
 		}
 	}
 	
+	//서클 아래에 도시가 하나도 없을 경우 newNode 추가
+	var newCityNode = '<ul><li class="newNode city" data-init="" data-lat="" data-lng="" data-band=""></li></ul>';
+	for(var i=0; i < $("#treeNode li.circle").not(".newNode").length; i++) {
+		var tempCity = $($("#treeNode li.circle").not(".newNode")[i]);
+		
+		if(tempCity.find("ul").length == 0) {
+			tempCity.append(newCityNode);
+		}
+	}
+	
 	//도시 아래에 핫스팟이 하나도 없을 경우 newNode 추가
 	var newHotspotNode = '<ul><li class="newNode hotspot" data-init="" data-lat="" data-lng="" data-band=""></li></ul>';
 	for(var i=0; i < $("#treeNode li.city").not(".newNode").length; i++) {
@@ -357,10 +379,10 @@ function treeInit(data) {
 	
 	$("#treeNode")
 		.bind('before_open.jstree', function(evt, data) {
-//			$(".jstree-icon.jstree-themeicon").remove();
+			$(".jstree-icon.jstree-themeicon").remove();
 		})
 		.bind('ready.jstree', function(e, data) {
-//			$(".jstree-icon.jstree-themeicon").remove();
+			$(".jstree-icon.jstree-themeicon").remove();
 	    }).jstree({
 		    "conditionalselect" : function (node, event) {
 		      return false;
@@ -387,92 +409,95 @@ function searchTreeNode() {
 	var searchString = $("#search-input").val();
 	
 	if(searchString == '') {
-		jsTreeSetting();
+		$("#searchType").val('');
 //		$('#treeNode').jstree('search', searchString);
 		//제일 처음 노드 오픈
 //		$("#treeNode").jstree("open_node", $("#treeNode .root"));
-	} else {
-		$('#treeNode').jstree('search', searchString);
-		
-		$(".jstree-ocl").remove();
-        $('#treeNode li.newNode').remove();
-        $('#treeNode li').removeClass("searchPNode");
-        $('#treeNode li a.jstree-search').parents("li").addClass("searchPNode");
-        $($('#treeNode li.root a')[0]).removeClass("jstree-search");
-        
-        if($("#searchType").val() != '') {
-            var searchList = $('#treeNode li a.jstree-search');
-            
-        	for(var i=0; i < searchList.length; i++) {
-            	var tempObj = $(searchList[i]).parent();
-            	
-            	if($("#searchType").val() == 'circle') {
-            		if(!tempObj.hasClass('circle')) {
-            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            		}
-            	} else if($("#searchType").val() == 'city') {
-            		if(!tempObj.hasClass('city')) {
-            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            		}
-            	} else if($("#searchType").val() == 'circleCity') {
-            		if(tempObj.hasClass('hotspot')) {
-            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            		}
-            	} else if($("#searchType").val() == 'hotspot') {
-            		if(!tempObj.hasClass('hotspot')) {
-            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-            		}
-            	}
-            	
-            	if(!tempObj.find('a').hasClass('jstree-search') && $(tempObj).siblings().length != 0) {
-            		if($(tempObj).siblings().find("a.jstree-search").length == 0) {
-                		$($(tempObj).parents('li')[0]).removeClass("searchPNode");
-                	}
-            	}
-            }
-        }
-        var test = $('#treeNode li').not('.searchPNode').find('a').not(".jstree-search").parent();
-        for(var i=0; i < test.length; i++) {
-        	var temp = $(test[i]);
-        	
-        	if($("#" + temp[0].id).length > 0)
-        		$("#" + temp[0].id).remove()
-        	
-        }
 	}
+	jsTreeSetting();
+	
+//	} else {
+//		$('#treeNode').jstree('search', searchString);
+//		
+//		$(".jstree-ocl").remove();
+//        $('#treeNode li.newNode').remove();
+//        $('#treeNode li').removeClass("searchPNode");
+//        $('#treeNode li a.jstree-search').parents("li").addClass("searchPNode");
+//        $($('#treeNode li.root a')[0]).removeClass("jstree-search");
+//        
+//        if($("#searchType").val() != '') {
+//            var searchList = $('#treeNode li a.jstree-search');
+//            
+//        	for(var i=0; i < searchList.length; i++) {
+//            	var tempObj = $(searchList[i]).parent();
+//            	
+//            	if($("#searchType").val() == 'circle') {
+//            		if(!tempObj.hasClass('circle')) {
+//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+//            		}
+//            	} else if($("#searchType").val() == 'city') {
+//            		if(!tempObj.hasClass('city')) {
+//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+//            		}
+//            	} else if($("#searchType").val() == 'circleCity') {
+//            		if(tempObj.hasClass('hotspot')) {
+//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+//            		}
+//            	} else if($("#searchType").val() == 'hotspot') {
+//            		if(!tempObj.hasClass('hotspot')) {
+//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
+//            		}
+//            	}
+//            	
+//            	if(!tempObj.find('a').hasClass('jstree-search') && $(tempObj).siblings().length != 0) {
+//            		if($(tempObj).siblings().find("a.jstree-search").length == 0) {
+//                		$($(tempObj).parents('li')[0]).removeClass("searchPNode");
+//                	}
+//            	}
+//            }
+//        }
+//        var test = $('#treeNode li').not('.searchPNode').find('a').not(".jstree-search").parent();
+//        for(var i=0; i < test.length; i++) {
+//        	var temp = $(test[i]);
+//        	
+//        	if($("#" + temp[0].id).length > 0)
+//        		$("#" + temp[0].id).remove()
+//        	
+//        }
+//	}
 	
 	//no data proccess
-	if($("#treeNode li").not(".root").length == 0) {
-		swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
-			jsTreeSetting();
-		})
+//	if($("#treeNode li").not(".root").length == 0) {
+//		swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
+//			jsTreeSetting();
+//		})
 		
 //		$("#treeNode ul li").remove();
 //		$("#treeNode").append("<span>No Data</span>");
-	} 
+//	} 
 	//custom input layer proccess
-	else {
-		var tempUlObjList = $("#treeNode ul");
-		for(var i=0; i < tempUlObjList.length; i++) {
-			var tempUlObj = $(tempUlObjList[i]);
-			
-			if(i == 0) 
-				$("#treeNode li.root").append($("#treeNode li.root ul")[0]);
-			else 
-				tempUlObj.parent().append(tempUlObj)
-		}
-		
-		$("#treeNode li a").not(".jstree-search").siblings("div[name='customDiv']").remove();
-		
-		var etcRemoveTargetList = $("#treeNode li").not(".root").find("a").not(".jstree-search");
-		for(var i=0; i < etcRemoveTargetList.length; i++) {
-			var tempObj = $(etcRemoveTargetList[i]).parent();
-			
-			if(tempObj.find("li").length == 0)
-				tempObj.remove();
-			
-		}
-	}
+//	else {
+//		var tempUlObjList = $("#treeNode ul");
+//		for(var i=0; i < tempUlObjList.length; i++) {
+//			var tempUlObj = $(tempUlObjList[i]);
+//			
+//			if(i == 0) 
+//				$("#treeNode li.root").append($("#treeNode li.root ul")[0]);
+//			else 
+//				tempUlObj.parent().append(tempUlObj)
+//		}
+//		
+//		$("#treeNode li a").not(".jstree-search").siblings("div[name='customDiv']").remove();
+//		
+//		var etcRemoveTargetList = $("#treeNode li").not(".root").find("a").not(".jstree-search");
+//		for(var i=0; i < etcRemoveTargetList.length; i++) {
+//			var tempObj = $(etcRemoveTargetList[i]).parent();
+//			
+//			if(tempObj.find("li").length == 0)
+//				tempObj.remove();
+//			
+//		}
+//	}
 	
 //	$(".jstree-icon.jstree-themeicon").remove();
 }
