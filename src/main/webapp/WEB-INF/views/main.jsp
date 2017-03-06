@@ -615,6 +615,7 @@
 				//현재 붙여넣어 줄 노드의 구분값을 판단하여 그에 따른 상위 노드만 모아서 부모 노드를 찾음
 				var divClass = '';
 				if(node.node_div == 'circle') divClass='root';
+				else divClass='circle';
 				
 				for(var j=0; j < $('#treeNode li.' + divClass).length; j++) {
 					var compareNode = $('#treeNode li.' + divClass)[j];
