@@ -17,8 +17,15 @@
 			<li>
 				<div class="profile-element">
 					<span class="clear">
-						<span class="block m-t-xs" style="cursor: pointer;">
-							<strong class="font-bold" onclick="doAllEdit('${USER.userId}', '${USER.circleName}')">${USER.lastName} ${USER.firstName} (${USER.department})</strong>
+						<span class="block m-t-xs">
+							<c:choose>
+								<c:when test="${USER.grade == 13}">
+									<strong class="font-bold">${USER.lastName} ${USER.firstName} (${USER.department})</strong>
+								</c:when>
+								<c:otherwise>
+									<strong class="font-bold" style="cursor: pointer;" onclick="doEdit('${USER.userId}', true)">${USER.lastName} ${USER.firstName} (${USER.department})</strong>
+								</c:otherwise>
+							</c:choose>
 						</span>
 					</span>
 				</div>
@@ -28,6 +35,8 @@
 		</ul>
 	</nav>
 </div>
+
+<!-- s : POPUP - Add Operator -->
 <div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content animated bounceInRight">
@@ -105,10 +114,10 @@
 							<div id="modal_circle_group" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
 								<label class="col-sm-6 control-label">Circle Group</label>
 								<div class="col-sm-6">
-                                   	<select class="input-sm form-control input-s-sm" id="form-circle" readonly>
+                                   	<select class="input-sm form-control input-s-sm" id="form-circle">
                                    		<option value="">Circle Group</option>
                                    		<c:forEach var="cgroup" items="${townList}">
-                                   			<option value="${cgroup.id}" selected>${cgroup.town_name}</option>
+                                   			<option value="${cgroup.id}">${cgroup.town_name}</option>
                                    		</c:forEach>
 									</select>
                                 </div>
@@ -118,8 +127,12 @@
 
 						<div class="row">
 							<div class="col-lg-6 m-b">
-								<input type="text" placeholder="User ID"
-									class="form-control" id="form-user-id" name="form-user-id">
+								<div class="input-group" style="padding: 0 0 0 0;">
+									<input type="text" placeholder="User ID" class="form-control" id="form-user-id" onkeyup="javascript:checkUserId=false;"> 
+									<span class="input-group-btn">
+										<button type="button" id="form-check-btn" onclick="doCheckId()" class="btn btn-primary">Check</button>
+									</span>
+								</div>
 							</div>
 							<div class="col-lg-6 m-b">
 								<input type="text" placeholder="Last Name"
@@ -161,199 +174,357 @@
 					</fieldset>
 				</div>
 				<div class="modal-footer">
-					<button type="button" id="editBtn" onclick="doInsertAll('edit')" class="btn btn-primary">Edit</button>
+					<button type="button" id="addBtn" onclick="doInsert('add')" class="btn btn-primary">Add</button>
+					<button type="button" id="editBtn" onclick="doInsert('edit')" class="btn btn-primary">Edit</button>
 					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
 				</div>
 			</form>
 		</div>
 	</div>
 </div>
+<!-- e : POPUP - Add Operator -->
+
 <script type="text/javascript">
-
-function doAllEdit(userId, circleName) {
-	getAllUserList('edit', userId, circleName);
-}
-
-//버튼 클릭에 따른 유저 팝업 컨트롤 메소드
-function getAllUserList(accessDiv, userId, circleName) {
-	$(".modal-title").text("Edit Operator");
-	$("#editBtn").show();
-	getUserInfoAll(userId, circleName);
+	var commonYn;
 	
-	$("#myModal #form-user-id").prop("readonly", true);
-	$("#myModal #form-check-btn").prop("disabled", true);
-	$("#myModal select").prop("disabled", true);
-}
-
-function getUserInfoAll(userId, circleName) {
-	$.ajax({
-		url: '/dashbd/api/user/info.do',
-		method: 'POST',
-		dataType: 'json',
-		data: {
-			userId: userId
-		},
-		success: function(data, textStatus, jqXHR) {
-			setElementsAll(data.user, circleName);
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			swal("Fail !", errorThrown, "warning");
+	function doSearch() {
+		$('#table').bootstrapTable('destroy');
+		getUserList(false, true);
+	}
+	
+	function doInfo(userId) {
+		userFormAccess('info', userId);
+	}
+	
+	function doEdit(userId, commonModalYn) {
+		commonYn = commonModalYn;
+		userFormAccess('edit', userId);
+	}
+	
+	//그룹 콤보박스 변경시 서클 콤보박스 컨트롤 메소드
+	function changeGroup(obj, targetId) {
+		//서클그룹 선택시
+		if(obj.value == '9999') {
+			$("#" + targetId).show();
+			$("#modal_circle_group").show();
+		} else {
+			$("#" + targetId).hide();
+			$("#modal_circle_group").hide();
+		}
+	}
+	
+	function getTownListFromCircle(circleObj) {
+		$.ajax({
+			url: '/dashbd/api/user/getTownFromCircle.do',
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				circleName: $(circleObj).val()
+			},
+			success: function(data, textStatus, jqXHR) {
+				if (data.result) {
+					var html = "<option value=''>Circle Group</option>";
+					for (var i = 0; i < data.result.length; i++) {
+						html += "<option value='"+data.result[i].id+"'>"+data.result[i].town_name+"</option>";
+					}
+					$("#form-circle").html(html);
+				}
+				else {
+					alert("Fail! Please");
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				alert(errorThrown);
+				checkUserId = false;
+				return false;
+			}
+		});	
+	}
+	
+	//버튼 클릭에 따른 유저 팝업 컨트롤 메소드
+	function userFormAccess(accessDiv, userId) {
+		if(accessDiv == 'add') {
+			$(".modal-title").text("Add Operator");
+	
+			if($("#globalGrade").val()  == 13) {
+				$("#modal-grade-id").val('');
+				$("#modal_circle_area").hide();
+				$("#modal_circle_group").hide();
+				$("#modal-circle-id").val('');
+				$("#form-circle").empty();
+				$("#form-circle").append('<option value="">Circle Group</option>');
+			}
+			$("#addBtn").show();
+			$("#editBtn").hide();
+			$("#myModal input, #myModal textarea").val('');
+			$("#myModal input, #myModal select, #myModal textarea, #myModal #form-check-btn").prop("disabled", false);
+		} else if(accessDiv == 'edit') {
+			$(".modal-title").text("Edit Operator");
+			$("#editBtn").show();
+			$("#addBtn").hide();
+			getUserInfo(userId);
+			
+			$("#myModal #form-user-id").prop("readonly", true);
+			$("#myModal #form-check-btn").prop("disabled", true);
+			$("#myModal input, #myModal select, #myModal textarea").prop("disabled", false);
+		} else if(accessDiv == 'info') {
+			$(".modal-title").text("Operator" + " \"" + userId + "\" Info");
+			$("#editBtn").hide();
+			$("#addBtn").hide();
+			getUserInfo(userId);
+			$("#myModal input, #myModal select, #myModal textarea, #myModal #form-check-btn").prop("disabled", true);
+		}
+	}
+	
+	function doCheckId() {
+		var userId = $('#form-user-id').val();
+		if (userId == null || userId.length == 0) {
+			swal("Fail !","Please enter your ID", "warning");
 			return false;
 		}
-	});
-}
-
-function setElementsAll(user, circleName) {
-	if(user.grade == '9999'){$("#circleArea").show();}
-	for(var i=0; i < $('#modal-circle-id option').length; i++) {
-		var tempOpt = $($('#modal-circle-id option')[i]);
-		if(tempOpt.text() == user.circleName) {
-			tempOpt.prop("selected", true);
-		}
-	}
-	
-	if(user.operatorId != '') {
-		$('#modal_circle_area').show();
-		$('#modal_circle_group').show();
-	} else {
-		$('#modal_circle_area').hide();
-		$('#modal_circle_group').hide();
-	} 
 		
-	$('#form-user-id').val(user.userId);
-	$('#form-password').val(user.password);
-	$('#form-confirm-password').val(user.password);
-	$('#form-first-name').val(user.firstName);
-	$('#form-last-name').val(user.lastName);
-	$('#form-department').val(user.department);
-	$('#modal-grade-id').val(user.grade);
-	$('#form-memo').val(user.memo);
-	
-	//Circle Gruop이 아닐 경우 숨김처리 및 초기화
-	if($("#modal-grade-id").val() != 9999) {
-		$("#modal-circle-id").val('');
-		$("#form-circle").val('');
-		$("#modal_circle_area").hide();
-		$("#modal_circle_group").hide();
+		$.ajax({
+			url: '/dashbd/api/user/check.do',
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				userId: userId
+			},
+			success: function(data, textStatus, jqXHR) {
+				if (data.result) { // 성공
+					checkUserId = true;
+					swal("Success !","Avaliable!", "success");
+				}
+				else { // 실패
+					checkUserId = false;
+					swal("Fail !", "Already exist!", "warning");
+					$('#form-user-id').focus();
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				swal("Fail !", errorThrown, "warning");
+				checkUserId = false;
+				return false;
+			}
+		});
 	}
 	
-	$("#myModal").modal('show');
-}
-
-function doInsertAll(accessDiv) {
-	swal({
+	function getUserInfo(userId) {
+		$.ajax({
+			url: '/dashbd/api/user/info.do',
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				userId: userId
+			},
+			success: function(data, textStatus, jqXHR) {
+				setElements(data.user);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				swal("Fail !", errorThrown, "warning");
+				return false;
+			}
+		});
+	}
+	
+	function setElements(user) {
+		if(user.grade == '9999'){$("#circleArea").show();}
+		for(var i=0; i < $('#modal-circle-id option').length; i++) {
+			var tempOpt = $($('#modal-circle-id option')[i]);
+			if(tempOpt.text() == user.circleName) {
+				tempOpt.prop("selected", true);
+			}
+		}
+		getTownListFromCircle($('#modal-circle-id')[0]);
+		setTimeout( function() {
+			$('#form-circle').val(user.operatorId);
+		}, 200);
+		
+		if(user.operatorId != '') {
+			$('#modal_circle_area').show();
+			$('#modal_circle_group').show();
+	//		$('#modal-circle-id').val(user.operatorId);
+		} else {
+			$('#modal_circle_area').hide();
+			$('#modal_circle_group').hide();
+		} 
+			
+		$('#form-user-id').val(user.userId);
+		$('#form-password').val(user.password);
+		$('#form-confirm-password').val(user.password);
+		$('#form-first-name').val(user.firstName);
+		$('#form-last-name').val(user.lastName);
+		$('#form-department').val(user.department);
+	//	$('#form-registered-date').val(user.createdAt);
+	//	$('#form-modified-date').val(user.updatedAt);
+		$('#modal-grade-id').val(user.grade);
+		$('#form-memo').val(user.memo);
+		
+		//Circle Gruop이 아닐 경우 숨김처리 및 초기화
+		if($("#modal-grade-id").val() != 9999) {
+			$("#modal-circle-id").val('');
+			$("#form-circle").val('');
+			$("#modal_circle_area").hide();
+			$("#modal_circle_group").hide();
+		}
+		
+		$("#myModal").modal('show');
+	}
+	
+	function doInsert(accessDiv) {
+		swal({
+			  title: "Are you sure?",
+			  text: 'Do you really want to ' + accessDiv + ' the user?',
+			  type: "warning",
+			  showCancelButton: true,
+			  confirmButtonColor: "#DD6B55",
+			  confirmButtonText: "Yes",
+			  closeOnConfirm: false
+			},
+		function(){
+			var operatorId = $('#form-circle').val();
+			var userId = $('#form-user-id').val();
+			var password = $('#form-password').val();
+			var confirmPassword = $('#form-confirm-password').val();
+			var firstName = $('#form-first-name').val();
+			var lastName = $('#form-last-name').val();
+			var department = $('#form-department').val();
+			var grade = $('#modal-grade-id').val();
+			var memo = $('#form-memo').val();
+			
+			if (grade == null || grade.length == 0) {
+				swal("Fail !","Please select your Group", "warning");
+				return false;
+			} else {
+				if(grade == 9999) {
+					if($("#modal-circle-id").val() == '') {
+						swal("Fail !","Please select your Circle", "warning");
+						return false;
+					}
+					
+					if(operatorId == '') {
+						swal("Fail !","Please select your Circle Group", "warning");
+						return false;
+					}
+				}
+			}
+			
+			if (userId == null || userId.length == 0) {
+				swal("Fail !","Please enter your ID", "warning");
+				$('#form-user-id').focus();
+				return false;
+			}
+			
+			if (accessDiv == 'add' && !checkUserId) {
+				swal("Fail !","Please check the ID", "warning");
+				$('#check-id-btn').focus();
+				return false;
+			}
+			
+			if (password == null || password.length == 0) {
+				swal("Fail !","Please enter the password", "warning");
+				$('#form-password').focus();
+				return false;
+			}
+			else {
+				if (password != confirmPassword) {
+					swal("Fail !","Please check the password", "warning");
+					$('#form-confirm-password').focus();
+					return false;
+				}
+			}
+			
+			if (firstName == null || firstName.length == 0) {
+				swal("Fail !","Please enter the FirstName", "warning");
+				$('#form-first-name').focus();
+				return false;
+			}
+			
+			if (lastName == null || lastName.length == 0) {
+				swal("Fail !","Please enter the LastName", "warning");
+				$('#form-last-name').focus();
+				return false;
+			}
+			
+			if (department == null || department.length == 0) {
+				swal("Fail !","Please enter the Department", "warning");
+				$('#form-department').focus();
+				return false;
+			}
+			
+			
+			$.ajax({
+				url: '/dashbd/api/user/insert.do',
+				method: 'POST',
+				dataType: 'json',
+				data: {
+					operatorId: operatorId,
+					userId: userId,
+					password: password,
+					firstName: firstName,
+					lastName: lastName,
+					department: department,
+					grade: grade,
+					memo: memo
+				},
+				success: function(data, textStatus, jqXHR) {
+					if (data.result) { // 성공
+						swal({title:"Success !", text:"Success", type:"success"}, function() {
+							if(!commonYn) {
+								$('#table').bootstrapTable('destroy');
+								getUserList(true, false);	
+								$("#myModal").modal('hide');
+							}
+						});
+					}
+					else { // 실패
+						swal("Fail !", "Failed!! Please you report to admin!", "warning");
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					swal("Fail !", errorThrown + textStatus, "warning");
+					checkUserId = false;
+					return false;
+				}
+			});
+		});
+	}
+	
+	function doDelete(userId, operatorId, firstName, lastName) {
+		swal({
 		  title: "Are you sure?",
-		  text: 'Do you really want to ' + accessDiv + ' the user?',
+		  text: 'Do you really want to delete the user "' + firstName + ' ' + lastName + '"?',
 		  type: "warning",
 		  showCancelButton: true,
 		  confirmButtonColor: "#DD6B55",
 		  confirmButtonText: "Yes",
 		  closeOnConfirm: false
 		},
-	function(){
-		var operatorId = $('#form-circle').val();
-		var userId = $('#form-user-id').val();
-		var password = $('#form-password').val();
-		var confirmPassword = $('#form-confirm-password').val();
-		var firstName = $('#form-first-name').val();
-		var lastName = $('#form-last-name').val();
-		var department = $('#form-department').val();
-		var grade = $('#modal-grade-id').val();
-		var memo = $('#form-memo').val();
-		
-		if (grade == null || grade.length == 0) {
-			swal("Fail !","Please select your Group", "warning");
-			return false;
-		} else {
-			if(grade == 9999) {
-				if($("#modal-circle-id").val() == '') {
-					swal("Fail !","Please select your Circle", "warning");
+		function(){
+			$.ajax({
+				url: '/dashbd/api/user/delete.do',
+				method: 'POST',
+				dataType: 'json',
+				data: {
+					userId: userId,
+					operatorId: operatorId
+				},
+				success: function(data, textStatus, jqXHR) {
+					if (data.result) { // 성공
+						swal("Success !", "Success !", "success");
+						$('#table').bootstrapTable('destroy');
+						getUserList(true, false);
+					}
+					else { // 실패
+						swal("Fail !", "Failed!! Please you report to admin!", "warning");
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					swal("Fail !", errorThrown + textStatus, "warning");
+					checkUserId = false;
 					return false;
 				}
-				
-				if(operatorId == '') {
-					swal("Fail !","Please select your Circle Group", "warning");
-					return false;
-				}
-			}
-		}
-		
-		if (userId == null || userId.length == 0) {
-			swal("Fail !","Please enter your ID", "warning");
-			$('#form-user-id').focus();
-			return false;
-		}
-		
-		if (accessDiv == 'add' && !checkUserId) {
-			swal("Fail !","Please check the ID", "warning");
-			$('#check-id-btn').focus();
-			return false;
-		}
-		
-		if (password == null || password.length == 0) {
-			swal("Fail !","Please enter the password", "warning");
-			$('#form-password').focus();
-			return false;
-		}
-		else {
-			if (password != confirmPassword) {
-				swal("Fail !","Please check the password", "warning");
-				$('#form-confirm-password').focus();
-				return false;
-			}
-		}
-		
-		if (firstName == null || firstName.length == 0) {
-			swal("Fail !","Please enter the FirstName", "warning");
-			$('#form-first-name').focus();
-			return false;
-		}
-		
-		if (lastName == null || lastName.length == 0) {
-			swal("Fail !","Please enter the LastName", "warning");
-			$('#form-last-name').focus();
-			return false;
-		}
-		
-		if (department == null || department.length == 0) {
-			swal("Fail !","Please enter the Department", "warning");
-			$('#form-department').focus();
-			return false;
-		}
-		
-		
-		$.ajax({
-			url: '/dashbd/api/user/insert.do',
-			method: 'POST',
-			dataType: 'json',
-			data: {
-				operatorId: operatorId,
-				userId: userId,
-				password: password,
-				firstName: firstName,
-				lastName: lastName,
-				department: department,
-				grade: grade,
-				memo: memo
-			},
-			success: function(data, textStatus, jqXHR) {
-				if (data.result) { // 성공
-					swal("Success !", "Success !", "success");
-					$('#table').bootstrapTable('destroy');
-					getUserList(true, false);
-					$("#myModal").modal('hide');
-				}
-				else { // 실패
-					swal("Fail !", "Failed!! Please you report to admin!", "warning");
-				}
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				swal("Fail !", errorThrown + textStatus, "warning");
-				checkUserId = false;
-				return false;
-			}
+			});
 		});
-	});
-}
-
+	}
 </script>
