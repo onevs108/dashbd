@@ -130,7 +130,7 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 	
 	//위도 경도 값이 없을 경우 기본값 셋팅
 	if(lat == "undefined" || lng == "undefined") {
-		lat = lat = 22.059619;
+		lat = 22.059619;
 		lng = 78.934389;
 		zoomLevel = 'circle';
 	}
@@ -150,9 +150,20 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 		else if(zoomLevel == 'hotspot') zoom = 15;
 		
 		modalMap = new google.maps.Map(document.getElementById('modalMap'), {
-			center: {lat: lat, lng: lng},
+			center: {lat: Number(lat), lng: Number(lng)},
 			zoom: zoom
 		});
+		
+		var infowindow = new google.maps.InfoWindow({
+		    content: '<button type="button" class="btn btn-primary4" onclick="settingLatLng()">Use Location</button>'
+		});
+		
+		var marker = new google.maps.Marker({
+		    position: {lat: Number(lat), lng: Number(lng)},
+		    map: modalMap
+		  });
+		
+		modalMarker = marker;
 	}
 	
 	modalMap.addListener('click', function(event) {

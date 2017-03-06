@@ -12,7 +12,7 @@ var activeInfoWindow;
 var default_center_lat = 24;
 var default_center_lng = 83.975;
 
-var red = '#FF0000';
+var red = '#ed5565';
 var blue = '#1c84c6';
 var gray = '#c2c2c2';
 var white = '#FFFFFF';
@@ -55,7 +55,7 @@ function tabChange(tabDiv) {
 		$("#tab-2").addClass("active");
 		$(".circle-map").show();
 		$("#mapDescriptArea").text('Click the area t to view the Cities');
-//		$("#map").show();
+		$("#map").hide();
 //		$("#treeNode").hide(); 
 //		$(".search-group").hide();
 		
@@ -153,6 +153,7 @@ function treeInit(data) {
                 	inp0.style.width = '200px';
                 	inp0.style.height = '20px';
                 	inp0.style.border = '1px solid #e5e6e7';
+                	inp0.style.fontSize = "14px";
                 	var inp1 = document.createElement('INPUT');
                     inp1.setAttribute('type','text');
                     inp1.setAttribute('name','said');
@@ -164,6 +165,7 @@ function treeInit(data) {
                     inp1.style.height = '20px';
                     inp1.style.marginLeft = componentMargin;
                     inp1.style.border = '1px solid #e5e6e7';
+                    inp1.style.fontSize = "14px";
                     var inp2 = document.createElement('INPUT');
                     inp2.setAttribute('type','text');
                     inp2.setAttribute('name','lat');
@@ -174,6 +176,7 @@ function treeInit(data) {
                     inp2.style.height = '20px';
                     inp2.style.marginLeft = componentMargin;
                     inp2.style.border = '1px solid #e5e6e7';
+                    inp2.style.fontSize = "14px";
                     var inp3 = document.createElement('INPUT');
                     inp3.setAttribute('type','text');
                     inp3.setAttribute('name','lng');
@@ -184,6 +187,7 @@ function treeInit(data) {
                     inp3.style.height = '20px';
                     inp3.style.marginLeft = componentMargin;
                     inp3.style.border = '1px solid #e5e6e7';
+                    inp3.style.fontSize = "14px";
                     var inp4 = document.createElement('INPUT');
                     inp4.setAttribute('type','text');
                     inp4.setAttribute('name','bandwidth');
@@ -194,6 +198,7 @@ function treeInit(data) {
                     inp4.style.height = '20px';
                     inp4.style.marginLeft = marginDefault;
                     inp4.style.border = '1px solid #e5e6e7';
+                    inp4.style.fontSize = "14px";
                     
                     var btnGruop = document.createElement('div');
                     btnGruop.className = 'btn-group';
@@ -222,7 +227,7 @@ function treeInit(data) {
                     btn3.className = "btn-white btn btn-xs";
                     btn3.style.marginLeft = componentMargin;
                     btn3.style.color = 'rgb(255,255,255)';
-                    btn3.style.backgroundColor = '#ed5565';
+                    btn3.style.backgroundColor = red;
                     btn3.textContent = 'Delete';
                     
                     var btn4 = document.createElement('BUTTON');
@@ -250,6 +255,12 @@ function treeInit(data) {
                     } else {
                     	if($(obj).hasClass('circle')) {
                         	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('A')+1);
+                        	inp2.setAttribute('readonly', 'readonly');
+                        	inp3.setAttribute('readonly', 'readonly');
+                        	inp4.setAttribute('readonly', 'readonly');
+                        	btn1.setAttribute('disabled','disabled');
+                        	btn2.setAttribute('disabled','disabled');
+                        	btn3.setAttribute('disabled','disabled');
                         } else if($(obj).hasClass('city')) {
                         	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('B')+1);
                         } else if($(obj).hasClass('hotspot')) {
@@ -267,26 +278,31 @@ function treeInit(data) {
                     if($(obj).hasClass('newNode')) {
                     	$($(obj).find("a")[0]).remove();
                     	$(obj).append(inp0);
-                    	customDiv.append(inp4);
-                    	customDiv.append(inp1);
-                    	customDiv.append(inp2);
-                    	customDiv.append(inp3);
-                    	btnGruop.append(btn1);
-                    	btnGruop.append(btn4); 
-                    	customDiv.append(btnGruop);
+                    	$(customDiv).append(inp4);
+                    	$(customDiv).append(inp1);
+                    	$(customDiv).append(inp2);
+                    	$(customDiv).append(inp3);
+                    	$(btnGruop).append(btn1);
+                    	$(btnGruop).append(btn4); 
+                    	$(customDiv).append(btnGruop);
                     } else {
-                    	customDiv.append(inp4);
-                    	customDiv.append(inp1);
-                    	customDiv.append(inp2);
-                    	customDiv.append(inp3);
-                    	btnGruop.append(btn1);
-                    	btnGruop.append(btn2);
-                    	btnGruop.append(btn3);
-                    	customDiv.append(btnGruop);
+                    	$(customDiv).append(inp4);
+                    	$(customDiv).append(inp1);
+                    	$(customDiv).append(inp2);
+                    	$(customDiv).append(inp3);
+                    	$(btnGruop).append(btn1);
+                    	$(btnGruop).append(btn2);
+                    	$(btnGruop).append(btn3);
+                    	$(customDiv).append(btnGruop);
                     }
                     
                     //최종적으로 input과 button을 노드에 붙임
-                	obj.append(customDiv);
+                    $(obj).append(customDiv);
+                    //ul div 위치에 따라 어그러 지기 때문에 구성 요소 재 정렬
+                    if($(obj).find("ul").length > 0) {
+                    	$(obj).append($(obj).find("ul")[0]);
+                    }
+                    
                 } else {
                 	var lab1 = document.createElement('LABEL');
                 	lab1.style.height = '20px';
@@ -309,11 +325,11 @@ function treeInit(data) {
                 	lab4.style.marginBottom = '0px';
                 	lab4.textContent = 'Longitude';
                 	
-                	customDiv2.append(lab1);
-                	customDiv2.append(lab2);
-                	customDiv2.append(lab3);
-                	customDiv2.append(lab4);
-                	obj.append(customDiv2);
+                	$(customDiv2).append(lab1);
+                	$(customDiv2).append(lab2);
+                	$(customDiv2).append(lab3);
+                	$(customDiv2).append(lab4);
+                	$(obj).append(customDiv2);
                 }
                 return obj;
             };
@@ -344,8 +360,8 @@ function treeInit(data) {
 							+ node.latitude + '" data-lng="' + node.longitude + '" data-band="' + node.bandwidth + '">' + node.name + '</li>';
 				
 				if($(compareNode).html().indexOf("ul") == -1) {
-					//첫 노드일 경우 가상 노드를 주어 새롭게 추가할 수 있도록 함
-					var firstNode = '<li class="newNode ' + node.node_div + '" data-init="" data-lat="" data-lng="" data-band=""></li>';
+					//첫 노드일 경우 가상 노드를 주어 새롭게 추가할 수 있도록 함(newNode는 상위 노드의 위도 경도 값을 가짐)
+					var firstNode = '<li class="newNode ' + node.node_div + '" data-init="" data-lat="' + treeData[i-1].latitude + '" data-lng="' + treeData[i-1].longitude + '" data-band=""></li>';
 					if(node.node_div == 'circle') firstNode = ''; //circle은 firstNode 안 넣어줌
 					$(compareNode).append('<ul>' + firstNode + liStr + '</ul>');
 				} else {
@@ -357,20 +373,22 @@ function treeInit(data) {
 		}
 	}
 	
-	//서클 아래에 도시가 하나도 없을 경우 newNode 추가
-	var newCityNode = '<ul><li class="newNode city" data-init="" data-lat="" data-lng="" data-band=""></li></ul>';
 	for(var i=0; i < $("#treeNode li.circle").not(".newNode").length; i++) {
-		var tempCity = $($("#treeNode li.circle").not(".newNode")[i]);
+		var tempCircle = $($("#treeNode li.circle").not(".newNode")[i]);
 		
-		if(tempCity.find("ul").length == 0) {
-			tempCity.append(newCityNode);
+		//서클 아래에 도시가 하나도 없을 경우 newNode 추가
+		var newCityNode = '<ul><li class="newNode city" data-init="" data-lat="' + $(tempCircle).attr("data-lat") + '" data-lng="' + $(tempCircle).attr("data-lng") + '" data-band=""></li></ul>';
+		
+		if(tempCircle.find("ul").length == 0) {
+			tempCircle.append(newCityNode);
 		}
 	}
 	
-	//도시 아래에 핫스팟이 하나도 없을 경우 newNode 추가
-	var newHotspotNode = '<ul><li class="newNode hotspot" data-init="" data-lat="" data-lng="" data-band=""></li></ul>';
 	for(var i=0; i < $("#treeNode li.city").not(".newNode").length; i++) {
 		var tempCity = $($("#treeNode li.city").not(".newNode")[i]);
+		
+		//도시 아래에 핫스팟이 하나도 없을 경우 newNode 추가
+		var newHotspotNode = '<ul><li class="newNode hotspot" data-init="" data-lat="' + $(tempCity).attr("data-lat") + '" data-lng="' + $(tempCity).attr("data-lng") + '" data-band=""></li></ul>';
 		
 		if(tempCity.find("ul").length == 0) {
 			tempCity.append(newHotspotNode);
@@ -626,10 +644,10 @@ function makeInfoWindow(div, object) {
 	contentString += '<div style="text-align:center; margin-top:3px">';
 	
 	if(div == 'add') {
-		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'map\', \'add\')">Add</button>';
+		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'map\', \'add\', this)">Add</button>';
 	} else if(div == 'edit') {
-		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'map\', \'edit\')">Edit</button>';
-		contentString += '<button type="button" class="btn btn-sm btn-default proccess-btn" onclick="serviceAreaProccess(\'map\', \'delete\')">Delete</button>';
+		contentString += '<button type="button" class="btn-white btn btn-xs" style="color: rgb(255, 255, 255); background-color: rgb(51, 122, 183);" onclick="serviceAreaProccess(\'map\', \'edit\', this)">Edit</button>';
+		contentString += '<button type="button" class="btn-white btn btn-xs" style="color: rgb(255, 255, 255); background-color: rgb(237, 85, 101);" proccess-btn" onclick="serviceAreaProccess(\'map\', \'delete\', this)">Delete</button>';
 	}
 	
 	contentString += '</div>';
@@ -797,7 +815,7 @@ function drawServiceAreaByCity(circle) {
 		  	  	      map: map,
 		  	  	      position: data[city].center,
 		  	  	      icon : '/dashbd/resources/img/icon/ico_number_1_3.png',
-		  	  	      title: data[city].city_name,
+		  	  	      title: 'City Name : ' + data[city].city_name + "\nSAID : " + data[city].city_id,
 			  	  	  said:data[city].city_id,
 			  	  	  name:data[city].city_name,
 			  	  	  bandwidth:data[city].bandwidth
@@ -901,7 +919,7 @@ function drawServiceAreaByHotspot(city) {
 	  	  	      map: map,
 	  	  	      position: data[hotspot].center,
 	  	  	      icon : '/dashbd/resources/img/icon/enb_blue_on.png',
-	  	  	      title: data[hotspot].hotspot_name,
+	  	  	      title: 'Hot Spot Name : ' + data[hotspot].hotspot_name + '\nSAID : ' + data[hotspot].hotspot_id,
 		  	  	  said:data[hotspot].hotspot_id,
 		  	  	  name:data[hotspot].hotspot_name,
 		  	  	  bandwidth:data[hotspot].bandwidth
@@ -938,6 +956,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 	var ajaxYn = true;
 	// 서버단으로 던지는 데이터셋
 	var sendData;
+	var alertMsg;
 	
 	//Map에서 추가 수정 삭제가 일어날 경우
 	if(tabDiv == 'map') {
@@ -962,29 +981,23 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 		
 		$.each($("form[name='serviceAreaForm'] input"), function(index, obj) {
 			if($(obj).val() == '') {
-				swal({
-	              title: "Fail !",
-	              text: "Insert Value"
-		        });
-				
 				$(obj).focus();
 				ajaxYn = false;
 				return false;
 			}
 		});
 		
-		if(ajaxYn)
-			sendData = $("form[name='serviceAreaForm']").serialize()
+		if(ajaxYn) {
+			sendData = $("form[name='serviceAreaForm']").serialize();
+			alertMsg = "You are now " + treeBtn.innerHTML.toLowerCase() +"ing the \"" + $("form[name='serviceAreaForm'] input[name='name']").val() + "\" as the " + currentZoomLevel.substring(0,1).toUpperCase() + currentZoomLevel.substring(1) + " of \"" 
+			+ $("form[name='serviceAreaForm'] input[name='upper_name']").val()
+			+ "\" at the \"" + $("form[name='serviceAreaForm'] input[name='lat']").val() + "\",\"" + $("form[name='serviceAreaForm'] input[name='lng']").val() + "\". Continue?";
+		}
 	} 
 	//Tree에서 추가 수정 삭제가 일어날 경우
 	else if(tabDiv == 'tree') {
-		$.each($(treeBtn).siblings("input"), function(index, obj) {
+		$.each($($(treeBtn).parents("div[name='customDiv']")).find("input"), function(index, obj) {
 			if($(obj).val() == '') {
-				swal({
-	              title: "Fail !",
-	              text: "Insert Value"
-		        });
-				
 				$(obj).focus();
 				ajaxYn = false;
 				return false;
@@ -1016,85 +1029,88 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 				'upper_said' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($(treeBtn).parents("li")[1]).find("input[name='said']")[0].value,
 				'upper_name' : ($($(treeBtn).parents("li")[0]).hasClass("circle"))? '' : $($($(treeBtn).parents("li")[1]).find("a")[0]).text()
 			}
+			
+			alertMsg = "You are now " + treeBtn.innerHTML.toLowerCase() +"ing the \"" + name + "\" as the " + objLevel.substring(0,1).toUpperCase() + objLevel.substring(1) + " of \"" + $($($(treeBtn).parents("li")[1]).find("a")[0]).text()
+			+ "\" at the \"" + $(treeBtn).parent().siblings("input[name='lat']").val() + "\",\"" + $(treeBtn).parent().siblings("input[name='lng']").val() + "\". Continue?";
 		}
 	}
 	
-	swal({
-	  title: "Are you sure?",
-	  text: "Do you want to proceed with this operation?",
-	  type: "warning",
-	  showCancelButton: true,
-	  confirmButtonColor: "#DD6B55",
-	  confirmButtonText: "Yes",
-	  closeOnConfirm: false
-	},
-	function(){
-		if(ajaxYn) {
-			$.ajax({
-			    url : "/dashbd/api/serviceAreaProccess.do",
-			    type: "POST",
-			    data : sendData,
-			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-			    success : function(responseData) {
-			        $("#ajax").remove();
-			        var data = JSON.parse(responseData);
-			        
-			        if(data.resultCode == 'S') {
-			        	swal("Success !","Success", "success");
-			        	
-			        	if(tabDiv == 'map') {
-			        		if(currentZoomLevel == 'circle') {
-			        			circleClear();
-//			        			getNewCircleList();
-			        			google.maps.event.trigger(map, "resize");
-			        			map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
-				        	} else if(currentZoomLevel == 'city') {
-				        		tempInfoWindow.close(); //InfoWindow 닫아줌
-				        		cityClear('cities');
-				        		drawServiceAreaByCity(upperCircle);
-				        	} else if(currentZoomLevel == 'hotspot') {
-				        		tempInfoWindow.close(); //InfoWindow 닫아줌
-				        		hotspotClear();
-				        		drawServiceAreaByHotspot(upperObj);
-				        	}
-			        	} 
-			        	//tree의 경우 add되거나 delete될 때 해당 노드를 지워주거나 추가해줘야 함
-			        	else if(tabDiv == 'tree') {
-			        		if(treeBtn.innerHTML.toLowerCase() == 'add') {
-			        			jsTreeSetting();
-			        		} else if(treeBtn.innerHTML.toLowerCase() == 'delete') {
-			        			$($(treeBtn).parents("li")[0]).remove();
-			        		}
-			        		
-//			        		circleClear();
-//			        		getNewCircleList();
-			        	}
-			        } 
-			        else if(data.resultCode == 'E') {
-			        	swal({
-			                title: "Exist Code Value",
-			                text: "Exist SAID Code Value"
-			            });
-			        }
-			        else {
+	if(ajaxYn) {
+		swal({
+			  title: "Are you sure?",
+			  text: alertMsg,
+			  type: "warning",
+			  showCancelButton: true,
+			  confirmButtonColor: "#DD6B55",
+			  confirmButtonText: "Yes",
+			  closeOnConfirm: false
+			},
+			function(){
+				$.ajax({
+				    url : "/dashbd/api/serviceAreaProccess.do",
+				    type: "POST",
+				    data : sendData,
+				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+				    success : function(responseData) {
+				        $("#ajax").remove();
+				        var data = JSON.parse(responseData);
+				        
+				        if(data.resultCode == 'S') {
+				        	swal({title:"Success !", text:"Success", type:"success"}, function() {
+				        		if(tabDiv == 'map') {
+					        		if(currentZoomLevel == 'circle') {
+					        			circleClear();
+//						        			getNewCircleList();
+					        			google.maps.event.trigger(map, "resize");
+					        			map.setCenter( new google.maps.LatLng( default_center_lat, default_center_lng ) );
+						        	} else if(currentZoomLevel == 'city') {
+						        		tempInfoWindow.close(); //InfoWindow 닫아줌
+						        		cityClear('cities');
+						        		drawServiceAreaByCity(upperCircle);
+						        	} else if(currentZoomLevel == 'hotspot') {
+						        		tempInfoWindow.close(); //InfoWindow 닫아줌
+						        		hotspotClear();
+						        		drawServiceAreaByHotspot(upperObj);
+						        	}
+					        	} 
+					        	//tree의 경우 add되거나 delete될 때 해당 노드를 지워주거나 추가해줘야 함
+					        	else if(tabDiv == 'tree') {
+					        		if(treeBtn.innerHTML.toLowerCase() == 'add') {
+					        			jsTreeSetting();
+					        		} else if(treeBtn.innerHTML.toLowerCase() == 'delete') {
+					        			$($(treeBtn).parents("li")[0]).remove();
+					        		}
+					        		
+//						        		circleClear();
+//						        		getNewCircleList();
+					        	}
+							})
+				        } 
+				        else if(data.resultCode == 'E') {
+				        	swal({
+				                title: "Exist Code Value",
+				                text: "Exist SAID Code Value"
+				            });
+				        }
+				        else {
+				        	swal({
+				                title: "Fail !",
+				                text: "Error"
+				            });
+				        }
+				    },
+				    error : function(xhr, status, error) {
 			        	swal({
 			                title: "Fail !",
 			                text: "Error"
 			            });
 			        }
-			    },
-			    error : function(xhr, status, error) {
-		        	swal({
-		                title: "Fail !",
-		                text: "Error"
-		            });
-		        }
+				});
 			});
-		} else {
-			swal({
-              title: "Fail !",
-              text: "Insert Value"
-	        });
-		}
-	});
+	} else {
+		swal({
+          title: "Fail !",
+          text: "Insert Value"
+        });
+	}
 }

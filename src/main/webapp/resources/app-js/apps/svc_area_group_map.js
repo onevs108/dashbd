@@ -1,5 +1,5 @@
 
-var red = '#FF0000';
+var red = '#ed5565';
 var blue = '#1c84c6';
 var gray = '#c2c2c2';
 var white = '#FFFFFF';
@@ -223,7 +223,7 @@ function changeCircle() {
 		        	for(var i=0; i < data.length; i++) {
 		        		$("#group_area").append('<li class="list-group-item" onclick="selectServiceAreaGroup(this)" data-init="' + data[i].group_id + '" title="' + data[i].group_description + '">' 
 		        				+ data[i].group_name + '<div class="btn-group pull-right"><button type="button" class="btn btn-w-m btn-xs"'
-		        					+ 'style="color: rgb(255, 255, 255); background-color: rgb(255, 0, 0);" onCLick="deleteServiceAreaGroup(this)">Delete</button></div></li>');
+		        					+ 'style="color: rgb(255, 255, 255); background-color: ' + red + '" onCLick="deleteServiceAreaGroup(this)">Delete</button></div></li>');
 			        }
 		        } 
 		        
