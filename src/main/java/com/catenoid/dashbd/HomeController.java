@@ -170,7 +170,7 @@ public class HomeController {
 				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/serviceArea.do'><i class='fa fa-pie-chart'></i> <span class='nav-label'>Service Area Mgmt</span><span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_AREA_GROUP_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/serviceAreaGroup.do'><i class='fa fa-flask'></i> <span class='nav-label'>Service Area Group Mgmt</span><span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/view/schdMgmt.do'><i class='fa fa-edit'></i> <span class='nav-label'>Schedule Mgmt</span><span class='fa arrow'></span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_CLASS_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Service Class Mgmt</span><span class='fa arrow'></span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_CLASS_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/view/schdMgmt.do'><i class='fa fa-desktop'></i> <span class='nav-label'>Service Class Mgmt</span><span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SESSION_MONITORING) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Sessions Monitoring</span><span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>System Mgmt</span><span class='fa arrow'></span></a></li>");
 			}
@@ -200,7 +200,7 @@ public class HomeController {
 					else if (permission.getRole().equals(Const.ROLE_SCHEDULE_MGMT))
 						menuHtml.append(currentMenu.equals(Const.MENU_SCHEDULE_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class=\"fa fa-calendar\"></i> <span class=\"nav-label\">Schedule Mgmt</span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_SERVICE_CLASS_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_CLASS_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Service Class Mgmt</span><span class='fa arrow'></span></a></li>");
+						menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_CLASS_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class='fa fa-desktop'></i> <span class='nav-label'>Service Class Mgmt</span><span class='fa arrow'></span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_SESSION_MONITORING))
 						menuHtml.append(currentMenu.equals(Const.MENU_SESSION_MONITORING) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Sessions Monitoring</span><span class='fa arrow'></span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_SYSTEM_MGMT))

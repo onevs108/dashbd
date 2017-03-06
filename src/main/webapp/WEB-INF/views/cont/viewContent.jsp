@@ -200,14 +200,16 @@ $(document).ready(function() {
 						   <!-- 
 						<iframe src="${mapContent.url}" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>
 						    -->
-						    <div align="center">
+						    <%-- <div align="center">
 						    	<c:forEach items="${previews}" var="preview" varStatus="idx">
 								    <video width="500" height="360" controls="controls" autoplay>
-									    <source src="/dashbd${preview.path }" type="video/mp4" />
+									    <source src="http://dash.edgesuite.net/dash264/TestCases/1c/qualcomm/2/MultiRate.mpd"/>
 									</video>
 								</c:forEach>
-							 </div>
-<%-- 						<div><video data-dashjs-player src="${mapContent.url}" controls></video></div> --%>
+							 </div> --%>
+							<div style="vertical-align: middle;">
+								<video data-dashjs-player src="http://dash.edgesuite.net/dash264/TestCases/1c/qualcomm/2/MultiRate.mpd" controls></video>
+							</div>
 						   </div>
 					    </div>
 					</div>

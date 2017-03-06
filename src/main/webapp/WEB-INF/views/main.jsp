@@ -10,7 +10,10 @@
 	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
 	<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
+	<link href="../resources/css/sampleVideo.css" rel="stylesheet" />
 	<script src="../resources/js/jquery-2.1.1.js"></script>
+	<script src="../resources/js/dash.all.debug.js"></script>
+	<script src="../resources/js/sampleVideo.js"></script>
 	<style type="text/css">
 		.main .main-sch .tb_tpl1 #table > tbody>tr > td > table thead th {
 		    padding: 3px 8px;
@@ -397,7 +400,7 @@
 					formatter: function(value, row, index) {
 						if(value != undefined && value != '') {
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
-	 						var html = '<i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a>';	
+	 						var html = '<i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a>';	
 						} else {
 							var html = '';
 						}
