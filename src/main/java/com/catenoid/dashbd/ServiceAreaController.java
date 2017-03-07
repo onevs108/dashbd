@@ -3236,12 +3236,14 @@ public class ServiceAreaController {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			String group_id = request.getParameter("group_id");
 			String circle_id = request.getParameter("circle_id");
+			String main_yn = request.getParameter("main_yn");
 			String searchType = request.getParameter("searchType");
 			String searchInput = request.getParameter("searchInput");
 			
 			HashMap< String, Object > searchParam = new HashMap();
 			searchParam.put("group_id", group_id);
 			searchParam.put("circle_id", circle_id);
+			searchParam.put("main_yn", main_yn);
 			searchParam.put("searchType", searchType);
 			searchParam.put("searchInput", searchInput);
 			List<HashMap<String, Object>> resultList = mapper.getTreeNodeData(searchParam);

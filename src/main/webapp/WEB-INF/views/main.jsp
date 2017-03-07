@@ -160,7 +160,7 @@
 						<div class="col-lg-12">
 							<div class="ibox">
 								<div class="ibox-title">
-									<h5>Regional Schedule</h5>
+									<h5>Schedule</h5>
 									<div class="ibox-tools">
 										<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
 										</a>
@@ -595,7 +595,8 @@
 					    url : "/dashbd/api/getTreeNodeData.do",
 					    type: "POST",
 					    data : { 
-					    	circle_id : ''
+					    	circle_id : '',
+					    	main_yn : 'Y'
 					    },
 					    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 					    success : function(responseData) {

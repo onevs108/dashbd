@@ -1599,8 +1599,12 @@
 		  WHERE group_id = #{group_id}
 		) sags
 		ON result.compare_id = sags.sub_said
+		WHERE 1=1
 		<if test="circle_id != null and circle_id != ''">
-			WHERE result.circle_id = #{circle_id}
+			 AND result.circle_id = #{circle_id}
+		</if>
+		<if test="main_yn != null and main_yn != ''">
+			AND (result.node_div = 'root' OR result.node_div = 'circle')
 		</if>
 		ORDER BY node_id
 	</select>
