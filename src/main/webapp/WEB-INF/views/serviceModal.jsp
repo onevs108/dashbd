@@ -17,9 +17,7 @@
 				<div class="modal-body">
 					<fieldset>
 						<div id="streamingArea" class="row">
-							 <video id="Video1" controls loop autoplay >
-						     	<source src="http://ie.microsoft.com/testdrive/ieblog/2011/nov/pp4_blog_demo.mp4" type="video/mp4" />           
-						     </video>
+							<video id="Video1" data-dashjs-player autoplay src="http://dash.edgesuite.net/dash264/TestCases/1c/qualcomm/2/MultiRate.mpd" controls></video>
 						</div>
 						<div id="infoArea" class="row" style="display:none;">
 							TEST
