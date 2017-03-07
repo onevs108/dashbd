@@ -1473,9 +1473,13 @@
 	
 	
 	<select id="getCitiesInCircle" parameterType="HashMap" resultType="HashMap">
-		SELECT city_id, city_name, latitude, longitude, bandwidth
-		FROM city
+		SELECT city.city_id, city.city_name, city.latitude
+			, city.longitude, city.bandwidth, COUNT(hotspot.hotspot_id) as hotspotCnt
+		FROM city city
+		LEFT JOIN hotspot hotspot
+		on city.city_id = hotspot.city_id
 		WHERE circle_id = #{circle_id}
+		GROUP BY city.city_id, city.city_name, city.latitude, city.longitude, city.bandwidth
 	</select>
 	
 	<select id="getHotspotsInCities" parameterType="HashMap" resultType="HashMap">
@@ -1641,6 +1645,7 @@
 						            , circle.fecRatio
 						            , circle.viewers
 						            , circle.onAirYn
+						            , circle.scheduleId
 						      FROM (
 						          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
 						          FROM (
@@ -1705,9 +1710,12 @@
 						          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
 						          , format('10000', ',') as viewers
 						          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+						          , schedule.id as scheduleId
 						          FROM circle circle
 						          INNER JOIN broadcast_info broad
 						          ON circle.circle_id = broad.said
+						          INNER JOIN schedule schedule
+                                  ON broad.bcid = schedule.bcid
 						      ) circle
 						      ON cityhotspot.circle_id = circle.circle_id
 						      WHERE 1=1
@@ -1924,21 +1932,24 @@
 				      , city.fecRatio
 				      , city.viewers
 				      , city.onAirYn
+				      , hotspot.scheduleId
 				FROM (
-				    SELECT circle_id, city_id, city_name, max(layerDiv) as layerDiv
+				    SELECT circle_id, city_id, city_name, max(layerDiv) as layerDiv, schedule.id as scheduleId
 				    FROM (
-				    	 SELECT city.circle_id, city.city_id, city.city_name, 'city' as layerDiv
-			             FROM city city
-			             INNER JOIN broadcast_info broad
-			             ON city.city_id = broad.said
+				    	SELECT city.circle_id, city.city_id, city.city_name, 'city' as layerDiv, broad.bcid
+			            FROM city city
+			            INNER JOIN broadcast_info broad
+			            ON city.city_id = broad.said
 				    	UNION ALL
-				        SELECT city.circle_id, city.city_id, city.city_name, 'hotspot' as layerDiv
+				        SELECT city.circle_id, city.city_id, city.city_name, 'hotspot' as layerDiv, broad.bcid
 				        FROM city city
 				        INNER JOIN hotspot hotspot
 				        ON city.city_id = hotspot.city_id
 				        INNER JOIN broadcast_info broad
-				        ON broad.said = hotspot.hotspot_id    
+				        ON broad.said = hotspot.hotspot_id
 				    ) t
+				    INNER JOIN schedule schedule
+				    ON t.bcid = schedule.bcid
 				    GROUP BY circle_id, city_id, city_name
 				) hotspot
 				LEFT JOIN (
@@ -1963,9 +1974,12 @@
 				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
 				    , format('10000', ',') as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+				    , schedule.id as scheduleId
 				FROM broadcast_info broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said
+				INNER JOIN schedule schedule
+				ON broad.bcid = schedule.bcid 
 				WHERE hotspot.city_id = #{psaid}
 			</when>
 			<when test="layerDiv == 'directHotspot'">
@@ -1975,11 +1989,14 @@
 				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
 				    , format('10000', ',') as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+				    , schedule.id as scheduleId
 				FROM broadcast_info broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said
 				INNER JOIN city city
 				ON city.city_id = hotspot.city_id 
+				INNER JOIN schedule schedule
+				ON broad.bcid = schedule.bcid 
 				WHERE city.circle_id = #{psaid}
 			</when>
 		</choose>
