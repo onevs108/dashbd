@@ -44,10 +44,10 @@
         <appender-ref ref="console-infolog"/>  
     </logger>
      
-    <logger name="jdbc.resultsettable" additivity="false">  
+    <!-- <logger name="jdbc.resultsettable" additivity="false">  
         <level value="INFO"/>  
         <appender-ref ref="console"/>  
-    </logger>	
+    </logger> -->
 
 	<!-- Root Logger -->
 	<root>

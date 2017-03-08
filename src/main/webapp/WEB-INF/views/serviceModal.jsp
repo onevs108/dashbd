@@ -8,8 +8,7 @@
 		<div class="modal-content animated bounceInRight">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
-					<span aria-hidden="true">&times;</span><span
-						class="sr-only">Close</span>
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 				</button>
 				<h4 class="modal-title">Service Info</h4>
 			</div>
@@ -20,7 +19,7 @@
 							<video id="Video1" data-dashjs-player autoplay src="http://dash.edgesuite.net/dash264/TestCases/1c/qualcomm/2/MultiRate.mpd" controls></video>
 						</div>
 						<div id="infoArea" class="row" style="display:none;">
-							TEST
+							<div align="center">BroadCast Info Page</div> 
 						</div>
 					</fieldset>
 				</div>

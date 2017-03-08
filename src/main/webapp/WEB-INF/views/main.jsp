@@ -15,7 +15,7 @@
 	<script src="../resources/js/dash.all.debug.js"></script>
 	<script src="../resources/js/sampleVideo.js"></script>
 	<style type="text/css">
-		.main .main-sch .tb_tpl1 #table > tbody>tr > td > table thead th {
+		.main .main-sch .tb_tpl1 #table > tbody > tr > td > table thead th {
 		    padding: 3px 8px;
 		    background-color: #6f6f6f;
 		    text-align : left;
@@ -160,7 +160,7 @@
 						<div class="col-lg-12">
 							<div class="ibox">
 								<div class="ibox-title">
-									<h5>Regional Schedule</h5>
+									<h5>Schedule</h5>
 									<div class="ibox-tools">
 										<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
 										</a>
@@ -343,6 +343,14 @@
 				minimumCountColumns: 3,
 				clickToSelect: false,
 				columns: [{
+					field: 'scheduleId',
+					title: '',
+					width: '0%',
+					align: 'left',
+					valign: 'middle',
+					sortable: false,
+					visible: false
+				}, {
 					field: 'circleId',
 					title: '',
 					width: '0%',
@@ -413,7 +421,11 @@
 					width: '10%',
 					align: 'left',
 					valign: 'middle',
-					sortable: true
+					sortable: true,
+					formatter: function(value, row, index) {
+						var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';
+						return html;
+					}
 				}, {
 					field: 'service',
 					title: 'Service Type',
@@ -535,7 +547,7 @@
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
 							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a></td>'; 						
 							
-							tableHtml += '<td>' + row.serviceName + '</td>';
+							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + row.serviceName + '</a></td>';
 							tableHtml += '<td>' + row.service + '</td>';
 							tableHtml += '<td>' + row.scheduleType + '</td>';
 							tableHtml += '<td>' + row.scheduleStart + '</td>';
@@ -583,7 +595,8 @@
 					    url : "/dashbd/api/getTreeNodeData.do",
 					    type: "POST",
 					    data : { 
-					    	circle_id : ''
+					    	circle_id : '',
+					    	main_yn : 'Y'
 					    },
 					    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 					    success : function(responseData) {
@@ -684,6 +697,10 @@
 			}
 			
 			$("#serviceModal").modal('show');		
+		}
+		
+		function moveScheduleDetail(scheduleId) {
+			location.href = '/dashbd/view/schedule.do?id=' + scheduleId;
 		}
 	</script>
 </body>
