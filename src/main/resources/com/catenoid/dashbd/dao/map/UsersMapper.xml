@@ -13,6 +13,7 @@
     <result column="grade" property="grade" jdbcType="INTEGER" />
     <result column="grade_name" property="gradeName" jdbcType="VARCHAR" />
     <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="circle_id" property="circleId" jdbcType="VARCHAR" />
     <result column="circle_name" property="circleName" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
@@ -273,7 +274,9 @@
   </select>
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="String" >
     select 
-    <include refid="Base_Column_List" />, (select max(circle_name) from operator where id = users.operator_id) AS circle_name
+    <include refid="Base_Column_List" />
+    , (select circle.circle_id from operator operator inner join circle circle on operator.circle_name = circle.circle_name where operator.id = users.operator_id) AS circle_id
+    , (select circle_name from operator where id = users.operator_id) AS circle_name
     , (select name from grade where id = users.grade) AS grade_name
     from users
     where user_id = #{userId}

@@ -44,10 +44,24 @@
 										<div class="col-lg-6" style="height: 415px;">
 											<div class="col-lg-12">
 												<div class="form-group">
-													<select class="input-sm form-control input-s-sm" id="search-circle" onchange="changeCircle()">
-					                            		<option value="">Select Area</option>
-					                            		<c:forEach var="obj" items="${circleList}" varStatus="status">
-					                            			<option value="${obj.circle_id}">${obj.circle_name}</option>
+													<select class="input-sm form-control input-s-sm" id="search-circle" onchange="changeCircle()" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
+					                            		<option value="" <c:if test="${USER.grade ==  9999}">disabled</c:if>>Select Area</option>
+					                            		<c:forEach var="circle" items="${circleList}" varStatus="status">
+					                            			<c:choose>
+																<c:when test="${USER.grade == 9999}">
+																	<c:choose>
+																		<c:when test="${circle.circle_name == USER.circleName}">
+																			<option value="${circle.circle_id}" selected>${circle.circle_name}</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${circle.circle_id}" disabled>${circle.circle_name}</option>		
+																		</c:otherwise>
+																	</c:choose>
+																</c:when>
+																<c:otherwise>
+																	<option value="${circle.circle_id}">${circle.circle_name}</option>		
+																</c:otherwise>
+															</c:choose>
 					                            		</c:forEach>
 					                                </select>
 												</div>
@@ -66,6 +80,9 @@
 														<span class="input-group-btn">
 															<button type="button" class="btn btn-primary" onclick="addServiceAreaGroup(this)" style="display:none;">Add</button>
 														</span>
+													</div>
+													<div class="input-group infoArea" style="margin-top: 5px;display:none">
+													  Please enter the Service Area Group name <br>and click “Add” button to add the Service Area Group
 													</div>
 												</div>
 											</div>
@@ -119,6 +136,10 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		getMenuList('SERVICE_AREA_GROUP_MGMT');
+		
+		if($("#globalGrade").val() == 9999) {
+			changeCircle();
+		}
 	});
 </script>
 

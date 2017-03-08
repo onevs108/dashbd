@@ -69,7 +69,7 @@
 															
 															<div id="main_circle_area" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
 																<div class="form-group">
-																	<label class="col-sm-6 control-label">Circle</label>
+																	<label class="col-sm-6 control-label">Area</label>
 																	<div class="col-sm-6">
 																		<select class="form-control" id="search-circle-id" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
 																			<option value="" <c:if test="${USER.grade == 9999}">disabled</c:if>>All</option>

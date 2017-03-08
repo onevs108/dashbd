@@ -71,7 +71,7 @@ public class OperatorController {
 		
 //		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
 //		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
-		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+		List<Circle> circleList = operatorServiceImpl.getCircleListNameAll();
 		
 //		for(int i=0; i < gradeList.size(); i++) {
 //			if(gradeList.get(i).getId() == 1 || gradeList.get(i).getId() == 2 || gradeList.get(i).getId() == 3) {
