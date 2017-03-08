@@ -67,7 +67,7 @@ public class UsersController {
 		modelMap.addAttribute("isBack", isBack == null ? false : isBack);
 		
 		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
-		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+		List<Circle> circleList = operatorServiceImpl.getCircleListNameAll();
 		
 		modelMap.addAttribute("gradeList", gradeList);
 		modelMap.addAttribute("circleList", circleList);

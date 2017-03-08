@@ -56,11 +56,11 @@
 																		<div class="form-group">
 																			<select id="searchType" name="searchType" class="form-control">
 											                                    <option value="">Select</option>
-											                                    <option value="circle">Circle</option>
+											                                    <option value="circle">Area</option>
 											                                    <option value="city">City</option>
-											                                    <option value="circleCity">Circle & City</option>
+											                                    <option value="circleCity">Area & City</option>
 											                                    <option value="hotspot">Hotspot</option>
-											                                    <option value="said">SAID</	option>
+											                                    <option value="said">SAID</option>
 											                                </select>
 																		</div>
 																	</div>
@@ -147,7 +147,7 @@
 			},
 			'click' : function(e) {
 				var circle_id = $(this).attr("data-init");
-				var circle_name = $(this).find("span small").text().replace(" Telecom Circle", "");
+				var circle_name = $(this).find("span small").text().replace(" Telecom Area", "");
 				var lat = $(this).attr("data-lat");
 				var lng = $(this).attr("data-lng");
 				

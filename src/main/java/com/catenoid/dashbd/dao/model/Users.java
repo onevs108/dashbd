@@ -34,6 +34,8 @@ public class Users {
     
     private String memo;
     
+    private String circleId;
+    
     private String circleName;
 
     private Date createdAt;
@@ -200,6 +202,7 @@ public class Users {
     	jsonResult.put("gradeName", gradeName);
     	jsonResult.put("memo", memo);
     	jsonResult.put("circleName", circleName);
+    	jsonResult.put("circleId", circleId);
     	if(operatorName == null) {
     		jsonResult.put("townName", gradeName);
     	} else {
@@ -228,6 +231,7 @@ public class Users {
 				+ ", grade=" + grade
 				+ ", gradeName=" + gradeName
 				+ ", memo=" + memo
+				+ ", circleId=" + circleId
 				+ ", circleName=" + circleName
 				+ ", createdAt=" + createdAt
 				+ ", updatedAt=" + updatedAt
@@ -245,5 +249,13 @@ public class Users {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getCircleId() {
+		return circleId;
+	}
+
+	public void setCircleId(String circleId) {
+		this.circleId = circleId;
 	}
 }

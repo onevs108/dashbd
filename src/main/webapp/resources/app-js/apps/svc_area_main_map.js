@@ -30,7 +30,7 @@ var currentZoomLevel = 'circle';
 
 $(document).ready(function()
 {
-	jsTreeSetting();
+	jsTreeSetting(false);
     //json 형태로 변환
 //    circlemap = JSON.parse(circlemap);
 });
@@ -47,7 +47,7 @@ function tabChange(tabDiv) {
 		$(".circle-map").hide();
 //		$("#treeNode").show();
 //		$(".search-group").show();
-		jsTreeSetting();
+		jsTreeSetting(false);
 	} else if(tabDiv == '2') {
 		$($("ul.nav.nav-tabs")[1]).addClass("active");
 		$($("ul.nav.nav-tabs")[0]).removeClass("active");
@@ -64,7 +64,7 @@ function tabChange(tabDiv) {
 	}
 }
 
-function jsTreeSetting() {
+function jsTreeSetting(openAllYn) {
 	$.getScript( "/dashbd/resourcesRenew/js/plugins/jsTree/jstree.min.js" )
 		.done(function( script, textStatus ) {
 			$.ajax({
@@ -82,13 +82,13 @@ function jsTreeSetting() {
 			        
 			        if(data.resultList.length != 1) {
 				        $("#treeNode").jstree("destroy").empty();
-				        treeInit(data);
+				        treeInit(data, openAllYn);
 			        } else {
 			        	$("li.root").remove();
 			        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
 			        		$("#search-input").val('');
 			        		$("#searchType").val('');
-			    			jsTreeSetting();
+			    			jsTreeSetting(false);
 			    		})
 			        }
 			        
@@ -104,7 +104,7 @@ function jsTreeSetting() {
 }
 
 //jsTree Init Function
-function treeInit(data) {
+function treeInit(data, openAllYn) {
 	(function ($, undefined) {
         "use strict";
         
@@ -257,9 +257,9 @@ function treeInit(data) {
                         	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('A')+1);
                         	inp2.setAttribute('readonly', 'readonly');
                         	inp3.setAttribute('readonly', 'readonly');
-                        	inp4.setAttribute('readonly', 'readonly');
-                        	btn1.setAttribute('disabled','disabled');
-                        	btn2.setAttribute('disabled','disabled');
+//                        	inp4.setAttribute('readonly', 'readonly');
+//                        	btn1.setAttribute('disabled','disabled');
+//                        	btn2.setAttribute('disabled','disabled');
                         	btn3.setAttribute('disabled','disabled');
                         } else if($(obj).hasClass('city')) {
                         	said = $(obj).attr("data-init").substring($(obj).attr("data-init").indexOf('B')+1);
@@ -340,9 +340,12 @@ function treeInit(data) {
 	for(var i=0; i < treeData.length; i++) {
 		var node = treeData[i];
 		
+		var tempChildCntStr = ' (' + node.childCntName + ')';
+		if(tempChildCntStr == ' ()') tempChildCntStr = '';
+		
 		//root를 그려줌(Circles)
 		if(i == 0) {
-			$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
+			$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + tempChildCntStr + '</li></ul>');
 			continue;
 		}
 		
@@ -357,7 +360,7 @@ function treeInit(data) {
 			
 			if($(compareNode).attr("data-init") == node.pnode_id) { 
 				var liStr = '<li class="' + node.node_div + '" title="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' 
-							+ node.latitude + '" data-lng="' + node.longitude + '" data-band="' + node.bandwidth + '">' + node.name + '</li>';
+							+ node.latitude + '" data-lng="' + node.longitude + '" data-band="' + node.bandwidth + '">' + node.name + tempChildCntStr + '</li>';
 				
 				if($(compareNode).html().indexOf("ul") == -1) {
 					//첫 노드일 경우 가상 노드를 주어 새롭게 추가할 수 있도록 함(newNode는 상위 노드의 위도 경도 값을 가짐)
@@ -412,8 +415,12 @@ function treeInit(data) {
 		    "plugins" : [ "conditionalselect" , "nohover", "inp", "search"]
 		  });
 	
-	//제일 처음 노드 오픈
-	$("#treeNode").jstree("open_node", $("#treeNode .root"));
+	if(!openAllYn) {
+		//제일 처음 노드 오픈
+		$("#treeNode").jstree("open_node", $("#treeNode .root"));
+	} else {
+		$("#treeNode").jstree("open_all");
+	}
 }
 
 //$(document).on("keydown", "#search-input", function(event) {
@@ -432,7 +439,7 @@ function searchTreeNode() {
 		//제일 처음 노드 오픈
 //		$("#treeNode").jstree("open_node", $("#treeNode .root"));
 	}
-	jsTreeSetting();
+	jsTreeSetting(true);
 	
 //	} else {
 //		$('#treeNode').jstree('search', searchString);
@@ -552,13 +559,11 @@ function initMap() {
 			hotspotClear();
 			
 			if(cities.length == 0) {
-				$("#mapDescriptArea").text('Click the city to view the hotspots. Click empty space to add a city');
 				drawServiceAreaByCity(upperCircle);
 			}
 		} else if(currentZoomLevel == 'hotspot') {
 //			circleClear();
 			cityClear('cities');
-			$("#mapDescriptArea").text('Click empty space to add a hotspot');
 		}
 	});
 	
@@ -631,7 +636,7 @@ function makeInfoWindow(div, object) {
 	}
 	contentString += '<td><input type="text" name="lat" value="' + lat + '" readonly></td>';
 	if(div == 'edit')
-		contentString += '<td rowspan="2"><button type="button" class="btn btn-success btn-xs button-edit" style="height:100%" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset<br>Location</button></td>';
+		contentString += '<td rowspan="2"><button type="button" class="btn btn-success btn-xs button-edit" style="padding:6px;" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset<br>Location</button></td>';
 	contentString += '</tr>';
 	contentString += '<tr>';
 	contentString += '<td>Longitude</td>';
@@ -885,6 +890,12 @@ function drawServiceAreaByCity(circle) {
 //	        		});
 //	        	}
 	        }
+	        
+	        var displayText = 'Current Area : ' + upperCircle.name.replace(' Telecom Circle', '') + '\n';
+	        displayText += 'Number of Cities : ' + cities.length + '\n';
+	        displayText += 'Click the city to view the hotspots.\n Click empty space to add a city';
+	        $("#mapDescriptArea").text(displayText);
+			$("#mapDescriptArea").html($("#mapDescriptArea").html().replace(/\n/g,'<br/>'));
 	    },
         error : function(xhr, status, error) {
         	swal({
@@ -940,6 +951,12 @@ function drawServiceAreaByHotspot(city) {
 	        	
 	        	hotspots.push(hotspotMarker);
 	        }
+	        
+	        var displayText = 'Current City : ' + upperObj.name + '\n';
+	        displayText += 'Number of Hotspotes : ' + hotspots.length + '\n';
+	        displayText += 'Click empty space to add a hotspot';
+	        $("#mapDescriptArea").text(displayText);
+			$("#mapDescriptArea").html($("#mapDescriptArea").html().replace(/\n/g,'<br/>'));
 	    },
 	    error : function(xhr, status, error) {
         	swal({
@@ -1076,7 +1093,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 					        	//tree의 경우 add되거나 delete될 때 해당 노드를 지워주거나 추가해줘야 함
 					        	else if(tabDiv == 'tree') {
 					        		if(treeBtn.innerHTML.toLowerCase() == 'add') {
-					        			jsTreeSetting();
+					        			jsTreeSetting(false);
 					        		} else if(treeBtn.innerHTML.toLowerCase() == 'delete') {
 					        			$($(treeBtn).parents("li")[0]).remove();
 					        		}

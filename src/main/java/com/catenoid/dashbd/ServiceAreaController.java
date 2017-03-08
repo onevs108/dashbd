@@ -1391,7 +1391,7 @@ public class ServiceAreaController {
 		modelMap.addAttribute("isBack", isBack == null ? false : isBack);
 		
 		List<Operator> gradeList = operatorServiceImpl.getGradeListAll();
-		List<Circle> circleList = operatorServiceImpl.getCircleListAll();
+		List<Circle> circleList = operatorServiceImpl.getCircleListNameAll();
 		
 		modelMap.addAttribute("gradeList", gradeList);
 		modelMap.addAttribute("circleList", circleList);
@@ -3229,7 +3229,7 @@ public class ServiceAreaController {
 	 * @return
 	 */
 	@RequestMapping(value = "/api/getTreeNodeData.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void getTreeNodeData(HttpServletRequest request, HttpServletResponse response) {
+	public void getTreeNodeData(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		JSONObject resultObj = new JSONObject();
 		
 		try {
@@ -3239,6 +3239,12 @@ public class ServiceAreaController {
 			String main_yn = request.getParameter("main_yn");
 			String searchType = request.getParameter("searchType");
 			String searchInput = request.getParameter("searchInput");
+			
+			//circle group에 따라 해당 circle안의 데이터만 조회되도록 함
+//			Users userInfo = (Users)session.getAttribute("USER");
+//			if(userInfo.getGrade() == 9999) {
+//				circle_id = userInfo.getCircleId();
+//			}
 			
 			HashMap< String, Object > searchParam = new HashMap();
 			searchParam.put("group_id", group_id);

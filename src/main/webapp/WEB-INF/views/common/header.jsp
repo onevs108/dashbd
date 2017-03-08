@@ -86,10 +86,10 @@
 						<div class="row">
 							<div id="modal_circle_area" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
 								<div class="form-group">
-									<label class="col-sm-6 control-label">Select Circle</label>
+									<label class="col-sm-6 control-label">Select Area</label>
 									<div class="col-sm-6">
 										<select class="form-control" id="modal-circle-id" onchange="getTownListFromCircle(this)" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
-											<option value="">Circle</option>
+											<option value="">Area</option>
 											<c:forEach items="${circleList}" var="circle">
 												<c:choose>
 													<c:when test="${USER.grade == 9999}">
@@ -112,10 +112,10 @@
 								</div>
 							</div>
 							<div id="modal_circle_group" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
-								<label class="col-sm-6 control-label">Circle Group</label>
+								<label class="col-sm-6 control-label">Area Group</label>
 								<div class="col-sm-6">
                                    	<select class="input-sm form-control input-s-sm" id="form-circle">
-                                   		<option value="">Circle Group</option>
+                                   		<option value="">Area Group</option>
                                    		<c:forEach var="cgroup" items="${townList}">
                                    			<option value="${cgroup.id}">${cgroup.town_name}</option>
                                    		</c:forEach>
@@ -223,7 +223,7 @@
 			},
 			success: function(data, textStatus, jqXHR) {
 				if (data.result) {
-					var html = "<option value=''>Circle Group</option>";
+					var html = "<option value=''>Area Group</option>";
 					for (var i = 0; i < data.result.length; i++) {
 						html += "<option value='"+data.result[i].id+"'>"+data.result[i].town_name+"</option>";
 					}
@@ -252,7 +252,7 @@
 				$("#modal_circle_group").hide();
 				$("#modal-circle-id").val('');
 				$("#form-circle").empty();
-				$("#form-circle").append('<option value="">Circle Group</option>');
+				$("#form-circle").append('<option value="">Area Group</option>');
 			}
 			$("#addBtn").show();
 			$("#editBtn").hide();
@@ -398,12 +398,12 @@
 			} else {
 				if(grade == 9999) {
 					if($("#modal-circle-id").val() == '') {
-						swal("Fail !","Please select your Circle", "warning");
+						swal("Fail !","Please select your Area", "warning");
 						return false;
 					}
 					
 					if(operatorId == '') {
-						swal("Fail !","Please select your Circle Group", "warning");
+						swal("Fail !","Please select your Area Group", "warning");
 						return false;
 					}
 				}
