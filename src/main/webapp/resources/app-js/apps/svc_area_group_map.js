@@ -204,7 +204,7 @@ function changeCircle() {
 		//기존 treeNode 삭제
 		$("#treeNode").empty();
 		$("#selectedCircle").text($("#search-circle option:selected").text() + ' Service Area Group');
-		$("form input, form button").show();
+		$("form input, form button, form .infoArea").show();
 		
 		$.ajax({
 		    url : "/dashbd/api/getServiceAreaGroupList.do",
@@ -241,7 +241,7 @@ function changeCircle() {
 		$("#selectedCircle").text('');
 		$("#group_area").empty();
         $("#treeNode").empty();
-        $("form input, form button").hide();
+        $("form input, form button, form .infoArea").hide();
 	}
 }
 

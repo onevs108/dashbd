@@ -636,11 +636,11 @@ function searchOtherOperator(formId) {
 				
 				var resultList = data.rows;
 				
-				var resultHtml;
+				var resultHtml = '';
 				for(var i=0; i < resultList.length; i++) {
 					var tempObj = resultList[i];
-					resultHtml = '<li class="list-group-item">';
-					resultHtml += '<div class="i-select"><label> <input type="checkbox" value="' + tempObj.id + '">';
+					resultHtml += '<li class="list-group-item">';
+					resultHtml += '<div class="i-select"><label> <input type="checkbox" value="' + tempObj.userId + '">';
 					resultHtml += '<span> ' + tempObj.userId + ' (' + tempObj.lastName + ' ' + tempObj.firstName + ')' + '</span></label></div></li>';
 				}
 				

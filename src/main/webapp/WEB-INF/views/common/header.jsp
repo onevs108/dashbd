@@ -89,7 +89,7 @@
 									<label class="col-sm-6 control-label">Select Area</label>
 									<div class="col-sm-6">
 										<select class="form-control" id="modal-circle-id" onchange="getTownListFromCircle(this)" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
-											<option value="">Area</option>
+											<option value="" <c:if test="${USER.grade == 9999}">disabled</c:if>>Area</option>
 											<c:forEach items="${circleList}" var="circle">
 												<c:choose>
 													<c:when test="${USER.grade == 9999}">
@@ -128,9 +128,9 @@
 						<div class="row">
 							<div class="col-lg-6 m-b">
 								<div class="input-group" style="padding: 0 0 0 0;">
-									<input type="text" placeholder="User ID" class="form-control" id="form-user-id" onkeyup="javascript:checkUserId=false;"> 
+									<input type="text" placeholder="User ID" class="form-control" id="form-user-id" onblur="javascript:doCheckId(false);"> 
 									<span class="input-group-btn">
-										<button type="button" id="form-check-btn" onclick="doCheckId()" class="btn btn-primary">Check</button>
+										<button type="button" id="form-check-btn" onclick="javascript:doCheckId(true);" class="btn btn-primary">Check</button>
 									</span>
 								</div>
 							</div>
@@ -174,8 +174,8 @@
 					</fieldset>
 				</div>
 				<div class="modal-footer">
-					<button type="button" id="addBtn" onclick="doInsert('add')" class="btn btn-primary">Add</button>
-					<button type="button" id="editBtn" onclick="doInsert('edit')" class="btn btn-primary">Edit</button>
+					<button type="button" id="addBtn" onclick="javascript:doInsert('add');" class="btn btn-primary">Add</button>
+					<button type="button" id="editBtn" onclick="javascript:doInsert('edit');" class="btn btn-primary">Edit</button>
 					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
 				</div>
 			</form>
@@ -186,6 +186,7 @@
 
 <script type="text/javascript">
 	var commonYn;
+	var checkUserId = false;
 	
 	function doSearch() {
 		$('#table').bootstrapTable('destroy');
@@ -235,7 +236,6 @@
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert(errorThrown);
-				checkUserId = false;
 				return false;
 			}
 		});	
@@ -244,6 +244,9 @@
 	//버튼 클릭에 따른 유저 팝업 컨트롤 메소드
 	function userFormAccess(accessDiv, userId) {
 		if(accessDiv == 'add') {
+			//유저 등록 폼을 다시 띄울 경우 체크 여부 초기화
+			checkUserId = false;
+			
 			$(".modal-title").text("Add Operator");
 	
 			if($("#globalGrade").val()  == 13) {
@@ -276,37 +279,45 @@
 		}
 	}
 	
-	function doCheckId() {
-		var userId = $('#form-user-id').val();
-		if (userId == null || userId.length == 0) {
-			swal("Fail !","Please enter your ID", "warning");
-			return false;
-		}
-		
-		$.ajax({
-			url: '/dashbd/api/user/check.do',
-			method: 'POST',
-			dataType: 'json',
-			data: {
-				userId: userId
-			},
-			success: function(data, textStatus, jqXHR) {
-				if (data.result) { // 성공
-					checkUserId = true;
-					swal("Success !","Avaliable!", "success");
-				}
-				else { // 실패
-					checkUserId = false;
-					swal("Fail !", "Already exist!", "warning");
-					$('#form-user-id').focus();
-				}
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				swal("Fail !", errorThrown, "warning");
-				checkUserId = false;
+	function doCheckId(proccessYn) {
+		if(!proccessYn && $("#form-user-id").attr("data-init") != $("#form-user-id").val()) {
+			checkUserId = false;
+		} else if(!proccessYn && $("#form-user-id").attr("data-init") == $("#form-user-id").val()) {
+			checkUserId = true;
+		} else {
+			var userId = $('#form-user-id').val();
+			if (userId == null || userId.length == 0) {
+				swal("Fail !","Please enter your ID", "warning");
 				return false;
 			}
-		});
+			
+			$.ajax({
+				url: '/dashbd/api/user/check.do',
+				method: 'POST',
+				dataType: 'json',
+				data: {
+					userId: userId
+				},
+				success: function(data, textStatus, jqXHR) {
+					if (data.result) { // 성공
+						$("#form-user-id").attr("data-init", $("#form-user-id").val());
+						checkUserId = true;
+						swal("Success !","Avaliable!", "success");
+					}
+					else { // 실패
+						checkUserId = false;
+						$("#form-user-id").attr("data-init", "");
+						swal("Fail !", "Already exist!", "warning");
+						$('#form-user-id').focus();
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					swal("Fail !", errorThrown, "warning");
+					checkUserId = false;
+					return false;
+				}
+			});
+		}
 	}
 	
 	function getUserInfo(userId) {
@@ -372,122 +383,122 @@
 	}
 	
 	function doInsert(accessDiv) {
-		swal({
-			  title: "Are you sure?",
-			  text: 'Do you really want to ' + accessDiv + ' the user?',
-			  type: "warning",
-			  showCancelButton: true,
-			  confirmButtonColor: "#DD6B55",
-			  confirmButtonText: "Yes",
-			  closeOnConfirm: false
-			},
-		function(){
-			var operatorId = $('#form-circle').val();
-			var userId = $('#form-user-id').val();
-			var password = $('#form-password').val();
-			var confirmPassword = $('#form-confirm-password').val();
-			var firstName = $('#form-first-name').val();
-			var lastName = $('#form-last-name').val();
-			var department = $('#form-department').val();
-			var grade = $('#modal-grade-id').val();
-			var memo = $('#form-memo').val();
-			
-			if (grade == null || grade.length == 0) {
-				swal("Fail !","Please select your Group", "warning");
-				return false;
-			} else {
-				if(grade == 9999) {
-					if($("#modal-circle-id").val() == '') {
-						swal("Fail !","Please select your Area", "warning");
-						return false;
-					}
-					
-					if(operatorId == '') {
-						swal("Fail !","Please select your Area Group", "warning");
-						return false;
+		setTimeout(function() {
+			swal({
+				  title: "Are you sure?",
+				  text: 'Do you really want to ' + accessDiv + ' the user?',
+				  type: "warning",
+				  showCancelButton: true,
+				  confirmButtonColor: "#DD6B55",
+				  confirmButtonText: "Yes",
+				  closeOnConfirm: false
+				},
+			function(){
+				var operatorId = $('#form-circle').val();
+				var userId = $('#form-user-id').val();
+				var password = $('#form-password').val();
+				var confirmPassword = $('#form-confirm-password').val();
+				var firstName = $('#form-first-name').val();
+				var lastName = $('#form-last-name').val();
+				var department = $('#form-department').val();
+				var grade = $('#modal-grade-id').val();
+				var memo = $('#form-memo').val();
+				
+				if (grade == null || grade.length == 0) {
+					swal("Fail !","Please select your Group", "warning");
+					return false;
+				} else {
+					if(grade == 9999) {
+						if($("#modal-circle-id").val() == '') {
+							swal("Fail !","Please select your Area", "warning");
+							return false;
+						}
+						
+						if(operatorId == '') {
+							swal("Fail !","Please select your Area Group", "warning");
+							return false;
+						}
 					}
 				}
-			}
-			
-			if (userId == null || userId.length == 0) {
-				swal("Fail !","Please enter your ID", "warning");
-				$('#form-user-id').focus();
-				return false;
-			}
-			
-			if (accessDiv == 'add' && !checkUserId) {
-				swal("Fail !","Please check the ID", "warning");
-				$('#check-id-btn').focus();
-				return false;
-			}
-			
-			if (password == null || password.length == 0) {
-				swal("Fail !","Please enter the password", "warning");
-				$('#form-password').focus();
-				return false;
-			}
-			else {
-				if (password != confirmPassword) {
-					swal("Fail !","Please check the password", "warning");
-					$('#form-confirm-password').focus();
+				
+				if (userId == null || userId.length == 0) {
+					swal("Fail !","Please enter your ID", "warning");
+					$('#form-user-id').focus();
 					return false;
 				}
-			}
-			
-			if (firstName == null || firstName.length == 0) {
-				swal("Fail !","Please enter the FirstName", "warning");
-				$('#form-first-name').focus();
-				return false;
-			}
-			
-			if (lastName == null || lastName.length == 0) {
-				swal("Fail !","Please enter the LastName", "warning");
-				$('#form-last-name').focus();
-				return false;
-			}
-			
-			if (department == null || department.length == 0) {
-				swal("Fail !","Please enter the Department", "warning");
-				$('#form-department').focus();
-				return false;
-			}
-			
-			
-			$.ajax({
-				url: '/dashbd/api/user/insert.do',
-				method: 'POST',
-				dataType: 'json',
-				data: {
-					operatorId: operatorId,
-					userId: userId,
-					password: password,
-					firstName: firstName,
-					lastName: lastName,
-					department: department,
-					grade: grade,
-					memo: memo
-				},
-				success: function(data, textStatus, jqXHR) {
-					if (data.result) { // 성공
-						swal({title:"Success !", text:"Success", type:"success"}, function() {
-							if(!commonYn) {
-								$('#table').bootstrapTable('destroy');
-								getUserList(true, false);	
-								$("#myModal").modal('hide');
-							}
-						});
-					}
-					else { // 실패
-						swal("Fail !", "Failed!! Please you report to admin!", "warning");
-					}
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					swal("Fail !", errorThrown + textStatus, "warning");
-					checkUserId = false;
+				
+				if (accessDiv == 'add' && !checkUserId) {
+					swal("Fail !","Please check the ID", "warning");
 					return false;
 				}
+				
+				if (password == null || password.length == 0) {
+					swal("Fail !","Please enter the password", "warning");
+					$('#form-password').focus();
+					return false;
+				}
+				else {
+					if (password != confirmPassword) {
+						swal("Fail !","Please check the password", "warning");
+						$('#form-confirm-password').focus();
+						return false;
+					}
+				}
+				
+				if (firstName == null || firstName.length == 0) {
+					swal("Fail !","Please enter the FirstName", "warning");
+					$('#form-first-name').focus();
+					return false;
+				}
+				
+				if (lastName == null || lastName.length == 0) {
+					swal("Fail !","Please enter the LastName", "warning");
+					$('#form-last-name').focus();
+					return false;
+				}
+				
+				if (department == null || department.length == 0) {
+					swal("Fail !","Please enter the Department", "warning");
+					$('#form-department').focus();
+					return false;
+				}
+				
+				$.ajax({
+					url: '/dashbd/api/user/insert.do',
+					method: 'POST',
+					dataType: 'json',
+					data: {
+						operatorId: operatorId,
+						userId: userId,
+						password: password,
+						firstName: firstName,
+						lastName: lastName,
+						department: department,
+						grade: grade,
+						operatorName : $("#modal-grade-id option:selected").text(),
+						memo: memo
+					},
+					success: function(data, textStatus, jqXHR) {
+						if (data.result) { // 성공
+							swal({title:"Success !", text:"Success", type:"success"}, function() {
+								if(!commonYn) {
+									$('#table').bootstrapTable('destroy');
+									getUserList(true, false);	
+									$("#myModal").modal('hide');
+								}
+							});
+						}
+						else { // 실패
+							swal("Fail !", "Failed!! Please you report to admin!", "warning");
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						swal("Fail !", errorThrown + textStatus, "warning");
+						return false;
+					}
+				});
 			});
-		});
+		}, 200);
 	}
 	
 	function doDelete(userId, operatorId, firstName, lastName) {
@@ -521,7 +532,6 @@
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					swal("Fail !", errorThrown + textStatus, "warning");
-					checkUserId = false;
 					return false;
 				}
 			});
