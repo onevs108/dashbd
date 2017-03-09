@@ -50,6 +50,7 @@ $(document).ready(function()
     	var circleId = array[0];
     	var circleName = array[1];
     	if(circleId == ""){
+    		g_ServiceAreaId = "";
     		$("#selectCity").html("");
         	$("#selectHotspot").html("");
     		return;
@@ -99,6 +100,9 @@ $(document).ready(function()
     	var cityId = array[0];
     	var cityName = array[1];
     	if(cityId == ""){
+    		g_ServiceAreaId = "";
+    		g_ServiceGroupId = "";
+    		$("#selectCircle").val("");
     		$("#selectHotspot").html("");
     		return;
     	}
@@ -151,7 +155,14 @@ $(document).ready(function()
     	var array = e.target[e.target.selectedIndex].value.split("^");
     	var hotspotId = array[0];
     	var hotspotName = array[1];
-    	
+    	if(hotspotId == ""){
+    		g_ServiceAreaId = "";
+    		g_ServiceGroupId = "";
+    		$("#selectCircle").val("");
+    		$("#selectCity").val("");
+    		$("#selectHotspot").html("");
+    		return;
+    	}
     	glovalSaid = hotspotId;
 		callTimetable(undefined, hotspotId);
 		g_ServiceAreaId = hotspotId;
