@@ -196,45 +196,10 @@ public class UsersController {
 		}
 		
 		logger.info("-> [user = {}], [userOfSession = {}]", user.toString(), userOfSession.toString());
-		
-		// 사용자를 등록 or 수정하려는 사용자가 올바른 사용자인지 확인한다.
-		// 이 확인 작업은 Security가 대신 해줄수 없기 때문에 직접 해준다.
-		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN){
-			insertPermission(user);
-			jsonResult.put("result", userServiceImpl.insertUser(user));
-		}	
-		else if (userOfSession.getGrade() == Const.USER_GRADE_USER) {
-			// 등록 작업을 수행하는 사용자의 등급이 일반 사용자인데 super admin을 등록시킬순 없다.
-			// 이는 고의로 super admin 을 등록시키려는 경우다.
-			if (user.getGrade() == Const.USER_GRADE_ADMIN)
-				logger.info("~~ [Incorrect grade!]");
-			else {
-				// 사용자를 등록 or 수정하려는 사용자가 일반 사용자인 경우 등록 or 수정 대상의 Operator와 일치해야 한다.
-				if (userOfSession.getOperatorId() == user.getOperatorId()){
-					insertPermission(user);
-					jsonResult.put("result", userServiceImpl.insertUser(user));
-				}
-				else{
-					logger.info("~~ [Incorrect operator!]");
-				}
-			}
-		}
-		else{
-			if (user.getGrade() == Const.USER_GRADE_ADMIN)
-				logger.info("~~ [Incorrect grade!]");
-			else {
-				// 사용자를 등록 or 수정하려는 사용자가 일반 사용자인 경우 등록 or 수정 대상의 Operator와 일치해야 한다.
-				if (userOfSession.getOperatorId().equals(user.getOperatorId())){
-					insertPermission(user);
-					jsonResult.put("result", userServiceImpl.insertUser(user));
-				}else{
-					logger.info("~~ [Incorrect operator!]");
-				}
-			}
-			logger.info("~~ [Incorrect grade of session!]");
-		}
-			
-		
+
+		insertPermission(user);
+		jsonResult.put("result", userServiceImpl.insertUser(user));
+
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		return jsonResult.toString();
 	}
