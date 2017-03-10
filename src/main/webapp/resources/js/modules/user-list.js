@@ -1,4 +1,3 @@
-
 $(function() {
 	// button click event in list
 	$('#go-search').click(doSearch);

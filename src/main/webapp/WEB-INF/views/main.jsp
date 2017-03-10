@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.catenoid.dashbd.util.SessionCounterListener" %>
 <c:set var="now" value="<%= new java.util.Date() %>" />
 
 <!DOCTYPE html>
@@ -423,7 +424,12 @@
 					valign: 'middle',
 					sortable: true,
 					formatter: function(value, row, index) {
-						var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';
+						if(value != undefined && value != '') {
+							var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';	
+						} else {
+							var html = '';
+						}
+						
 						return html;
 					}
 				}, {
@@ -595,8 +601,7 @@
 					    url : "/dashbd/api/getTreeNodeData.do",
 					    type: "POST",
 					    data : { 
-					    	circle_id : '',
-					    	main_yn : 'Y'
+					    	circle_id : ''
 					    },
 					    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 					    success : function(responseData) {

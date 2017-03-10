@@ -209,7 +209,7 @@ public class UsersController {
 		if(addUser.getOperatorId() != null){
 			operator = operatorServiceImpl.getOperator(addUser.getOperatorId());
 		}else{
-			operator = operatorServiceImpl.getOperator(addUser.getGrade());
+			operator = operatorServiceImpl.selectByGradeName(addUser.getOperatorName());
 		}
 		String[] permission = operator.getPermission().split(",");
 		List<String> permissions = new ArrayList<String>();

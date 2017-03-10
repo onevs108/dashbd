@@ -82,7 +82,7 @@
 														</span>
 													</div>
 													<div class="input-group infoArea" style="margin-top: 5px;display:none">
-													  Please enter the Service Area Group name <br>and click “Add” button to add the Service Area Group
+													  Please enter the Service Area Group name and click “Add” button to add the Service Area Group
 													</div>
 												</div>
 											</div>
@@ -93,9 +93,12 @@
 											</div>
 											<div class="row">
 												<div class="hr-line-dashed"></div>
-					                        	<div class="col-md-12">
+					                        	<div class="col-md-12" style="margin-bottom:5px">
 													<button class="btn btn-w-m btn-primary" type="button" id="save-btn" style="display:none;">Save</button>
 					                        	</div>
+					                        	<div class="input-group infoArea" style="display:none">
+												  Please select city or hotspot to be included to the Service Area Group and click “Save” button
+												</div>
 					                        </div>
 										</div>
 									</form>

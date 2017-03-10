@@ -46,8 +46,10 @@
 	<script>
 		var serviceType = "${mapSchedule.service}";
 		var contentJson = ${contentList};
+		var serviceClassJson = ${serviceClassList};
 		var viewMode = "${mode}";
 		$(document).ready(function() {
+			$("#serviceClass").val("${mapSchedule.serviceClass}");
 			getMenuList('SCHEDULE_MGMT');
 			$("button[name='addSchedule']").hide();
 			if(serviceType == "streaming") 
@@ -326,7 +328,15 @@
                              
                              <div class="form-group">
                                  <label class="col-sm-2 control-label">Service class</label>
-                             	    <div class="col-sm-4"><input type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass' value="${mapSchedule.serviceClass}"></div>
+                             	    <div class="col-sm-3">
+                             	    	<select type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass'>
+                             	    		<option>test1</option>
+                             	    		<option>test2</option>
+                             	    	</select>
+                             	    </div>
+                             	    <div class="col-sm-1">
+                             	    	<button id="newClass" type="button" class="btn btn-block btn-default btn-sm">New</button>
+                             	    </div>
                              	 <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service id</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}">
@@ -657,6 +667,7 @@
 
 	</div><!-- end page-wrapper -->
 	<jsp:include page="contentList.jsp"></jsp:include>
+	<jsp:include page="serviceClassList.jsp"></jsp:include>
 </div><!-- end wrapper -->
 
 </body>
@@ -812,5 +823,6 @@
 		</c:if>
 	</div>
 </script>
+
 
 

@@ -207,6 +207,44 @@
 			AND id = #{id}
 	</select>
 	
+	<select id="selectServiceClassList" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT *
+		FROM 
+		(
+			select *
+			from service_class
+		) x
+		limit #{page}, #{perPage}
+	</select>
+	
+	<select id="selectServiceClassAll" resultType="java.util.Map">
+		select *
+		from service_class
+	</select>
+	
+	<select id="selectServiceClassCount" parameterType="java.util.Map" resultType="int">
+		SELECT count(*)
+		FROM 
+		(
+			select *
+			from service_class
+		) x
+	</select>
+	
+	<insert id="insertServiceClass" parameterType="java.util.Map">
+		insert into service_class(
+			class_name, description	
+		)
+		values(
+			#{className}, #{description}
+		)
+	</insert>
+	
+	<select id="selectServiceClass" parameterType="java.util.Map" resultType="int">
+		select count(*) from service_class
+		where class_name = #{className} 
+	</select>
+	
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
 		(	 

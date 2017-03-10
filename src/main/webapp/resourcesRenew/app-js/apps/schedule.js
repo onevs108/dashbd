@@ -203,6 +203,8 @@ $(document).ready(function()
 		});
 	});
 	
+	$("#newClass").click(openServiceClass);
+	
 	addScheduleRemoveEvent();
 	addContentRemoveEvent();
 	$("#serviceType").change();
@@ -217,25 +219,9 @@ function addSearchContentEvent(idx) {
 	})
 }
 
-/*function loadContentList(page){
-	var param = {
-			title : $("#form-title").val(),
-			category : $("#form-category").val(),
-			page : page
-		};
-	$.ajax({
-		type : "POST",
-		url : "getContents.do",
-		data : param,
-		dataType : "json",
-		success : function( data ) {
-			getContents(data.contents, page);
-		},
-		error : function(request, status, error) {
-			alert("request=" +request +",status=" + status + ",error=" + error);
-		}
-	});
-}*/
+function openServiceClass() {
+	$("#serviceClassList").modal();
+}
 
 function getContentList() {
 	$('#table').bootstrapTable('destroy');
@@ -299,6 +285,121 @@ function getContentList() {
 			valign: 'middle',
 			sortable: false
 		}]
+	});
+}
+function getServiceClassList() {
+	$('#classTable').bootstrapTable('destroy');
+	var pageNumber = 1;
+	var table = $('#classTable').bootstrapTable({
+		method: 'post',
+		url: 'getServiceClassTable.do',
+		contentType: 'application/json',
+		dataType: 'json',
+		queryParams: function(params) {
+			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+//			params['pageNumber'] = (params.offset / params.limit) + 1;
+			return params;
+		},
+		cache: false,
+		pagination: true,
+		sidePagination: 'server',
+		pageNumber: pageNumber,
+		pageSize: 5,
+		search: false,
+		showHeader: true,
+		showColumns: false,
+		showRefresh: false,
+		minimumCountColumns: 3,
+		clickToSelect: false,
+		columns: [{
+			field: 'class_name',
+			title: 'Class Name',
+			width: '40%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true,
+			formatter: function(value, row, index) {
+				var html = '<input type="text" class="form-control" value="'+value+'">';
+				return html;
+			}
+		},{
+			field: 'description',
+			title: 'Description',
+			width: '40%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true,
+			formatter: function(value, row, index) {
+				var html = '<input type="text" class="form-control" value="'+value+'">';
+				return html;
+			}
+		}, {
+			field: 'sort_key',
+			title: 'command',
+			width: '20%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true,
+			formatter: function(value, row, index) {
+				var html = '<button type="button" class="btn btn-primary btn-sm" onclick=actionClass("Edit")>Edit</button>&nbsp;';
+					html += '<button type="button" class="btn btn-danger btn-sm" onclick=actionClass("Delete")>Delete</button>';
+				return html;
+			}
+		}]
+	});
+}
+
+function actionClass(type) {
+	if(type == "Edit") {
+		alert("Edit");
+	} else { 
+		alert("Delete");
+	}
+}
+
+function closeClassModal() {
+	$("#serviceClassList").modal('hide');
+}
+
+function addClass() {
+	$.ajax({
+		type : "POST",
+		url : "insertServiceClass.do",
+		data : {className: $("#className").val(), description: $("#description").val()},
+		dataType : "json",
+		success : function( data ) {
+			if(data.result == "EXIST") {
+				alert("Class name is already exist!");
+			}else{
+				getServiceClassList();
+				setServiceClassView();
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
+
+function setServiceClassView() {
+	$.ajax({
+		type : "POST",
+		url : "selectServiceClassAll.do",
+		dataType : "json",
+		success : function( data ) {
+			var html = "";
+			for (var i = 0; i < data.rows.length; i++) {
+				html += "<option value='"+data.rows[i].class_name+"'>"+data.rows[i].class_name+"</option>";
+			}
+			$("#serviceClass").html(html);
+			$("#serviceClassList").modal('hide');
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
 	});
 }
 

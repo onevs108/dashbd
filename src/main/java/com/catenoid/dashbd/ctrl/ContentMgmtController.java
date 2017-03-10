@@ -3,14 +3,12 @@ package com.catenoid.dashbd.ctrl;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
@@ -24,8 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,14 +36,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.dao.ContentsImagesMapper;
 import com.catenoid.dashbd.dao.ContentsMapper;
-import com.catenoid.dashbd.dao.ScheduleMapper;
-import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ContentsImages;
-import com.catenoid.dashbd.dao.model.FileDTO;
-import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.ContentService;
-import com.catenoid.dashbd.service.UserService;
 import com.google.gson.Gson;
 
 @Controller

@@ -59,6 +59,11 @@ public interface ScheduleMapper {
 	List<HashMap<String, String>> getGroupSaidList(HashMap<String, String> param);
 	List<HashMap<String, String>> selectBroadcastToday(String searchDate);
 	List<Map<String, String>> selectSchduleContentList(Map<String, String> params);
+	List<Map<String, String>> selectServiceClassList(HashMap<String, Object> params);
+	int selectServiceClassCount(HashMap<String, Object> params);
+	int insertServiceClass(HashMap<String, Object> params);
+	int selectServiceClass(HashMap<String, Object> params);
+	List<Map<String, String>> selectServiceClassAll();
     
     
 }

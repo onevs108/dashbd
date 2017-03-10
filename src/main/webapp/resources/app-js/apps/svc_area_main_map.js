@@ -79,16 +79,14 @@ function jsTreeSetting(openAllYn) {
 			    success : function(responseData) {
 			        $("#ajax").remove();
 			        var data = JSON.parse(responseData);
-			        
-			        if(data.resultList.length != 1) {
+			         
+			        if(data.resultList.length != 0) {
 				        $("#treeNode").jstree("destroy").empty();
 				        treeInit(data, openAllYn);
 			        } else {
-			        	$("li.root").remove();
 			        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
 			        		$("#search-input").val('');
 			        		$("#searchType").val('');
-			    			jsTreeSetting(false);
 			    		})
 			        }
 			        
@@ -340,8 +338,8 @@ function treeInit(data, openAllYn) {
 	for(var i=0; i < treeData.length; i++) {
 		var node = treeData[i];
 		
-		var tempChildCntStr = ' (' + node.childCntName + ')';
-		if(tempChildCntStr == ' ()') tempChildCntStr = '';
+		var tempChildCntStr = ' (<span name="childCnt">' + node.childCnt + '</span> ' + node.childCntName + ')';
+		if(tempChildCntStr == ' (<span name="childCnt"></span> )') tempChildCntStr = '';
 		
 		//root를 그려줌(Circles)
 		if(i == 0) {
@@ -404,6 +402,8 @@ function treeInit(data, openAllYn) {
 		})
 		.bind('ready.jstree', function(e, data) {
 			$(".jstree-icon.jstree-themeicon").remove();
+			
+			if($("#searchType").val() != '' && $("#search-input").val() != '') arrangeTreeSearchData();
 	    }).jstree({
 		    "conditionalselect" : function (node, event) {
 		      return false;
@@ -423,108 +423,36 @@ function treeInit(data, openAllYn) {
 	}
 }
 
-//$(document).on("keydown", "#search-input", function(event) {
-//	//Enter입력시에만 조회
-//	if(event.keyCode == 13) {
-//		searchTreeNode();
-//    }
-//})
+$(document).on("keydown", "#search-input", function(event) {
+	//Enter입력시에만 조회
+	if(event.keyCode == 13) {
+		searchTreeNode();
+    }
+})
 
 function searchTreeNode() {
 	var searchString = $("#search-input").val();
 	
 	if(searchString == '') {
 		$("#searchType").val('');
-//		$('#treeNode').jstree('search', searchString);
-		//제일 처음 노드 오픈
-//		$("#treeNode").jstree("open_node", $("#treeNode .root"));
+		jsTreeSetting(false);
+	} else {
+		jsTreeSetting(true);
 	}
-	jsTreeSetting(true);
 	
-//	} else {
-//		$('#treeNode').jstree('search', searchString);
-//		
-//		$(".jstree-ocl").remove();
-//        $('#treeNode li.newNode').remove();
-//        $('#treeNode li').removeClass("searchPNode");
-//        $('#treeNode li a.jstree-search').parents("li").addClass("searchPNode");
-//        $($('#treeNode li.root a')[0]).removeClass("jstree-search");
-//        
-//        if($("#searchType").val() != '') {
-//            var searchList = $('#treeNode li a.jstree-search');
-//            
-//        	for(var i=0; i < searchList.length; i++) {
-//            	var tempObj = $(searchList[i]).parent();
-//            	
-//            	if($("#searchType").val() == 'circle') {
-//            		if(!tempObj.hasClass('circle')) {
-//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-//            		}
-//            	} else if($("#searchType").val() == 'city') {
-//            		if(!tempObj.hasClass('city')) {
-//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-//            		}
-//            	} else if($("#searchType").val() == 'circleCity') {
-//            		if(tempObj.hasClass('hotspot')) {
-//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-//            		}
-//            	} else if($("#searchType").val() == 'hotspot') {
-//            		if(!tempObj.hasClass('hotspot')) {
-//            			$(tempObj.find("a")[0]).removeClass("jstree-search");
-//            		}
-//            	}
-//            	
-//            	if(!tempObj.find('a').hasClass('jstree-search') && $(tempObj).siblings().length != 0) {
-//            		if($(tempObj).siblings().find("a.jstree-search").length == 0) {
-//                		$($(tempObj).parents('li')[0]).removeClass("searchPNode");
-//                	}
-//            	}
-//            }
-//        }
-//        var test = $('#treeNode li').not('.searchPNode').find('a').not(".jstree-search").parent();
-//        for(var i=0; i < test.length; i++) {
-//        	var temp = $(test[i]);
-//        	
-//        	if($("#" + temp[0].id).length > 0)
-//        		$("#" + temp[0].id).remove()
-//        	
-//        }
-//	}
 	
-	//no data proccess
-//	if($("#treeNode li").not(".root").length == 0) {
-//		swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
-//			jsTreeSetting();
-//		})
+}
+
+//검색시 childCnt 정리 메소드
+function arrangeTreeSearchData() {
+	var searchResultList = $("#treeNode li").not(".newNode");
+	
+	for(var i=0; i < searchResultList.length; i++) {
+		var searchNode = $(searchResultList[i]);
 		
-//		$("#treeNode ul li").remove();
-//		$("#treeNode").append("<span>No Data</span>");
-//	} 
-	//custom input layer proccess
-//	else {
-//		var tempUlObjList = $("#treeNode ul");
-//		for(var i=0; i < tempUlObjList.length; i++) {
-//			var tempUlObj = $(tempUlObjList[i]);
-//			
-//			if(i == 0) 
-//				$("#treeNode li.root").append($("#treeNode li.root ul")[0]);
-//			else 
-//				tempUlObj.parent().append(tempUlObj)
-//		}
-//		
-//		$("#treeNode li a").not(".jstree-search").siblings("div[name='customDiv']").remove();
-//		
-//		var etcRemoveTargetList = $("#treeNode li").not(".root").find("a").not(".jstree-search");
-//		for(var i=0; i < etcRemoveTargetList.length; i++) {
-//			var tempObj = $(etcRemoveTargetList[i]).parent();
-//			
-//			if(tempObj.find("li").length == 0)
-//				tempObj.remove();
-//			
-//		}
-//	}
-	
-//	$(".jstree-icon.jstree-themeicon").remove();
+		if(i == 0) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
+		else if(!searchNode.hasClass("hotspot")) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length-1;
+	}
 }
 
 //메인 화면의 모달 로드
@@ -819,11 +747,18 @@ function drawServiceAreaByCity(circle) {
 	        	var cityCircle = new google.maps.Marker({
 		  	  	      map: map,
 		  	  	      position: data[city].center,
-		  	  	      icon : '/dashbd/resources/img/icon/ico_number_1_3.png',
+		  	  	      icon : {
+		  	  	    	  url:'/dashbd/resources/img/icon/ico_number_1_3.png',
+		  	  	    	  labelOrigin: new google.maps.Point(17, 17)
+		  	  	      },
 		  	  	      title: 'City Name : ' + data[city].city_name + "\nSAID : " + data[city].city_id,
 			  	  	  said:data[city].city_id,
 			  	  	  name:data[city].city_name,
-			  	  	  bandwidth:data[city].bandwidth
+			  	  	  bandwidth:data[city].bandwidth,
+			  	  	  label: {
+			  	  		  text: ''+ data[city].hotspotCnt,
+			  	  		  fontSize: '14px',
+			  	  	  }
 		  	  	});
 	        	
 	        	//매인 맵에 city circle을 넣어줄 경우
@@ -1013,8 +948,23 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 	} 
 	//Tree에서 추가 수정 삭제가 일어날 경우
 	else if(tabDiv == 'tree') {
+		var objLevel = $($(treeBtn).parents("li")[0]);
+		if(objLevel.hasClass('circle')) objLevel = 'circle';
+		else if(objLevel.hasClass('city')) objLevel = 'city';
+		else if(objLevel.hasClass('hotspot')) objLevel = 'hotspot';
+		
+		var blankObjName;
+		
+		if(treeBtn.innerHTML.toLowerCase() == 'add' && $($(treeBtn).parents("li")[0]).find("input[name='name']").val() == '') {
+			blankObjName = 'name';
+			$($(treeBtn).parents("li")[0]).find("input[name='name']").focus();
+		}
+		
 		$.each($($(treeBtn).parents("div[name='customDiv']")).find("input"), function(index, obj) {
 			if($(obj).val() == '') {
+				if(obj.name == 'lat') blankObjName = 'latitude';
+				else if(obj.name == 'lng') blankObjName = 'longitude';
+				else blankObjName = obj.name;
 				$(obj).focus();
 				ajaxYn = false;
 				return false;
@@ -1022,11 +972,6 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 		});
 		
 		if(ajaxYn) {
-			var objLevel = $($(treeBtn).parents("li")[0]);
-			if(objLevel.hasClass('circle')) objLevel = 'circle';
-			else if(objLevel.hasClass('city')) objLevel = 'city';
-			else if(objLevel.hasClass('hotspot')) objLevel = 'hotspot';
-			
 			var name;
 			
 			if(treeBtn.innerHTML.toLowerCase() == 'add') {
@@ -1127,7 +1072,7 @@ function serviceAreaProccess(tabDiv, div, treeBtn) {
 	} else {
 		swal({
           title: "Fail !",
-          text: "Insert Value"
+          text: "Please Insert the " + blankObjName + " of " + objLevel
         });
 	}
 }

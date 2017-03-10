@@ -2921,6 +2921,7 @@ public class ServiceAreaController {
 				jsonObj1.put("city_id", city.get("city_id"));
 				jsonObj1.put("city_name", city.get("city_name"));
 				jsonObj1.put("bandwidth", city.get("bandwidth"));
+				jsonObj1.put("hotspotCnt", city.get("hotspotCnt"));
 				citymap.put(city.get("city_id"), jsonObj1);
 			}
 		
@@ -3236,8 +3237,7 @@ public class ServiceAreaController {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			String group_id = request.getParameter("group_id");
 			String circle_id = request.getParameter("circle_id");
-			String main_yn = request.getParameter("main_yn");
-			String searchType = request.getParameter("searchType");
+			String searchType = (request.getParameter("searchType") == null)? "" : request.getParameter("searchType");
 			String searchInput = request.getParameter("searchInput");
 			
 			//circle group에 따라 해당 circle안의 데이터만 조회되도록 함
@@ -3249,17 +3249,86 @@ public class ServiceAreaController {
 			HashMap< String, Object > searchParam = new HashMap();
 			searchParam.put("group_id", group_id);
 			searchParam.put("circle_id", circle_id);
-			searchParam.put("main_yn", main_yn);
 			searchParam.put("searchType", searchType);
 			searchParam.put("searchInput", searchInput);
 			List<HashMap<String, Object>> resultList = mapper.getTreeNodeData(searchParam);
 				
 			if(resultList.size() > 0) {
+				if(!searchType.equals("")) {
+					//조회시 city나 hotspot으로 했을 경우 조건에 맞지 않는 값을 없애주는 부분
+					List<String> matchingNodeList = new ArrayList<String>();
+					if(searchType.equals("city") || searchType.equals("hotspot")) {
+						for(HashMap<String, Object> map : resultList) {
+							if(map.get("node_div").equals(searchType)) {
+								matchingNodeList.add(map.get("node_id").toString());
+							}
+						}
+						
+						if(matchingNodeList.size() == 0) {
+							resultList = new ArrayList();
+						} else {
+							if(searchType.equals("city")) {
+								for(int j=1; j < resultList.size(); j++) {
+									HashMap<String, Object> map = resultList.get(j);
+									boolean removeYn = true;
+									
+									for(int i=0; i < matchingNodeList.size(); i++) {
+										String tempNodeId = matchingNodeList.get(i);
+										String tempCircleId = tempNodeId.substring(0, tempNodeId.indexOf("B"));
+										
+										if(map.get("node_id").toString().indexOf(tempCircleId) != -1) {
+											removeYn = false;
+											break;
+										}
+									}
+									
+									if(removeYn) {
+										resultList.remove(j); 
+										j--;
+									}
+								}
+							} else if(searchType.equals("hotspot")) {
+								for(int j=1; j < resultList.size(); j++) {
+									HashMap<String, Object> map = resultList.get(j);
+									boolean removeYn = true;
+									
+									for(int i=0; i < matchingNodeList.size(); i++) {
+										String tempNodeId = matchingNodeList.get(i);
+										String tempCircleId = tempNodeId.substring(0, tempNodeId.indexOf("B"));
+										String tempCityId = tempNodeId.substring(0, tempNodeId.indexOf("C"));
+										
+										if(map.get("node_div").equals("circle")) {
+											if(map.get("node_id").toString().indexOf(tempCircleId) != -1) {
+												removeYn = false;
+												break;
+											}
+										} else if(map.get("node_div").equals("city")) {
+											if(map.get("node_id").toString().indexOf(tempCityId) != -1) {
+												removeYn = false;
+												break;
+											}
+										} else {
+											removeYn = false;
+											break;
+										}
+									}
+									
+									if(removeYn) {
+										resultList.remove(j); 
+										j--;
+									}
+								}
+							}
+						}
+					}
+				}
+				
 				resultObj.put("resultCode", "S");
-				resultObj.put("resultList", resultList);
 			} else {
 				resultObj.put("resultCode", "F");
 			}
+			
+			resultObj.put("resultList", resultList);
 			
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(resultObj.toJSONString());

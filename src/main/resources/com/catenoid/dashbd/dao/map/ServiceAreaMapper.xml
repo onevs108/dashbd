@@ -1516,9 +1516,9 @@
 	<select id="getTreeNodeData" parameterType="HashMap" resultType="HashMap">
 		SELECT result.node_id, result.pnode_id, result.name, result.node_div
 				, IF(sags.sub_said IS NULL, 0, 1) as checkYn, latitude, longitude, circle_id, bandwidth, childCnt
-				, CASE WHEN result.node_div = 'root' THEN CONCAT(childCnt, ' ', 'Areas')
-					   WHEN result.node_div = 'circle' THEN CONCAT(childCnt, ' ', 'Cities')
-					   WHEN result.node_div = 'city' THEN CONCAT(childCnt, ' ', 'Hotspotes')
+				, CASE WHEN result.node_div = 'root' THEN 'Areas'
+					   WHEN result.node_div = 'circle' THEN 'Cities'
+					   WHEN result.node_div = 'city' THEN 'Hotspotes'
 					   ELSE ''
 				  END as childCntName  
 		FROM (
@@ -1608,9 +1608,6 @@
 		WHERE 1=1
 		<if test="circle_id != null and circle_id != ''">
 			 AND result.circle_id = #{circle_id}
-		</if>
-		<if test="main_yn != null and main_yn != ''">
-			AND (result.node_div = 'root' OR result.node_div = 'circle')
 		</if>
 		ORDER BY node_id
 	</select>
