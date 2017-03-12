@@ -46,7 +46,7 @@
 	<script>
 		var serviceType = "${mapSchedule.service}";
 		var contentJson = ${contentList};
-		var serviceClassJson = ${serviceClassList};
+		
 		var viewMode = "${mode}";
 		$(document).ready(function() {
 			$("#serviceClass").val("${mapSchedule.serviceClass}");
@@ -330,8 +330,9 @@
                                  <label class="col-sm-2 control-label">Service class</label>
                              	    <div class="col-sm-3">
                              	    	<select type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass'>
-                             	    		<option>test1</option>
-                             	    		<option>test2</option>
+                             	    		<c:forEach var="row" items="${serviceClassList}">
+                             	    			<option value="${row.class_name}">${row.class_name}</option>
+                             	    		</c:forEach>
                              	    	</select>
                              	    </div>
                              	    <div class="col-sm-1">

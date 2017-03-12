@@ -64,6 +64,8 @@ public interface ScheduleMapper {
 	int insertServiceClass(HashMap<String, Object> params);
 	int selectServiceClass(HashMap<String, Object> params);
 	List<Map<String, String>> selectServiceClassAll();
+	int editServiceClass(HashMap<String, Object> params);
+	int deleteServiceClass(HashMap<String, Object> params);
     
     
 }

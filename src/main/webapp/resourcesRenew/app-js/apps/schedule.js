@@ -320,7 +320,7 @@ function getServiceClassList() {
 			sortable: false,
 			visible: true,
 			formatter: function(value, row, index) {
-				var html = '<input type="text" class="form-control" value="'+value+'">';
+				var html = '<input type="text" id="className'+row.id+'" class="form-control" value="'+value+'">';
 				return html;
 			}
 		},{
@@ -332,11 +332,11 @@ function getServiceClassList() {
 			sortable: false,
 			visible: true,
 			formatter: function(value, row, index) {
-				var html = '<input type="text" class="form-control" value="'+value+'">';
+				var html = '<input type="text" id="description'+row.id+'" class="form-control" value="'+value+'">';
 				return html;
 			}
 		}, {
-			field: 'sort_key',
+			field: 'id',
 			title: 'command',
 			width: '20%',
 			align: 'center',
@@ -344,20 +344,32 @@ function getServiceClassList() {
 			sortable: false,
 			visible: true,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" class="btn btn-primary btn-sm" onclick=actionClass("Edit")>Edit</button>&nbsp;';
-					html += '<button type="button" class="btn btn-danger btn-sm" onclick=actionClass("Delete")>Delete</button>';
+				var html = '<button type="button" class="btn btn-primary btn-sm" onclick="actionClass(\'edit\', '+row.id+')">Edit</button>&nbsp;';
+					html += '<button type="button" class="btn btn-danger btn-sm" onclick="actionClass(\'delete\', '+row.id+')">Delete</button>';
 				return html;
 			}
 		}]
 	});
 }
 
-function actionClass(type) {
-	if(type == "Edit") {
-		alert("Edit");
-	} else { 
-		alert("Delete");
-	}
+function actionClass(type, id) {
+	var className = $("#className"+id).val();
+	var description = $("#description"+id).val();
+	$.ajax({
+		type : "POST",
+		url : "actionServiceClass.do",
+		data : {id: id, className: className, description: description, type: type},
+		dataType : "json",
+		success : function( data ) {
+			if(data.result == "SUCCESS") {
+				getServiceClassList();
+				setServiceClassView();
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
 }
 
 function closeClassModal() {
@@ -395,7 +407,6 @@ function setServiceClassView() {
 				html += "<option value='"+data.rows[i].class_name+"'>"+data.rows[i].class_name+"</option>";
 			}
 			$("#serviceClass").html(html);
-			$("#serviceClassList").modal('hide');
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);

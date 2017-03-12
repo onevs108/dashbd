@@ -392,7 +392,7 @@ public class ScheduleMgmtController {
 		int offset = Integer.parseInt(String.valueOf(params.get("offset")));
 		int limit = Integer.parseInt(String.valueOf(params.get("limit")));
 		params.put("page", offset);
-		params.put("perPage", limit+offset);
+		params.put("perPage", limit);
 		
         JSONObject jsonResult = new JSONObject();
 		
@@ -424,6 +424,25 @@ public class ScheduleMgmtController {
 		org.json.JSONArray json = new org.json.JSONArray(str);
 		
 		jsonResult.put("rows", json);
+		
+		return jsonResult.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping( value = "/view/actionServiceClass.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String actionServiceClass(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		if(params.get("type").equals("edit")){
+			mapper.editServiceClass(params);
+		}else{
+			mapper.deleteServiceClass(params);
+		}
+		
+		jsonResult.put("result", "SUCCESS");
 		
 		return jsonResult.toString();
 	}

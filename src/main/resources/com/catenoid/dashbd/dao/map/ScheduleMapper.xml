@@ -222,6 +222,17 @@
 		from service_class
 	</select>
 	
+	<update id="editServiceClass" parameterType="java.util.Map">
+		update service_class
+		set class_name = #{className}, description = #{description} 
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteServiceClass" parameterType="java.util.Map">
+		delete from service_class
+		where id = #{id}
+	</delete>
+	
 	<select id="selectServiceClassCount" parameterType="java.util.Map" resultType="int">
 		SELECT count(*)
 		FROM 
