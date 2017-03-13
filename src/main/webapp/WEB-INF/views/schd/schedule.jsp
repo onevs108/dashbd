@@ -340,7 +340,7 @@
                              	    </div>
                              	 <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service id</label>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}">
+                                        <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}" onclick="openServiceIdModal()">
                                     </div>
                              </div>
                                 <div class="hr-line-dashed" style="margin-top:-10px; padding-bottom:15px;"></div>
@@ -669,6 +669,7 @@
 	</div><!-- end page-wrapper -->
 	<jsp:include page="contentList.jsp"></jsp:include>
 	<jsp:include page="serviceClassList.jsp"></jsp:include>
+	<jsp:include page="serviceIdList.jsp"></jsp:include>
 </div><!-- end wrapper -->
 
 </body>

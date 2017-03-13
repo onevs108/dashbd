@@ -348,10 +348,12 @@ public class ScheduleMgmtController {
 		Map<String, String> mapSchedule = mapper.selectSchduleTime(params);
 		List<Circle> circleList = operatorMapper.selectCircleListAll();
 		List<Map<String, String>> serviceClassList = mapper.selectServiceClassAll();
+		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
+		int serviceIdIdx = mapper.selectServiceIdIdx();
 		
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
 			mode = "new";
-			mapSchedule.put("service_name", "testService");
+			mapSchedule.put("service_name", mapSchedule.get("content_name"));
 			mapSchedule.put("language", "en");
 			mapSchedule.put("GBR", "1000");
 			mapSchedule.put("QCI", "1");
@@ -377,15 +379,87 @@ public class ScheduleMgmtController {
 		mv.addObject("circleList", circleList);
 		mv.addObject("contentList", str);
 		mv.addObject("serviceClassList", serviceClassList);
+		mv.addObject("serviceIdList", serviceIdList);
+		mv.addObject("serviceIdIdx", serviceIdIdx);
 		mv.addObject("mapContentUrl", mapContentUrl);
 		mv.addObject("mapSchedule", mapSchedule);
 		return mv;
 	}
 	
 	@SuppressWarnings("unchecked")
+	@RequestMapping( value = "/view/getServiceIdTable.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String getServiceIdTable(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+        
+		int offset = Integer.parseInt(String.valueOf(params.get("offset")));
+		int limit = Integer.parseInt(String.valueOf(params.get("limit")));
+		params.put("page", offset);
+		params.put("perPage", limit);
+		
+        JSONObject jsonResult = new JSONObject();
+		
+        List<Map<String, String>> serviceIdList = mapper.selectServiceIdList(params);
+		
+		Gson gson = new Gson();
+		String str = gson.toJson(serviceIdList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
+		
+		jsonResult.put("rows", json);
+		jsonResult.put("total", mapper.selectServiceIdCount(params));
+		
+		return jsonResult.toString();
+	}
+	
+	@RequestMapping( value = "/view/checkServiceId.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String checkServiceId(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		if(mapper.checkServiceId(params) > 0){
+			return "SUCCESS";
+		} 
+		
+		return "EXIST";
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping( value = "/view/insertServiceId.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String insertServiceId(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		params.put("page", 0);
+		params.put("perPage", 5);
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		int check = mapper.selectServiceId(params);
+		if(check == 0){
+			int result = mapper.insertServiceId(params);
+			if(result == 1) {
+				List<Map<String, String>> serviceClassList = mapper.selectServiceIdList(params);
+				Gson gson = new Gson();
+				String str = gson.toJson(serviceClassList);
+				org.json.JSONArray json = new org.json.JSONArray(str);
+				jsonResult.put("rows", json);
+				jsonResult.put("total", mapper.selectServiceClassCount(params));
+			}
+		} else {
+			jsonResult.put("result", "EXIST");
+		}
+		
+		return jsonResult.toString();
+		
+	}
+	
+	@SuppressWarnings("unchecked")
 	@RequestMapping( value = "/view/getServiceClassTable.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
-	public String getContentTable(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
+	public String getServiceClassTable(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
         
@@ -418,6 +492,26 @@ public class ScheduleMgmtController {
 		JSONObject jsonResult = new JSONObject();
 		
 		List<Map<String, String>> serviceClassList = mapper.selectServiceClassAll();
+		
+		Gson gson = new Gson();
+		String str = gson.toJson(serviceClassList);
+		org.json.JSONArray json = new org.json.JSONArray(str);
+		
+		jsonResult.put("rows", json);
+		
+		return jsonResult.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping( value = "/view/selectServiceIdAll.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String selectServiceIdAll(HttpServletRequest req) {
+		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		List<Map<String, String>> serviceClassList = mapper.selectServiceIdAll();
 		
 		Gson gson = new Gson();
 		String str = gson.toJson(serviceClassList);
@@ -608,6 +702,8 @@ public class ScheduleMgmtController {
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
+				//서비스ID 숫자 증가
+				ret = mapper.updateServiceIdIdx();
 				
 				//schedule start 갯수만큼
 				for (int i = 0; i < paramList.get(0).size(); i++) {	

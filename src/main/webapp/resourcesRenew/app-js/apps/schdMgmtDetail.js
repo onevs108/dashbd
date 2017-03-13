@@ -42,7 +42,7 @@ $(document).ready(function() {
 	$("#go-search").click(function() {
 		loadContentList();
 	});
-
+	
 });
 
 	
@@ -214,7 +214,7 @@ function getContents(data, page){
 }
 	
 	
-function setTimeTable(data ){
+function setTimeTable(data){
 	var tmpServiceAreaId = $("#serviceAreaId").val();
 	var tmpbmscId = $("#bmscId").val();
 	var searchDate = $("#searchDate").val();
@@ -225,7 +225,7 @@ function setTimeTable(data ){
 	var schedule;
 	var now = moment(); 
 	var clrBackPassSchd = '#dddddd'		,clrTxtPassSchd 	= '#787A7C'		,clrBrdPassSchd = '#bbbbbb';
-	var clrBackPassSchdBMSC='#888888'	,clrTxtPassSchdBMSC	= '#787A7C'	,clrBrdPassSchdBMSC	= '#bbbbbb'; 
+	var clrBackPassSchdBMSC='#888888'	,clrTxtPassSchdBMSC	= '#787A7C'	,clrBrdPassSchdBMSC	= '#bbbbbb';
 	
 	var clrBackCurrSchd = '#23C6C8'		,clrTxtCurrSchd 	= '#ecf0f1'		,clrBrdCurrSchd = '#318E8F';
 	var clrBackCurrSchdBMSC='#22893E'	,clrTxtCurrSchdBMSC	= '#ecf0f1'	,clrBrdCurrSchdBMSC	= '#024B16';
@@ -435,7 +435,9 @@ function setTimeline(calView) {
     .css('width',width+"px")
     .css('left',left+"px")
     .css('top',top+"px") 
-
+    
+    $(".fc-time-grid-container").animate({scrollTop : top - top/3}, 400);	//최초 스크롤 위치 조정
+    $(".fc-widget-content").css("background-color", "white");				//달력 배경 흰색으로
 }
 
 function modifySchedule(url, startTime, endTime){

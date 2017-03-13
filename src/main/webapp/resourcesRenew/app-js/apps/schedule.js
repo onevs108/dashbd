@@ -287,6 +287,7 @@ function getContentList() {
 		}]
 	});
 }
+
 function getServiceClassList() {
 	$('#classTable').bootstrapTable('destroy');
 	var pageNumber = 1;
@@ -352,6 +353,75 @@ function getServiceClassList() {
 	});
 }
 
+function getServiceIdList() {
+	$('#idTable').bootstrapTable('destroy');
+	var pageNumber = 1;
+	var table = $('#idTable').bootstrapTable({
+		method: 'post',
+		url: 'getServiceIdTable.do',
+		contentType: 'application/json',
+		dataType: 'json',
+		queryParams: function(params) {
+			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+//			params['pageNumber'] = (params.offset / params.limit) + 1;
+			return params;
+		},
+		cache: false,
+		pagination: true,
+		sidePagination: 'server',
+		pageNumber: pageNumber,
+		pageSize: 5,
+		search: false,
+		showHeader: true,
+		showColumns: false,
+		showRefresh: false,
+		minimumCountColumns: 3,
+		clickToSelect: false,
+		columns: [{
+			field: 'id_name',
+			title: 'Id Name',
+			width: '40%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true,
+			formatter: function(value, row, index) {
+				var html = '<input type="text" id="className'+row.id+'" class="form-control" value="'+value+'">';
+				return html;
+			}
+		}, {
+			field: 'description',
+			title: 'Description',
+			width: '40%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true,
+			formatter: function(value, row, index) {
+				var html = '<input type="text" id="description'+row.id+'" class="form-control" value="'+value+'">';
+				return html;
+			}
+		}, {
+			field: 'id',
+			title: 'command',
+			width: '20%',
+			align: 'center',
+			valign: 'middle',
+			sortable: false,
+			visible: true,
+			formatter: function(value, row, index) {
+				var html = '<button type="button" class="btn btn-primary btn-sm" onclick="actionClass(\'edit\', '+row.id+')">Edit</button>&nbsp;';
+				html += '<button type="button" class="btn btn-danger btn-sm" onclick="actionClass(\'delete\', '+row.id+')">Delete</button>';
+				return html;
+			}
+		}]
+	});
+}
+
+function openServiceIdModal() {
+	$("#serviceIdList").modal();
+}
+
 function actionClass(type, id) {
 	var className = $("#className"+id).val();
 	var description = $("#description"+id).val();
@@ -376,6 +446,10 @@ function closeClassModal() {
 	$("#serviceClassList").modal('hide');
 }
 
+function closeIdModal() {
+	$("#serviceIdList").modal('hide');
+}
+
 function addClass() {
 	$.ajax({
 		type : "POST",
@@ -389,6 +463,44 @@ function addClass() {
 				getServiceClassList();
 				setServiceClassView();
 			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
+
+function addId() {
+	$.ajax({
+		type : "POST",
+		url : "insertServiceId.do",
+		data : {idName: $("#idName").val(), idDescription: $("#idDescription").val()},
+		dataType : "json",
+		success : function( data ) {
+			if(data.result == "EXIST") {
+				alert("ID name is already exist!");
+			}else{
+				getServiceIdList();
+				setServiceIdView();
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
+
+function setServiceIdView() {
+	$.ajax({
+		type : "POST",
+		url : "selectServiceIdAll.do",
+		dataType : "json",
+		success : function( data ) {
+			var html = "";
+			for (var i = 0; i < data.rows.length; i++) {
+				html += "<option value='"+data.rows[i].id_name+"'>"+data.rows[i].id_name+"</option>";
+			}
+			$("#selectServiceId").html(html);
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
