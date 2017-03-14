@@ -7,15 +7,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>System Mgmt</title>
 	
-	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
 	<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-	<link href="css/plugins/iCheck/custom.css" rel="stylesheet">
-	<link href="css/animate.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
-	<link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/plugins/iCheck/custom.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/animate.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/style.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 	
 	<!-- FooTable -->
-	<link href="../resources/css/plugins/footable/footable.core.css" rel="stylesheet">
+	<link href="../resourcesRenew//css/plugins/footable/footable.core.css" rel="stylesheet">
 	
 	<script src="js/jquery-2.1.1.js"></script>
 	<script src="js/jquery.cookie.js"></script>
@@ -41,7 +41,7 @@
 	<link href="css/plugins/chartist/chartist.min.css" rel="stylesheet">
 	<script src="js/plugins/chartist/chartist.min.js"></script>
 	<script src="/dashbd/resources/app-js/apps/svc_systemConf.js"></script>
-	<script src="../resources/js/common.js"></script>
+	<script src="/dashbd/resources/js/common.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.footable').footable();
@@ -49,9 +49,12 @@
 			getMenuList('SYSTEM_CONF_MGMT');
 			
 			if('${sessionCntsessionHostNameCnt}' == 'nexdream'){
+				
+			}else{
 				$("#viewApp1").show();
+				$("#viewApp2").hide();
 				$("#appView1").css("opacity", "1");
-				$("#appView2").css("opacity", "0.7");
+				$("#appView2").css("opacity", "0.6");
 				
 				$('#tomCheck1').prop("checked", true);
 				$('#dbCheck1').prop("checked", true);
@@ -62,9 +65,6 @@
 				$('#dbCheck2').attr("disabled", true);
 				$("#tomCheck2").prop("checked",false);
 				$("#dbCheck2").prop("checked",false);
-			}else{
-				$("#viewApp1").hide();
-				alert("연결 가능한 서버가 없습니다.");
 			}
 		});
 	</script>
@@ -152,20 +152,7 @@
 </head>
 <body>
 <div id="wrapper">
-	<nav class="navbar-default navbar-static-side" role="navigation">
-		<div class="sidebar-collapse">
-			<ul class="nav metismenu" id="side-menu">
-				<li class="nav-header">
-					<div class="dropdown profile-element">
-						<a href="/d	ashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
-					</div>
-					<div class="logo-element">
-						<img src="/dashbd/resources/img/logo2.png">
-					</div>
-				</li>
-			</ul>
-		</div>
-	</nav>
+	<jsp:include page="common/leftTab.jsp" />
 	<div id="page-wrapper" class="gray-bg">
 		<!-- content header -->
 		<div class="row border-bottom">
@@ -246,6 +233,15 @@
 					    	<div class="row">
 					            <div class="col-sm-12" style="width:100%">
 					                <table class="table2 custom-table" style="text-align: center;width:100%;">
+					                	<thead>
+					                		<tr height="70px;">
+												<th width="20%"></th>
+												<th width="15%" style="text-align: center;">Active Server</th>
+												<th width="20%"></th>
+												<th width="15%" style="text-align: center;">Standby Server</th>
+												<th width="20%"></th>
+											</tr>
+					                	</thead>
 										<tbody>
 											<tr>
 												<td width="20%"></td>
@@ -257,7 +253,7 @@
 														<label></label>
 													</div>
 													</h4>
-													<br /><br />
+													<br/><br/>
 													<img src="img/mysql2.png" width="50px">
 													<h4 class="text-center" style="height:20px;">MySQL Status 
 													<div class="checkbox checkbox-inline">
@@ -267,12 +263,12 @@
 													</h4>
 												</td>
 												<td width="20%">
-													<div id="viewApp1" style="display:nchone;">
-														Move the Activer Server to APP#2 <br><br>
+													<div id="viewApp1">
+														Turn Over <br><br>
 														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(2, 1)">▷▶</button>
 													</div>
-													<div id="viewApp2" style="display:none;">
-														Move the Activer Server to APP#1 <br><br>
+													<div id="viewApp2">
+														Turn Over <br><br>
 														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(1, 2)">◀◁</button>
 													</div>
 												</td>
@@ -282,9 +278,9 @@
 													<div class="checkbox checkbox-inline">
 														<input type="checkbox" id="tomCheck2" name="tomCheck2" value="2" onclick="checkTomcat(2);" disabled/>
 														<label></label>
-													</div> 
+													</div>
 													</h4>
-													<br /><br />
+													<br/><br/>
 													<img src="img/mysql2.png" width="50px">
 													<h4 class="text-center" style="height:20px;">MySQL Status 
 													<div class="checkbox checkbox-inline">

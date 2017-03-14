@@ -436,11 +436,11 @@ function setTimeline(calView) {
     .css('left',left+"px")
     .css('top',top+"px") 
     
-    $(".fc-time-grid-container").animate({scrollTop : top - top/3}, 400);	//최초 스크롤 위치 조정
+    $(".fc-time-grid-container").animate({scrollTop : top - top/4}, 400);	//최초 스크롤 위치 조정
     $(".fc-widget-content").css("background-color", "white");				//달력 배경 흰색으로
 }
 
-function modifySchedule(url, startTime, endTime){
+function modifySchedule(url, startTime, endTime) {
 	
 	var id = url.substring(url.indexOf("=")  + 1, url.indexOf("&BCID"));
 	var BCID = url.substring(url.indexOf("&BCID=") + 6);

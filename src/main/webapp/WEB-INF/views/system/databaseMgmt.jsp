@@ -8,11 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BM-SC Management</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/style.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
 
 	<script src="js/jquery-2.1.1.js"></script>
@@ -30,38 +30,28 @@
 			getDatabaseList();
 		});
 	</script>
+	
+	<style type="text/css">
+		td {
+			font-size: 13px;
+		}
+		.th-inner {
+			font-size: 13px;
+		}
+	</style>
+
 </head>
-
 <body>
-
 <div id="wrapper">
-
-    <!-- sidebar -->
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-				<li class="nav-header">
-					<div class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="img/logo_small.png"></a>
-					</div>
-					<div class="logo-element">
-						<img src="img/logo2.png">
-					</div>
-				</li>
-            </ul>
-        </div>
-    </nav><!-- sidebar end -->
-
-    <!-- content -->
+	<jsp:include page="../common/leftTab.jsp" />
     <div id="page-wrapper" class="gray-bg">
-
         <!-- content header -->
         <div class="row border-bottom">
 			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 				<div class="navbar-header" style="padding-bottom: 10px;">
 					<h2 style="margin-left: 15px;"><strong>System Mgmt - DB Backup & Restore</strong></h2>
 					<span style="margin-left: 15px;">
-						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> System Mgmt / DB Backup & Restore</strong>
+						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong>System Mgmt / DB Backup & Restore</strong>
 					</span>
 				</div><!-- end navbar-header -->
 		        

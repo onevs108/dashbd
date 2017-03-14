@@ -91,9 +91,8 @@
 			type : "POST",
 			url : "checkServiceId.do",
 			data : {serviceId: $("#serviceId_M").val()},
-			dataType : "json",
 			success : function( data ) {
-				if(data.result == "SUCCESS") {
+				if(data == "SUCCESS") {
 					$("#serviceId").val($("#serviceId_M").val());
 					$("#serviceIdList").modal('hide');
 				}else{
