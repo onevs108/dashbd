@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -34,6 +35,7 @@ import com.catenoid.dashbd.dao.StatusNotifyMapper;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.StatusNotifyWithBLOBs;
 import com.catenoid.dashbd.dao.model.Users;
+import com.catenoid.dashbd.service.UserService;
 
 import catenoid.net.msg.XmlPara;
 import catenoid.net.msg.XmlParaSet;
@@ -53,7 +55,10 @@ public class HomeController {
 	private Environment env;
 		
 	@Autowired
-	private SqlSession sqlSession;
+	private SqlSession sqlSession; 
+	
+	@Autowired
+	private UserService userServiceImpl;
 	
 	/**
 	 * 로그인 페이지 이동
@@ -93,13 +98,63 @@ public class HomeController {
 	@RequestMapping(value = "/loginfail.do", method = RequestMethod.GET)
 	public String doLoginFail(
 			@RequestParam(value = "cause", required = true) Integer cause,
+			HttpServletRequest request,
 			ModelMap modelMap) {
 		logger.info("-> [cause = {}]", cause);
 		
 		modelMap.put("cause", cause);
+		modelMap.put("userId", request.getSession().getAttribute("userId"));
+		request.getSession().invalidate();
 		
 		logger.info("<- [cause = {}]", cause);
 		return "login_fail";
+	}
+	
+	/**
+	 * 패스워드 변경 페이지 이동
+	 * 
+	 * @author iskwon
+	 */
+	@RequestMapping(value = { "/", "/change_password.do" }, method = RequestMethod.POST, headers = "Content-Type=application/x-www-form-urlencoded")
+	public String change_password(HttpServletRequest request, ModelMap modelMap) {
+		modelMap.put("userId", request.getParameter("userId"));
+		return "change_password";
+	}
+	
+	/**
+	 * 사용자 비밀번호 변경
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/changePassword.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String changePassword(HttpServletRequest request) {
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		try {
+			String userId = request.getParameter("userId");
+			String password = request.getParameter("password");
+			
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			param.put("userId", userId);
+			param.put("password", password);
+			param.put("status", "normal");
+			
+			int resultCnt = userServiceImpl.initPassword(param);
+			
+			if(resultCnt > 0) {
+				jsonResult.put("resultCode", "S");
+			} else {
+				jsonResult.put("resultCode", "F");
+				logger.error("<- User Password Init Fail! : [jsonResult = {}]", jsonResult.toString());
+			}
+		} catch(Exception e) {
+			jsonResult.put("resultCode", "F");
+			logger.error("<- User Password Init Fail! : " + e.getMessage());
+		}
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
 	}
 	
 	/**
@@ -173,9 +228,9 @@ public class HomeController {
 //				menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_CLASS_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/view/schdMgmt.do'><i class='fa fa-desktop'></i> <span class='nav-label'>Service Class Mgmt</span><span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SESSION_MONITORING) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Sessions Monitoring</span><span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>System Mgmt</span><span class='fa arrow'></span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
-				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">DB Backup & Restore</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Log</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System View</span></a></li>");
+				menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Database Backup</span></a></li>");
 			}
 			else {
 				for (Permission permission : permissions) {
@@ -206,11 +261,12 @@ public class HomeController {
 //						menuHtml.append(currentMenu.equals(Const.MENU_SERVICE_CLASS_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href=\"/dashbd/view/schdMgmt.do\"><i class='fa fa-desktop'></i> <span class='nav-label'>Service Class Mgmt</span><span class='fa arrow'></span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_SESSION_MONITORING))
 						menuHtml.append(currentMenu.equals(Const.MENU_SESSION_MONITORING) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='#'><i class='fa fa-desktop'></i> <span class='nav-label'>Sessions Monitoring</span><span class='fa arrow'></span></a></li>");
-					else if (permission.getRole().equals(Const.ROLE_SYSTEM_MGMT))
+					else if (permission.getRole().equals(Const.ROLE_SYSTEM_MGMT)) {
 						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"#\"><i class=\"fa fa-th-large\"></i> <span class=\"nav-label\">System Mgmt</span></a></li>");
-						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
-						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System Config</span></a></li>");
-						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">DB Backup & Restore</span></a></li>");
+						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Log</span></a></li>");
+						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemConfMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">System View</span></a></li>");
+						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemDbMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Database Backup</span></a></li>");
+					}
 //					else if (permission.getRole().equals(Const.ROLE_SYSTEM_STAT_MGMT))
 //						menuHtml.append(currentMenu.equals(Const.MENU_SYSTEM_STAT_MGMT) ? "<li class=\"landing_link\">" : "<li style=\"font-size: 12px !important;\">").append("<a href=\"/dashbd/resources/systemMgmt.do\">&nbsp;&nbsp;&nbsp;&nbsp;<i class=\"fa fa-bar-chart\"></i> <span class=\"nav-label\">Statistic</span></a></li>");
 //					else if (permission.getRole().equals(Const.ROLE_SYSTEM_CONF_MGMT))
