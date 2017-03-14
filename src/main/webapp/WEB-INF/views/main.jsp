@@ -66,7 +66,7 @@
 								<div class="ibox-content">
 									<div class="row">
 										<form class="form-horizontal">
-											<input type="hidden" id="circleListStr" value="all">
+											<input type="hidden" id="choiceTreeStr" value="all">
 											<div class="col-lg-8">
 												<div class="form-group">
 													<label class="col-sm-2 control-label">Service Type</label>
@@ -325,7 +325,7 @@
 					params.searchDateFrom = $("#searchDateFrom").val();
 					params.searchDateTo = $("#searchDateTo").val();
 					params.searchKeyword = $("#searchKeyword").val();
-					params.circleListStr = $("#circleListStr").val();
+					params.choiceTreeStr = $("#choiceTreeStr").val();
 // 					if(initYn) {
 // 						params.searchDateFrom = '';
 // 						params.searchDateTo =  '';
@@ -518,7 +518,8 @@
 				    	searchSchedule : $("form input[type='radio'][name='searchSchedule']:checked").val(),
 				    	searchDateFrom : $("#searchDateFrom").val(),
 				    	searchDateTo : $("#searchDateTo").val(), 
-				    	searchKeyword : $("#searchKeyword").val()
+				    	searchKeyword : $("#searchKeyword").val(),
+				    	choiceTreeStr : $("#choiceTreeStr").val()
 				    },
 				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 				    success : function(responseData) {
@@ -594,22 +595,32 @@
 			$("#circleModal").modal('show');
 		}
 		
-		function jsTreeSetting() {
-			$.getScript( "/dashbd/resources/js/plugins/jsTree/jstree.min.js" )
+		function jsTreeSetting(openAllYn) {
+			$.getScript( "/dashbd/resourcesRenew/js/plugins/jsTree/jstree.min.js" )
 				.done(function( script, textStatus ) {
 					$.ajax({
 					    url : "/dashbd/api/getTreeNodeData.do",
 					    type: "POST",
 					    data : { 
-					    	circle_id : ''
+					    	gruop_id : '',
+					    	searchType : $("#searchType").val(),
+					    	searchInput : $("#search-input").val()
 					    },
 					    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 					    success : function(responseData) {
 					        $("#ajax").remove();
 					        var data = JSON.parse(responseData);
+					         
+					        if(data.resultList.length != 0) {
+						        $("#treeNode").jstree("destroy").empty();
+						        treeInit(data, openAllYn);
+					        } else {
+					        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
+					        		$("#search-input").val('');
+					        		$("#searchType").val('');
+					    		})
+					        }
 					        
-					        $("#treeNode").jstree("destroy").empty();
-					        treeInit(data);
 					    },
 				        error : function(xhr, status, error) {
 				        	swal({
@@ -622,28 +633,32 @@
 		}
 		
 		//jsTree Init Function
-		function treeInit(data) {
+		function treeInit(data, openAllYn) {
 			var treeData = data.resultList;
 			for(var i=0; i < treeData.length; i++) {
 				var node = treeData[i];
 				
+				var tempChildCntStr = ' (<span name="childCnt">' + node.childCnt + '</span> ' + node.childCntName + ')';
+				if(tempChildCntStr == ' (<span name="childCnt"></span> )') tempChildCntStr = '';
+				
 				//root를 그려줌(Circles)
 				if(i == 0) {
-					$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
+					$('#treeNode').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + tempChildCntStr + '</li></ul>');
 					continue;
 				}
 				
 				//현재 붙여넣어 줄 노드의 구분값을 판단하여 그에 따른 상위 노드만 모아서 부모 노드를 찾음
 				var divClass = '';
 				if(node.node_div == 'circle') divClass='root';
-				else divClass='circle';
+				else if(node.node_div == 'city') divClass='circle';
+				else if(node.node_div == 'hotspot') divClass='city';
 				
 				for(var j=0; j < $('#treeNode li.' + divClass).length; j++) {
 					var compareNode = $('#treeNode li.' + divClass)[j];
 					
-					if($(compareNode).attr("data-init") == node.pnode_id) {
-						
-						var liStr = '<li class="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' + node.latitude + '" data-lng="' + node.longitude + '">' + node.name + '</li>';
+					if($(compareNode).attr("data-init") == node.pnode_id) { 
+						var liStr = '<li class="' + node.node_div + '" title="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' 
+									+ node.latitude + '" data-lng="' + node.longitude + '" data-band="' + node.bandwidth + '">' + node.name + tempChildCntStr + '</li>';
 						
 						if($(compareNode).html().indexOf("ul") == -1) {
 							$(compareNode).append('<ul>' + liStr + '</ul>');
@@ -656,37 +671,100 @@
 				}
 			}
 			
-			$('#treeNode').bind('ready.jstree', function (event, data) {
-				$('#treeNode ul li').each(function() {
-			        $("#treeNode").jstree('check_node', $(this));
-			    });
-			})
-			.jstree({"checkbox" : {
-			      "keep_selected_style" : false,
-// 			      "three_state": false
-			       },
-			      'plugins':["checkbox"]
-			    });
+			$("#treeNode")
+				.bind('before_open.jstree', function(evt, data) {
+					$(".jstree-icon.jstree-themeicon").remove();
+					
+					if(data.node.openYn == undefined) {
+						if(data.node.data.init == 'A') $(".jstree").jstree('select_node', this);
+						$("#" + data.node.id + " li[role=treeitem]").each(function () {
+						     $(".jstree").jstree('select_node', this);
+						});	
+					}
+					
+					data.node.openYn = 'Y';
+				})
+				.bind('ready.jstree', function(e, data) {
+					$(".jstree-icon.jstree-themeicon").remove();
+					
+					if($("#searchType").val() != '' && $("#search-input").val() != '') arrangeTreeSearchData();
+			    }).jstree({
+			    	"checkbox" : {
+			  	      "keep_selected_style" : false,
+			  	      "three_state": false
+			  	    },
+				    "plugins" : [ "checkbox"]
+				  });
 			
-			//제일 처음 노드 오픈
-			$("#treeNode").jstree("open_node", $($("#treeNode li")[0]));
+			if(!openAllYn) {
+				//제일 처음 노드 오픈
+				$("#treeNode").jstree("open_node", $("#treeNode .root"));
+			} else {
+				$("#treeNode").jstree("open_all");
+			}
+		}
+
+		$(document).on("keydown", "#search-input", function(event) {
+			//Enter입력시에만 조회
+			if(event.keyCode == 13) {
+				searchTreeNode();
+		    }
+		})
+
+		function searchTreeNode() {
+			var searchString = $("#search-input").val();
+			
+			if(searchString == '') {
+				$("#searchType").val('');
+				jsTreeSetting(false);
+			} else {
+				jsTreeSetting(true);
+			}
+		}
+
+		//검색시 childCnt 정리 메소드
+		function arrangeTreeSearchData() {
+			var searchResultList = $("#treeNode li");
+			
+			for(var i=0; i < searchResultList.length; i++) {
+				var searchNode = $(searchResultList[i]);
+				
+				if(i == 0) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
+				else if(!searchNode.hasClass("hotspot")) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
+			}
 		}
 		
 		function choiceArea() {
 			var circleListStr = '';
+			var cityListStr = '';
+			var hotspotListStr = '';
 			
 			var allNode = $("#treeNode ul li").not(".root");			
 			for(var i=0; i < allNode.length; i++) {
 				var tempObj = $(allNode[i]);
 				
-				if(tempObj.find("a").hasClass("jstree-clicked")) {
-					circleListStr += ',' + tempObj.attr("data-init").substring(1);
+				if($(tempObj.find("a")[0]).hasClass("jstree-clicked")) {
+					if(tempObj.hasClass("circle")) {
+						circleListStr += ',' + tempObj.attr("data-init").substring(1);
+					} else if(tempObj.hasClass("city")) {
+						cityListStr += ',' + tempObj.attr("data-init").substring(tempObj.attr("data-init").indexOf("B")+1);
+					} else if(tempObj.hasClass("hotspot")) {
+						hotspotListStr += ',' + tempObj.attr("data-init").substring(tempObj.attr("data-init").indexOf("C")+1);
+					}
 				}
 			}
 			
-			circleListStr = circleListStr.substring(1); 
-			$("#circleListStr").val(circleListStr);
+			circleListStr = circleListStr.substring(1);
+			cityListStr = cityListStr.substring(1); 
+			hotspotListStr = hotspotListStr.substring(1); 
 			
+			var param = {
+				circleListStr : circleListStr,
+				cityListStr : cityListStr,
+				hotspotListStr : hotspotListStr
+			}
+			
+			$("#choiceTreeStr").val(JSON.stringify(param));
 			$("#circleModal").modal("hide");
 		}
 		

@@ -7,7 +7,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content animated bounceInRight">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">
+				<button type="button" class="close" data-dismiss="modal" onclick="choiceArea()">
 					<span aria-hidden="true">&times;</span><span
 						class="sr-only">Close</span>
 				</button>
@@ -18,6 +18,32 @@
 					<fieldset>
 						<div class="row">
 							<div class="col-lg-12">
+								<div class="col-xs-4">
+									<div class="form-group">
+										<select id="searchType" name="searchType" class="form-control">
+		                                    <option value="">Select</option>
+		                                    <option value="circle">Area</option>
+		                                    <option value="city">City</option>
+		                                    <option value="circleCity">Area &amp; City</option>
+		                                    <option value="hotspot">Hotspot</option>
+		                                    <option value="said">SAID</option>
+		                                </select>
+									</div>
+								</div>
+								<div class="col-xs-8">
+									<div class="form-group">
+										<div class="input-group">
+											<input type="text" id="search-input" name="search-input" class="form-control">
+											<span class="input-group-btn">
+												<button type="button" onclick="searchTreeNode()" class="btn btn-primary">Search</button>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12" style="overflow: auto; height: 500px;">
 								<div id="treeNode"></div>
 							</div>
 						</div>
@@ -25,7 +51,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" id="addBtn" onclick="choiceArea()" class="btn btn-primary">Choice</button>
-					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-white" data-dismiss="modal" onclick="choiceArea()">Close</button>
 				</div>
 			</form>
 		</div>

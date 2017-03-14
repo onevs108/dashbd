@@ -1551,7 +1551,7 @@
 	        	UNION
 		        SELECT cityTreeView.*
 		        FROM cityTreeView
-		        <if test="searchType != '' and searchType != null">
+<!-- 		        <if test="searchType != '' and searchType != null"> -->
 		        	INNER JOIN (
 			            SELECT SUBSTRING(node_id, 1, IF(INSTR(node_id, 'C') = 0, 9999999999, INSTR(node_id, 'C')-1)) as compare_node_id
 			            FROM treeView
@@ -1570,14 +1570,14 @@
 				            </choose>
 			        ) cityTemp
 			        ON cityTreeView.node_id = cityTemp.compare_node_id
-		        </if>
+<!-- 		        </if> -->
 	        </if>
 	        <if test="searchType != 'circle' and searchType != 'city'
 	        			and searchType != 'circleCity'">
 	        	UNION
 		        SELECT hotspotTreeView.*
 		        FROM hotspotTreeView
-		        <if test="searchType != '' and searchType != null">
+<!-- 		        <if test="searchType != '' and searchType != null"> -->
 		        	INNER JOIN (
 			            SELECT node_id as compare_node_id
 			            FROM treeView
@@ -1596,7 +1596,7 @@
 				            </choose>
 			        ) hotspotTemp
 			        ON hotspotTreeView.node_id = hotspotTemp.compare_node_id
-		        </if>
+<!-- 		        </if> -->
 	        </if>
 		) result
 		LEFT JOIN (
@@ -1662,11 +1662,17 @@
 										    FROM circle circle
 										    INNER JOIN broadcast_info broad
 										    ON circle.circle_id = broad.said
+										    <if test="circleListStr != '' and circleListStr != null">
+										    	WHERE circle.circle_id IN (${circleListStr})
+										    </if>
 										    UNION ALL
 										    SELECT city.circle_id, city.circle_name, 'city' as layerDiv, broad.*
 										    FROM city city
 										    INNER JOIN broadcast_info broad
 										    ON city.city_id = broad.said
+										    <if test="cityListStr != '' and cityListStr != null">
+										    	WHERE city.city_id IN (${cityListStr})
+										    </if>
 										    UNION ALL
 										    SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv, broad.*
 										    FROM city city
@@ -1674,6 +1680,9 @@
 										    ON city.city_id = hotspot.city_id
 										    INNER JOIN broadcast_info broad
 										    ON broad.said = hotspot.hotspot_id    
+										    <if test="hotspotListStr != '' and hotspotListStr != null">
+										    	WHERE hotspot.hotspot_id IN (${hotspotListStr})
+										    </if>
 										) t1
 										WHERE 1=1
 										<if test="searchServiceType != null and searchServiceType != ''">
@@ -1730,7 +1739,7 @@
 						) result
 						WHERE 
 						<choose>
-							<when test="circleListStr == 'all'">
+							<when test="circleListStr == null">
 								1=1
 							</when>
 							<otherwise>
@@ -1813,11 +1822,17 @@
 						    FROM circle circle
 						    INNER JOIN broadcast_info broad
 						    ON circle.circle_id = broad.said
+						    <if test="circleListStr != '' and circleListStr != null">
+						    	WHERE circle.circle_id IN (${circleListStr})
+						    </if>
 						    UNION ALL
 						    SELECT city.circle_id, city.circle_name, 'city' as layerDiv, broad.*
 						    FROM city city
 						    INNER JOIN broadcast_info broad
 						    ON city.city_id = broad.said
+						    <if test="cityListStr != '' and cityListStr != null">
+						    	WHERE city.city_id IN (${cityListStr})
+						    </if>
 						    UNION ALL
 						    SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv, broad.*
 						    FROM city city
@@ -1825,6 +1840,9 @@
 						    ON city.city_id = hotspot.city_id
 						    INNER JOIN broadcast_info broad
 						    ON broad.said = hotspot.hotspot_id    
+						    <if test="hotspotListStr != '' and hotspotListStr != null">
+						    	WHERE hotspot.hotspot_id IN (${hotspotListStr})
+						    </if>
 						) t1
 						WHERE 1=1
 						<if test="searchServiceType != null and searchServiceType != ''">
@@ -1878,7 +1896,7 @@
 		) result
 		WHERE
 		<choose>
-			<when test="circleListStr == 'all'">
+			<when test="circleListStr == null">
 				1=1
 			</when>
 			<otherwise>
@@ -1947,6 +1965,9 @@
 			            FROM city city
 			            INNER JOIN broadcast_info broad
 			            ON city.city_id = broad.said
+			            <if test="cityListStr != '' and cityListStr != null">
+							AND city.city_id IN (${cityListStr})
+						</if>
 				    	UNION ALL
 				        SELECT city.circle_id, city.city_id, city.city_name, 'hotspot' as layerDiv, broad.bcid
 				        FROM city city
@@ -1954,6 +1975,9 @@
 				        ON city.city_id = hotspot.city_id
 				        INNER JOIN broadcast_info broad
 				        ON broad.said = hotspot.hotspot_id
+				        <if test="hotspotListStr != '' and hotspotListStr != null">
+							AND hotspot.hotspot_id IN (${hotspotListStr})
+						</if>
 				    ) t
 				    INNER JOIN schedule schedule
 				    ON t.bcid = schedule.bcid
@@ -1970,6 +1994,9 @@
 				  FROM city city
 				  INNER JOIN broadcast_info broad
 				  ON city.city_id = broad.said
+				  <if test="cityListStr != '' and cityListStr != null">
+				  	AND city.city_id IN (${cityListStr})
+				  </if>
 				) city
 				ON hotspot.city_id = city.city_id
 				WHERE IFNULL(city.circle_id, hotspot.circle_id) = #{psaid}
@@ -1988,6 +2015,9 @@
 				INNER JOIN schedule schedule
 				ON broad.bcid = schedule.bcid 
 				WHERE hotspot.city_id = #{psaid}
+				<if test="hotspotListStr != '' and hotspotListStr != null">
+					AND hotspot.hotspot_id IN (${hotspotListStr})
+				</if>
 			</when>
 			<when test="layerDiv == 'directHotspot'">
 				SELECT hotspot.hotspot_id as hotspotId, hotspot.hotspot_name as hotspotName, broad.serviceId, broad.service_name as serviceName
@@ -2005,6 +2035,9 @@
 				INNER JOIN schedule schedule
 				ON broad.bcid = schedule.bcid 
 				WHERE city.circle_id = #{psaid}
+				<if test="hotspotListStr != '' and hotspotListStr != null">
+					AND hotspot.hotspot_id IN (${hotspotListStr})
+				</if>
 			</when>
 		</choose>
 		) result

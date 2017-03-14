@@ -1427,7 +1427,7 @@ public class ServiceAreaController {
 			String searchDateFrom = (String) requestJson.get("searchDateFrom");
 			String searchDateTo = (String) requestJson.get("searchDateTo");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
-			String circleListStr = (String) requestJson.get("circleListStr");
+			String choiceTreeStr = (String) requestJson.get("choiceTreeStr");
 			
 			//All이 아닐 경우 From To Date Reset
 			if(searchSchedule.equals("")) {
@@ -1455,11 +1455,23 @@ public class ServiceAreaController {
 			searchParam.put("searchDateFrom", searchDateFrom);
 			searchParam.put("searchDateTo", searchDateTo);
 			searchParam.put("searchKeyword", searchKeyword);
-			searchParam.put("circleListStr", circleListStr);
+			
+			Gson json = new Gson();
+			
+			if(!choiceTreeStr.equals("all")) {
+				HashMap<String, String> choiceTreeStrList = json.fromJson(choiceTreeStr, HashMap.class);
+				
+				String circleListStr = choiceTreeStrList.get("circleListStr");
+				String cityListStr = choiceTreeStrList.get("cityListStr");
+				String hotspotListStr = choiceTreeStrList.get("hotspotListStr");
+				
+				searchParam.put("circleListStr", circleListStr);
+				searchParam.put("cityListStr", cityListStr);
+				searchParam.put("hotspotListStr", hotspotListStr);
+			}
 			
 			JSONArray rows = new JSONArray();
 			
-			Gson json = new Gson();
 			List<HashMap<String, Object>> resultList = mapper.selectRegionalSchedule(searchParam);
 			for(HashMap<String, Object> map : resultList) {
 				String tempJsonStr = json.toJson(map);
@@ -1496,6 +1508,7 @@ public class ServiceAreaController {
 			String searchDateFrom = request.getParameter("searchDateFrom");
 			String searchDateTo = request.getParameter("searchDateTo");
 			String searchKeyword = request.getParameter("searchKeyword");
+			String choiceTreeStr = request.getParameter("choiceTreeStr");
 			
 			if(!searchDateFrom.equals("")) {
 				String[] tempSearchDateFrom = searchDateFrom.split("/");
@@ -1516,6 +1529,20 @@ public class ServiceAreaController {
 			searchParam.put("searchDateFrom", searchDateFrom);
 			searchParam.put("searchDateTo", searchDateTo);
 			searchParam.put("searchKeyword", searchKeyword);
+			
+			if(!choiceTreeStr.equals("all")) {
+				Gson json = new Gson();
+				HashMap<String, String> choiceTreeStrList = json.fromJson(choiceTreeStr, HashMap.class);
+				
+				String circleListStr = choiceTreeStrList.get("circleListStr");
+				String cityListStr = choiceTreeStrList.get("cityListStr");
+				String hotspotListStr = choiceTreeStrList.get("hotspotListStr");
+				
+				searchParam.put("circleListStr", circleListStr);
+				searchParam.put("cityListStr", cityListStr);
+				searchParam.put("hotspotListStr", hotspotListStr);
+			}
+			
 			List<HashMap<String, Object>> resultList = mapper.getRegionalSubSchedule(searchParam);
 				
 			if(resultList.size() > 0) {
@@ -3319,6 +3346,33 @@ public class ServiceAreaController {
 									}
 								}
 							}
+						}
+					}
+				} 
+				//전체 검색일 경우 수행
+				else if(searchType.equals("") && !searchInput.equals("")) {
+					List<String> matchingNodeList = new ArrayList<String>();
+					
+					for(HashMap<String, Object> map : resultList) {
+						if(map.get("name").toString().toLowerCase().indexOf(searchInput.toLowerCase()) != -1) {
+							matchingNodeList.add(map.get("node_id").toString());
+						}
+					}
+					
+					for(int i=1; i < resultList.size(); i++) {
+						HashMap<String, Object> map = resultList.get(i);
+						boolean removeYn = true;
+						
+						for(int j = 0; j < matchingNodeList.size(); j++) {
+							if(matchingNodeList.get(j).indexOf(map.get("node_id").toString()) != -1) {
+								removeYn = false;
+								break;
+							}
+						}
+						
+						if(removeYn) {
+							resultList.remove(i);
+							i--;
 						}
 					}
 				}

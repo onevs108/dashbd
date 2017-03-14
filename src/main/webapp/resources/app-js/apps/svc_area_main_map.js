@@ -403,16 +403,12 @@ function treeInit(data, openAllYn) {
 		.bind('ready.jstree', function(e, data) {
 			$(".jstree-icon.jstree-themeicon").remove();
 			
-			if($("#searchType").val() != '' && $("#search-input").val() != '') arrangeTreeSearchData();
+			if($("#search-input").val() != '') arrangeTreeSearchData();
 	    }).jstree({
 		    "conditionalselect" : function (node, event) {
 		      return false;
 		    },
-		    "search": {
-	            "case_insensitive": true,
-	            "show_only_matches" : true
-	        },
-		    "plugins" : [ "conditionalselect" , "nohover", "inp", "search"]
+		    "plugins" : [ "conditionalselect" , "nohover", "inp"]
 		  });
 	
 	if(!openAllYn) {
@@ -439,8 +435,6 @@ function searchTreeNode() {
 	} else {
 		jsTreeSetting(true);
 	}
-	
-	
 }
 
 //검색시 childCnt 정리 메소드
