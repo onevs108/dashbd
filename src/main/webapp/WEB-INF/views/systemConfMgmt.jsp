@@ -49,12 +49,12 @@
 			getMenuList('SYSTEM_CONF_MGMT');
 			
 			if('${sessionCntsessionHostNameCnt}' == 'nexdream'){
-				$("#viewApp1").hide();
-// 				alert("연결 가능한 서버가 없습니다.");
+				
 			}else{
 				$("#viewApp1").show();
+				$("#viewApp2").hide();
 				$("#appView1").css("opacity", "1");
-				$("#appView2").css("opacity", "0.7");
+				$("#appView2").css("opacity", "0.6");
 				
 				$('#tomCheck1').prop("checked", true);
 				$('#dbCheck1').prop("checked", true);
@@ -263,11 +263,11 @@
 													</h4>
 												</td>
 												<td width="20%">
-													<div id="viewApp1" style="display:;">
+													<div id="viewApp1">
 														Turn Over <br><br>
 														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(2, 1)">▷▶</button>
 													</div>
-													<div id="viewApp2" style="display:;">
+													<div id="viewApp2">
 														Turn Over <br><br>
 														<button class="btn btn-sm button-edit" type="button" onclick="moveActiveServer(1, 2)">◀◁</button>
 													</div>
