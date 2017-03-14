@@ -598,7 +598,7 @@
   </insert>
   
   <select id="selectUserListByCondition" parameterType="HashMap" resultMap="BaseResultMap">
-		SELECT	id, user_id, operator_id, password, first_name, last_name								
+		SELECT id, user_id, operator_id, password, first_name, last_name								
 			, department, grade, permission, memo, created_at, updated_at								
 		FROM users
 		WHERE 1=1

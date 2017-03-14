@@ -19,6 +19,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.quartz.CronTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -702,6 +703,7 @@ public class SystemController{
 			logger.error("~~ [An error occurred!]", e);
 		}
 		return jsonResult.toString();
+		
 	}
 
 	@SuppressWarnings("unchecked")
