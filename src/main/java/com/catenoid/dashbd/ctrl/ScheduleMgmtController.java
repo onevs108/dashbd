@@ -414,15 +414,15 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping( value = "/view/checkServiceId.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
-	public String checkServiceId(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
+	public String checkServiceId(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		
 		if(mapper.checkServiceId(params) > 0){
-			return "SUCCESS";
-		} 
+			return "EXIST";
+		}
 		
-		return "EXIST";
+		return "SUCCESS";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -699,11 +699,12 @@ public class ScheduleMgmtController {
 					}
 				}
 				
+				//서비스ID 숫자 증가
+				ret = mapper.updateServiceIdIdx();
+				//방송 정보 삽입
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
-				//서비스ID 숫자 증가
-				ret = mapper.updateServiceIdIdx();
 				
 				//schedule start 갯수만큼
 				for (int i = 0; i < paramList.get(0).size(); i++) {	
@@ -712,7 +713,7 @@ public class ScheduleMgmtController {
 				
 				//@ insert schedule append said
 				/*if (saidList.size() > 0) {
-					for(int i = 0; i < saidList.size(); i++){
+					for(int i = 0; i < saidList.size(); i++) {
 						if(!saidList.get(i).equals("")){
 							String[] saidArray = saidList.get(i).split(",");
 							for (int j = 0; j < saidArray.length; j++) {
