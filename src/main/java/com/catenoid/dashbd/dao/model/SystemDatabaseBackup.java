@@ -9,8 +9,15 @@ public class SystemDatabaseBackup {
 	private String backupFilePath;
 	private String backupCreatedId;
 	private Date backupCreatedAt;
+	private String backupType;
 	private Integer totalCount;
 	
+	public String getBackupType() {
+		return backupType;
+	}
+	public void setBackupType(String backupType) {
+		this.backupType = backupType;
+	}
 	public int getRownum() {
 		return rownum;
 	}

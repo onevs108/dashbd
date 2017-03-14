@@ -25,6 +25,7 @@
 	<result column="backupFilePath" property="backupFilePath" jdbcType="VARCHAR" />
 	<result column="backupCreatedId" property="backupCreatedId" jdbcType="VARCHAR" />
 	<result column="backupCreatedAt" property="backupCreatedAt" jdbcType="TIMESTAMP" />
+	<result column="backupType" property="backupType" jdbcType="VARCHAR" />
 	<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
   </resultMap>
   
@@ -1340,12 +1341,12 @@
 	
 	<select id="getSystemDblist" resultMap="SystemDatabaseBackup" parameterType="java.util.HashMap">
 		SELECT
-			rownum, backupId, backupFileName, backupFilePath, backupCreatedId, backupCreatedAt,
+			rownum, backupId, backupFileName, backupFilePath, backupCreatedId, backupCreatedAt, backupType,
 			(
 				select count(*) from
 				(
 					select	id AS backupId, backup_file_name AS backupFileName, backup_file_path AS backupFilePath
-	             			, backup_created_id AS backupCreatedId, backup_created_at AS backupCreatedAt
+	             			, backup_created_id AS backupCreatedId, backup_created_at AS backupCreatedAt, backup_type AS backupType
 					from database_backup
 					where 1=1
 					<if test="backupId != null and backupId != ''">
@@ -1363,12 +1364,12 @@
 		( 
 			SELECT
 				@ROWNUM := @ROWNUM + 1 AS rownum,
-				backupId, backupFileName, backupFilePath, backupCreatedId, backupCreatedAt
+				backupId, backupFileName, backupFilePath, backupCreatedId, backupCreatedAt, backupType
 			FROM 
 			( SELECT @ROWNUM := 0 AS rownum ) R,
 			( 	
 				select	id AS backupId, backup_file_name AS backupFileName, backup_file_path AS backupFilePath
-	             		, backup_created_id AS backupCreatedId, backup_created_at AS backupCreatedAt
+	             		, backup_created_id AS backupCreatedId, backup_created_at AS backupCreatedAt, backup_type AS backupType
 				from database_backup
 				where 1=1
 				<if test="backupId != null and backupId != ''">
@@ -1386,6 +1387,7 @@
 								<if test="sort == 'backupFilePath'">backup_file_path</if>
 								<if test="sort == 'backupCreatedId'">backup_created_id</if>
 								<if test="sort == 'backupCreatedAt'">backup_created_at</if>
+								<if test="sort == 'backupType'">backup_type</if>
 								${order}
 							</if> 
 			) T

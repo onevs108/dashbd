@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -568,7 +567,64 @@ public class SystemController{
 			syslogMap.put("reqMsg", e.toString());
 			usersMapper.insertSystemAjaxLog(syslogMap);
 		}
+		Map<String, Object> backupStatus = usersMapper.selectAutoBackupStatus();
+		modelMap.addAttribute("autoYN", backupStatus.get("auto_yn"));
+		modelMap.addAttribute("backupTime", backupStatus.get("backup_time"));
 		return "system/databaseMgmt";
+	}
+	
+	@RequestMapping(value = "/resources/updateAutoBackupYN.do", method = RequestMethod.POST, produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public String updateAutoBackupYN(@RequestParam String autoYN) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		try {
+			logger.info("-> []");
+			syslogMap.put("reqType", "Database Config");
+			syslogMap.put("reqSubType", "getBmscMgmt");
+			syslogMap.put("reqUrl", "resources/systemDbMgmt.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		} catch (Exception e) {
+			syslogMap.put("reqType", "Database Config");
+			syslogMap.put("reqSubType", "systemDbMgmt");
+			syslogMap.put("reqUrl", "resources/systemDbMgmt.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		}
+		if(usersMapper.updateAutoBackupYN(autoYN) != 1){
+			return "FAIL";
+		}
+		return "SUCCESS";
+	}
+	
+	@RequestMapping(value = "/resources/updateBackupTime.do", method = RequestMethod.POST, produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public String updateBackupTime(@RequestParam String backupTime) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		try {
+			logger.info("-> []");
+			syslogMap.put("reqType", "Database Config");
+			syslogMap.put("reqSubType", "getBmscMgmt");
+			syslogMap.put("reqUrl", "resources/systemDbMgmt.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		} catch (Exception e) {
+			syslogMap.put("reqType", "Database Config");
+			syslogMap.put("reqSubType", "systemDbMgmt");
+			syslogMap.put("reqUrl", "resources/systemDbMgmt.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		}
+		if(usersMapper.updateBackupTime(backupTime) != 1){
+			return "FAIL";
+		}
+		return "SUCCESS";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -619,6 +675,7 @@ public class SystemController{
 				obj.put("backupFilePath", data.getBackupFilePath());
 				obj.put("backupCreatedId", data.getBackupCreatedId());
 				obj.put("backupCreatedAt", sdfTo.format(data.getBackupCreatedAt()));
+				obj.put("backupType", data.getBackupType());
 				obj.put("totalCount", data.getTotalCount());
 				rows.add(obj);
 				

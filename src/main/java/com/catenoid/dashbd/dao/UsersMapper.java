@@ -70,4 +70,10 @@ public interface UsersMapper {
 	int initPassword(HashMap<String, Object> param);
 	
 	void updateFailCnt(HashMap<String, Object> param);
+
+	Map<String, Object> selectAutoBackupStatus();
+
+	int updateAutoBackupYN(String autoYN);
+
+	int updateBackupTime(String backupTime);
 }

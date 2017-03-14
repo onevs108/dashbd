@@ -24,10 +24,20 @@
 	<script src="/dashbd/resources/app-js/apps/svc_systemDb.js"></script>
 	<script src="js/common.js"></script>
 	
+	<!-- ax5ui -->
+	<link href="../resourcesRenew/css/plugins/ax5ui/ax5formatter.css" rel="stylesheet">
+	<script src="../resourcesRenew/js/plugins/ax5ui/ax5core.js"></script>
+	<script src="../resourcesRenew/js/plugins/ax5ui/ax5formatter.js"></script>
+
 	<script type="text/javascript">
 		$(document).ready(function() {
 			getMenuList('SYSTEM_DB_MGMT');
 			getDatabaseList();
+			if("${autoYN}" == "Y"){
+				$("#autoBackup").prop("checked", true);
+				$("#autoBackup").change();	
+			}
+			$('[data-ax5formatter]').ax5formatter();
 		});
 	</script>
 	
@@ -45,83 +55,46 @@
 <div id="wrapper">
 	<jsp:include page="../common/leftTab.jsp" />
     <div id="page-wrapper" class="gray-bg">
-        <!-- content header -->
-        <div class="row border-bottom">
-			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-				<div class="navbar-header" style="padding-bottom: 10px;">
-					<h2 style="margin-left: 15px;"><strong>System Mgmt - DB Backup & Restore</strong></h2>
-					<span style="margin-left: 15px;">
-						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong>System Mgmt / DB Backup & Restore</strong>
-					</span>
-				</div><!-- end navbar-header -->
-		        
-				<ul class="nav navbar-top-links navbar-right">
-					<li>
-						<a>
-							<i class="fa fa-user"></i><span id="navbar-user-name"></span>
-						</a>
-					</li>
-					<li class="dropdown">
-						<ul class="dropdown-menu dropdown-alerts">
-							<li>
-								<a href="mailbox.html">
-									<div>
-										<i class="fa fa-envelope fa-fw"></i> You have 16 messages
-										<span class="pull-right text-muted small">4 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="profile.html">
-									<div>
-										<i class="fa fa-twitter fa-fw"></i> 3 New Followers
-										<span class="pull-right text-muted small">12 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="grid_options.html">
-									<div>
-										<i class="fa fa-upload fa-fw"></i> Server Rebooted
-										<span class="pull-right text-muted small">4 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<div class="text-center link-block">
-									<a href="notifications.html">
-										<strong>See All Alerts</strong>
-										<i class="fa fa-angle-right"></i>
-									</a>
-								</div>
-							</li>
-						</ul>
-					</li>
-		
-					<li>
-						<a href="/dashbd/out">
-							<i class="fa fa-sign-out"></i> Log out
-						</a>
-					</li>
-					<li>
-						<img src="img/samsung_small.png">
-					</li>
-				</ul>
-			</nav>
-		</div><!-- end border-bottom -->
+    	<c:import url="/resources/header.do"></c:import>
 		<!-- content body -->
         <div class="wrapper wrapper-content">
 			
             <!-- Operator Mgmt -->
-            <div class="row">
+            <div class="row"> 
 				<div class="col-lg-12">
 	                <div class="ibox float-e-margins">
+	                	<div class="ibox-title">
+							<h5>System Mgmt</h5>
+						</div>
 	                    <div class="ibox-content">
 	                    	<div class="row" style="padding-top:20px">
-					            <div class="col-lg-4">
+	                    		<label class="col-lg-3" style="">Database Auto backup</label>
+	                    		<div class="col-lg-4 swich">
+	                                <div class="onoffswitch">
+	                                    <input type="checkbox" class="onoffswitch-checkbox" id="autoBackup" name="autoBackup" onchange="autoBackupChange()">
+	                                    <label class="onoffswitch-label" for="autoBackup">
+	                                        <span class="onoffswitch-inner"></span>
+	                                        <span class="onoffswitch-switch"></span>
+	                                    </label>
+	                                </div>
+                                </div>
+	                    	</div>
+	                    	<div class="row" style="padding-top:20px">
+	                    		<label class="col-lg-3" style="">Database Auto backup Schedule</label>
+	                    		<span id="backupSchedule" style="display: none;">
+		                    		<label class="col-lg-2" style="width: 12.5%">Every day at :</label>
+		                    		<div class="col-lg-2" style="margin-top: -7px;">
+		                                <input type="text" class="form-control" id="backupTime" name="backupTime" value="${backupTime}" placeholder="hh:mi:ss" data-ax5formatter="time">
+	                                </div>
+	                                <div class="col-lg-2" style="margin-top: -5px;">
+		                                <button type="button" class="btn btn-primary btn-sm" onclick="setBackupTime();">
+											Set Time
+		                                </button>
+	                                </div>
+                                </span>
+	                    	</div>
+	                    	<div class="row" style="padding-top:20px">
+					            <!-- <div class="col-lg-4">
 									<div class="form-group">
 										<label class="col-sm-3 control-label" for="status">Year</label>
 										<div class="col-sm-9">
@@ -157,11 +130,14 @@
 												</script>
 											</select>
 										</div>
-									</div>	
-								</div>
-	                            <div class="col-lg-4">
+									</div>
+								</div> -->
+								<div class="col-lg-4">
+	                                <h3>Backup List</h3>
+	                            </div>
+	                            <div class="col-lg-4 col-md-offset-4">
 	                                <button type="button" class="btn btn-primary pull-right" onclick="openBackupModal();">
-										Backup Database
+										Database Backup Now
 	                                </button>
 	                            </div>
 	                        </div>
