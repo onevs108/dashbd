@@ -82,6 +82,11 @@
 									</div>
 								</div>
 							</div>
+							<div class="col-lg-6">
+								<c:if test="${USER.grade == 13}">
+									<button type="button" id="init-password-btn" onclick="javascript:initPassword();" class="btn btn-primary">Init Password</button>
+								</c:if>
+							</div>
 						</div>
 						<div class="row">
 							<div id="modal_circle_area" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
@@ -261,6 +266,8 @@
 			$("#editBtn").hide();
 			$("#myModal input, #myModal textarea").val('');
 			$("#myModal input, #myModal select, #myModal textarea, #myModal #form-check-btn").prop("disabled", false);
+			
+			$("#init-password-btn").hide();
 		} else if(accessDiv == 'edit') {
 			$(".modal-title").text("Edit Operator");
 			$("#editBtn").show();
@@ -270,12 +277,16 @@
 			$("#myModal #form-user-id").prop("readonly", true);
 			$("#myModal #form-check-btn").prop("disabled", true);
 			$("#myModal input, #myModal select, #myModal textarea").prop("disabled", false);
+			
+			$("#init-password-btn").show();
 		} else if(accessDiv == 'info') {
 			$(".modal-title").text("Operator" + " \"" + userId + "\" Info");
 			$("#editBtn").hide();
 			$("#addBtn").hide();
 			getUserInfo(userId);
 			$("#myModal input, #myModal select, #myModal textarea, #myModal #form-check-btn").prop("disabled", true);
+			
+			$("#init-password-btn").hide();
 		}
 	}
 	
@@ -525,6 +536,42 @@
 						swal("Success !", "Success !", "success");
 						$('#table').bootstrapTable('destroy');
 						getUserList(true, false);
+					}
+					else { // 실패
+						swal("Fail !", "Failed!! Please you report to admin!", "warning");
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					swal("Fail !", errorThrown + textStatus, "warning");
+					return false;
+				}
+			});
+		});
+	}
+	
+	function initPassword() {
+		swal({
+		  title: "Are you sure?",
+		  text: "Do you really want to init the " + $("#form-user-id").val() + "'s password?",
+		  type: "warning",
+		  showCancelButton: true,
+		  confirmButtonColor: "#DD6B55",
+		  confirmButtonText: "Yes",
+		  closeOnConfirm: false
+		},
+		function(){
+			$.ajax({
+				url: '/dashbd/api/user/initPassword.do',
+				method: 'POST',
+				dataType: 'json',
+				data: {
+					userId: $("#form-user-id").val()
+				},
+				success: function(data, textStatus, jqXHR) {
+					if (data.resultCode == 'S') { // 성공
+						swal({title:"Success !", text:"Success", type:"success"}, function() {
+							$("#myModal").modal("hide");
+						});
 					}
 					else { // 실패
 						swal("Fail !", "Failed!! Please you report to admin!", "warning");

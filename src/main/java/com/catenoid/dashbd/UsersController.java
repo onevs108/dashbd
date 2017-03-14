@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -310,4 +311,52 @@ public class UsersController {
 		cal.setTime(date);
 		return new SimpleDateFormat(format).format(cal.getTime());
 	}
+	
+	/**
+	 * 사용자 비밀번호 초기화
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/user/initPassword.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String initPassword(HttpServletRequest request) {
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		Users userOfSession = (Users) session.getAttribute("USER");
+		if (userOfSession == null) {
+			logger.info("-> [Session is null!]");
+			return jsonResult.toString();
+		}
+		
+		try {
+			String userId = request.getParameter("userId");
+			String initPassword = "9999";
+			
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			param.put("userId", userId);
+			param.put("password", initPassword);
+			param.put("status", "init");
+			
+			int resultCnt = userServiceImpl.initPassword(param);
+			
+			if(resultCnt > 0) {
+				jsonResult.put("resultCode", "S");
+			} else {
+				jsonResult.put("resultCode", "F");
+				logger.error("<- User Password Init Fail! : [jsonResult = {}]", jsonResult.toString());
+			}
+		} catch(Exception e) {
+			jsonResult.put("resultCode", "F");
+			logger.error("<- User Password Init Fail! : " + e.getMessage());
+		}
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	} 
 }

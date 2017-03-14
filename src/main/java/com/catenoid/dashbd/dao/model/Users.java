@@ -34,6 +34,10 @@ public class Users {
     
     private String memo;
     
+    private String status;
+    
+    private int failCnt;
+    
     private String circleId;
     
     private String circleName;
@@ -201,6 +205,8 @@ public class Users {
     	jsonResult.put("grade", grade);
     	jsonResult.put("gradeName", gradeName);
     	jsonResult.put("memo", memo);
+    	jsonResult.put("status", status);
+    	jsonResult.put("failCnt", failCnt);
     	jsonResult.put("circleName", circleName);
     	jsonResult.put("circleId", circleId);
     	if(operatorName == null) {
@@ -231,6 +237,8 @@ public class Users {
 				+ ", grade=" + grade
 				+ ", gradeName=" + gradeName
 				+ ", memo=" + memo
+				+ ", status=" + status
+				+ ", failCnt=" + failCnt
 				+ ", circleId=" + circleId
 				+ ", circleName=" + circleName
 				+ ", createdAt=" + createdAt
@@ -257,5 +265,21 @@ public class Users {
 
 	public void setCircleId(String circleId) {
 		this.circleId = circleId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public int getFailCnt() {
+		return failCnt;
+	}
+
+	public void setFailCnt(int failCnt) {
+		this.failCnt = failCnt;
 	}
 }

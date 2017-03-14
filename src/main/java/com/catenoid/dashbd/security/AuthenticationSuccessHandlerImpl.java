@@ -60,6 +60,24 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 		user.setPermissions(permission);
 		Map<String, Object> map = new HashMap<String, Object>();
 		
+		if(user.getStatus().equals("init")) {
+			map.put("reqType", "Login");
+			map.put("reqSubType", "login");
+			map.put("reqUrl", "login.do");
+			map.put("reqCode", "Fail");
+			map.put("reqMsg", Const.LOGIN_FAIL_CREDENTIALS_EXPIRED);
+			mapper.insertSystemAjaxLog(map);
+			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_CREDENTIALS_EXPIRED + "&userId="+userId);
+		} else if(user.getStatus().equals("lock")) {
+			map.put("reqType", "Login");
+			map.put("reqSubType", "login");
+			map.put("reqUrl", "login.do");
+			map.put("reqCode", "Fail");
+			map.put("reqMsg", Const.LOGIN_FAIL_LOCKED);
+			mapper.insertSystemAjaxLog(map);
+			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_LOCKED + "&userId="+userId);
+		}
+		
 		// Super Admin일 경우
 		if (permission.size() != 0) {
 			HttpSession session = request.getSession(false);

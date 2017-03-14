@@ -66,4 +66,8 @@ public interface UsersMapper {
 	List<Circle> selectTownFromCircle(String circleName);
 	
 	List<Users> selectUserListByCondition(HashMap<String, Object> param);
+	
+	int initPassword(HashMap<String, Object> param);
+	
+	void updateFailCnt(HashMap<String, Object> param);
 }

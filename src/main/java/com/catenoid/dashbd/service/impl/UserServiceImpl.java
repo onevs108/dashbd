@@ -183,4 +183,10 @@ public class UserServiceImpl implements UserService {
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		return usersMapper.selectUserListByCondition(param);
 	}
+	
+	@Override
+	public int initPassword(HashMap<String, Object> param) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		return usersMapper.initPassword(param);
+	}
 }

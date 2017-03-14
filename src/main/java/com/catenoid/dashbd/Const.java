@@ -18,6 +18,9 @@ public class Const {
 	public static final int LOGIN_FAIL_ACCOUNT_EXPIRED		= 104; // 계정 만료
 	public static final int LOGIN_FAIL_CREDENTIALS_EXPIRED	= 105; // 계정 권한 만료
 	public static final int LOGIN_FAIL_LOCKED				= 106; // 계정 잠김
+//	public static final int LOGIN_FAIL_INIT					= 107; // 계정 비밀번호 초기화
+	public static final int LOGIN_FAIL_MISMATCH_PASSWORD	= 108; // 계정 비밀번호 불일치
+	
 	
 	public static final int COMMON_SERVER_ERROR				= 9999;
 	

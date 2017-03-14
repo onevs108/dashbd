@@ -13,6 +13,8 @@
     <result column="grade" property="grade" jdbcType="INTEGER" />
     <result column="grade_name" property="gradeName" jdbcType="VARCHAR" />
     <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="fail_cnt" property="failCnt" jdbcType="VARCHAR" />
     <result column="circle_id" property="circleId" jdbcType="VARCHAR" />
     <result column="circle_name" property="circleName" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
@@ -106,7 +108,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, user_id, operator_id, password, first_name, last_name, department, grade, memo, created_at, updated_at
+    id, user_id, operator_id, password, first_name, last_name, department, grade, memo, status, fail_cnt, created_at, updated_at
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.UsersExample" >
     select
@@ -607,4 +609,19 @@
 			AND operator_id = #{operatorId}
 		</if>
   </select>
+  
+  <update id="initPassword" parameterType="HashMap">
+  		UPDATE users
+  		SET password = #{password}, status = #{status}, fail_cnt = 0
+  		WHERE user_id = #{userId}
+  </update>
+  
+  <update id="updateFailCnt" parameterType="HashMap">
+  		UPDATE users
+  		SET fail_cnt = fail_cnt+1
+  		<if test="status != '' and status != null">
+  			, status = #{status}
+  		</if>
+  		WHERE user_id = #{userId}
+  </update>
 </mapper>

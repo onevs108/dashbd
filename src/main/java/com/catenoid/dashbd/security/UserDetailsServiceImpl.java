@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.UsersMapper;
@@ -54,8 +55,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 					authorities.add(new SimpleGrantedAuthority(permission.getRole()));
 			}
 			
+			boolean lockNonYn = true;
+			boolean credentialsNonExpired = true;
+			if(user.getStatus().equals("lock")) lockNonYn = false;
+			else if(user.getStatus().equals("init")) credentialsNonExpired = false;
+			
 			// spring security의 객체이다.
-			userDetail = new User(userId, user.getPassword(), true, true, true, true, authorities);
+			userDetail = new User(userId, user.getPassword(), true, true, credentialsNonExpired, lockNonYn, authorities);
 		}
 		
 		logger.info("<- [userDetail = {}]", userDetail.toString());

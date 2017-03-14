@@ -21,5 +21,6 @@ public interface UserService {
 	public boolean deleteUser(Users user);
 	public void insertSystemAjaxLog(String reqType, String reqSubType, String reqUrl, String reqCode, String reqMsg);
 	public List<Circle> selectTownFromCircle(String circleName);
-	public List<Users> selectUserListByCondition(HashMap<String, Object> param);
+	public List<Users> selectUserListByCondition(HashMap<String, Object> param); 
+	public int initPassword(HashMap<String, Object> param);
 }
