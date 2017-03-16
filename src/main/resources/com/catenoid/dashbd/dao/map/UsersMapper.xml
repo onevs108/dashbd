@@ -598,7 +598,7 @@
   </insert>
   
   <select id="selectUserListByCondition" parameterType="HashMap" resultMap="BaseResultMap">
-		SELECT	id, user_id, operator_id, password, first_name, last_name								
+		SELECT id, user_id, operator_id, password, first_name, last_name								
 			, department, grade, permission, memo, created_at, updated_at								
 		FROM users
 		WHERE 1=1
@@ -624,4 +624,19 @@
   		</if>
   		WHERE user_id = #{userId}
   </update>
+  
+  <select id="selectAutoBackupStatus" parameterType="HashMap" resultType="HashMap">
+	select * from database_backup_time
+  </select>
+  
+  <update id="updateAutoBackupYN" parameterType="String">
+	update database_backup_time
+	set auto_yn = #{autoYN}
+  </update>
+  
+  <update id="updateBackupTime" parameterType="String">
+	update database_backup_time
+	set backup_time = #{backupTime}
+  </update>
+  
 </mapper>

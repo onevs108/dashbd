@@ -74,6 +74,62 @@ function openRestoreModal(backupId, backupFileName) {
 	}
 }
 
+function autoBackupChange() {
+	var autoYN = "";
+	if($("#autoBackup").is(":checked")){
+		autoYN = "Y";
+		$("#backupSchedule").show();
+	}else{
+		autoYN = "N";
+		$("#backupSchedule").hide();
+	}
+	$.ajax({
+		url: '/dashbd/resources/updateAutoBackupYN.do',
+		method: 'POST',
+		data: {
+			autoYN: autoYN
+		},
+		success: function(data, textStatus, jqXHR) {
+			if(data == "SUCCESS"){
+				/*
+				if(autoYN == "Y"){
+					alert("Auto backup on!");
+				}else{
+					alert("Auto backup off!");
+				}
+				*/
+			}else{
+				alert("Auto backup setting fail!");
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
+function setBackupTime() {
+	$.ajax({
+		url: '/dashbd/resources/updateBackupTime.do',
+		method: 'POST',
+		data: {
+			backupTime: $("#backupTime").val()
+		},
+		success: function(data, textStatus, jqXHR) {
+			if(data == "SUCCESS"){
+				alert("Backup Time is updated!");
+			}else{
+				alert("Auto backup setting fail!");
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
 function getDatabaseList() {
 	$('#table').bootstrapTable('destroy');
 	var table = $('#table').bootstrapTable({
@@ -107,7 +163,15 @@ function getDatabaseList() {
 			width: '10%',
 			align: 'center',
 			valign: 'middle',
-			sortable: false
+			sortable: false,
+			visible: false
+		}, {
+			field: 'backupFileName',
+			title: 'File Name',
+			width: '20%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
 		}, {
 			field: 'backupCreatedAt',
 			title: 'Backup Date',
@@ -116,9 +180,9 @@ function getDatabaseList() {
 			valign: 'middle',
 			sortable: true
 		}, {
-			field: 'backupFileName',
-			title: 'File Name',
-			width: '20%',
+			field: 'backupType',
+			title: 'Backup Type',
+			width: '15%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true
@@ -128,19 +192,21 @@ function getDatabaseList() {
 			width: '30%',
 			align: 'center',
 			valign: 'middle',
-			sortable: true
+			sortable: true,
+			visible: false
 		}, {
 			field: 'backupCreatedId',
 			title: 'Backup User',
 			width: '15%',
 			align: 'center',
 			valign: 'middle',
-			sortable: true
+			sortable: true,
+			visible: false
 		}, {
 			field: '',
 			title: 'Command',
 			width: '10%',
-			align: 'right',
+			align: 'center',
 			valign: 'middle',
 			sortable: false,
 			formatter: function(value, row, index) {
@@ -150,3 +216,4 @@ function getDatabaseList() {
 		}]
 	});
 }
+
