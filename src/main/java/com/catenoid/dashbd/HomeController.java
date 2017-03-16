@@ -95,18 +95,13 @@ public class HomeController {
 	        if (ip == null)
 	            ip = request.getRemoteAddr();
 			
-			Calendar cal = Calendar.getInstance(Locale.KOREA);
-	        String sysdate = cal.get ( Calendar.YEAR ) + "-" + ( cal.get ( Calendar.MONTH ) + 1 ) + "-" 
-	        				+ cal.get ( Calendar.DATE ) + " " + cal.get ( Calendar.HOUR_OF_DAY ) + ":" 
-	        				+ cal.get ( Calendar.MINUTE ) + ":" + cal.get ( Calendar.SECOND );
-	        
 	        Map<String, Object> map = new HashMap<String, Object>();
 			map.put("reqType", "Login");
 			map.put("reqSubType", "Logout");
 			map.put("reqUrl", "logout.do");
 			map.put("reqCode", "SUCCESS");
 			map.put("targetId", user.getUserId());
-			map.put("reqMsg", "[" + sysdate + "] User ID : " + user.getUserId() + " - Logout (IP address : " + ip + ")");
+			map.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + user.getUserId() + " - Logout (IP address : " + ip + ")");
 			UsersMapper mapper = sqlSession.getMapper(UsersMapper.class);
 			mapper.insertSystemAjaxLog(map);
 			
