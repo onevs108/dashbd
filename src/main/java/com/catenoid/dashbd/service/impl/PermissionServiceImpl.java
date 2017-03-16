@@ -58,14 +58,14 @@ public class PermissionServiceImpl implements PermissionService {
 			syslogMap.put("reqUrl", "permission/userlist.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Permission Mgmt");
 			syslogMap.put("reqSubType", "userlist");
 			syslogMap.put("reqUrl", "permission/userlist.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ [An error occurred]", e);
 		}
 		return userList;
@@ -124,14 +124,14 @@ public class PermissionServiceImpl implements PermissionService {
 			syslogMap.put("reqUrl", "resources/permission.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Permission Mgmt");
 			syslogMap.put("reqSubType", "permission");
 			syslogMap.put("reqUrl", "resources/permission.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 		}
 		
@@ -176,7 +176,7 @@ public class PermissionServiceImpl implements PermissionService {
 				syslogMap.put("reqUrl", "permission/insert.do");
 				syslogMap.put("reqCode", "SUCCESS");
 				syslogMap.put("reqMsg", "");
-				usersMapper.insertSystemAjaxLog(syslogMap);
+//				usersMapper.insertSystemAjaxLog(syslogMap);
 
 				return usersMapper.insertPermissionOfUser(map) > 0;
 			}
@@ -188,7 +188,7 @@ public class PermissionServiceImpl implements PermissionService {
 			syslogMap.put("reqUrl", "permission/insert.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}

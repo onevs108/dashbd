@@ -76,7 +76,7 @@ public class BmscController {
 			syslogMap.put("reqUrl", "resources/bmsc.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.info("<- [operatorListSize = {}]", operatorList.size());
 		} catch (Exception e) {
 			syslogMap.put("reqType", "BM-SC Mgmt");
@@ -84,7 +84,7 @@ public class BmscController {
 			syslogMap.put("reqUrl", "resources/bmsc.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 		}
 		return "bmsc/bmscMgmt";
 	}
@@ -124,7 +124,7 @@ public class BmscController {
 			syslogMap.put("reqUrl", "bmsc/list.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.info("<- [rows = {}], [total = {}]", rows.size(), total);
 		} catch (ParseException e) {
 			syslogMap.put("reqType", "BM-SC Mgmt");
@@ -132,7 +132,7 @@ public class BmscController {
 			syslogMap.put("reqUrl", "bmsc/list.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ [An error occurred!]", e);
 		}
 		return jsonResult.toString();

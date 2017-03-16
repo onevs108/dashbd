@@ -36,6 +36,7 @@
 											<input type="text" id="search-input" name="search-input" class="form-control">
 											<span class="input-group-btn">
 												<button type="button" onclick="searchTreeNode()" class="btn btn-primary">Search</button>
+												<button type="button" onclick="deselectArea()" class="btn btn-white" style="margin-left: 5px;">De-Select</button>
 											</span>
 										</div>
 									</div>

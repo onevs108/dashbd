@@ -90,7 +90,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "api/content.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return bmscMapper.selectBmsc(bmscId);
 		} catch (Exception e) {
 			syslogMap.put("reqType", "BM-SC Mgmt");
@@ -98,7 +98,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "api/content.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return null;
 		}
@@ -122,7 +122,7 @@ public class BmscServiceImpl implements BmscService {
 					syslogMap.put("reqUrl", "api/content.do");
 					syslogMap.put("reqCode", "SUCCESS");
 					syslogMap.put("reqMsg", "");
-					usersMapper.insertSystemAjaxLog(syslogMap);
+//					usersMapper.insertSystemAjaxLog(syslogMap);
 					return operatorBmscMapper.insertOperatorBmsc(bmsc) > 0;
 				}
 				return true;
@@ -135,7 +135,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "api/content.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -157,7 +157,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "api/content.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return bmscMapper.deleteBmsc(bmscId) > 0;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "BM-SC Mgmt");
@@ -165,7 +165,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "api/content.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -184,7 +184,7 @@ public class BmscServiceImpl implements BmscService {
 				syslogMap.put("reqUrl", "bmsc/embmsInsert.do");
 				syslogMap.put("reqCode", "SUCCESS");
 				syslogMap.put("reqMsg", "");
-				usersMapper.insertSystemAjaxLog(syslogMap);
+//				usersMapper.insertSystemAjaxLog(syslogMap);
 				return true;
 			}
 				
@@ -195,7 +195,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "bmsc/embmsInsert.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -215,7 +215,7 @@ public class BmscServiceImpl implements BmscService {
 				syslogMap.put("reqUrl", "bmsc/embmsUpdate.do");
 				syslogMap.put("reqCode", "SUCCESS");
 				syslogMap.put("reqMsg", "");
-				usersMapper.insertSystemAjaxLog(syslogMap);
+//				usersMapper.insertSystemAjaxLog(syslogMap);
 				return true;
 			}
 				
@@ -226,7 +226,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "bmsc/embmsUpdate.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -244,7 +244,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "bmsc/embmsDel.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return bmscMapper.deleteEmbms(embmsId) > 0;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "eNB Mgmt");
@@ -252,7 +252,7 @@ public class BmscServiceImpl implements BmscService {
 			syslogMap.put("reqUrl", "bmsc/embmsDel.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}

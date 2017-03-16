@@ -65,7 +65,7 @@
 								
 								<div class="ibox-content">
 									<div class="row">
-										<form class="form-horizontal">
+										<form class="form-horizontal" action="javascript:void(0);">
 											<input type="hidden" id="choiceTreeStr" value="all">
 											<div class="col-lg-8">
 												<div class="form-group">
@@ -131,7 +131,7 @@
 														<div class="input-group">
 															<input type="text" placeholder="Keyword" id="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) searchRegionalSchedule(false);">
 															<span class="input-group-btn">
-																<button type="button" class="btn btn-primary" onclick="searchRegionalSchedule(false)">검색</button>
+																<button type="button" class="btn btn-primary" onclick="searchRegionalSchedule(false)">Search</button>
 															</span>
 														</div>
 													</div>
@@ -766,6 +766,12 @@
 			
 			$("#choiceTreeStr").val(JSON.stringify(param));
 			$("#circleModal").modal("hide");
+		}
+		
+		function deselectArea() {
+			$(".jstree li[role=treeitem]").each(function () {
+			     $(".jstree").jstree('deselect_node', this);
+			});
 		}
 		
 		function callDetailLayerPopup(onAirYn, serviceType, serviceId) {

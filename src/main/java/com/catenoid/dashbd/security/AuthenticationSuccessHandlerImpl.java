@@ -66,7 +66,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			map.put("reqUrl", "login.do");
 			map.put("reqCode", "Fail");
 			map.put("reqMsg", Const.LOGIN_FAIL_CREDENTIALS_EXPIRED);
-			mapper.insertSystemAjaxLog(map);
+//			mapper.insertSystemAjaxLog(map);
 			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_CREDENTIALS_EXPIRED + "&userId="+userId);
 		} else if(user.getStatus().equals("lock")) {
 			map.put("reqType", "Login");
@@ -74,7 +74,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			map.put("reqUrl", "login.do");
 			map.put("reqCode", "Fail");
 			map.put("reqMsg", Const.LOGIN_FAIL_LOCKED);
-			mapper.insertSystemAjaxLog(map);
+//			mapper.insertSystemAjaxLog(map);
 			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_LOCKED + "&userId="+userId);
 		}
 		
@@ -90,7 +90,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			map.put("reqUrl", "login.do");
 			map.put("reqCode", "SUCCESS");
 			map.put("reqMsg", "");
-			mapper.insertSystemAjaxLog(map);
+//			mapper.insertSystemAjaxLog(map);
 			
 			response.sendRedirect("/dashbd/resources/main.do");
 		}
@@ -102,7 +102,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			map.put("reqUrl", "login.do");
 			map.put("reqCode", "Fail");
 			map.put("reqMsg", Const.LOGIN_FAIL_MISMATCH);
-			mapper.insertSystemAjaxLog(map);
+//			mapper.insertSystemAjaxLog(map);
 			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_MISMATCH);
 		}
 	}

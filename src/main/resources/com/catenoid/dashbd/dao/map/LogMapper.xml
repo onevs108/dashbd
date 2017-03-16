@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.LogMapper" >
+  <resultMap id="LogMap" type="com.catenoid.dashbd.dao.model.Log" >
+    <id column="sysId" property="sysId" jdbcType="INTEGER" />
+    <result column="target_id" property="target_id" jdbcType="VARCHAR" />
+    <result column="req_type" property="req_type" jdbcType="VARCHAR" />
+    <result column="req_sub_type" property="req_sub_type" jdbcType="VARCHAR" />
+    <result column="req_url" property="req_url" jdbcType="VARCHAR" />
+    <result column="req_code" property="req_code" jdbcType="VARCHAR" />
+    <result column="req_msg" property="req_msg" jdbcType="VARCHAR" />
+    <result column="insert_at" property="insert_at" jdbcType="INTEGER" />
+    <result column="created_at" property="created_at" jdbcType="DATE" />
+  </resultMap>
+  
+  <select id="selectLogDate" parameterType="HashMap" resultMap="LogMap">
+  		SELECT sysId, target_id, req_type, req_sub_type, req_url, req_code, req_msg, insert_at, created_at
+  		FROM system_ajax_log
+  </select>
+</mapper>

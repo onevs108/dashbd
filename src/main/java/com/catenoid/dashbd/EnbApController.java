@@ -111,7 +111,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (Exception e) {
@@ -120,7 +120,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -174,7 +174,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
@@ -183,7 +183,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -194,7 +194,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			root.put("code", ErrorCodes.DATA_DUPLICATION.getCode());
 			root.put("message", ErrorCodes.DATA_DUPLICATION.getMsg());
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
@@ -205,7 +205,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -252,7 +252,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
@@ -261,7 +261,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -272,7 +272,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}
@@ -304,7 +304,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
@@ -313,7 +313,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
@@ -324,7 +324,7 @@ public class EnbApController {
 			syslogMap.put("reqUrl", "api/enb.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			e.printStackTrace();
 			logger.error(e.toString());
 		}

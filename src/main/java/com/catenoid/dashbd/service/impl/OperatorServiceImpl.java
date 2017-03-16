@@ -59,7 +59,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/list.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			operatorList = operatorMapper.selectGradeList(map);
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
@@ -67,7 +67,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/list.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ [An error occurred]", e);
 		}
 		return operatorList;
@@ -126,7 +126,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
 			operatorName.replaceAll("\n", "").replaceAll("\t", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.selectByOperatorName(operatorName) == null ? true : false;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
@@ -134,7 +134,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/check.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -154,7 +154,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/insert.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.insertOperator(operator) > 0;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
@@ -162,7 +162,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/insert.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -194,7 +194,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "grade/delete.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.deleteGrade(gradeId) > 0;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Grade Mgmt");
@@ -202,7 +202,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "grade/delete.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -235,7 +235,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/delete.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.deleteCircle(circleId) > 0;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
@@ -243,7 +243,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "operator/delete.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -273,7 +273,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "grade/insert.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.insertGrade(operator) > 0;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
@@ -281,7 +281,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "grade/insert.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
@@ -298,7 +298,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "grade/check.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			return operatorMapper.selectByGradeName(operatorName) == null ? true : false;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
@@ -306,7 +306,7 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqUrl", "grade/check.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 			logger.error("~~ An error occurred!", e);
 			return false;
 		}
