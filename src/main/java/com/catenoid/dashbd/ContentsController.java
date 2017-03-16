@@ -43,6 +43,7 @@ import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ContentsExample;
 import com.catenoid.dashbd.dao.model.ContentsExample.Criteria;
 import com.catenoid.dashbd.dao.model.ScheduleContents;
+import com.catenoid.dashbd.dao.model.Users;
 
 /**
  * Handles requests for the application home page.
@@ -284,13 +285,18 @@ public class ContentsController {
 			JSONObject obj = new JSONObject();
 			obj.put("id", record.getId());
 			root.put("result", obj);
-
-			syslogMap.put("reqType", "Contents Mgmt");
-			syslogMap.put("reqSubType", "creatContents");
-			syslogMap.put("reqUrl", "api/content.do");
-			syslogMap.put("reqCode", "SUCCESS");
-			syslogMap.put("reqMsg", "");
-//			usersMapper.insertSystemAjaxLog(syslogMap);
+			
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Content");
+			logMap.put("reqSubType", "Add Content");
+			logMap.put("reqUrl", "api/content.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Add Content (Title:" + request.getParameter("title") + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
+			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {
@@ -352,12 +358,16 @@ public class ContentsController {
 			root.put("code", 1);
 			root.put("message", null);
 			
-			syslogMap.put("reqType", "Contents Mgmt");
-			syslogMap.put("reqSubType", "updateContentsByID");
-			syslogMap.put("reqUrl", "api/content.do");
-			syslogMap.put("reqCode", "SUCCESS");
-			syslogMap.put("reqMsg", "");
-//			usersMapper.insertSystemAjaxLog(syslogMap);
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Content");
+			logMap.put("reqSubType", "Edit Content");
+			logMap.put("reqUrl", "api/content.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Edit Content (Title:" + request.getParameter("title") + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
 			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
@@ -457,12 +467,17 @@ public class ContentsController {
 			root.put("code", 1);
 			root.put("message", null);
 
-			syslogMap.put("reqType", "Contents Mgmt");
-			syslogMap.put("reqSubType", "deleteContentsByID");
-			syslogMap.put("reqUrl", "api/content.do");
-			syslogMap.put("reqCode", "SUCCESS");
-			syslogMap.put("reqMsg", "");
-//			usersMapper.insertSystemAjaxLog(syslogMap);
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Content");
+			logMap.put("reqSubType", "Delete Content");
+			logMap.put("reqUrl", "api/content.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Delete Content (Title:" + request.getParameter("title") + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
+			
 			return new ResponseEntity<String>(root.toJSONString(), HttpStatus.OK);
 		}
 		catch (NumberFormatException e) {

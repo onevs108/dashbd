@@ -443,9 +443,12 @@ public class OperatorController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/operator/proccessGroup.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
-	public String proccessGroup(@RequestParam HashMap<String, Object> param) {
+	public String proccessGroup(HttpServletRequest request, @RequestParam HashMap<String, Object> param) {
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		JSONObject jsonResult = new JSONObject();
+		
+		Users LogUser = (Users) request.getSession().getAttribute("USER");
+		HashMap<String, Object> logMap = new HashMap<String, Object>();
 		
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition(); 
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED); 
@@ -467,6 +470,9 @@ public class OperatorController {
 				if(proccessDiv.equals("add")) {
 					//그룹명 존재 여부 조회
 					if(operatorServiceImpl.checkGradeName(groupName)) {
+						logMap.put("reqSubType", "Add Operator Group");
+						logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Add Operator Group (group name : " + groupName + ")");
+						
 						Operator operator = new Operator();
 						operator.setName(groupName);
 						operator.setDescription(gruopDescription);
@@ -502,6 +508,9 @@ public class OperatorController {
 						jsonResult.put("resultCode", "E");
 					}
 				} else if(proccessDiv.equals("edit")) {
+					logMap.put("reqSubType", "Edit Operator Group");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Edit Operator Group (group name : " + groupName + ")");
+					
 					param.put("grade", groupId);
 					List<Users> initMember = userServiceImpl.selectUserListByCondition(param);
 					
@@ -556,6 +565,9 @@ public class OperatorController {
 				if(proccessDiv.equals("add")) {
 					//Operator 이름 확인
 					if(operatorServiceImpl.checkOperatorName(groupName)) {
+						logMap.put("reqSubType", "Add Operator Group");
+						logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Add Operator Group (group name : " + groupName + ")");
+						
 						Operator operator = new Operator();
 						operator.setCircleName(param.get("circleName").toString());
 						operator.setName(groupName);
@@ -592,6 +604,9 @@ public class OperatorController {
 						jsonResult.put("resultCode", "E");
 					}
 				} else if(proccessDiv.equals("edit")) {
+					logMap.put("reqSubType", "Edit Operator Group");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Edit Operator Group (group name : " + groupName + ")");
+					
 					param.put("operatorId", groupId);
 					List<Users> initMember = userServiceImpl.selectUserListByCondition(param);
 					
@@ -642,6 +657,8 @@ public class OperatorController {
 					jsonResult.put("resultCode", "S");
 				}
 			}
+			
+			usersMapper.insertSystemAjaxLog(logMap);
 		} catch(Exception e) {
 			txManager.rollback(txStatus);
 			jsonResult.put("resultCode", "F");
@@ -655,7 +672,7 @@ public class OperatorController {
 	} 
 		
 	/**
-	 * National 그룹 추가,삭제 메소드
+	 * National 그룹에 유저 추가,삭제 메소드
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/operator/proccessNationalGroup.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")

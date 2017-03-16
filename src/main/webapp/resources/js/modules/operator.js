@@ -219,7 +219,8 @@ function doDelete2(operatorId, name) {
 			method: 'POST',
 			dataType: 'json',
 			data: {
-				circleId: operatorId
+				circleId: operatorId,
+				name : name
 			},
 			success: function(data, textStatus, jqXHR) {
 				if (data.result) { // 성공

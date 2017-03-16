@@ -3002,9 +3002,20 @@ public class ServiceAreaController {
 	 * @return
 	 */
 	@RequestMapping(value = "/api/serviceAreaProccess.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void serviceAreaProccess(@RequestParam HashMap<String, String> param, HttpServletResponse response) {
+	public void serviceAreaProccess(HttpServletRequest request, @RequestParam HashMap<String, String> param, HttpServletResponse response) {
 		try {
+			//area, city의 경우 붙여오는 카운트 부분 삭제
+			if(param.get("name").indexOf("(") != -1) {
+				param.put("name", param.get("name").substring(0, param.get("name").indexOf("(")-1));
+			}
+			
 			JSONObject resultMap = new JSONObject();
+			Users LogUser = (Users) request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "ServiceArea");
+			logMap.put("reqUrl", "/api/serviceAreaProccess.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
 			
 			CircleMapper circleMapper = sqlSession.getMapper(CircleMapper.class);
 			HotSpotMapper hotSpotMapper = sqlSession.getMapper(HotSpotMapper.class);
@@ -3022,6 +3033,11 @@ public class ServiceAreaController {
 						param.put("longitude", param.get("lng"));
 						param.put("bandwidth", param.get("bandwidth"));
 						resultCnt = circleMapper.insertCircle(param);
+						
+						logMap.put("reqSubType", "Add Circle");
+						logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+										+ " - Add Circle (Name:" + param.get("name") + ", SAID:" 
+										+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 					} else if(currentZoomLevel.equals("city")) {
 						param.put("cityId", param.get("said"));
 						param.put("circleId", param.get("upper_said"));
@@ -3032,6 +3048,11 @@ public class ServiceAreaController {
 						param.put("longitude", param.get("lng"));
 						param.put("bandwidth", param.get("bandwidth"));
 						resultCnt = circleMapper.insertCity(param);
+						
+						logMap.put("reqSubType", "Add City");
+						logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+										+ " - Add City (Name:" + param.get("name") + ", SAID:" 
+										+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 					} else if(currentZoomLevel.equals("hotspot")) {
 						param.put("hotSpotId", param.get("said"));
 						param.put("cityId", param.get("upper_said"));
@@ -3042,6 +3063,11 @@ public class ServiceAreaController {
 						param.put("longitude", param.get("lng"));
 						param.put("bandwidth", param.get("bandwidth"));
 						resultCnt = hotSpotMapper.insertHotSpot(param);
+						
+						logMap.put("reqSubType", "Add Hotspot");
+						logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+										+ " - Add Hotspot (Name:" + param.get("name") + ", SAID:" 
+										+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 					} 
 				} 
 				//중복이 존재할 경우 add 프로세스 진행X
@@ -3056,6 +3082,11 @@ public class ServiceAreaController {
 					param.put("longitude", param.get("lng"));
 					param.put("bandwidth", param.get("bandwidth"));
 					resultCnt = circleMapper.insertCircle(param);
+					
+					logMap.put("reqSubType", "Edit Circle");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+									+ " - Edit Circle (Name:" + param.get("name") + ", SAID:" 
+									+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 				} else if(currentZoomLevel.equals("city")) {
 					param.put("cityId", param.get("said"));
 					param.put("circleId", param.get("upper_said"));
@@ -3066,6 +3097,11 @@ public class ServiceAreaController {
 					param.put("longitude", param.get("lng"));
 					param.put("bandwidth", param.get("bandwidth"));
 					resultCnt = circleMapper.insertCity(param);
+					
+					logMap.put("reqSubType", "Edit City");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+									+ " - Edit City (Name:" + param.get("name") + ", SAID:" 
+									+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 				} else if(currentZoomLevel.equals("hotspot")) {
 					param.put("hotSpotId", param.get("said"));
 					param.put("cityId", param.get("upper_said"));
@@ -3076,17 +3112,37 @@ public class ServiceAreaController {
 					param.put("longitude", param.get("lng"));
 					param.put("bandwidth", param.get("bandwidth"));
 					resultCnt = hotSpotMapper.insertHotSpot(param);
+					
+					logMap.put("reqSubType", "Edit Hotspot");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+									+ " - Edit Hotspot (Name:" + param.get("name") + ", SAID:" 
+									+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 				} 
 			} else if(proccessDiv.equals("delete")) {
 				if(currentZoomLevel.equals("circle")) {
 					String circleId = param.get("said");
 					resultCnt = circleMapper.deleteCircle(circleId);
+					
+					logMap.put("reqSubType", "Delete Circle");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+									+ " - Delete Circle (Name:" + param.get("name") + ", SAID:" 
+									+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 				} else if(currentZoomLevel.equals("city")) {
 					String cityId =  param.get("said");
 					resultCnt = circleMapper.deleteCity(cityId);
+					
+					logMap.put("reqSubType", "Delete City");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+									+ " - Delete City (Name:" + param.get("name") + ", SAID:" 
+									+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 				} else if(currentZoomLevel.equals("hotspot")) {
 					String hotspotId =  param.get("said");
 					resultCnt = hotSpotMapper.deleteHotSpot(hotspotId);
+					
+					logMap.put("reqSubType", "Delete Hotspot");
+					logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() 
+									+ " - Delete Hotspot (Name:" + param.get("name") + ", SAID:" 
+									+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 				} 
 			}
 			
@@ -3098,6 +3154,9 @@ public class ServiceAreaController {
 					resultMap.put("resultCode", "F");
 				}
 			}
+			
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
 		
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(resultMap.toJSONString());
@@ -3179,6 +3238,7 @@ public class ServiceAreaController {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			
 			String circle_id = request.getParameter("circle_id");
+			String circle_name = request.getParameter("circle_name");
 			String group_name = request.getParameter("group_name");
 			String group_description = request.getParameter("group_description");
 			
@@ -3202,6 +3262,17 @@ public class ServiceAreaController {
 					txManager.rollback(txStatus);
 				}
 			}
+			
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "ServiceAreaGroup");
+			logMap.put("reqSubType", "Add Service Area Group");
+			logMap.put("reqUrl", "/api/insertServiceAreaGroup.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Add Service Area Group (Groupname:" + group_name + " at " + circle_name + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
 			
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(resultObj);
@@ -3228,6 +3299,8 @@ public class ServiceAreaController {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			
 			String group_id = request.getParameter("group_id");
+			String group_name = request.getParameter("group_name");
+			String circle_name = request.getParameter("circle_name");
 			
 			HashMap< String, Object > inserthParam = new HashMap();
 			inserthParam.put("group_id", group_id);
@@ -3242,6 +3315,17 @@ public class ServiceAreaController {
 				resultObj.put("resultCode", "F");
 				txManager.rollback(txStatus);
 			}
+			
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "ServiceAreaGroup");
+			logMap.put("reqSubType", "Delete Service Area Group");
+			logMap.put("reqUrl", "/api/deleteServiceAreaGroup.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Delete Service Area Group (Groupname:" + group_name + " at " + circle_name + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
 			
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(resultObj);

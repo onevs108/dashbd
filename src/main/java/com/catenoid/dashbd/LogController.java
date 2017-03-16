@@ -62,7 +62,7 @@ public class LogController {
 		HashMap<String, Object> param = new HashMap<String, Object>(); 
 		param.put("searchDateFrom", year + "-" + month + "-" + date);
 		param.put("searchDateTo", year + "-" + month + "-" + date);
-		param.put("reqType", "\'Login\', \'Operator\', \'OperatorGroup\', \'ServiceArea\', \'ServiceAreaGroup\', \'Schedule\', \'Database\'");
+		param.put("reqType", "\'Login\', \'Operator\', \'OperatorGroup\', \'Content\', \'ServiceArea\', \'ServiceAreaGroup\', \'Schedule\', \'Database\'");
 
 		List<Log> resultList = logServiceImpl.selectLogDate(param);
 		mv.addObject("resultList", resultList);

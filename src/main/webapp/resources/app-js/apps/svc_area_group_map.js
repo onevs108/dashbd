@@ -255,6 +255,7 @@ function addServiceAreaGroup(obj) {
 		    type: "POST",
 		    data : { 
 		    	circle_id : $("#search-circle").val(),
+		    	circle_name : $("#search-circle option:selected").text(),
 		    	group_name : group_name,
 		    	group_description : group_name
 		    },
@@ -319,7 +320,9 @@ function deleteServiceAreaGroup(obj) {
 			    url : "/dashbd/api/deleteServiceAreaGroup.do",
 			    type: "POST",
 			    data : { 
-			    	group_id : group_id
+			    	group_id : group_id,
+			    	group_name : $(obj).parents("li").text().replace("Delete", ""),
+			    	circle_name : $("#search-circle option:selected").text()
 			    },
 			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 			    success : function(responseData) {
