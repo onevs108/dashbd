@@ -91,13 +91,16 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 	        if (ip == null)
 	            ip = request.getRemoteAddr();
 			
-			map.put("reqType", "Login");
-			map.put("reqSubType", "Login");
-			map.put("reqUrl", "login.do");
-			map.put("reqCode", "SUCCESS");
-			map.put("targetId", userId);
-			map.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + userId + " - Login (IP address : " + ip + ")");
-			mapper.insertSystemAjaxLog(map);
+	        Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Login");
+			logMap.put("reqSubType", "Login");
+			logMap.put("reqUrl", "login.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Login (IP address : " + ip + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
 			
 			response.sendRedirect("/dashbd/resources/main.do");
 		}

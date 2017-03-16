@@ -182,7 +182,8 @@ function doDelete(gradeId, name) {
 			method: 'POST',
 			dataType: 'json',
 			data: {
-				gradeId: gradeId
+				gradeId: gradeId,
+				name : name
 			},
 			success: function(data, textStatus, jqXHR) {
 				if (data.result) { // 성공
@@ -205,7 +206,7 @@ function doDelete(gradeId, name) {
 function doDelete2(operatorId, name) {
 	swal({
 		  title: "Are you sure?",
-		  text: 'Do you really want to delete the Circle "' + name + '"?',
+		  text: 'Do you really want to delete the "' + name + '"?',
 		  type: "warning",
 		  showCancelButton: true,
 		  confirmButtonColor: "#DD6B55",
@@ -214,7 +215,7 @@ function doDelete2(operatorId, name) {
 		},
 	function() {
 		$.ajax({
-			url: '/dashbd/api/circle/delete.do',
+			url: '/dashbd/api/operator/delete.do',
 			method: 'POST',
 			dataType: 'json',
 			data: {

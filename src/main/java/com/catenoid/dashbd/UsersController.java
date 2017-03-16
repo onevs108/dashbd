@@ -10,6 +10,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.Users;
@@ -44,6 +46,8 @@ public class UsersController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
 	
+	@Autowired
+	private SqlSession sqlSession;
 	@Autowired
 	private UserService userServiceImpl;
 	@Autowired
@@ -182,6 +186,24 @@ public class UsersController {
 			@ModelAttribute Users user,
 			HttpServletRequest request) {
 		
+		Users LogUser = (Users)request.getSession().getAttribute("USER");
+		HashMap<String, Object> logMap = new HashMap<String, Object>();
+		logMap.put("reqType", "Operaotor");
+		
+		if(!userServiceImpl.checkUserId(user.getUserId())) {
+			logMap.put("reqSubType", "Add Operator");
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Add Operator (userid:" + user.getUserId() + ")");
+		} else {
+			logMap.put("reqSubType", "Edit Operator");
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Edit Operator (userid:" + user.getUserId() + ")");
+		}
+		
+		logMap.put("reqUrl", "/api/user/insert.do");
+		logMap.put("reqCode", "SUCCESS");
+		logMap.put("targetId", LogUser.getUserId());
+		UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+		logMapper.insertSystemAjaxLog(logMap);
+		
 		JSONObject jsonResult = new JSONObject();
 		
 		HttpSession session = request.getSession(false);
@@ -202,6 +224,7 @@ public class UsersController {
 		jsonResult.put("result", userServiceImpl.insertUser(user));
 
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		
 		return jsonResult.toString();
 	}
 	
@@ -256,6 +279,18 @@ public class UsersController {
 			logger.info("~~ [Operator was incorrect!]");
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		
+		Users LogUser = (Users)request.getSession().getAttribute("USER");
+		HashMap<String, Object> logMap = new HashMap<String, Object>();
+		logMap.put("reqType", "Operator");
+		logMap.put("reqSubType", "Delete Operator");
+		logMap.put("reqUrl", "/api/user/delete.do");
+		logMap.put("reqCode", "SUCCESS");
+		logMap.put("targetId", LogUser.getUserId());
+		logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Delete Operator (userid:" + user.getUserId() + ")");
+		UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+		logMapper.insertSystemAjaxLog(logMap);
+		
 		return jsonResult.toString();
 	}
 	
@@ -351,6 +386,18 @@ public class UsersController {
 				jsonResult.put("resultCode", "F");
 				logger.error("<- User Password Init Fail! : [jsonResult = {}]", jsonResult.toString());
 			}
+			
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Operator");
+			logMap.put("reqSubType", "Password Reset");
+			logMap.put("reqUrl", "/api/user/initPassword.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Password Reset (userid:" + userId + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
+			
 		} catch(Exception e) {
 			jsonResult.put("resultCode", "F");
 			logger.error("<- User Password Init Fail! : " + e.getMessage());

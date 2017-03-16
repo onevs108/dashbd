@@ -90,7 +90,7 @@ public class LogController {
 			param.put("searchDateTo", searchDateToSpliteList[2] + "-" + searchDateToSpliteList[0] + "-" + searchDateToSpliteList[1]);
 			
 			if(param.get("tabDiv").equals("1")) {
-				param.put("reqType", "\'Login\', \'Operator\', \'OperatorGroup\', \'ServiceArea\', \'ServiceAreaGroup\', \'Schedule\', \'Database\'");
+				param.put("reqType", "\'Login\', \'Operator\', \'OperatorGroup\', \'Content\', \'ServiceArea\', \'ServiceAreaGroup\', \'Schedule\', \'Database\'");
 			} else if(param.get("tabDiv").equals("2")) {
 				param.put("reqType", "\'ServiceArea\'");
 			} else if(param.get("tabDiv").equals("3")) {

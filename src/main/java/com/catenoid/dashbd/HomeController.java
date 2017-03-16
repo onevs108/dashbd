@@ -95,16 +95,17 @@ public class HomeController {
 	        if (ip == null)
 	            ip = request.getRemoteAddr();
 			
-	        Map<String, Object> map = new HashMap<String, Object>();
-			map.put("reqType", "Login");
-			map.put("reqSubType", "Logout");
-			map.put("reqUrl", "logout.do");
-			map.put("reqCode", "SUCCESS");
-			map.put("targetId", user.getUserId());
-			map.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + user.getUserId() + " - Logout (IP address : " + ip + ")");
-			UsersMapper mapper = sqlSession.getMapper(UsersMapper.class);
-			mapper.insertSystemAjaxLog(map);
-			
+	        Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Login");
+			logMap.put("reqSubType", "Logout");
+			logMap.put("reqUrl", "logout.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Logout (IP address : " + ip + ")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
+	        
 			request.getSession().invalidate();
 		}
 		

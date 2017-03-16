@@ -145,34 +145,36 @@ public class OperatorController {
 	/**
 	 * Grade 등록 및 수정
 	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/api/grade/insert.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
-	@ResponseBody
-	public String postGradeInsert(@ModelAttribute Operator operator) {
-		logger.info("-> [operator = {}]", operator.toString());
-		
-		JSONObject jsonResult = new JSONObject();
-		jsonResult.put("result", operatorServiceImpl.insertGrade(operator));
-		
-		logger.info("<- [jsonResult = {}]", jsonResult.toString());
-		return jsonResult.toString();
-	}
+//	@SuppressWarnings("unchecked")
+//	@RequestMapping(value = "/api/grade/insert.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+//	@ResponseBody
+//	public String postGradeInsert(HttpServletRequest request, @ModelAttribute Operator operator) {
+//		logger.info("-> [operator = {}]", operator.toString());
+//		
+//		JSONObject jsonResult = new JSONObject();
+//		jsonResult.put("result", operatorServiceImpl.insertGrade(operator));
+//		
+//		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+//		
+//		return jsonResult.toString();
+//	}
 	
 	/**
 	 * Operator 등록 및 수정
 	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/api/operator/insert.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
-	@ResponseBody
-	public String postOperatorInsert(@ModelAttribute Operator operator) {
-		logger.info("-> [operator = {}]", operator.toString());
-		
-		JSONObject jsonResult = new JSONObject();
-		jsonResult.put("result", operatorServiceImpl.insertOperator(operator));
-		
-		logger.info("<- [jsonResult = {}]", jsonResult.toString());
-		return jsonResult.toString();
-	}
+//	@SuppressWarnings("unchecked")
+//	@RequestMapping(value = "/api/operator/insert.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+//	@ResponseBody
+//	public String postOperatorInsert(HttpServletRequest request, @ModelAttribute Operator operator) {
+//		logger.info("-> [operator = {}]", operator.toString());
+//		
+//		JSONObject jsonResult = new JSONObject();
+//		jsonResult.put("result", operatorServiceImpl.insertOperator(operator));
+//		
+//		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+//		
+//		return jsonResult.toString();
+//	}
 	
 	/**
 	 * Grade 삭제
@@ -180,24 +182,48 @@ public class OperatorController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/grade/delete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
-	public String GradeDelete(@RequestParam(value = "gradeId", required = true) Integer gradeId) {
+	public String GradeDelete(HttpServletRequest request, @RequestParam(value = "gradeId", required = true) Integer gradeId
+								, @RequestParam(value = "name", required = true) String name) {
 		
 		JSONObject jsonResult = new JSONObject();
 		jsonResult.put("result", operatorServiceImpl.deleteGrade(gradeId));
+		
+		Users LogUser = (Users)request.getSession().getAttribute("USER");
+		HashMap<String, Object> logMap = new HashMap<String, Object>();
+		logMap.put("reqType", "OperatorGroup");
+		logMap.put("reqSubType", "Delete Operator Group");
+		logMap.put("reqUrl", "/api/grade/delete.do");
+		logMap.put("reqCode", "SUCCESS");
+		logMap.put("targetId", LogUser.getUserId());
+		logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Delete Operator Group (group name : " + name + ")");
+		UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+		logMapper.insertSystemAjaxLog(logMap);
 		
 		return jsonResult.toString();
 	}
 	
 	/**
-	 * Circle 삭제
+	 * Regional Group 삭제
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/api/circle/delete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@RequestMapping(value = "/api/operator/delete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
 	@ResponseBody
-	public String ciecleDelete(@RequestParam(value = "circleId", required = true) Integer circleId) {
+	public String ciecleDelete(HttpServletRequest request, @RequestParam(value = "circleId", required = true) Integer circleId
+								, @RequestParam(value = "name", required = true) String name) {
 		
 		JSONObject jsonResult = new JSONObject();
 		jsonResult.put("result", operatorServiceImpl.deleteCircle(circleId));
+		
+		Users LogUser = (Users)request.getSession().getAttribute("USER");
+		HashMap<String, Object> logMap = new HashMap<String, Object>();
+		logMap.put("reqType", "OperatorGroup");
+		logMap.put("reqSubType", "Delete Operator Group");
+		logMap.put("reqUrl", "/api/operator/delete.do");
+		logMap.put("reqCode", "SUCCESS");
+		logMap.put("targetId", LogUser.getUserId());
+		logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId() + " - Delete Operator Group (group name : " + name + ")");
+		UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+		logMapper.insertSystemAjaxLog(logMap);
 		
 		return jsonResult.toString();
 	}
