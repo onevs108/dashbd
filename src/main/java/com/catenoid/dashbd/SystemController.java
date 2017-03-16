@@ -686,7 +686,7 @@ public class SystemController{
 			}
 			
 			jsonResult.put("rows", rows);
-
+    
 			syslogMap.put("reqType", "Database Config");
 			syslogMap.put("reqSubType", "systemDblist");
 			syslogMap.put("reqUrl", "resources/systemDblist.do");

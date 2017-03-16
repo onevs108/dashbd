@@ -254,10 +254,10 @@
 		from service_id_idx
 	</select>
 	
-	<select id="updateServiceIdIdx">
+	<update id="updateServiceIdIdx">
 		update service_id_idx
 		set id_idx = id_idx + 1
-	</select>
+	</update>
 	
 	<select id="checkServiceId" resultType="int">
 		select count(*)
