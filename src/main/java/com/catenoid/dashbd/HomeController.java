@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.catenoid.dashbd.dao.StatusNotifyMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.StatusNotifyWithBLOBs;
 import com.catenoid.dashbd.dao.model.Users;
@@ -83,7 +87,32 @@ public class HomeController {
 	 * @author iskwon
 	 */
 	@RequestMapping(value = "/logout.do", method = RequestMethod.GET)
-	public String doLogoutPage() {
+	public String doLogoutPage(HttpServletRequest request) {
+		Users user = (Users) request.getSession().getAttribute("USER");
+		
+		if(user != null) {
+			String ip = request.getHeader("X-FORWARDED-FOR");
+	        if (ip == null)
+	            ip = request.getRemoteAddr();
+			
+			Calendar cal = Calendar.getInstance(Locale.KOREA);
+	        String sysdate = cal.get ( Calendar.YEAR ) + "-" + ( cal.get ( Calendar.MONTH ) + 1 ) + "-" 
+	        				+ cal.get ( Calendar.DATE ) + " " + cal.get ( Calendar.HOUR_OF_DAY ) + ":" 
+	        				+ cal.get ( Calendar.MINUTE ) + ":" + cal.get ( Calendar.SECOND );
+	        
+	        Map<String, Object> map = new HashMap<String, Object>();
+			map.put("reqType", "Login");
+			map.put("reqSubType", "Logout");
+			map.put("reqUrl", "logout.do");
+			map.put("reqCode", "SUCCESS");
+			map.put("targetId", user.getUserId());
+			map.put("reqMsg", "[" + sysdate + "] User ID : " + user.getUserId() + " - Logout (IP address : " + ip + ")");
+			UsersMapper mapper = sqlSession.getMapper(UsersMapper.class);
+			mapper.insertSystemAjaxLog(map);
+			
+			request.getSession().invalidate();
+		}
+		
 		logger.info("-> []");
 		
 		logger.info("<- []");

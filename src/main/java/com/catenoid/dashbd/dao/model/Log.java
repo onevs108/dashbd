@@ -2,6 +2,11 @@ package com.catenoid.dashbd.dao.model;
 
 import java.util.Date;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.catenoid.dashbd.util.Utils;
+
 public class Log {
 	private int sysId;
 	private String targetId;
@@ -67,4 +72,19 @@ public class Log {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
+	
+	public JSONObject toJSONObject() {
+    	JSONObject jsonResult = new JSONObject();
+    	jsonResult.put("sysId", sysId);
+    	jsonResult.put("targetId", targetId);
+    	jsonResult.put("reqType", reqType);
+    	jsonResult.put("reqSubType", reqSubType);
+    	jsonResult.put("reqUrl", reqUrl);
+    	jsonResult.put("reqCode", reqCode);
+    	jsonResult.put("reqMsg", reqMsg);
+    	jsonResult.put("insertAt", insertAt);
+    	jsonResult.put("createdAt", createdAt);
+    	
+    	return jsonResult;
+    }
 }

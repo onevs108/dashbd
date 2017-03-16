@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="now" value="<%= new java.util.Date() %>" />
 
 <% request.setCharacterEncoding("utf-8"); %>
 
@@ -40,27 +42,28 @@
 									<div class="col-lg-12">
 										<div class="tabs-container">
 											<ul class="nav nav-tabs">
-											    <li class="active"><a href="#tab-1" data-toggle="tab" onclick="tabChange('1')">Operator Log</a></li>
-											    <li><a href="#tab-2" data-toggle="tab" onclick="tabChange('2')">Service Area</a></li>
-											    <li><a href="#tab-3" data-toggle="tab" onclick="tabChange('3')">Schedule</a></li>
-											    <li><a href="#tab-4" data-toggle="tab" onclick="tabChange('4')">DB Backup</a></li>
+											    <li class="active" name="tab1"><a href="javascript:void(0);" data-toggle="tab" onclick="tabChange('1')">Operator Log</a></li>
+											    <li name="tab2"><a href="javascript:void(0);" data-toggle="tab" onclick="tabChange('2')">Service Area</a></li>
+											    <li name="tab3"><a href="javascript:void(0);" data-toggle="tab" onclick="tabChange('3')">Schedule</a></li>
+											    <li name="tab4"><a href="javascript:void(0);" data-toggle="tab" onclick="tabChange('4')">DB Backup</a></li>
 											</ul>
 											<div class="tab-content">	
 												<div class="panel-body">
-													<form class="form-horizontal" action="javascript:void(0);">
+													<form class="form-horizontal" id="logForm" action="javascript:void(0);">
+														<input type="hidden" id="tabDiv" name="tabDiv" value="1">
 														<div class="row">
 															<div class="col-lg-6">
 																<div class="form-group">
 																	<label class="col-sm-2 control-label">From</label>
 																	<div class="col-sm-4">
 																		<div class="input-group date" id="data_1">
-										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateFrom" value="">
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateFrom" name="searchDateFrom" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
 										                                </div>
 																	</div>
 																	<label class="col-sm-2 control-label">To</label>
 																	<div class="col-sm-4">
 																		<div class="input-group date" id="data_2">
-										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateTo" value="">
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateTo" name="searchDateTo" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
 										                                </div>
 																	</div>
 																</div>
@@ -72,9 +75,9 @@
 																	<label class="col-sm-2 control-label">Search</label>
 																	<div class="col-sm-10">
 																		<div class="input-group">
-																			<input type="text" class="form-control" onkeydown="javascript:if(event.keyCode == 13) ">
+																			<input type="text" id="searchKeyword" name="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) selectLogData();">
 																			<span class="input-group-btn">
-																				<button type="button" onclick="" class="btn btn-primary">Search</button>
+																				<button type="button" onclick="selectLogData()" class="btn btn-primary">Search</button>
 																			</span>
 																		</div>
 																	</div>
@@ -83,23 +86,11 @@
 														</div>
 													</form>		
 													<div class="row col-xs-6" style="height:500px; overflow:auto">
-														<div id="tab-1" class="tab-pane active">
+														<div id="tab-body" class="tab-pane active">
 															<ul style="padding: 0 0 0 0;">
 																<c:forEach var="obj" items="${resultList}" varStatus="status">
 																	<li>${obj.reqMsg}</li>
 																</c:forEach>
-															</ul>
-														</div>
-														<div id="tab-2" class="tab-pane">
-															<ul style="padding: 0 0 0 0;">
-															</ul>
-														</div>
-														<div id="tab-3" class="tab-pane">
-															<ul style="padding: 0 0 0 0;">
-															</ul>
-														</div>
-														<div id="tab-4" class="tab-pane">
-															<ul style="padding: 0 0 0 0;">
 															</ul>
 														</div>
 													</div>						
@@ -124,24 +115,7 @@
 <script src="/dashbd/resources/newPublish/js/plugins/datapicker/bootstrap-datepicker.js"></script>
    
 <script type="text/javascript">
-	$(document).ready(function() {
-		getMenuList('LOG_MGMT');
-		
-		$('#data_1.input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-        });
-		$('#data_2.input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-        });
-	});
+	
 </script>
 </body>
 </html>

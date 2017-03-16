@@ -1,5 +1,8 @@
 package com.catenoid.dashbd;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 public class Const {
 	
 	/**
@@ -84,4 +87,22 @@ public class Const {
 	public static final String MENU_SYSTEM_MGMT				= "SYSTEM_MGMT";
 	public static final String MENU_LOG_MGMT				= "LOG_MGMT";
 	
+	public static String getLogTime() {
+		Calendar cal = Calendar.getInstance(Locale.KOREA);
+		String year = cal.get ( Calendar.YEAR ) + "";
+		String month = ( cal.get ( Calendar.MONTH ) + 1 ) + "";
+		String date = cal.get ( Calendar.DATE ) + "";
+		String hour = cal.get ( Calendar.HOUR_OF_DAY ) + "";
+		String minute = cal.get ( Calendar.MINUTE ) + "";
+		String second = cal.get ( Calendar.SECOND ) + "";
+		
+		month = (month.length() == 1)? "0" + month : month;
+		date = (date.length() == 1)? "0" + date : date;
+		hour = (hour.length() == 1)? "0" + hour : hour;
+		minute = (minute.length() == 1)? "0" + minute : minute;
+		second = (second.length() == 1)? "0" + second : second;
+		
+        String sysdate = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+		return sysdate;
+	}
 }

@@ -33,7 +33,7 @@
            	authentication-failure-handler-ref="authenticationFailureHandler"
         	always-use-default-target="false" />
 		
-        <logout invalidate-session="true" logout-url="/out" logout-success-url="/logout.do" delete-cookies="JSESSIONID" />
+        <logout invalidate-session="false" logout-url="/out" logout-success-url="/logout.do" delete-cookies="JSESSIONID" />
         
         <session-management>
 			<concurrency-control expired-url="/sessiontimeout.do" max-sessions="100" />

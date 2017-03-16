@@ -16,6 +16,11 @@
   <select id="selectLogDate" parameterType="HashMap" resultMap="LogMap">
   		SELECT sysId, target_id, req_type, req_sub_type, req_url, req_code, req_msg, insert_at, created_at
   		FROM system_ajax_log
+  		WHERE insert_at BETWEEN #{searchDateFrom} AND #{searchDateTo}
+  		  AND req_type IN(${reqType})
+  		  <if test="searchKeyword != '' and searchKeyword != null">
+  		  	AND target_id = #{searchKeyword}
+  		  </if>
   		ORDER BY created_at DESC
   </select>
 </mapper>

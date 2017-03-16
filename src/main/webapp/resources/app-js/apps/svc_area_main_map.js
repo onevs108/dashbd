@@ -1,3 +1,5 @@
+$.blockUI();
+
 var map;
 var modalMap;
 //var circles = [];
@@ -90,8 +92,10 @@ function jsTreeSetting(openAllYn) {
 			    		})
 			        }
 			        
+			        $.unblockUI();
 			    },
 		        error : function(xhr, status, error) {
+		        	$.unblockUI();
 		        	swal({
 		                title: "Fail !",
 		                text: "Error"

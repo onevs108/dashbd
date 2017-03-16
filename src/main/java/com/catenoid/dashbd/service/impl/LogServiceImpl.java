@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.catenoid.dashbd.dao.LogMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Circle;
+import com.catenoid.dashbd.dao.model.Log;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.LogService;
 import com.catenoid.dashbd.service.UserService;
@@ -28,7 +29,7 @@ public class LogServiceImpl implements LogService {
 	private SqlSession sqlSession;	
 	
 	@Override
-	public List<HashMap<String, Object>> selectLogDate(HashMap<String, Object> param) {
+	public List<Log> selectLogDate(HashMap<String, Object> param) {
 		LogMapper logMapper = sqlSession.getMapper(LogMapper.class);
 		return logMapper.selectLogDate(param);
 	} 

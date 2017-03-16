@@ -252,6 +252,8 @@
 	
 	<script src="js/jquery.cookie.js"></script>
 	<script>
+		$.blockUI();
+	
 		$(document).ready(function() {
 			jsTreeSetting();
 			
@@ -306,6 +308,8 @@
 					$(trList[i]).find("i.fa.fa-plus-square").remove();
 				}
 			}
+			
+			$.unblockUI();
 		}
 		
 		function searchRegionalSchedule(initYn) {

@@ -25,6 +25,7 @@
 <script src="/dashbd/resources/newPublish/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 <script src="/dashbd/resources/newPublish/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="/dashbd/resources/newPublish/js/plugins/pace/pace.min.js"></script>
+<script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
 <script src="/dashbd/resources/js/common.js"></script>
 
 <!-- Sweet alert -->
