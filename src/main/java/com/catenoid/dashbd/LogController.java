@@ -45,6 +45,11 @@ public class LogController {
 	@RequestMapping(value = "/resources/logMgmt.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public ModelAndView getServiceAreaMain(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("log/logMgmt");
+		
+		HashMap<String, Object> param = new HashMap<String, Object>(); 
+		List<HashMap<String, Object>> resultList = logServiceImpl.selectLogDate(param);
+		mv.addObject("resultList", resultList);
+		
 		return mv;
 	}
 	

@@ -82,64 +82,25 @@
 															</div>
 														</div>
 													</form>		
-													<div class="row col-xs-6" style="margin-top:20px; height:500px; overflow:auto">
+													<div class="row col-xs-6" style="height:500px; overflow:auto">
 														<div id="tab-1" class="tab-pane active">
 															<ul style="padding: 0 0 0 0;">
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
-																<li>[2017-03-10 : 03:34:24] User ID : wkim2580 – Login (IP address : 211.12.12.34)</li>
+																<c:forEach var="obj" items="${resultList}" varStatus="status">
+																	<li>${obj.reqMsg}</li>
+																</c:forEach>
 															</ul>
 														</div>
 														<div id="tab-2" class="tab-pane">
-															
+															<ul style="padding: 0 0 0 0;">
+															</ul>
 														</div>
 														<div id="tab-3" class="tab-pane">
-															
+															<ul style="padding: 0 0 0 0;">
+															</ul>
 														</div>
 														<div id="tab-4" class="tab-pane">
-															
+															<ul style="padding: 0 0 0 0;">
+															</ul>
 														</div>
 													</div>						
 												</div>

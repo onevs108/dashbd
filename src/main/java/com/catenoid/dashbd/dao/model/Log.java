@@ -11,7 +11,7 @@ public class Log {
 	private String reqCode;
 	private String reqMsg;
 	private String insertAt;
-	private Date createAt;
+	private Date createdAt;
 	
 	public int getSysId() {
 		return sysId;
@@ -61,11 +61,10 @@ public class Log {
 	public void setInsertAt(String insertAt) {
 		this.insertAt = insertAt;
 	}
-	public Date getCreateAt() {
-		return createAt;
+	public Date getCreatedAt() {
+		return createdAt;
 	}
-	public void setCreateAt(Date createAt) {
-		this.createAt = createAt;
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
-
 }

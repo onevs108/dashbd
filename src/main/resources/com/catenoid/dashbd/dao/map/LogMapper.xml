@@ -3,18 +3,19 @@
 <mapper namespace="com.catenoid.dashbd.dao.LogMapper" >
   <resultMap id="LogMap" type="com.catenoid.dashbd.dao.model.Log" >
     <id column="sysId" property="sysId" jdbcType="INTEGER" />
-    <result column="target_id" property="target_id" jdbcType="VARCHAR" />
-    <result column="req_type" property="req_type" jdbcType="VARCHAR" />
-    <result column="req_sub_type" property="req_sub_type" jdbcType="VARCHAR" />
-    <result column="req_url" property="req_url" jdbcType="VARCHAR" />
-    <result column="req_code" property="req_code" jdbcType="VARCHAR" />
-    <result column="req_msg" property="req_msg" jdbcType="VARCHAR" />
-    <result column="insert_at" property="insert_at" jdbcType="INTEGER" />
-    <result column="created_at" property="created_at" jdbcType="DATE" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="req_type" property="reqType" jdbcType="VARCHAR" />
+    <result column="req_sub_type" property="reqSubType" jdbcType="VARCHAR" />
+    <result column="req_url" property="reqUrl" jdbcType="VARCHAR" />
+    <result column="req_code" property="reqCode" jdbcType="VARCHAR" />
+    <result column="req_msg" property="reqMsg" jdbcType="VARCHAR" />
+    <result column="insert_at" property="insertAt" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="DATE" />
   </resultMap>
   
   <select id="selectLogDate" parameterType="HashMap" resultMap="LogMap">
   		SELECT sysId, target_id, req_type, req_sub_type, req_url, req_code, req_msg, insert_at, created_at
   		FROM system_ajax_log
+  		ORDER BY created_at DESC
   </select>
 </mapper>

@@ -1,8 +1,10 @@
 package com.catenoid.dashbd.security;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -84,13 +86,23 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			session.setAttribute("USER", user);
 			
 			logger.info("<- [redirect = {}]", "/dashbd/resources/main.do");
-
+			
+			String ip = request.getHeader("X-FORWARDED-FOR");
+	        if (ip == null)
+	            ip = request.getRemoteAddr();
+			
+	        Calendar cal = Calendar.getInstance(Locale.KOREA);
+	        String sysdate = cal.get ( Calendar.YEAR ) + "-" + ( cal.get ( Calendar.MONTH ) + 1 ) + "-" 
+	        				+ cal.get ( Calendar.DATE ) + " " + cal.get ( Calendar.HOUR_OF_DAY ) + ":" 
+	        				+ cal.get ( Calendar.MINUTE ) + ":" + cal.get ( Calendar.SECOND );
+	        
 			map.put("reqType", "Login");
-			map.put("reqSubType", "login");
+			map.put("reqSubType", "Login");
 			map.put("reqUrl", "login.do");
 			map.put("reqCode", "SUCCESS");
-			map.put("reqMsg", "");
-//			mapper.insertSystemAjaxLog(map);
+			map.put("targetId", userId);
+			map.put("reqMsg", "[" + sysdate + "] User ID : " + userId + " - Login (IP address : " + ip + ")");
+			mapper.insertSystemAjaxLog(map);
 			
 			response.sendRedirect("/dashbd/resources/main.do");
 		}
