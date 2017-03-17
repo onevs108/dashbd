@@ -16,6 +16,7 @@ $(document).ready(function()
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				addServiceAreaEvent(0);
 			}
+			$("#serviceModeArea").hide();
 			addSearchContentEvent(0);
 		}else if($(this).val() == "carouselMultiple"){
 			$("#bcType_fileDownload").show();
@@ -29,6 +30,7 @@ $(document).ready(function()
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				addServiceAreaEvent(0);
 			}
+			$("#serviceModeArea").hide();
 			addSearchContentEvent(0);
 		}else if($(this).val() == "carouselSingle"){
 			$("#bcType_fileDownload").show();
@@ -42,6 +44,7 @@ $(document).ready(function()
 				$("#serviceAreaRow").append($("#serviceArea").render());
 				addServiceAreaEvent(0);
 			}
+			$("#serviceModeArea").hide();
 			addSearchContentEvent(0);
 		}else{
 			$("div[name='bcType_fileDownload']").hide();
@@ -52,8 +55,34 @@ $(document).ready(function()
 			$("div[name='contentStartStop']").hide();
 			$("#interval").hide();
 			$("#addServiceArea").remove();
+			$("#serviceModeArea").show();
 			addServiceAreaEvent(0);
 		}
+	});
+	
+	$("#serviceMode").on("change", function() {
+		if($(this).val() == "bc") 
+		{
+			$("#moodArea").hide();
+			$("#bcServiceArea").hide();
+			$("#consumptionReport").hide();
+		} 
+		else if($(this).val() == "sc") 
+		{
+			$("#moodArea").show();
+			$("#bcServiceArea").hide();
+			$("#consumptionReport").hide();
+		}
+		else 	//Mood 일 때
+		{
+			$("#moodArea").show();
+			$("#bcServiceArea").show();
+			$("#consumptionReport").show();
+		}
+	});
+	
+	$("#addBcPattern").on("click", function() {
+		$("div[name='bcPattern']").last().after($("#bcPatternArea").render());
 	});
 	
 	$("#fecType").on("change", function() {
@@ -71,7 +100,6 @@ $(document).ready(function()
 		}
 	});
 	
-	
 	$("#receptionReport").on("change", function() {
 		if(this.checked){
 			$("#offsetTime").prop('disabled', false);
@@ -85,6 +113,20 @@ $(document).ready(function()
 			$("#reportType").prop('disabled', true);
 			$("#randomTime").prop('disabled', true);
 			$("#samplePercentage").val("");
+		}
+	});
+	
+	$("#reportClientId").on("change", function() {
+		if(this.checked){
+			$("#moodReportInterval").prop('disabled', false);
+			$("#moodOffsetTime").prop('disabled', false);
+			$("#moodRandomTimePeriod").prop('disabled', false);
+			$("#moodSamplePercentage").prop('disabled', false);
+		}else{
+			$("#moodReportInterval").prop('disabled', true);
+			$("#moodOffsetTime").prop('disabled', true);
+			$("#moodRandomTimePeriod").prop('disabled', true);
+			$("#moodSamplePercentage").prop('disabled', true);
 		}
 	});
 	
@@ -208,6 +250,7 @@ $(document).ready(function()
 	addScheduleRemoveEvent();
 	addContentRemoveEvent();
 	$("#serviceType").change();
+	$("#serviceMode").change();
 	
 });
 
@@ -386,7 +429,7 @@ function getServiceIdList() {
 			sortable: false,
 			visible: true,
 			formatter: function(value, row, index) {
-				var html = '<input type="text" id="className'+row.id+'" class="form-control" value="'+value+'">';
+				var html = '<input type="text" id="idName'+row.id+'" class="form-control" value="'+value+'">';
 				return html;
 			}
 		}, {
@@ -410,8 +453,8 @@ function getServiceIdList() {
 			sortable: false,
 			visible: true,
 			formatter: function(value, row, index) {
-				var html = '<button type="button" class="btn btn-primary btn-sm" onclick="actionClass(\'edit\', '+row.id+')">Edit</button>&nbsp;';
-				html += '<button type="button" class="btn btn-danger btn-sm" onclick="actionClass(\'delete\', '+row.id+')">Delete</button>';
+				var html = '<button type="button" class="btn btn-primary btn-sm" onclick="actionId(\'edit\', '+row.id+')">Edit</button>&nbsp;';
+				html += '<button type="button" class="btn btn-danger btn-sm" onclick="actionId(\'delete\', '+row.id+')">Delete</button>';
 				return html;
 			}
 		}]
@@ -434,6 +477,26 @@ function actionClass(type, id) {
 			if(data.result == "SUCCESS") {
 				getServiceClassList();
 				setServiceClassView();
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
+
+function actionId(type, id) {
+	var idName = $("#idName"+id).val();
+	var description = $("#description"+id).val();
+	$.ajax({
+		type : "POST",
+		url : "actionServiceId.do",
+		data : {id: id, idName: idName, description: description, type: type},
+		dataType : "json",
+		success : function( data ) {
+			if(data.result == "SUCCESS") {
+				getServiceIdList();
+				setServiceIdView();
 			}
 		},
 		error : function(request, status, error) {
@@ -593,6 +656,11 @@ function addServiceAreaEvent(idx){
 		
 		var said = $($("input[name='said']")[idx]).val();
 		var saidDefault = $($("input[name='saidDefault']")[idx]).val();
+
+		if (said == ""){
+			alert ('please enter the said.');
+			return;
+		}
 		
 		if (saidDefault == said){
 			alert ('this said is default.other said input.');

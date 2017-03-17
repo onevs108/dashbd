@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.codehaus.jackson.JsonGenerationException;
@@ -39,6 +40,7 @@ import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
+import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.XmlManager;
 import com.catenoid.dashbd.util.Utils;
 import com.google.gson.Gson;
@@ -65,8 +67,9 @@ public class ScheduleMgmtController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/view/schdMgmt.do")
-	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request) throws UnsupportedEncodingException {
+	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
+		Users user = (Users) session.getAttribute("USER");
 		try
 		{
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
@@ -92,14 +95,21 @@ public class ScheduleMgmtController {
 			
 			List<Circle> circleList = operatorMapper.selectCircleListNameAll();
 			String searchDate = Utils.getFileDate("yyyy-MM-dd");
-			List<HashMap<String, String>> scList = schedulemapper.selectBroadcastToday(searchDate);
+			List<Map<String, String>> scList = schedulemapper.selectServiceClassAll();
+			if(user.getGrade() == 9999){
+				for (int i = circleList.size()-1; i > -1; i--) {
+					if(Integer.parseInt(user.getCircleId()) != circleList.get(i).getCircle_id()){
+						circleList.remove(i);
+					}
+				}
+			}
 			mv.addObject("circleList", circleList);
 			mv.addObject("OperatorList", result);
 			mv.addObject("BmscList", bmscs);
 			mv.addObject("searchDate", searchDate); 
-			mv.addObject("scList", scList); 
+			mv.addObject("scList", scList);
 			
-			//logger.info("GBRSum=", exampleGBRSum());
+//			logger.info("GBRSum=", exampleGBRSum());
 //			String transId = makeTransId();
 //			params.put("transactionId", transId);
 				
@@ -336,8 +346,9 @@ public class ScheduleMgmtController {
 	 * 스케쥴 상세
 	 */
 	@RequestMapping(value = "view/schedule.do")
-	public ModelAndView schedule( @RequestParam Map< String, String > params) throws UnsupportedEncodingException {
+	public ModelAndView schedule(@RequestParam Map< String, String > params, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView("schd/schedule");
+		Users user = (Users) session.getAttribute("USER");
 		String mode = "update";
 		String type = "area";
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -383,6 +394,7 @@ public class ScheduleMgmtController {
 		mv.addObject("serviceIdIdx", serviceIdIdx);
 		mv.addObject("mapContentUrl", mapContentUrl);
 		mv.addObject("mapSchedule", mapSchedule);
+		mv.addObject("userGrade", user.getGrade());
 		return mv;
 	}
 	
@@ -542,6 +554,25 @@ public class ScheduleMgmtController {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@RequestMapping( value = "/view/actionServiceId.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String actionServiceId(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+		
+		if(params.get("type").equals("edit")){
+			mapper.editServiceId(params);
+		}else{
+			mapper.deleteServiceId(params);
+		}
+		
+		jsonResult.put("result", "SUCCESS");
+		
+		return jsonResult.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
 	@RequestMapping( value = "/view/insertServiceClass.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String insertServiceClass(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
@@ -630,33 +661,39 @@ public class ScheduleMgmtController {
 			@RequestParam(value="saidList", required=false) List<String> saidList,
 			@RequestParam(value="mpdURI", required=false) List<String> mpdURI,
 			@RequestParam(value="contentId", required=false) List<String> contentId,
+			@RequestParam(value="bcBasePattern", required=false) List<String> bcBasePattern,
             HttpServletRequest req, Locale locale ) {
 		
 		int ret;
 		logger.info("sending param{}", params);
 		List<List<String>> paramList = new ArrayList<List<String>>();
-		paramList.add(schedule_start);
-		paramList.add(schedule_stop);
-		paramList.add(fileURI);
-		paramList.add(deliveryInfo_start);
-		paramList.add(deliveryInfo_end);
-		paramList.add(contentLength);
-		paramList.add(saidList);
-		paramList.add(mpdURI);
-		paramList.add(contentId);
+		paramList.add(schedule_start);		//0
+		paramList.add(schedule_stop);		//1
+		paramList.add(fileURI);				//2
+		paramList.add(deliveryInfo_start);	//3
+		paramList.add(deliveryInfo_end);	//4
+		paramList.add(contentLength);		//5
+		paramList.add(saidList);			//6
+		paramList.add(mpdURI);				//7
+		paramList.add(contentId);			//8
+		paramList.add(bcBasePattern);		//9
 		
 		String tmp = params.get("preEmptionCapabiity");
-		
 		if (tmp == null){
 			tmp="off";
 			params.put("preEmptionCapabiity", tmp);
 		}
 		
 		tmp = params.get("preEmptionVulnerability");
-		
 		if (tmp == null){
 			tmp="off";
 			params.put("preEmptionVulnerability", tmp);
+		}
+		
+		tmp = params.get("reportClientId");
+		if (tmp == null){
+			tmp="off";
+			params.put("reportClientId", tmp);
 		}
 		
 		try{

@@ -1776,13 +1776,12 @@ function changeCityInCircle(cityId, circleId, circleName) {
 
 function drawCity(cityMap, color, circleId, circleTitle) {
 	for (var city in cityMap) {
-	    var townCircle = new google.maps.Circle({
-			strokeColor: color,
-			strokeOpacity: 0.8,
-			strokeWeight: 2,
-			fillColor: color,
-			fillOpacity: 0.35,
+	    var townCircle = new google.maps.Marker({
 			map: map,
+			icon : {
+	  	    	  url:'/dashbd/resources/img/icon/ico_number_1_3.png',
+	  	    	  labelOrigin: new google.maps.Point(17, 17)
+  	      	},
 			center: cityMap[city].center,
 			radius: Math.sqrt(cityMap[city].population) * 100,
 			id: city,
@@ -1798,7 +1797,7 @@ function drawCity(cityMap, color, circleId, circleTitle) {
 	    
 	    townCircle.addListener('click', function(e) {
 	    	$("#selectCity option:selected").text(this.title);
-	    	hotSpotReload(this.id, this.center.lat(), this.center.lng(), this.title);
+	    	hotSpotReload(this.id, this.center.lat, this.center.lng, this.title);
 	    });
 	    
 	    townCircles.push(townCircle);

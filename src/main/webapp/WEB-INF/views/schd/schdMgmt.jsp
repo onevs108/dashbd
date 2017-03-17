@@ -105,10 +105,10 @@
 						</div>
 						<div class="row" style="margin-left: 1px;">
 							<div id="selectArea" class="form-group" style="display: none;">
-								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Circle</label>
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Area</label>
 								<div class="col-sm-3" style="width: 20%;">
 		                       		<select id="selectCircle" class="input-sm form-control input">
-		                               <option value="">Select Circle</option>
+		                               <option value="">Select Area</option>
 		                               <c:forEach var="row" items="${circleList}">
 		                               	<option value="${row.circle_id}^${row.circle_name}">${row.circle_name}</option>
 		                               </c:forEach>
@@ -146,7 +146,7 @@
 									<select id="serviceClass" class="input-sm form-control input">
 		                               <option value="">Select Class</option>
 		                               <c:forEach var="row" items="${scList}">
-		                               	<option value="${row.serviceClass}">${row.serviceClass}</option>
+		                               	<option value="${row.class_name}">${row.class_name}</option>
 		                               </c:forEach>
 		                            </select>
 	                            </div>

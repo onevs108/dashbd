@@ -74,6 +74,8 @@ public interface ScheduleMapper {
 	int selectServiceIdIdx();
 	int checkServiceId(HashMap<String, Object> params);
 	int updateServiceIdIdx();
+	void editServiceId(HashMap<String, Object> params);
+	void deleteServiceId(HashMap<String, Object> params);
     
     
 }

@@ -265,6 +265,17 @@
 		where serviceId = #{serviceId}
 	</select>
 	
+	<update id="editServiceId" parameterType="java.util.Map">
+		update service_id
+		set id_name = #{idName}, description = #{description} 
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteServiceId" parameterType="java.util.Map">
+		delete from service_id
+		where id = #{id}
+	</delete>
+	
 	<!-- serviceID 끝 -->
 		
 	<select id="selectServiceClassList" parameterType="java.util.Map" resultType="java.util.Map">

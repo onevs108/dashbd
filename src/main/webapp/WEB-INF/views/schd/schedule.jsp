@@ -160,6 +160,11 @@
 			addSearchContentEvent($($("#contentLength")[ctIdx]).val()-1);
 		}
 		
+		function removePattern(e) {
+			var idx = $("i[name='removePattern']").index(e) + 1;
+			$($("div[name='bcPattern']")[idx]).remove();
+		}
+		
  	</script>
 
 	<style>
@@ -304,6 +309,16 @@
 	                       	    	<input type="text" class="form-control" id="retrieveInterval" name="retrieveInterval" alt='retrieveInterval' value="${mapSchedule.retrieve_interval}">
 	                       	    </div>
                        	    </div>
+                       	    <div id="serviceModeArea" style="display: none; margin-right: 35px;">
+	                            <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>service Mode</label>
+	                       	    <div class="col-sm-3">
+	                       	    	<select class="input-sm form-control input-s-sm" id="serviceMode" name="serviceMode">
+	                       	    		<option value="bc">BC (Broadcast Only)</option>
+                                    	<option value="sc">SC (Service Continuity)</option>
+                                    	<option value="mood">MooD</option>
+	                       	    	</select>
+	                       	    </div>
+                       	    </div>
                         </div><!-- end form-group -->
                     </div>
                     <div class="ibox-content">
@@ -336,7 +351,9 @@
                         	    	</select>
                         	    </div>
                         	    <div class="col-sm-1">
-                        	    	<button id="newClass" type="button" class="btn btn-block btn-default btn-sm">New</button>
+                        	    	<c:if test="${userGrade != 9999}">
+                       	    			<button id="newClass" type="button" class="btn btn-block btn-default btn-sm">New</button>
+                        	    	</c:if>
                         	    </div>
                              	<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service id</label>
                                 <div class="col-sm-4">
@@ -497,6 +514,47 @@
 			                                    </div>
 			                                </div>
 			                            </div>
+			                            <div id="moodArea" class="form-group">
+			                            	<label class="col-sm-3 control-label" style="margin-top: 15px;width: 18%;">MooD</label>
+			                                <div class="col-sm-8" style="margin-top: 15px;">
+			                                	<div class="form-group">
+			                                    	<div class="row">
+			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px">r12mpdURI</label>
+				                                        <div class="col-sm-8">
+				                                        	<input type="text" class="form-control" id="r12mpdURI" name="r12mpdURI" value="">
+				                                        </div>
+			                                    	</div>
+			                                    	<div name="bcPattern" class="row">
+			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px">bcBasePattern</label>
+				                                        <div class="col-sm-8">
+				                                        	<input type="text" class="form-control" id="bcBasePattern" name="bcBasePattern" value="">
+				                                        </div>
+				                                        <button type="button" id="addBcPattern" title="Create new cluster" class="btn btn-primary btn-sm">
+					                                		<i class="fa fa-plus"></i> <span class="bold"></span>
+					                                	</button>
+			                                    	</div>
+			                                    </div>
+			                                    <div id="bcServiceArea" class="form-group">
+			                                    	<div class="row">
+					                                	<label class="col-sm-2 control-label">bcServiceArea</label>
+					                                    <div class="col-sm-6">
+					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;" readonly>
+					                                    </div>
+				                                    	<div class="row">
+				                                    		<div class="col-sm-2">
+						                                    	<input type="text" class="form-control" id="bcSaid" name="bcSaid" required="required" value="">
+						                                    </div>
+					                                    	<div class="col-sm-2"> 
+						                                    	<button type="button" id="bcSaidAdd" name="bcSaidAdd" class="btn btn-block btn-default">Add</button>
+						                                    </div>
+						                                    <div class="col-sm-4">
+						                                        <button type="button" id="bcSapAdd" name="bcSapAdd" class="btn btn-block btn-default">Add bcServiceArea with Map</button>
+						                                    </div>
+												        </div>
+					                                </div>
+			                                    </div>
+			                                </div>
+			                            </div>
 			                        </div>
 	                            </div>
                                 <div id="bcType_fileDownload" name="bcType_fileDownload" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'streaming'}"> style="display:none"</c:if>>
@@ -568,93 +626,126 @@
                         </div><!-- end ibox-content -->
                     </div>
                         <div class="hr-line-dashed"></div>
-                        
-                            <div class="form-group"><label class="col-sm-2 control-label">Associated Delivery</label>
-                                <div class="col-sm-8">
-                                    <div class="well">
-                                    
-                                    <div id="bcType_fileDownload2" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'streaming'}"> style="display:none"</c:if>>
-                                                    <div class="form-group">
-                                                        <label class="col-md-3 control-label">File Repair</label>
-                                                        <div class="col-md-9">
-                                                            <div class="swich m-b-n">
-                                                                <div class="onoffswitch">
-                                                                    <input type="checkbox" class="onoffswitch-checkbox" id="FileRepair" name="FileRepair" <c:if test="${mapSchedule.FileRepair == 'on'}">checked</c:if>>
-                                                                    <label class="onoffswitch-label" for="FileRepair">
-                                                                        <span class="onoffswitch-inner"></span>
-                                                                        <span class="onoffswitch-switch"></span>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Offset Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frOffsetTime" name="frOffsetTime" value="${mapSchedule.frOffsetTime}" <c:if test="${mapSchedule.FileRepair == 'off'}">disabled</c:if>></div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Random Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frRandomTime" name="frRandomTime" value="${mapSchedule.frRandomTime}" <c:if test="${mapSchedule.FileRepair == 'off'}">disabled</c:if>></div>
-                                                    </div>
-                                                 </div>
-                                                    <div class="form-group">
-                                                        <label class="col-md-3 control-label">Reception Report</label>
-                                                        <div class="col-md-9">
-                                                            <div class="swich m-b-n">
-                                                                <div class="onoffswitch">
-                                                                    <input type="checkbox" class="onoffswitch-checkbox" id="receptionReport" name="receptionReport" <c:if test="${mapSchedule.receptionReport == 'on'}">checked</c:if>>
-                                                                    <label class="onoffswitch-label" for="receptionReport">
-                                                                        <span class="onoffswitch-inner"></span>
-                                                                        <span class="onoffswitch-switch"></span>
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    
-                                                    
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Report Type</label>
-                                                        <div class="col-sm-9">
-                                                            <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>>
-                                                                <option value="RAck">RAck</option>
-                                                                <option value="StaR-all">StaR-all</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Sample Percentage</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="samplePercentage" name="samplePercentage" value="${mapSchedule.samplePercentage}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Offset Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="offsetTime" name="offsetTime" value="${mapSchedule.offsetTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-3 control-label">Random Time</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime" value="${mapSchedule.randomTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
-                                                    </div>
-                                                </div>
-                                </div>
+                           <div class="form-group"><label class="col-sm-2 control-label">Associated Delivery</label>
+                               <div class="col-sm-8">
+                                   <div class="well">
+                                   <div id="bcType_fileDownload2" <c:if test="${not empty mapSchedule.service && mapSchedule.service == 'streaming'}"> style="display:none"</c:if>>
+                                   <div class="form-group">
+                                       <label class="col-md-3 control-label">File Repair</label>
+                                       <div class="col-md-9">
+                                           <div class="swich m-b-n">
+                                               <div class="onoffswitch">
+                                                   <input type="checkbox" class="onoffswitch-checkbox" id="FileRepair" name="FileRepair" <c:if test="${mapSchedule.FileRepair == 'on'}">checked</c:if>>
+                                                   <label class="onoffswitch-label" for="FileRepair">
+                                                       <span class="onoffswitch-inner"></span>
+                                                       <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Offset Time</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frOffsetTime" name="frOffsetTime" value="${mapSchedule.frOffsetTime}" <c:if test="${mapSchedule.FileRepair == 'off'}">disabled</c:if>></div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Random Time</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frRandomTime" name="frRandomTime" value="${mapSchedule.frRandomTime}" <c:if test="${mapSchedule.FileRepair == 'off'}">disabled</c:if>></div>
+                                   </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-md-3 control-label">Reception Report</label>
+                                       <div class="col-md-9">
+                                           <div class="swich m-b-n">
+                                               <div class="onoffswitch">
+                                                   <input type="checkbox" class="onoffswitch-checkbox" id="receptionReport" name="receptionReport" <c:if test="${mapSchedule.receptionReport == 'on'}">checked</c:if>>
+                                                   <label class="onoffswitch-label" for="receptionReport">
+                                                       <span class="onoffswitch-inner"></span>
+                                                       <span class="onoffswitch-switch"></span>
+                                                   </label>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Report Type</label>
+                                       <div class="col-sm-9">
+                                           <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>>
+                                               <option value="RAck">RAck</option>
+                                               <option value="StaR-all">StaR-all</option>
+                                           </select>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Sample Percentage</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="samplePercentage" name="samplePercentage" value="${mapSchedule.samplePercentage}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Offset Time</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="offsetTime" name="offsetTime" value="${mapSchedule.offsetTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Random Time</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime" value="${mapSchedule.randomTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                   </div>
+                            	</div>
+                            	<div id="consumptionReport" class="well">
+                                   <div class="form-group">
+                                   		<label class="col-md-3 control-label">Consumption Report</label>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Location</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodLocation" name="moodLocation" value=""></div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-md-3 control-label">Report Client ID</label>
+                                       <div class="col-md-9">
+                                           <div class="swich m-b-n">
+                                               <div class="onoffswitch">
+                                                   <input type="checkbox" class="onoffswitch-checkbox" id="reportClientId" name="reportClientId" <c:if test="${mapSchedule.receptionReport == 'on'}">checked</c:if>>
+                                                   <label class="onoffswitch-label" for="reportClientId">
+                                                       <span class="onoffswitch-inner"></span>
+                                                       <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Report Interval</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodReportInterval" name="moodReportInterval" value="${mapSchedule.samplePercentage}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Offset Time</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodOffsetTime" name="moodOffsetTime" value="${mapSchedule.samplePercentage}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Random Time Period</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodRandomTimePeriod" name="moodRandomTimePeriod" value="${mapSchedule.offsetTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Sample Percentage</label>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodSamplePercentage" name="moodSamplePercentage" value="${mapSchedule.randomTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                   </div>
+                            	</div>
                             </div>
-                        <div class="form-group">
-				                        	<div class="col-sm-5"></div>
-				                        	<div class="col-sm-">
-					                        	<c:if test="${empty mapSchedule.BCID}">
-					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="margin-left:10px;margin-top:10px">OK
-					                        	</c:if>
-					                        	<c:if test="${not empty mapSchedule.BCID}">
-					                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnUPDATE" style="margin-left:10px;margin-top:10px">UPDATE            	
-					                        	</c:if>            	
-					                        	</button>
-					                        	
-					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnDelete" name="btnDelete" style="margin-left:10px;margin-top:10px">Delete</button>
-					                        	
-					                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>
-				                        	</div>
-									    </div>
+                     		<div class="form-group">
+	                        	<div class="col-sm-5"></div>
+	                        	<div class="col-sm-">
+		                        	<c:if test="${empty mapSchedule.BCID}">
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="margin-left:10px;margin-top:10px">OK
+		                        	</c:if>
+		                        	<c:if test="${not empty mapSchedule.BCID}">
+		                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnUPDATE" style="margin-left:10px;margin-top:10px">UPDATE            	
+		                        	</c:if>            	
+		                        	</button>
+		                        	
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnDelete" name="btnDelete" style="margin-left:10px;margin-top:10px">Delete</button>
+		                        	
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>
+	                        	</div>
+						    </div>
                         </div>
                     </div><!-- end ibox-content -->
                 </div><!-- end ibox-content -->
@@ -826,5 +917,14 @@
 	</div>
 </script>
 
+<script id="bcPatternArea" type="text/x-jsrender">
+	<div name="bcPattern" class="row">
+   		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px"></label>
+        <div class="col-sm-8">
+        	<input type="text" class="form-control" name="bcBasePattern" value="">
+        </div>
+        <i class="fa fa-times" name="removePattern" onclick="removePattern(this)" style="cursor: pointer;margin-top: 10px;" ></i><span class="bold"></span>
+   	</div>
+</script>
 
 
