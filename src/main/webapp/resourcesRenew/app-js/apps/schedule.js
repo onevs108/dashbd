@@ -154,6 +154,7 @@ $(document).ready(function()
 				id : $("#id").val(),
 				BCID : $("#BCID").val(),
 				bmscId : $("#bmscId").val(),
+				type : $("#type").val(),
 				serviceType : $( "input[name='serviceType']" ).val()
 			};
 		$.ajax({
@@ -195,6 +196,11 @@ $(document).ready(function()
 	});
 	
 	$("#btnOK").click(function() {
+		if($("#serviceId").val() == ""){
+			alert("Please enter the Service Id");
+			$("#serviceId").focus();
+			return;
+		}
 		var saidList = "";
 		if($("#serviceType").val() == "streaming") {
 			var saidListLength = $("input[name='saidList']").length;
@@ -514,6 +520,9 @@ function closeIdModal() {
 }
 
 function addClass() {
+	if(!confirm("Do you want to create Service Class?")){
+		return;
+	}
 	$.ajax({
 		type : "POST",
 		url : "insertServiceClass.do",
@@ -523,6 +532,7 @@ function addClass() {
 			if(data.result == "EXIST") {
 				alert("Class name is already exist!");
 			}else{
+				alert("Service Class is created!");
 				getServiceClassList();
 				setServiceClassView();
 			}
@@ -534,6 +544,9 @@ function addClass() {
 }
 
 function addId() {
+	if(!confirm("Do you want to create Service Id?")){
+		return;
+	}
 	$.ajax({
 		type : "POST",
 		url : "insertServiceId.do",
@@ -543,6 +556,7 @@ function addId() {
 			if(data.result == "EXIST") {
 				alert("ID name is already exist!");
 			}else{
+				alert("Service Id is created!");
 				getServiceIdList();
 				setServiceIdView();
 			}

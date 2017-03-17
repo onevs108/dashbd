@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -33,10 +35,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.BmscMapper;
 import com.catenoid.dashbd.dao.OperatorMapper;
 import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
+import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
 import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
@@ -641,13 +645,6 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	/**
-	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏� > �벑濡�, �닔�젙
-	 * @param locale
-	 * @param model
-	 * @return
-	 * @throws UnsupportedEncodingException
-	 */
 	@RequestMapping(value = "view/scheduleReg.do")
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
@@ -662,7 +659,7 @@ public class ScheduleMgmtController {
 			@RequestParam(value="mpdURI", required=false) List<String> mpdURI,
 			@RequestParam(value="contentId", required=false) List<String> contentId,
 			@RequestParam(value="bcBasePattern", required=false) List<String> bcBasePattern,
-            HttpServletRequest req, Locale locale ) {
+            HttpServletRequest request, Locale locale ) {
 		
 		int ret;
 		logger.info("sending param{}", params);
@@ -769,7 +766,32 @@ public class ScheduleMgmtController {
 				ret = mapper.updateBroadcastInfo(params);
 				logger.info("updateSchedule ret{}", ret);
 			}
-                
+            
+			String scheduleType = "Schedule";
+			String type = " Create";
+			if(params.get("type").equals("national")){
+				scheduleType = "National Schedule";
+			}
+			if(xmlMode == xmlManager.BMSC_XML_UPDATE){
+				type = " Modified";
+			}
+			
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Schedule");
+			logMap.put("reqSubType", "Add/Edit Schedule");
+			logMap.put("reqUrl", "scheduleReg.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put(
+					"reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId()
+					+ " - "+scheduleType+type+"(Schedule ID : "+ params.get("id") + ", Service Type : "+ params.get("serviceType")
+					+ ", Service ID : " + params.get("serviceId") + ", Service Class : " + params.get("serviceClass")
+					+ ", Service Name : " + params.get("name") + ", Start Date : [" + convertDateFormat2(params.get("schedule_start")) +"]"
+					+ ", End Date : [" + convertDateFormat2(params.get("schedule_stop")) +"]" );
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
+			
 	        return makeRetMsg("1000", "SUCCESS");
 		}catch(Exception e){
 			logger.error("", e);
@@ -845,7 +867,7 @@ public class ScheduleMgmtController {
 	@RequestMapping(value = "view/delSchedule.do")
 	@ResponseBody
 	public Map< String, Object > delSchedule( @RequestParam Map< String, String > params,
-            HttpServletRequest req, Locale locale ) {
+            HttpServletRequest request, Locale locale ) {
 		
 		logger.info("delSchedule params{}", params);
 		try{
@@ -867,6 +889,24 @@ public class ScheduleMgmtController {
 				//@ check return XML success
 				if (!xmlManager.isSuccess(resStr[0]))
 					return makeRetMsg("9000", resStr[0]);
+				
+				String scheduleType = "Schedule";
+				if(params.get("type").equals("national")){
+					scheduleType = "National Schedule";
+				}
+				
+				Users LogUser = (Users)request.getSession().getAttribute("USER");
+				HashMap<String, Object> logMap = new HashMap<String, Object>();
+				logMap.put("reqType", "Schedule");
+				logMap.put("reqSubType", "Delete Schedule");
+				logMap.put("reqUrl", "delSchedule.do");
+				logMap.put("reqCode", "SUCCESS");
+				logMap.put("targetId", LogUser.getUserId());
+				logMap.put(
+						"reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId()
+						+ " - "+scheduleType+" Deleted(Schedule ID : "+ params.get("id")+")");
+				UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+				logMapper.insertSystemAjaxLog(logMap);
 			}
 
 			/*
@@ -884,7 +924,7 @@ public class ScheduleMgmtController {
 	        returnMap.put( "resultMsg", "SUCCESS");
 	        Map< String, Object > resultMap = new HashMap< String, Object >();
 	        resultMap.put( "resultInfo", returnMap );
-	                
+	        
 			return (Map<String, Object>) resultMap;
 			
 		}catch(Exception e){
@@ -935,7 +975,7 @@ public class ScheduleMgmtController {
 		Map <String, String> retmap = mapper.selectGBRSum(params);
 		return String.valueOf(retmap.get("GBRSum"));
 	}
-
+	
 	//2017-02-27T16:00:00.000+09:00 --> 2017-02-27 16:00:00
 	private String convertDateFormat(String dateTime){
 		String retStr = "";
@@ -948,6 +988,20 @@ public class ScheduleMgmtController {
 				
 		return retStr;
 		
+	}
+
+	//20170317174445 --> 2017-02-27 16:00:00
+	private String convertDateFormat2(String dateTime){
+		String retStr = "";
+		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyyMMddHHmmss");
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			java.util.Date dateFrom = sdfFrom.parse(dateTime);
+			retStr = sdfTo.format(dateFrom);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return retStr;
 	}
 	
 }

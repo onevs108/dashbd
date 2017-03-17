@@ -107,11 +107,13 @@
 					$($("input[name='deliveryInfo_start']")[i]).val(contentJson[i].start_time);
 					$($("input[name='deliveryInfo_end']")[i]).val(contentJson[i].end_time);
 				}
-			}else if("new"){
-				for (var i = 0; i < $("input[name='saidList']").length; i++) {
-					$("input[name='saidList']")[i].placeholder = "";
-				}
 			}
+// 			else if("new")
+// 			{
+// 				for (var i = 0; i < $("input[name='saidList']").length; i++) {
+// 					$("input[name='saidList']")[i].placeholder = "";
+// 				}
+// 			}
 			$("#searchContentStream").click(searchStreaming);
 		});
 		

@@ -54,25 +54,25 @@
 														<div class="row">
 															<div class="col-lg-6">
 																<div class="form-group">
-																	<label class="col-sm-2 control-label">From</label>
-																	<div class="col-sm-4">
+																	<label class="col-sm-1 control-label">From</label>
+																	<div class="col-sm-5">
 																		<div class="input-group date" id="data_1">
-										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateFrom" name="searchDateFrom" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										                                    <input type="text" style="width: 100px;" class="form-control" id="searchDateFrom" name="searchDateFrom" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
 										                                </div>
 																	</div>
-																	<label class="col-sm-2 control-label">To</label>
-																	<div class="col-sm-4">
+																	<label class="col-sm-1 control-label">To</label>
+																	<div class="col-sm-5">
 																		<div class="input-group date" id="data_2">
-										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateTo" name="searchDateTo" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										                                    <input type="text" style="width: 100px;" class="form-control" id="searchDateTo" name="searchDateTo" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
 										                                </div>
 																	</div>
 																</div>
 															</div>
-														</div>
-														<div class="row">
 															<div class="col-lg-6">
 																<div class="form-group">
-																	<label class="col-sm-2 control-label">Search</label>
+																	<label class="col-sm-2 control-label">User ID</label>
 																	<div class="col-sm-10">
 																		<div class="input-group">
 																			<input type="text" id="searchKeyword" name="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) selectLogData();">
@@ -85,7 +85,7 @@
 															</div>
 														</div>
 													</form>		
-													<div class="row col-xs-6" style="height:500px; overflow:auto">
+													<div class="row col-xs-12" style="height:500px; overflow:auto">
 														<div id="tab-body" class="tab-pane active">
 															<ul style="padding: 0 0 0 0;">
 																<c:forEach var="obj" items="${resultList}" varStatus="status">
