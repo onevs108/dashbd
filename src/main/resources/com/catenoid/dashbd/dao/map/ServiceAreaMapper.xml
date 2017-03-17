@@ -162,7 +162,7 @@
 		<result column="updatedAt" property="updatedAt" jdbcType="TIMESTAMP" />
 		<result column="totalCount" property="totalCount" jdbcType="INTEGER" />
 	</resultMap>
-		
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -1628,6 +1628,26 @@
 		INSERT INTO service_area_group_sub
 		VALUES(#{group_id}, #{sub_div}, #{sub_said}, now())
 	</insert>
+
+	
+	<sql id="Reginal_Schedule_Divide">
+		SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(t.said, ',', n.n), ',', -1) as said, t.BCID, t.serviceId, t.transactionId, t.service, t.service_name
+			, t.serviceClass, t.language, t.GBR, t.QCI, t.level, t.preEmptionCapabiity, t.preEmptionVulnerability, t.fecType, t.fecRatio
+			, t.segmentAvailableOffset, t.schedule_start, t.schedule_stop, t.reportType, t.offsetTime, t.randomTime, t.fileURI, t.deliveryInfo_start
+			, t.deliveryInfo_end, t.mpdURI, t.samplePercentage, t.created_at, t.updated_at, t.retrieve_interval, t.serviceMode, t.bcServiceArea
+			, t.moodLocation, t.moodReportClientId, t.moodReportInterval, t.moodOffsetTime, t.moodRandomTimePeriod, t.moodSamplePercentage
+	    FROM (SELECT broad.* FROM broadcast_info broad INNER JOIN schedule schedule ON broad.BCID = schedule.BCID WHERE schedule.national_yn is null AND schedule.del_yn = 'N') t CROSS JOIN 
+	    (
+	       SELECT a.N + b.N * 10 + 1 n
+	         FROM 
+	        (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+	       ,(SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+	        ORDER BY n
+	    ) n
+	    <![CDATA[
+	     WHERE n.n <= 1 + (LENGTH(t.said) - LENGTH(REPLACE(t.said, ',', '')))
+	     ]]> 
+	</sql>
 	
 	<select id="selectRegionalSchedule" parameterType="HashMap" resultType="HashMap">
 		SELECT R.*
@@ -1637,6 +1657,7 @@
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( 	SELECT result.*
 						FROM (
+							<if test="searchSchedule != 'national'">
 						      SELECT  
 						              IFNULL(circle.circle_id, cityhotspot.circle_id) as circleId
 						            , IFNULL(circle.circle_name, cityhotspot.circle_name) as circleName
@@ -1645,6 +1666,8 @@
 						            , 'city' as layerDiv
 						            , circle.serviceId
 						            , circle.serviceName
+						            , circle.fileURI
+						            , circle.serviceClass
 						            , circle.service
 						            , circle.scheduleType
 						            , circle.scheduleStart
@@ -1662,28 +1685,37 @@
 										FROM (
 										    SELECT circle.circle_id, circle.circle_name, 'circle' as layerDiv, broad.*
 										    FROM circle circle
-										    INNER JOIN broadcast_info broad
+										    INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 										    ON circle.circle_id = broad.said
+											INNER JOIN schedule schedule
+											ON broad.bcid = schedule.bcid
+											WHERE schedule.national_yn is null
 										    <if test="circleListStr != '' and circleListStr != null">
-										    	WHERE circle.circle_id IN (${circleListStr})
+										    	AND circle.circle_id IN (${circleListStr})
 										    </if>
 										    UNION ALL
 										    SELECT city.circle_id, city.circle_name, 'city' as layerDiv, broad.*
 										    FROM city city
-										    INNER JOIN broadcast_info broad
+										    INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 										    ON city.city_id = broad.said
+											INNER JOIN schedule schedule
+											ON broad.bcid = schedule.bcid
+											WHERE schedule.national_yn is null
 										    <if test="cityListStr != '' and cityListStr != null">
-										    	WHERE city.city_id IN (${cityListStr})
+										    	AND city.city_id IN (${cityListStr})
 										    </if>
 										    UNION ALL
 										    SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv, broad.*
 										    FROM city city
 										    INNER JOIN hotspot hotspot
 										    ON city.city_id = hotspot.city_id
-										    INNER JOIN broadcast_info broad
+										    INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 										    ON broad.said = hotspot.hotspot_id    
+											INNER JOIN schedule schedule
+											ON broad.bcid = schedule.bcid
+											WHERE schedule.national_yn is null
 										    <if test="hotspotListStr != '' and hotspotListStr != null">
-										    	WHERE hotspot.hotspot_id IN (${hotspotListStr})
+										    	AND hotspot.hotspot_id IN (${hotspotListStr})
 										    </if>
 										) t1
 										WHERE 1=1
@@ -1714,8 +1746,26 @@
 											]]>
 										</if>
 										<if test="searchKeyword != null and searchKeyword != ''">
-											AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
-													OR service_name LIKE CONCAT('%', #{searchKeyword}, '%'))
+											<choose>
+												<when test="searchType == 'serviceId'">
+													AND serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+												</when>
+												<when test="searchType == 'serviceName'">
+													AND service_name LIKE CONCAT('%', #{searchKeyword}, '%') 
+												</when>
+												<when test="searchType == 'uri'">
+													AND fileURI LIKE CONCAT('%', #{searchKeyword}, '%') 
+												</when>
+												<when test="searchType == 'serviceClass'">
+													AND serviceClass LIKE CONCAT('%', #{searchKeyword}, '%') 
+												</when>
+												<otherwise>
+													AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+														OR service_name LIKE CONCAT('%', #{searchKeyword}, '%')
+														OR fileURI LIKE CONCAT('%', #{searchKeyword}, '%') 
+														OR serviceClass LIKE CONCAT('%', #{searchKeyword}, '%') )
+												</otherwise>
+											</choose>
 										</if>
 						          ) t2
 						          GROUP BY circle_id, circle_name
@@ -1723,6 +1773,7 @@
 						      LEFT JOIN (
 						          SELECT circle_id, circle_name, 'circle' as layerDiv
 						          , broad.serviceId, broad.service_name as serviceName
+						          , broad.fileURI, broad.serviceClass
 						          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 						          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 						          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
@@ -1730,14 +1781,47 @@
 						          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 						          , schedule.id as scheduleId
 						          FROM circle circle
-						          INNER JOIN broadcast_info broad
+						          INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 						          ON circle.circle_id = broad.said
 						          INNER JOIN schedule schedule
                                   ON broad.bcid = schedule.bcid
+                                  WHERE schedule.del_yn = 'N'
+                                    AND schedule.national_yn is null
 						      ) circle
 						      ON cityhotspot.circle_id = circle.circle_id
-						      WHERE 1=1
-						      ORDER BY circle.circle_id
+							      <if test="circle_id != null and circle_id != ''">
+							      		WHERE cityhotspot.circle_id = #{circle_id}
+							      </if>
+						      </if>
+						      <if test="searchSchedule != 'national'">
+						      	UNION ALL
+						      </if>
+								SELECT 	'' as circleId, 'national' as circleName
+									  , 0 as subCnt, '' as psaid, 'national' as layerDiv
+									  , broad.serviceId, broad.service_name as serviceName
+							          , broad.fileURI, broad.serviceClass
+							          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
+							          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
+							          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+							          , format('10000', ',') as viewers
+							          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+							          , schedule.id as scheduleId				 
+								FROM broadcast_info broad
+								INNER JOIN schedule schedule
+								ON broad.bcid = schedule.bcid
+								WHERE schedule.national_yn = 'Y'
+								  AND schedule.del_yn = 'N'
+								<if test="searchDateFrom != null and searchDateFrom != ''">
+									<![CDATA[
+									AND date_format(schedule_start, '%Y%m%d') >= #{searchDateFrom}
+									]]>
+								</if>
+								<if test="searchDateTo != null and searchDateTo != ''">
+									<![CDATA[
+									AND date_format(schedule_stop, '%Y%m%d') <= #{searchDateTo}
+									]]>
+								</if>
+						      ORDER BY circleId
 						) result
 						WHERE 
 						<choose>
@@ -1745,7 +1829,7 @@
 								1=1
 							</when>
 							<otherwise>
-								circleId IN (${circleListStr})
+								(circleId IN (${circleListStr}) OR circleId = '')
 							</otherwise>
 						</choose>
 						<if test="searchServiceType != null and searchServiceType != ''">
@@ -1775,8 +1859,26 @@
 							]]>
 						</if>
 						<if test="searchKeyword != null and searchKeyword != ''">
-							AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
-								OR serviceName LIKE CONCAT('%', #{searchKeyword}, '%'))
+							<choose>
+								<when test="searchType == 'serviceId'">
+									AND IFNULL(serviceId, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+								</when>
+								<when test="searchType == 'serviceName'">
+									AND IFNULL(serviceName, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+								</when>
+								<when test="searchType == 'uri'">
+									AND IFNULL(fileURI, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+								</when>
+								<when test="searchType == 'serviceClass'">
+									AND IFNULL(serviceClass, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+								</when>
+								<otherwise>
+									AND (IFNULL(serviceId, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+										OR IFNULL(serviceName, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%')
+										OR IFNULL(fileURI, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+										OR IFNULL(serviceClass, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') )
+								</otherwise>
+							</choose>
 						</if>
 					    ORDER BY <if test="sort == null">circleId</if>
 					  		   <if test="sort != null">
@@ -1800,141 +1902,232 @@
 	<select id="selectRegionalScheduleCount" parameterType="HashMap" resultType="int">
 		SELECT  COUNT(*)
 		FROM (
-			SELECT  
-		              IFNULL(circle.circle_id, cityhotspot.circle_id) as circleId
-		            , IFNULL(circle.circle_name, cityhotspot.circle_name) as circleName
-		            , IF(cityhotspot.layerDiv = 'circle', 0, IF(cityhotspot.layerDiv = 'city', 1, 2)) as subCnt
-		            , circle.serviceId
-		            , circle.serviceName
-		            , circle.service
-		            , circle.scheduleType
-		            , circle.scheduleStart
-		            , circle.scheduleStop
-		            , circle.gbr
-		            , circle.deleveryType
-		            , circle.fecRatio
-		            , circle.viewers
-		            , circle.onAirYn
-		      FROM (
-		          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
-		          FROM (
-		          	  SELECT *
-						FROM (
-						    SELECT circle.circle_id, circle.circle_name, 'circle' as layerDiv, broad.*
-						    FROM circle circle
-						    INNER JOIN broadcast_info broad
-						    ON circle.circle_id = broad.said
-						    <if test="circleListStr != '' and circleListStr != null">
-						    	WHERE circle.circle_id IN (${circleListStr})
-						    </if>
-						    UNION ALL
-						    SELECT city.circle_id, city.circle_name, 'city' as layerDiv, broad.*
-						    FROM city city
-						    INNER JOIN broadcast_info broad
-						    ON city.city_id = broad.said
-						    <if test="cityListStr != '' and cityListStr != null">
-						    	WHERE city.city_id IN (${cityListStr})
-						    </if>
-						    UNION ALL
-						    SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv, broad.*
-						    FROM city city
-						    INNER JOIN hotspot hotspot
-						    ON city.city_id = hotspot.city_id
-						    INNER JOIN broadcast_info broad
-						    ON broad.said = hotspot.hotspot_id    
-						    <if test="hotspotListStr != '' and hotspotListStr != null">
-						    	WHERE hotspot.hotspot_id IN (${hotspotListStr})
-						    </if>
-						) t1
-						WHERE 1=1
-						<if test="searchServiceType != null and searchServiceType != ''">
-							AND service = #{searchServiceType}
-						</if>
-						<if test="searchSchedule != null and searchSchedule != ''">
-							<choose>
-								<when test="searchSchedule == 'onair'">
-									AND now() between schedule_start and schedule_stop
-								</when>
-								<when test="searchSchedule == 'today'">
+			SELECT result.*
+			FROM (
+				  <if test="searchSchedule != 'national'">
+				      SELECT  
+				              IFNULL(circle.circle_id, cityhotspot.circle_id) as circleId
+				            , IFNULL(circle.circle_name, cityhotspot.circle_name) as circleName
+				            , IF(cityhotspot.layerDiv = 'circle', 0, IF(cityhotspot.layerDiv = 'city', 1, 2)) as subCnt
+				            , IFNULL(circle.circle_id, cityhotspot.circle_id) as psaid
+				            , 'city' as layerDiv
+				            , circle.serviceId
+				            , circle.serviceName
+				            , circle.fileURI
+				            , circle.serviceClass
+				            , circle.service
+				            , circle.scheduleType
+				            , circle.scheduleStart
+				            , circle.scheduleStop
+				            , circle.gbr
+				            , circle.deleveryType
+				            , circle.fecRatio
+				            , circle.viewers
+				            , circle.onAirYn
+				            , circle.scheduleId
+				      FROM (
+				          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
+				          FROM (
+				          	  SELECT *
+								FROM (
+								    SELECT circle.circle_id, circle.circle_name, 'circle' as layerDiv, broad.*
+								    FROM circle circle
+								    INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
+								    ON circle.circle_id = broad.said
+									INNER JOIN schedule schedule
+									ON broad.bcid = schedule.bcid
+									WHERE schedule.national_yn is null
+								    <if test="circleListStr != '' and circleListStr != null">
+								    	AND circle.circle_id IN (${circleListStr})
+								    </if>
+								    UNION ALL
+								    SELECT city.circle_id, city.circle_name, 'city' as layerDiv, broad.*
+								    FROM city city
+								    INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
+								    ON city.city_id = broad.said
+									INNER JOIN schedule schedule
+									ON broad.bcid = schedule.bcid
+									WHERE schedule.national_yn is null
+								    <if test="cityListStr != '' and cityListStr != null">
+								    	AND city.city_id IN (${cityListStr})
+								    </if>
+								    UNION ALL
+								    SELECT city.circle_id, city.circle_name, 'hotspot' as layerDiv, broad.*
+								    FROM city city
+								    INNER JOIN hotspot hotspot
+								    ON city.city_id = hotspot.city_id
+								    INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
+								    ON broad.said = hotspot.hotspot_id    
+									INNER JOIN schedule schedule
+									ON broad.bcid = schedule.bcid
+									WHERE schedule.national_yn is null
+								    <if test="hotspotListStr != '' and hotspotListStr != null">
+								    	AND hotspot.hotspot_id IN (${hotspotListStr})
+								    </if>
+								) t1
+								WHERE 1=1
+								<if test="searchServiceType != null and searchServiceType != ''">
+									AND service = #{searchServiceType}
+								</if>
+								<if test="searchSchedule != null and searchSchedule != ''">
+									<choose>
+										<when test="searchSchedule == 'onair'">
+											AND now() between schedule_start and schedule_stop
+										</when>
+										<when test="searchSchedule == 'today'">
+											<![CDATA[
+											AND (date_format(now(), '%Y%m%d') = date_format(schedule_start, '%Y%m%d')
+												OR date_format(now(), '%Y%m%d') < date_format(schedule_stop, '%Y%m%d'))
+											]]>
+										</when>
+									</choose>
+								</if>
+								<if test="searchDateFrom != null and searchDateFrom != ''">
 									<![CDATA[
-									AND (date_format(now(), '%Y%m%d') = date_format(schedule_start, '%Y%m%d')
-										OR date_format(now(), '%Y%m%d') < date_format(schedule_stop, '%Y%m%d'))
+									AND date_format(schedule_start, '%Y%m%d') >= #{searchDateFrom}
 									]]>
-								</when>
-							</choose>
-						</if>
-						<if test="searchDateFrom != null and searchDateFrom != ''">
-							<![CDATA[
-							AND date_format(schedule_start, '%Y%m%d') >= #{searchDateFrom}
-							]]>
-						</if>
-						<if test="searchDateTo != null and searchDateTo != ''">
-							<![CDATA[
-							AND date_format(schedule_stop, '%Y%m%d') <= #{searchDateTo}
-							]]>
-						</if>
-						<if test="searchKeyword != null and searchKeyword != ''">
-							AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
-								OR service_name LIKE CONCAT('%', #{searchKeyword}, '%'))
-						</if>
-		          ) t2
-		          GROUP BY circle_id, circle_name
-		      ) cityhotspot
-		      LEFT JOIN (
-		          SELECT circle_id, circle_name, 'circle' as layerDiv
-		          , broad.serviceId, broad.service_name as serviceName
-		          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
-		          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-		          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-		          , format('10000', ',') as viewers
-		          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
-		          FROM circle circle
-		          INNER JOIN broadcast_info broad
-		          ON circle.circle_id = broad.said
-		      ) circle
-		      ON cityhotspot.circle_id = circle.circle_id
-		      WHERE 1=1
-		      ORDER BY circle.circle_id
-		) result
-		WHERE
-		<choose>
-			<when test="circleListStr == null">
-				1=1
-			</when>
-			<otherwise>
-				circleId IN (${circleListStr})
-			</otherwise>
-		</choose>
-		<if test="searchServiceType != null and searchServiceType != ''">
-			AND IFNULL(service, #{searchServiceType}) = #{searchServiceType}
-		</if>
-		<if test="searchSchedule != null and searchSchedule != ''">
+								</if>
+								<if test="searchDateTo != null and searchDateTo != ''">
+									<![CDATA[
+									AND date_format(schedule_stop, '%Y%m%d') <= #{searchDateTo}
+									]]>
+								</if>
+								<if test="searchKeyword != null and searchKeyword != ''">
+									<choose>
+										<when test="searchType == 'serviceId'">
+											AND serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+										</when>
+										<when test="searchType == 'serviceName'">
+											AND service_name LIKE CONCAT('%', #{searchKeyword}, '%') 
+										</when>
+										<when test="searchType == 'uri'">
+											AND fileURI LIKE CONCAT('%', #{searchKeyword}, '%') 
+										</when>
+										<when test="searchType == 'serviceClass'">
+											AND serviceClass LIKE CONCAT('%', #{searchKeyword}, '%') 
+										</when>
+										<otherwise>
+											AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+												OR service_name LIKE CONCAT('%', #{searchKeyword}, '%')
+												OR fileURI LIKE CONCAT('%', #{searchKeyword}, '%') 
+												OR serviceClass LIKE CONCAT('%', #{searchKeyword}, '%') )
+										</otherwise>
+									</choose>
+								</if>
+				          ) t2
+				          GROUP BY circle_id, circle_name
+				      ) cityhotspot
+				      LEFT JOIN (
+				          SELECT circle_id, circle_name, 'circle' as layerDiv
+				          , broad.serviceId, broad.service_name as serviceName
+				          , broad.fileURI, broad.serviceClass
+				          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
+				          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
+				          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				          , format('10000', ',') as viewers
+				          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+				          , schedule.id as scheduleId
+				          FROM circle circle
+				          INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
+				          ON circle.circle_id = broad.said
+				          INNER JOIN schedule schedule
+	                      ON broad.bcid = schedule.bcid
+	                      WHERE schedule.del_yn = 'N'
+	                        AND schedule.national_yn is null
+				      ) circle
+				      ON cityhotspot.circle_id = circle.circle_id
+				       <if test="circle_id != null and circle_id != ''">
+				      		WHERE cityhotspot.circle_id = #{circle_id}
+				      </if>
+			      </if>
+			      <if test="searchSchedule != 'national'">
+			      	UNION ALL
+			      </if>
+					SELECT 	'' as circleId, 'national' as circleName
+						  , 0 as subCnt, '' as psaid, 'national' as layerDiv
+						  , broad.serviceId, broad.service_name as serviceName
+				          , broad.fileURI, broad.serviceClass
+				          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
+				          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
+				          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				          , format('10000', ',') as viewers
+				          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+				          , schedule.id as scheduleId				 
+					FROM broadcast_info broad
+					INNER JOIN schedule schedule
+					ON broad.bcid = schedule.bcid
+					WHERE schedule.national_yn = 'Y'
+					  AND schedule.del_yn = 'N'
+					<if test="searchDateFrom != null and searchDateFrom != ''">
+						<![CDATA[
+						AND date_format(schedule_start, '%Y%m%d') >= #{searchDateFrom}
+						]]>
+					</if>
+					<if test="searchDateTo != null and searchDateTo != ''">
+						<![CDATA[
+						AND date_format(schedule_stop, '%Y%m%d') <= #{searchDateTo}
+						]]>
+					</if>
+			      ORDER BY circleId
+			) result
+			WHERE 
 			<choose>
-				<when test="searchSchedule == 'onair'">
-					AND now() between IFNULL(scheduleStart, now()) and IFNULL(scheduleStop, now())
+				<when test="circleListStr == null">
+					1=1
 				</when>
-				<when test="searchSchedule == 'today'">
-					<![CDATA[
-					AND (date_format(now(), '%Y%m%d') = date_format(IFNULL(scheduleStart, now()), '%Y%m%d')
-						OR date_format(now(), '%Y%m%d') < date_format(IFNULL(scheduleStop, now()), '%Y%m%d'))
-					]]>
-				</when>
+				<otherwise>
+					(circleId IN (${circleListStr}) OR circleId = '')
+				</otherwise>
 			</choose>
-		</if>
-		<if test="searchDateFrom != null and searchDateFrom != ''">
-			<![CDATA[
-			AND date_format(IFNULL(scheduleStart, #{searchDateFrom}), '%Y%m%d') >= #{searchDateFrom}
-			]]>
-		</if>
-		<if test="searchDateTo != null and searchDateTo != ''">
-			<![CDATA[
-			AND date_format(IFNULL(scheduleStop, #{searchDateTo}), '%Y%m%d') <= #{searchDateTo}
-			]]>
-		</if>
-		<if test="searchKeyword != null and searchKeyword != ''">
-			AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
-				OR serviceName LIKE CONCAT('%', #{searchKeyword}, '%'))
-		</if>
+			<if test="searchServiceType != null and searchServiceType != ''">
+				AND IFNULL(service, #{searchServiceType}) = #{searchServiceType}
+			</if>
+			<if test="searchSchedule != null and searchSchedule != ''">
+				<choose>
+					<when test="searchSchedule == 'onair'">
+						AND now() between IFNULL(scheduleStart, now()) and IFNULL(scheduleStop, now())
+					</when>
+					<when test="searchSchedule == 'today'">
+						<![CDATA[
+						AND (date_format(now(), '%Y%m%d') = date_format(IFNULL(scheduleStart, now()), '%Y%m%d')
+							OR date_format(now(), '%Y%m%d') < date_format(IFNULL(scheduleStop, now()), '%Y%m%d'))
+						]]>
+					</when>
+				</choose>
+			</if>
+			<if test="searchDateFrom != null and searchDateFrom != ''">
+				<![CDATA[
+				AND date_format(IFNULL(scheduleStart, #{searchDateFrom}), '%Y%m%d') >= #{searchDateFrom}
+				]]>
+			</if>
+			<if test="searchDateTo != null and searchDateTo != ''">
+				<![CDATA[
+				AND date_format(IFNULL(scheduleStop, #{searchDateTo}), '%Y%m%d') <= #{searchDateTo}
+				]]>
+			</if>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				<choose>
+					<when test="searchType == 'serviceId'">
+						AND IFNULL(serviceId, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+					</when>
+					<when test="searchType == 'serviceName'">
+						AND IFNULL(serviceName, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+					</when>
+					<when test="searchType == 'uri'">
+						AND IFNULL(fileURI, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+					</when>
+					<when test="searchType == 'serviceClass'">
+						AND IFNULL(serviceClass, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+					</when>
+					<otherwise>
+						AND (IFNULL(serviceId, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+							OR IFNULL(serviceName, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%')
+							OR IFNULL(fileURI, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+							OR IFNULL(serviceClass, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') )
+					</otherwise>
+				</choose>
+			</if>
+		) temp
 	</select>
 	
 	<select id="getRegionalSubSchedule" parameterType="HashMap" resultType="HashMap">
@@ -1950,6 +2143,8 @@
 				      , 'hotspot' as layerDiv
 				      , city.serviceId
 				      , city.serviceName
+				      , city.fileURI
+				      , city.serviceClass
 				      , city.service
 				      , city.scheduleType
 				      , city.scheduleStart
@@ -1960,12 +2155,13 @@
 				      , city.viewers
 				      , city.onAirYn
 				      , hotspot.scheduleId
+				      , hotspot.nationalYn
 				FROM (
-				    SELECT circle_id, city_id, city_name, max(layerDiv) as layerDiv, schedule.id as scheduleId
+				    SELECT circle_id, city_id, city_name, max(layerDiv) as layerDiv, schedule.id as scheduleId, schedule.national_yn as nationalYn
 				    FROM (
 				    	SELECT city.circle_id, city.city_id, city.city_name, 'city' as layerDiv, broad.bcid
 			            FROM city city
-			            INNER JOIN broadcast_info broad
+			            INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 			            ON city.city_id = broad.said
 			            <if test="cityListStr != '' and cityListStr != null">
 							AND city.city_id IN (${cityListStr})
@@ -1975,7 +2171,7 @@
 				        FROM city city
 				        INNER JOIN hotspot hotspot
 				        ON city.city_id = hotspot.city_id
-				        INNER JOIN broadcast_info broad
+				        INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 				        ON broad.said = hotspot.hotspot_id
 				        <if test="hotspotListStr != '' and hotspotListStr != null">
 							AND hotspot.hotspot_id IN (${hotspotListStr})
@@ -1987,14 +2183,14 @@
 				) hotspot
 				LEFT JOIN (
 				  SELECT city_id, city_name, 'city' as layerDiv, circle_id
-				    , broad.serviceId, broad.service_name as serviceName
+				    , broad.serviceId, broad.service_name as serviceName, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
 				    , format('10000', ',') as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				  FROM city city
-				  INNER JOIN broadcast_info broad
+				  INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 				  ON city.city_id = broad.said
 				  <if test="cityListStr != '' and cityListStr != null">
 				  	AND city.city_id IN (${cityListStr})
@@ -2005,13 +2201,14 @@
 			</when>
 			<when test="layerDiv == 'hotspot'">
 				SELECT hotspot.hotspot_id as hotspotId, hotspot.hotspot_name as hotspotName, broad.serviceId, broad.service_name as serviceName
+					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
 				    , format('10000', ',') as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
-				    , schedule.id as scheduleId
-				FROM broadcast_info broad
+				    , schedule.id as scheduleId, schedule.national_yn as nationalYn 
+				FROM (<include refid="Reginal_Schedule_Divide" />) broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said
 				INNER JOIN schedule schedule
@@ -2023,13 +2220,15 @@
 			</when>
 			<when test="layerDiv == 'directHotspot'">
 				SELECT hotspot.hotspot_id as hotspotId, hotspot.hotspot_name as hotspotName, broad.serviceId, broad.service_name as serviceName
+					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
 				    , format('10000', ',') as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId
-				FROM broadcast_info broad
+				    , schedule.national_yn as nationalYn
+				FROM (<include refid="Reginal_Schedule_Divide" />) broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said
 				INNER JOIN city city
@@ -2071,8 +2270,26 @@
 			]]>
 		</if>
 		<if test="searchKeyword != null and searchKeyword != ''">
-			AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
-				OR serviceName LIKE CONCAT('%', #{searchKeyword}, '%'))
+			<choose>
+				<when test="searchType == 'serviceId'">
+					AND serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<when test="searchType == 'serviceName'">
+					AND serviceName LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<when test="searchType == 'uri'">
+					AND fileURI LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<when test="searchType == 'serviceClass'">
+					AND serviceClass LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<otherwise>
+					AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+						OR serviceName LIKE CONCAT('%', #{searchKeyword}, '%')
+						OR fileURI LIKE CONCAT('%', #{searchKeyword}, '%') 
+						OR serviceClass LIKE CONCAT('%', #{searchKeyword}, '%') )
+				</otherwise>
+			</choose>
 		</if>
 		<choose>
 			<when test="layerDiv == 'city'">

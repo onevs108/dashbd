@@ -292,7 +292,7 @@ public class OperatorController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/operator/callAddGruopModal.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	@ResponseBody
-	public ModelAndView callAddGruopModal(@RequestParam HashMap<String, Object> param, Model model) {
+	public ModelAndView callAddGruopModal(HttpServletRequest request, @RequestParam HashMap<String, Object> param, Model model) {
 		ModelAndView mv = new ModelAndView("operator/addGroupModal");
 		
 		List<Users> initMemberList = null;
@@ -338,6 +338,19 @@ public class OperatorController {
 			}
 		} else if(param.get("accessDiv").equals("add")) {
 			otherMemberList = operatorServiceImpl.selectMemberList(param);
+		}
+		
+		//Area User일 경우에는 session Monitoring과 System Mgmt 메뉴를 선택하지 못하도록 함
+		Users user = (Users) request.getSession().getAttribute("USER");
+		if(user.getGrade() == 9999) {
+			for(int i=0; i < permissionList.size(); i++) {
+				Permission tempPerm = permissionList.get(i);
+				
+				if(tempPerm.getId() == 8 || tempPerm.getId() == 9) {
+					permissionList.remove(i);
+					i--;
+				}
+			}
 		}
 		
 		model.addAttribute("groupDiv", param.get("groupDiv").toString().toLowerCase());

@@ -271,12 +271,14 @@ public class UsersController {
 		
 		// 사용자를 삭제하려는 사용자가 일반 사용자인 경우 삭제 대상의 Operator와 일치해야 한다.
 		// 이 확인은 Security가 대신 해줄수 없기 때문에 직접 해준다.
-		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN)
-			jsonResult.put("result", userServiceImpl.deleteUser(user));
-		else if (userOfSession.getGrade() == Const.USER_GRADE_USER && userOfSession.getOperatorId() == user.getOperatorId())
-			jsonResult.put("result", userServiceImpl.deleteUser(user));
-		else
-			logger.info("~~ [Operator was incorrect!]");
+//		if (userOfSession.getGrade() == Const.USER_GRADE_ADMIN)
+//			jsonResult.put("result", userServiceImpl.deleteUser(user));
+//		else if (userOfSession.getGrade() == Const.USER_GRADE_USER && userOfSession.getOperatorId() == user.getOperatorId())
+//			jsonResult.put("result", userServiceImpl.deleteUser(user));
+//		else
+//			logger.info("~~ [Operator was incorrect!]");
+		
+		jsonResult.put("result", userServiceImpl.deleteUser(user));
 		
 		logger.info("<- [jsonResult = {}]", jsonResult.toString());
 		
