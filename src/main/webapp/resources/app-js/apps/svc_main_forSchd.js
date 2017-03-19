@@ -164,12 +164,15 @@ $(document).ready(function()
     		return;
     	}
     	glovalSaid = hotspotId;
-		callTimetable(undefined, hotspotId);
+		callTimetable(undefined, hotspotId, "area");
 		g_ServiceAreaId = hotspotId;
     });
     
     $("input[name='radio']").click(function() {
     	var radioType = $("input[name='radio']:checked").val();
+    	if(userGrade == 9999) {
+			$("#national").hide();
+		}
     	if(radioType == "group")
     	{
     		$("#selectHotspot").hide();
@@ -189,22 +192,24 @@ $(document).ready(function()
     		$("#selectArea").hide();
     		$('#scheduleSearch').click();
     	}
-		if(userGrade == 9999) {
-			$("#national").hide();
-		}else{
-			$("#national").show();
-		}
+		
     	$("#selectCircle").val("");
 		$("#selectCity").val("");
 		$("#selectCity").html("");
     	$("#selectHotspot").html("");
     });
     
-    callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId, "national");
-    setTimeout(() => {
+    if(userGrade == 9999) {
     	$($("input[name='radio']")[1]).click();
-	}, 500);
-    
+    	setTimeout(() => {
+    		$("#selectCircle option:eq(1)").attr("selected", "selected");
+    		$("#selectCircle").change();
+    	}, 500);
+    }else{
+    	setTimeout(() => {
+        	$($("input[name='radio']")[0]).click();
+    	}, 500);
+    }
 });
 
 var perPage = 15;

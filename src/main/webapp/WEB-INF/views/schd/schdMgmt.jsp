@@ -44,7 +44,7 @@
 			$('.footable2').footable();
 			
 			getMenuList('SCHEDULE_MGMT');
-			$($("input[name='radio']")[1]).click();
+// 			$($("input[name='radio']")[1]).click();
 			$("#selectCircle").val("");
 		});
 	</script>

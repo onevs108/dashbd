@@ -646,7 +646,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@RequestMapping(value = "view/scheduleReg.do")
+	@RequestMapping(value = "view/ .do")
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
 			@RequestParam(value="saidData", required=false) List<String> saidData,
@@ -723,6 +723,7 @@ public class ScheduleMgmtController {
 						said += String.valueOf(groupSaid.get(i).get("sub_said"))+",";
 					}
 				}
+				param.put("serviceAreaId", params.get("serviceGroupId"));
 				saidList.add(said);
 				paramList.add(6, saidList);
 			}
