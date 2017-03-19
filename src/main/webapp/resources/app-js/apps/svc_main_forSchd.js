@@ -189,6 +189,11 @@ $(document).ready(function()
     		$("#selectArea").hide();
     		$('#scheduleSearch').click();
     	}
+		if(userGrade == 9999) {
+			$("#national").hide();
+		}else{
+			$("#national").show();
+		}
     	$("#selectCircle").val("");
 		$("#selectCity").val("");
 		$("#selectCity").html("");
@@ -196,6 +201,9 @@ $(document).ready(function()
     });
     
     callTimetable($('#bmsc option:selected').val(), g_ServiceAreaId, "national");
+    setTimeout(() => {
+    	$($("input[name='radio']")[1]).click();
+	}, 500);
     
 });
 

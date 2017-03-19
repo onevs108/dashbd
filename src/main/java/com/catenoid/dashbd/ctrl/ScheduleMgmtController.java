@@ -112,6 +112,7 @@ public class ScheduleMgmtController {
 			mv.addObject("BmscList", bmscs);
 			mv.addObject("searchDate", searchDate); 
 			mv.addObject("scList", scList);
+			mv.addObject("userGrade", user.getGrade());
 			
 //			logger.info("GBRSum=", exampleGBRSum());
 //			String transId = makeTransId();
@@ -661,6 +662,8 @@ public class ScheduleMgmtController {
 			@RequestParam(value="bcBasePattern", required=false) List<String> bcBasePattern,
             HttpServletRequest request, Locale locale ) {
 		
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
 		int ret;
 		logger.info("sending param{}", params);
 		List<List<String>> paramList = new ArrayList<List<String>>();
@@ -706,6 +709,24 @@ public class ScheduleMgmtController {
 				xmlMode = xmlManager.BMSC_XML_CREATE;
 			}
 			
+			//Group으로 생성할 경우
+			if(params.get("serviceAreaId").equals("")){
+				saidList.clear();
+				HashMap<String, String> param = new HashMap<String, String>();
+				param.put("cityId", params.get("serviceGroupId"));
+				List<HashMap<String, String>> groupSaid = mapper.getGroupSaidList(param);
+				String said = "";
+				for (int i = 0; i < groupSaid.size(); i++) {
+					if(i == groupSaid.size()-1){
+						said += String.valueOf(groupSaid.get(i).get("sub_said"));
+					}else{
+						said += String.valueOf(groupSaid.get(i).get("sub_said"))+",";
+					}
+				}
+				saidList.add(said);
+				paramList.add(6, saidList);
+			}
+			
 			params.put("transactionId", transId);
 			params.put("schedule_start", convertMysqlDateFormat(params.get("schedule_start"), false));
 			params.put("schedule_stop", convertMysqlDateFormat(params.get("schedule_stop"),false));
@@ -718,8 +739,6 @@ public class ScheduleMgmtController {
 			if (!xmlManager.isSuccess(resStr[0]))
 				return makeRetMsg("9000", resStr[0]);
 			
-			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-			
 			if (bcid == null || "".equals(bcid)) {
 				//@ insert broadcast_info  with flag which createBroadcast is successed or not
 				
@@ -728,9 +747,9 @@ public class ScheduleMgmtController {
 				}
 				else
 				{
-					if(!saidList.get(0).equals("")){
+					/*if(!saidList.get(0).equals("")){
 						params.put("serviceAreaId", params.get("serviceAreaId")+","+saidList.get(0));
-					}
+					}*/
 				}
 				
 				//서비스ID 숫자 증가
@@ -763,6 +782,7 @@ public class ScheduleMgmtController {
 				
 				logger.info("updateSchedule ret{}", ret);
 			}else{
+				ret = mapper.updateSchedule(params);
 				ret = mapper.updateBroadcastInfo(params);
 				logger.info("updateSchedule ret{}", ret);
 			}

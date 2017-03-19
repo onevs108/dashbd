@@ -55,7 +55,7 @@ public class XmlManager {
 	}
 	
 	public String[] sendBroadcast(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList){
-		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+ 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		String[] rtvs = new String[2];
 		String respBody = "SUCCESS";
 		String reqBody = "";
@@ -296,10 +296,10 @@ public class XmlManager {
 					serviceArea.addContent( new Element("said").setText(saidArray[i]));
 				}
 			}//111111,9999912 | 111111
-			String[] said = params.get("saidDefault").split(",");
-			for (int i = 0; i < said.length; i++) {
-				serviceArea.addContent( new Element("said").setText(said[i]));
-			}
+//			String[] said = params.get("saidDefault").split(",");
+//			for (int i = 0; i < said.length; i++) {
+//				serviceArea.addContent( new Element("said").setText(said[i]));
+//			}
 			if ("on".equals(params.get("FileRepair"))){
 				Element fileRepair= null; 
 				fileRepair = new Element("postFileRepair");
@@ -400,10 +400,10 @@ public class XmlManager {
 					}
 				}
 				
-				String[] said = params.get("saidDefault").split(",");
-				for (int k = 0; k < said.length; k++) {
-					serviceArea.addContent( new Element("said").setText(said[k]));
-				}
+//				String[] said = params.get("saidDefault").split(",");
+//				for (int k = 0; k < said.length; k++) {
+//					serviceArea.addContent( new Element("said").setText(said[k]));
+//				}
 				Element mpd = new Element("mpd");
 				mpd.setAttribute(new Attribute("changed", "false"));									
 				mpd.addContent(new Element("mpdURI").setText(paramList.get(7).get(i)));

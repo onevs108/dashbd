@@ -4,7 +4,7 @@
 
 	<select id="selectCity" parameterType="HashMap" resultType="HashMap">
 		SELECT 
-			city_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at as createdAt, updated_at as updatedAt
+			city_id, circle_id, circle_name, city_name, city_code, latitude, longitude, description, bandwidth, created_at as createdAt, updated_at as updatedAt
 		FROM city
 	</select>
 

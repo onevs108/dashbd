@@ -58,6 +58,7 @@ $(document).ready(function()
 			$("#serviceModeArea").show();
 			addServiceAreaEvent(0);
 		}
+		$("input[name='saidList']").val($("#serviceAreaId").val());
 	});
 	
 	$("#serviceMode").on("change", function() {
@@ -164,7 +165,8 @@ $(document).ready(function()
 			dataType : "json",
 			success : function( data ) {
 				outMsgForAjax(data);
-				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
+//				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
+				location.href = "/dashbd/resources/serviceArea.do";
 			},
 			error : function(request, status, error) {
 				alert("request=" +request +",status=" + status + ",error=" + error);
@@ -188,7 +190,8 @@ $(document).ready(function()
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
 			var bmscId= $("#bmscId").val();
-			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
+//			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
+			location.href = "/dashbd/resources/serviceArea.do";
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -423,7 +426,7 @@ function getServiceIdList() {
 		search: false,
 		showHeader: true,
 		showColumns: false,
-		showRefresh: false,
+		showRefresh: false,		
 		minimumCountColumns: 3,
 		clickToSelect: false,
 		columns: [{
@@ -440,7 +443,7 @@ function getServiceIdList() {
 			}
 		}, {
 			field: 'description',
-			title: 'Description',
+			title: 'Unique String',
 			width: '40%',
 			align: 'center',
 			valign: 'middle',
@@ -463,7 +466,7 @@ function getServiceIdList() {
 				html += '<button type="button" class="btn btn-danger btn-sm" onclick="actionId(\'delete\', '+row.id+')">Delete</button>';
 				return html;
 			}
-		}]
+		}],
 	});
 }
 

@@ -25,6 +25,23 @@
 			                        </div>
 		                        </div>
 		                        <hr style="margin-top: 0px;">
+		                        <div class="row">
+									<input type="hidden" id="idIdx" value="${serviceIdIdx}">
+	                                <div class="col-sm-4"><!-- col-md-offset-2 -->
+                             	    	<select type="text" class="form-control" id="selectServiceId" onchange="setSelectServiceId()">
+                             	    		<c:forEach var="row" items="${serviceIdList}">
+                             	    			<option value="${row.id_name}">${row.id_name}</option>
+                             	    		</c:forEach>
+                             	    	</select>
+                             	    </div>
+	                                <div class="col-md-4">
+	                                	<input type="text" id="serviceId_M" class="form-control input-sm" placeholder="Service Id Value">
+	                                </div>
+	                                <div class="col-md-2">
+	                                	<button type="button" id="btnOK_M" class="btn btn-block btn-primary btn-sm" onclick="setServiceId()">OK</button>
+	                                </div>
+				                </div>
+				                <br>
 		                        <div id="idFirst" class="row">
 	                                <div class="col-md-4">
 	                                	<input type="text" id="idName" class="form-control input-sm" placeholder="Service Id" value="">
@@ -50,23 +67,6 @@
 										</div>
 									</div>
 								</div>
-								<hr style="margin-top: 0px;">
-								<div class="row">
-									<input type="hidden" id="idIdx" value="${serviceIdIdx}">
-	                                <div class="col-sm-4 col-md-offset-2">
-                             	    	<select type="text" class="form-control" id="selectServiceId" onchange="setSelectServiceId()">
-                             	    		<c:forEach var="row" items="${serviceIdList}">
-                             	    			<option value="${row.id_name}">${row.id_name}</option>
-                             	    		</c:forEach>
-                             	    	</select>
-                             	    </div>
-	                                <div class="col-md-4">
-	                                	<input type="text" id="serviceId_M" class="form-control input-sm" placeholder="Service Id Value">
-	                                </div>
-	                                <div class="col-md-2">
-	                                	<button type="button" id="btnOK_M" class="btn btn-block btn-primary btn-sm" onclick="setServiceId()">OK</button>
-	                                </div>
-				                </div>
 							</div>
 						</div>
 					</div>

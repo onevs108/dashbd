@@ -485,6 +485,7 @@ function deleteSchedule(url){
 	var param = {
 			id : id,
 			BCID : BCID,
+			type : $("#type").val(),
 			bmscId : $("#bmscId").val()
 	};
 	$.ajax({

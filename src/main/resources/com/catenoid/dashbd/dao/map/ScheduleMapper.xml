@@ -538,6 +538,7 @@
 	<update id = "updateSchedule" parameterType="java.util.Map">
 		UPDATE schedule	SET
 			service_area_id = #{serviceAreaId},
+			name = #{name},
 			BCID = #{BCID},
 			end_date = str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s'),
 			updated_at = now()

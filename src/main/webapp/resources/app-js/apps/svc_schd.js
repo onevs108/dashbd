@@ -117,10 +117,14 @@ function setTimeTable(data){
 			serviceId = "-";
 		}
 		beforPosition = position;
+		
+		var link = 'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID+'&type='+$("input[name='radio']:checked").val();
+		if(userGrade == 9999 && contents[i].national_yn == "Y"){
+			link = "#";
+		} 
 		timetable.addEvent(contents[i].NAME, 'position' + position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
-				 					new Date(end_year,end_month, end_day,end_hour,end_mins ),
-				 					'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID+'&type='+$("input[name='radio']:checked").val(), serviceId);
+				 					new Date(end_year,end_month, end_day,end_hour,end_mins ), link, serviceId);
 	}
 	
 	var renderer = new Timetable.Renderer(timetable);

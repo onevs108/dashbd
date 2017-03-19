@@ -54,12 +54,59 @@
         
 		$('.circle-map .circle-item').on({
 			'mouseenter' : function(e){
-				$(this).addClass('hover');
-				$('.circle-map > img').addClass('hover');
+				if($("#circleId").val() == '') {
+					$(this).addClass('hover');
+					$('.circle-map > img').addClass('hover');
+					$($(".circle-map").find("img")[0]).addClass("hover");
+				}
 			},
 			'mouseleave' : function(e){
-				$(this).removeClass('hover');
-				$('.circle-map > img').removeClass('hover');
+				if($("#circleId").val() == '') {
+					$(this).removeClass('hover');
+					$('.circle-map > img').removeClass('hover');
+					$($(".circle-map").find("img")[0]).removeClass("hover");
+				}
+			},
+			'mousedown' : function(e) {
+				if($("#circleId").val() == '') {
+					var circle_id = $(this).attr("data-init");
+					var circle_name = $(this).find("span small").text().replace(" Telecom Circle", "");
+					var latitude = $(this).attr("data-lat");
+					var longitude = $(this).attr("data-lng");
+					//좌클릭
+					if(e.button == 0)
+					{
+						moveCityList(circle_id, circle_name, latitude, longitude);
+					}
+					//우클릭
+					else if (e.button == 2) 
+					{
+						addSaidFromMap(circle_id);
+					}
+				}
+				else 
+				{
+					if($(this).attr("data-init") == $("#circleId").val()) {
+						var circle_id = $(this).attr("data-init");
+						var circle_name = $(this).find("span small").text().replace(" Telecom Area", "");
+						var latitude = $(this).attr("data-lat");
+						var longitude = $(this).attr("data-lng");
+						//좌클릭
+						if(e.button == 0)
+						{
+							moveCityList(circle_id, circle_name, latitude, longitude);
+						}
+						//우클릭
+						else if (e.button == 2) 
+						{
+							addSaidFromMap(circle_id);
+						}
+					}
+				}
+				
+			},
+			'contextmenu' : function(e) {
+				return false;
 			}
 		});
 		$('.i-checks').iCheck({

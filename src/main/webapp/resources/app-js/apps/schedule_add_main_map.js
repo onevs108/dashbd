@@ -7,6 +7,22 @@ var globalCircleLongitude;
 
 $(document).ready(function()
 {
+	if($("#circleId").val() != '') {
+		$($(".circle-map").find("img")[0]).addClass("hover");
+		
+		var circle_map = $(".circle-map .circle-item");
+		for(var i=0; i < circle_map.length; i++) {
+			var circle_item = $(circle_map[i]);
+			var compare_circle_id = circle_item.attr("data-init");
+			
+			if(compare_circle_id == $("#circleId").val()) {
+				circle_item.addClass('hover');
+				$('.circle-map > img').addClass('hover');
+				break;
+			}
+		}
+	}
+	
 	$("#circleName").on("change", function(){
 		checkCircle = false;
 	});
@@ -1684,7 +1700,7 @@ function moveCityList(circleId, circleName, latitude, longitude) {
 	$.ajax({
         url : "/dashbd/api/getCityFromCircleName.do",
         type: "post",
-        data : { "circleName" : circleName },
+        data : { "circleName" : circleId },
         dateType : 'json',
         success : function(data) {
         	var thisCity = JSON.parse(data).thisCity;
@@ -1934,13 +1950,7 @@ function drawHotSpot(hotSpotMap, color, cityId) {
 		});
 
 		hotSpotMarker.addListener('rightclick', function(e){
-			infowindow.close();
-			var contentString = "<b>"+this.title+"</b><br><button class='btn btn-success btn-xs' onclick='editHotSpot(\""+this.id+"\",\""+this.title+"\",\""+this.position.lat()+"\",\""+this.position.lng()+"\",\""+this.bandwidth+"\",\""+this.description+"\")'>Edit</button>" +
-								"<button class='btn btn-success btn-xs' onclick=deleteHotSpot("+this.id+")>Detele</button>";
-    		var infowindow2 = new google.maps.InfoWindow({
-    			content: contentString
-    		});
-    		infowindow2.open(map, this);
+			addSaidFromMap(this.id);
 	    });
 		
 	    hotSpotMarkers.push(hotSpotMarker);

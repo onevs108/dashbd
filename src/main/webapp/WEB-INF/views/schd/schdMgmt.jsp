@@ -38,14 +38,14 @@
 	
 	<!-- Page-Level Scripts -->
 	<script>
+		var userGrade = ${userGrade};
 		$(document).ready(function() {
 			$('.footable').footable();
 			$('.footable2').footable();
 			
 			getMenuList('SCHEDULE_MGMT');
-			$($("input[name='radio']")[0]).prop("checked", "true");
+			$($("input[name='radio']")[1]).click();
 			$("#selectCircle").val("");
-			
 		});
 	</script>
     	
@@ -96,10 +96,10 @@
 					<div class="ibox float-e-margins ibox-title">
 						<div class="ibox-title">
 							<div>
-								<h5>Schedule</h5>
+								<h5 style="padding-right: 20px;">Schedule</h5>
 								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Schedule</button>
-								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="national" style="margin-left: 20px;" checked/>National&nbsp;
-								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area" />Service Area&nbsp;
+								<span id="national"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="national" checked/>National</span>
+								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area"/>Service Area&nbsp;
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
 							</div>
 						</div>

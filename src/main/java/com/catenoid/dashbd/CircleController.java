@@ -97,10 +97,10 @@ public class CircleController {
 		JSONObject cityJson = new JSONObject();
 		
 		for (int i = 0; i < cityList.size(); i++) {
-			if(cityList.get(i).get("circle_name").equals(param.get("circleName"))){	//클릭한 서클에 속한 city
+			if(String.valueOf(cityList.get(i).get("circle_id")).equals(param.get("circleName"))){	//클릭한 서클에 속한 city
 				thisCityList.add(cityList.get(i));
 			}
-			else if (cityList.get(i).get("circle_name").length() < 2) // 아무곳에도 속하지 않은 city
+			else if (String.valueOf(cityList.get(i).get("circle_id")).length() < 2) // 아무곳에도 속하지 않은 city
 			{
 				noneCityList.add(cityList.get(i));
 			}
