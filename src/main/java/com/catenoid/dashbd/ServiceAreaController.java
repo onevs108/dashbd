@@ -3364,10 +3364,10 @@ public class ServiceAreaController {
 			String searchInput = (request.getParameter("searchInput") == null)? "" : request.getParameter("searchInput");;
 			
 			//circle group에 따라 해당 circle안의 데이터만 조회되도록 함
-//			Users userInfo = (Users)session.getAttribute("USER");
-//			if(userInfo.getGrade() == 9999) {
-//				circle_id = userInfo.getCircleId();
-//			}
+			Users userInfo = (Users)session.getAttribute("USER");
+			if(userInfo.getGrade() == 9999) {
+				circle_id = userInfo.getCircleId();
+			}
 			
 			HashMap< String, Object > searchParam = new HashMap();
 			searchParam.put("group_id", group_id);

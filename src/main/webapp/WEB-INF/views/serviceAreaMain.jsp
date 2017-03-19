@@ -16,6 +16,9 @@
 		.jstree-node {
 			font-size:14px
 		}
+		
+		.circle-item .noHover {
+		}
 	</style>
 </head>
 <body>
@@ -83,6 +86,7 @@
 													</div>
 												</div>
 												<div id="tab-2" class="tab-pane">
+													<input type="hidden" id="circleId" name="circleId" value="${sessionScope.USER.circleId}"> 
 													<div id="mapDescriptArea" style="margin:10 0 10 0">Click the area t to view the Cities</div>
 													<jsp:include page="common/circleImage.jsp" />
 													<div id="map" class="google-map" style="display:none; width:604px; height:709px;"></div>
@@ -136,30 +140,53 @@
 		//circle image mouse over control
 		$('.circle-map .circle-item').on({
 			'mouseenter' : function(e){
-				$(this).addClass('hover');
-				$('.circle-map > img').addClass('hover');
-				$($(".circle-map").find("img")[0]).addClass("hover");
+				if($("#circleId").val() == '') {
+					$(this).addClass('hover');
+					$('.circle-map > img').addClass('hover');
+					$($(".circle-map").find("img")[0]).addClass("hover");
+				}
 			},
 			'mouseleave' : function(e){
-				$(this).removeClass('hover');
-				$('.circle-map > img').removeClass('hover');
-				$($(".circle-map").find("img")[0]).removeClass("hover");
+				if($("#circleId").val() == '') {
+					$(this).removeClass('hover');
+					$('.circle-map > img').removeClass('hover');
+					$($(".circle-map").find("img")[0]).removeClass("hover");
+				}
 			},
 			'click' : function(e) {
-				var circle_id = $(this).attr("data-init");
-				var circle_name = $(this).find("span small").text().replace(" Telecom Area", "");
-				var lat = $(this).attr("data-lat");
-				var lng = $(this).attr("data-lng");
-				
-				//데이터 처리 후 이전 내용을 불러오기 위한 전역변수에 셋팅
-				upperCircle = {
-					said : circle_id,
-					name : circle_name,
-					lat : lat,
-					lng : lng
+				if($("#circleId").val() == '') {
+					var circle_id = $(this).attr("data-init");
+					var circle_name = $(this).find("span small").text().replace(" Telecom Area", "");
+					var lat = $(this).attr("data-lat");
+					var lng = $(this).attr("data-lng");
+					
+					//데이터 처리 후 이전 내용을 불러오기 위한 전역변수에 셋팅
+					upperCircle = {
+						said : circle_id,
+						name : circle_name,
+						lat : lat,
+						lng : lng
+					}
+					
+					drawServiceAreaByCity(upperCircle);
+				} else {
+					if($(this).attr("data-init") == $("#circleId").val()) {
+						var circle_id = $(this).attr("data-init");
+						var circle_name = $(this).find("span small").text().replace(" Telecom Area", "");
+						var lat = $(this).attr("data-lat");
+						var lng = $(this).attr("data-lng");
+						
+						//데이터 처리 후 이전 내용을 불러오기 위한 전역변수에 셋팅
+						upperCircle = {
+							said : circle_id,
+							name : circle_name,
+							lat : lat,
+							lng : lng
+						}
+						
+						drawServiceAreaByCity(upperCircle);
+					}
 				}
-				
-				drawServiceAreaByCity(upperCircle);
 			}
 		});
 	});

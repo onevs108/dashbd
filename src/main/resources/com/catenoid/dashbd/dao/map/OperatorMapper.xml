@@ -295,6 +295,7 @@
 					( SELECT
 						 id, name, description, permission, created_at, updated_at
 					  FROM grade
+					  WHERE id != 9999
 					  ORDER BY <if test="sort == null">id ASC</if>
 					  		   <if test="sort != null">
 					  		       <if test="sort == 'name'">name</if>

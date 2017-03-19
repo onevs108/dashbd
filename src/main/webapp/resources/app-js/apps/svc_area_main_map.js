@@ -35,6 +35,22 @@ $(document).ready(function()
 	jsTreeSetting(false);
     //json 형태로 변환
 //    circlemap = JSON.parse(circlemap);
+	
+	if($("#circleId").val() != '') {
+		$($(".circle-map").find("img")[0]).addClass("hover");
+		
+		var circle_map = $(".circle-map .circle-item");
+		for(var i=0; i < circle_map.length; i++) {
+			var circle_item = $(circle_map[i]);
+			var compare_circle_id = circle_item.attr("data-init");
+			
+			if(compare_circle_id == $("#circleId").val()) {
+				circle_item.addClass('hover');
+				$('.circle-map > img').addClass('hover');
+				break;
+			}
+		}
+	}
 });
 
 //처음으로 map을 resize했는지 여부 판단
