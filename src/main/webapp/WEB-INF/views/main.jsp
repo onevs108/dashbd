@@ -154,11 +154,11 @@
 												<div id="clock" class="light">
 													<div class="digits"></div>
 												</div>
-												<h3 class="font-bold no-margins text-left total">
+												<h3 class="font-bold no-margins total">
 													<div class="panel panel-primary">
-														<div class="panel-heading">Total Users</div>
+														<div class="panel-heading" style="text-align:center">Total User</div>
 														<div class="panel-body">
-															<p class="text-info">${total_users}</p>
+															<p class="text-info" style="text-align:center">${total_user}</p>
 														</div>
 													</div>
 												</h3>

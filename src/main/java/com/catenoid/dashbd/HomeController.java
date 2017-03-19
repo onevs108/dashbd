@@ -88,14 +88,13 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/logout.do", method = RequestMethod.GET)
 	public String doLogoutPage(HttpServletRequest request) {
-		Users user = (Users) request.getSession().getAttribute("USER");
+		Users LogUser = (Users) request.getSession().getAttribute("USER");
 		
-		if(user != null) {
+		if(LogUser != null) {
 			String ip = request.getHeader("X-FORWARDED-FOR");
 	        if (ip == null)
 	            ip = request.getRemoteAddr();
 			
-	        Users LogUser = (Users)request.getSession().getAttribute("USER");
 			HashMap<String, Object> logMap = new HashMap<String, Object>();
 			logMap.put("reqType", "Login");
 			logMap.put("reqSubType", "Logout");
