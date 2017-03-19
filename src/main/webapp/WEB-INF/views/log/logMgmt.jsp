@@ -9,6 +9,7 @@
 <html>
 <head>
 	<jsp:include page="../common/head.jsp" />
+	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 	
 	<style>
@@ -50,6 +51,7 @@
 											<div class="tab-content">	
 												<div class="panel-body">
 													<form class="form-horizontal" id="logForm" action="javascript:void(0);">
+														<input type="hidden" id="choiceTreeStr" value="all">
 														<input type="hidden" id="tabDiv" name="tabDiv" value="1">
 														<div class="row">
 															<div class="col-lg-6">
@@ -162,6 +164,7 @@
 					</div>
 				</div>
 			</div>
+			<jsp:include page="../common/circleModal.jsp" />
 		</div><!-- end wrapper wrapper-content -->
 		<jsp:include page="../common/footer.jsp" />
 	</div><!-- end page-wrapper -->

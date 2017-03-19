@@ -1609,7 +1609,7 @@
 		ON result.compare_id = sags.sub_said
 		WHERE 1=1
 		<if test="circle_id != null and circle_id != ''">
-			 AND result.circle_id = #{circle_id}
+			 AND (result.circle_id = #{circle_id} OR result.circle_id = '')
 		</if>
 		ORDER BY node_id
 	</select>
