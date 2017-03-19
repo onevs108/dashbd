@@ -584,16 +584,8 @@
   </delete>
   
   <insert id="insertSystemAjaxLog" parameterType="Map">
-      INSERT INTO system_ajax_log (
-      	req_type <if test="targetId != null and targetId != ''">, target_id</if>, req_sub_type,
-      	<if test="reqUrl == 'scheduleReg.do'">service_type, service_class, service_id, said,</if>
-      	req_url, req_code, req_msg, insert_at, created_at
-      )
-      VALUES (
-      	#{reqType} <if test="targetId != null and targetId != ''">, #{targetId}</if>, #{reqSubType},
-      	<if test="reqUrl == 'scheduleReg.do'">#{serviceType}, #{serviceClass}, #{serviceId}, #{said},</if> 
-      	#{reqUrl}, #{reqCode}, #{reqMsg}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW()
-      )
+      INSERT INTO system_ajax_log (req_type <if test="targetId != null and targetId != ''">, target_id</if>, req_sub_type, req_url, req_code, req_msg, insert_at, created_at)
+      VALUES (#{reqType} <if test="targetId != null and targetId != ''">, #{targetId}</if>, #{reqSubType}, #{reqUrl}, #{reqCode}, #{reqMsg}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW())
   </insert>
   
   <insert id="insertSystemInterFaceLog" parameterType="Map">
