@@ -420,6 +420,7 @@
 									AND operator_id = #{operatorId}
 								</if>
 								<if test="notOperatorId != '' and notOperatorId != null">
+									AND #{circleName} = (SELECT circle_name FROM operator operator WHERE operator.id = users.operator_id)
 									AND (operator_id != #{notOperatorId} OR operator_id is null)
 								</if>
 							</when>

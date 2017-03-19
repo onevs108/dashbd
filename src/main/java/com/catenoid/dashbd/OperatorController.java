@@ -299,6 +299,23 @@ public class OperatorController {
 		List<Users> otherMemberList = null;
 		List<Permission> permissionList = permissionServiceImpl.getPermissionList(null);
 		
+		//Area User일 경우에는 session Monitoring과 System Mgmt 메뉴를 선택하지 못하도록 함
+		Users user = (Users) request.getSession().getAttribute("USER");
+		if(user.getGrade() == 9999) {
+			for(int i=0; i < permissionList.size(); i++) {
+				Permission tempPerm = permissionList.get(i);
+				
+				if(tempPerm.getId() == 8 || tempPerm.getId() == 9) {
+					permissionList.remove(i);
+					i--;
+				}
+			}
+			
+			//othermemberList에서 area group의 사용자는 자신의 area 안의 다른 사용자만
+			// 보이도록 처리하기 위해 circleId값을 넘겨줌
+			param.put("circleId", user.getCircleId());
+		}
+		
 		if(param.get("accessDiv").equals("edit")) {
 			Operator operator = null;
 			
@@ -318,6 +335,7 @@ public class OperatorController {
 				param.put("grade", "");
 				param.put("notGrade", operator.getId());
 			} else if(param.get("groupDiv").equals("Regional")) {
+				param.put("circleName", user.getCircleName());
 				param.put("operatorId", "");
 				param.put("notOperatorId", operator.getId());
 			}
@@ -338,19 +356,6 @@ public class OperatorController {
 			}
 		} else if(param.get("accessDiv").equals("add")) {
 			otherMemberList = operatorServiceImpl.selectMemberList(param);
-		}
-		
-		//Area User일 경우에는 session Monitoring과 System Mgmt 메뉴를 선택하지 못하도록 함
-		Users user = (Users) request.getSession().getAttribute("USER");
-		if(user.getGrade() == 9999) {
-			for(int i=0; i < permissionList.size(); i++) {
-				Permission tempPerm = permissionList.get(i);
-				
-				if(tempPerm.getId() == 8 || tempPerm.getId() == 9) {
-					permissionList.remove(i);
-					i--;
-				}
-			}
 		}
 		
 		model.addAttribute("groupDiv", param.get("groupDiv").toString().toLowerCase());
