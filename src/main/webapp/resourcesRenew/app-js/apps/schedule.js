@@ -166,7 +166,7 @@ $(document).ready(function()
 			success : function( data ) {
 				outMsgForAjax(data);
 //				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
-				location.href = "/dashbd/resources/serviceArea.do";
+				location.href = "schdMgmt.do";
 			},
 			error : function(request, status, error) {
 				alert("request=" +request +",status=" + status + ",error=" + error);
@@ -191,7 +191,7 @@ $(document).ready(function()
 			var searchDate = $("#searchDate").val();
 			var bmscId= $("#bmscId").val();
 //			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
-			location.href = "/dashbd/resources/serviceArea.do";
+			location.href = "schdMgmt.do";
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
