@@ -94,6 +94,7 @@
 																	<label class="checkbox-inline i-checks" onclick="radioCheck('')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="" name="searchSchedule" style="position: absolute; opacity: 0;" checked><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> All</label>
 																	<label class="checkbox-inline i-checks" onclick="radioCheck('onair')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="onair" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> On-Air</label>
 																	<label class="checkbox-inline i-checks" onclick="radioCheck('today')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="today" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Today</label>
+																	<label class="checkbox-inline i-checks" onclick="radioCheck('national')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="national" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> National</label>
 																</div>
 															</div>
 														</div>
@@ -128,11 +129,22 @@
 												<div class="form-group">
 													<label class="col-sm-2 control-label">Search</label>
 													<div class="col-sm-10">
-														<div class="input-group">
-															<input type="text" placeholder="Keyword" id="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) searchRegionalSchedule(false);">
-															<span class="input-group-btn">
-																<button type="button" class="btn btn-primary" onclick="searchRegionalSchedule(false)">Search</button>
-															</span>
+														<div class="col-xs-3">
+															<select id="searchType" name="searchType" class="form-control">
+							                                    <option value="">Select</option>
+							                                    <option value="serviceId">ServiceID</option>
+							                                    <option value="serviceName">ServiceName</option>
+							                                    <option value="uri">URI</option>
+							                                    <option value="serviceClass">Service Class</option>
+							                                </select>
+														</div>
+														<div class="col-xs-9">
+															<div class="input-group">
+																<input type="text" placeholder="Keyword" id="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) searchRegionalSchedule(false);">
+																<span class="input-group-btn">
+																	<button type="button" class="btn btn-primary" onclick="searchRegionalSchedule(false)">Search</button>
+																</span>
+															</div>
 														</div>
 													</div>
 												</div>
@@ -187,7 +199,7 @@
 											<thead>
 												<tr class="headTr">
 													<th></th>
-													<th>Circle</th>
+													<th>Area</th>
 													<th>Service ID</th>
 													<th>Service Name</th>
 													<th>Service type</th>
@@ -286,7 +298,7 @@
 		});
 		
 		function radioCheck(value) {
-			if(value != '') {
+			if(value != '' && value != 'national') {
 				$($("#searchDateFrom").parents(".row")[0]).hide();
 				$($("#searchDateTo").parents(".row")[0]).hide();
 			} else {
@@ -328,8 +340,10 @@
 					params.searchSchedule = $("form input[type='radio'][name='searchSchedule']:checked").val();
 					params.searchDateFrom = $("#searchDateFrom").val();
 					params.searchDateTo = $("#searchDateTo").val();
+					params.searchType = $("#searchType").val();
 					params.searchKeyword = $("#searchKeyword").val();
 					params.choiceTreeStr = $("#choiceTreeStr").val();
+					params.circle_id = $("#circleId").val();
 // 					if(initYn) {
 // 						params.searchDateFrom = '';
 // 						params.searchDateTo =  '';
@@ -389,7 +403,7 @@
 					visible: false
 				}, { 
 					field: 'circleName',
-					title: 'Circle',
+					title: 'Area',
 					width: '10%',
 					align: 'left',
 					valign: 'middle',
@@ -429,7 +443,13 @@
 					sortable: true,
 					formatter: function(value, row, index) {
 						if(value != undefined && value != '') {
-							var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';	
+							if($("#circleId").val() == '') {
+								var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';	
+							} else if($("#circleId").val() != '' && row.circleName != 'national') {
+								var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';
+							} else {
+								var html = value;
+							}
 						} else {
 							var html = '';
 						}
@@ -522,6 +542,7 @@
 				    	searchSchedule : $("form input[type='radio'][name='searchSchedule']:checked").val(),
 				    	searchDateFrom : $("#searchDateFrom").val(),
 				    	searchDateTo : $("#searchDateTo").val(), 
+				    	searchType : $("#searchType").val(),
 				    	searchKeyword : $("#searchKeyword").val(),
 				    	choiceTreeStr : $("#choiceTreeStr").val()
 				    },
@@ -596,6 +617,10 @@
 		}
 		
 		function choiceServiceArea() {
+			$(".jstree li[role=treeitem]").each(function () {
+			     $(".jstree").jstree('select_node', this);
+			});
+			
 			$("#circleModal").modal('show');
 		}
 		
@@ -608,7 +633,8 @@
 					    data : { 
 					    	gruop_id : '',
 					    	searchType : $("#searchType").val(),
-					    	searchInput : $("#search-input").val()
+					    	searchInput : $("#search-input").val(),
+					    	circle_id : $("#circleId").val()
 					    },
 					    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 					    success : function(responseData) {

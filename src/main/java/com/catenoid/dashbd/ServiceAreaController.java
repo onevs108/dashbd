@@ -1406,7 +1406,7 @@ public class ServiceAreaController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/searchRegionalSchedule.do", method = {RequestMethod.POST}, produces="application/json;charset=UTF-8;")
 	@ResponseBody
-	public String searchRegionalSchedule(@RequestBody String body) {
+	public String searchRegionalSchedule(@RequestBody String body, HttpServletRequest request) {
 		logger.info("-> [body = {}]", body);
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
@@ -1427,10 +1427,12 @@ public class ServiceAreaController {
 			String searchDateFrom = (String) requestJson.get("searchDateFrom");
 			String searchDateTo = (String) requestJson.get("searchDateTo");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
-			String choiceTreeStr = (String) requestJson.get("choiceTreeStr");
+			String searchType = (String) requestJson.get("searchType");
+			String choiceTreeStr = (String) requestJson.get("choiceTreeStr"); 
+			String circle_id = (String) requestJson.get("circle_id");
 			
-			//All이 아닐 경우 From To Date Reset
-			if(searchSchedule.equals("")) {
+			//All or National이 아닐 경우 From To Date Reset
+			if(searchSchedule.equals("") || searchSchedule.equals("national")) {
 				if(!searchDateFrom.equals("")) {
 					String[] tempSearchDateFrom = searchDateFrom.split("/");
 					searchDateFrom = tempSearchDateFrom[2] + tempSearchDateFrom[0] + tempSearchDateFrom[1];
@@ -1445,6 +1447,7 @@ public class ServiceAreaController {
 				searchDateTo = "";
 			}
 			
+			Users user = (Users)request.getSession().getAttribute("USER");
 			HashMap<String, Object> searchParam = new HashMap<String, Object>();
 			searchParam.put("sort", sort);
 			searchParam.put("order", order);
@@ -1453,8 +1456,10 @@ public class ServiceAreaController {
 			searchParam.put("searchServiceType", searchServiceType);
 			searchParam.put("searchSchedule", searchSchedule);
 			searchParam.put("searchDateFrom", searchDateFrom);
-			searchParam.put("searchDateTo", searchDateTo);
+			searchParam.put("searchDateTo", searchDateTo); 
+			searchParam.put("searchType", searchType);
 			searchParam.put("searchKeyword", searchKeyword);
+			searchParam.put("circle_id", circle_id);
 			
 			Gson json = new Gson();
 			
@@ -1507,19 +1512,25 @@ public class ServiceAreaController {
 			String searchSchedule = request.getParameter("searchSchedule");
 			String searchDateFrom = request.getParameter("searchDateFrom");
 			String searchDateTo = request.getParameter("searchDateTo");
+			String searchType = request.getParameter("searchType");
 			String searchKeyword = request.getParameter("searchKeyword");
 			String choiceTreeStr = request.getParameter("choiceTreeStr");
 			
-			if(!searchDateFrom.equals("")) {
-				String[] tempSearchDateFrom = searchDateFrom.split("/");
-				searchDateFrom = tempSearchDateFrom[2] + tempSearchDateFrom[0] + tempSearchDateFrom[1];
+			//All or National이 아닐 경우 From To Date Reset
+			if(searchSchedule.equals("") || searchSchedule.equals("national")) {
+				if(!searchDateFrom.equals("")) {
+					String[] tempSearchDateFrom = searchDateFrom.split("/");
+					searchDateFrom = tempSearchDateFrom[2] + tempSearchDateFrom[0] + tempSearchDateFrom[1];
+				}
+				
+				if(!searchDateTo.equals("")) {
+					String[] tempSearchDateTo = searchDateTo.split("/");
+					searchDateTo = tempSearchDateTo[2] + tempSearchDateTo[0] + tempSearchDateTo[1];
+				}
+			} else {
+				searchDateFrom = "";
+				searchDateTo = "";
 			}
-			
-			if(!searchDateTo.equals("")) {
-				String[] tempSearchDateTo = searchDateTo.split("/");
-				searchDateTo = tempSearchDateTo[2] + tempSearchDateTo[0] + tempSearchDateTo[1];
-			}
-			
 			
 			HashMap< String, Object > searchParam = new HashMap();
 			searchParam.put("layerDiv", layerDiv);
@@ -1527,7 +1538,8 @@ public class ServiceAreaController {
 			searchParam.put("searchServiceType", searchServiceType);
 			searchParam.put("searchSchedule", searchSchedule);
 			searchParam.put("searchDateFrom", searchDateFrom);
-			searchParam.put("searchDateTo", searchDateTo);
+			searchParam.put("searchDateTo", searchDateTo); 
+			searchParam.put("searchType", searchType);
 			searchParam.put("searchKeyword", searchKeyword);
 			
 			if(!choiceTreeStr.equals("all")) {

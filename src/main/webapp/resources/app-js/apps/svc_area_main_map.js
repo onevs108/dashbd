@@ -737,7 +737,7 @@ function drawServiceAreaByCity(circle) {
 	        var data = JSON.parse(responseData);
 	        
 	        //도시 기본 줌 사이즈로 셋팅
-	        map.setZoom(9);
+	        map.setZoom(7);
 	        //서클의 위도 경도로 이동
 	        map.setCenter(new google.maps.LatLng(circle.lat, circle.lng));
 	        
@@ -854,7 +854,7 @@ function drawServiceAreaByHotspot(city) {
 	        var data = JSON.parse(responseData);
 	        
 	        //도시 기본 줌 사이즈로 셋팅
-	        map.setZoom(14);
+	        map.setZoom(11);
 	        //서클의 위도 경도로 이동
 	        map.setCenter(new google.maps.LatLng(city.position.lat(), city.position.lng()));
 	        

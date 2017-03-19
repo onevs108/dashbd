@@ -14,6 +14,7 @@
 				<h4 class="modal-title">Choice Area</h4>
 			</div>
 			<form role="form" id="form" class="form-horizontal">
+				<input type="hidden" id="circleId" name="circleId" value="${sessionScope.USER.circleId}">
 				<div class="modal-body">
 					<fieldset>
 						<div class="row">

@@ -35,9 +35,9 @@
 												<form class="form-horizontal">
 													<div class="col-lg-7">
 														<div class="row">
-															<div class="col-lg-6">
+															<div class="col-lg-5">
 																<div class="form-group">
-																	<label class="col-sm-6 control-label">Group</label>
+																	<label class="col-sm-2 control-label">Group</label>
 																	<div class="col-sm-6">
 																		<c:choose>
 																			<c:when test="${USER.grade == 13 or USER.grade == 1 or USER.grade == 2 or USER.grade == 3}">
@@ -67,9 +67,9 @@
 															</div>
 															<!-- // col -->
 															
-															<div id="main_circle_area" class="col-lg-6" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
+															<div id="main_circle_area" class="col-lg-5" <c:if test="${USER.grade !=  9999}">style="display:none;"</c:if>>
 																<div class="form-group">
-																	<label class="col-sm-6 control-label">Area</label>
+																	<label class="col-sm-2 control-label">Area</label>
 																	<div class="col-sm-6">
 																		<select class="form-control" id="search-circle-id" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
 																			<option value="" <c:if test="${USER.grade == 9999}">disabled</c:if>>All</option>
@@ -100,7 +100,7 @@
 	
 													<div class="col-lg-5">
 														<div class="col-xs-3">
-															<div class="form-group">
+															<div class="form-group" style="margin-right:-10px;">
 																<select class="input-sm form-control input-s-sm" id="search-column">
 							                                        <option value="all">All</option>
 							                                        <option value="userId">ID</option>

@@ -84,7 +84,7 @@
 							</div>
 							<div class="col-lg-6">
 								<c:if test="${USER.grade == 13}">
-									<button type="button" id="init-password-btn" onclick="javascript:initPassword();" class="btn btn-primary">Init Password</button>
+									<button type="button" id="init-password-btn" onclick="javascript:initPassword();" class="btn btn-primary">Reset Password</button>
 								</c:if>
 							</div>
 						</div>
@@ -510,43 +510,6 @@
 				});
 			});
 		}, 200);
-	}
-	
-	function doDelete(userId, operatorId, firstName, lastName) {
-		swal({
-		  title: "Are you sure?",
-		  text: 'Do you really want to delete the user "' + firstName + ' ' + lastName + '"?',
-		  type: "warning",
-		  showCancelButton: true,
-		  confirmButtonColor: "#DD6B55",
-		  confirmButtonText: "Yes",
-		  closeOnConfirm: false
-		},
-		function(){
-			$.ajax({
-				url: '/dashbd/api/user/delete.do',
-				method: 'POST',
-				dataType: 'json',
-				data: {
-					userId: userId,
-					operatorId: operatorId
-				},
-				success: function(data, textStatus, jqXHR) {
-					if (data.result) { // 성공
-						swal("Success !", "Success !", "success");
-						$('#table').bootstrapTable('destroy');
-						getUserList(true, false);
-					}
-					else { // 실패
-						swal("Fail !", "Failed!! Please you report to admin!", "warning");
-					}
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					swal("Fail !", errorThrown + textStatus, "warning");
-					return false;
-				}
-			});
-		});
 	}
 	
 	function initPassword() {
