@@ -13,7 +13,7 @@
 				</button>
 				<h4 class="modal-title">Choice Area</h4>
 			</div>
-			<form role="form" id="form" class="form-horizontal">
+			<form role="form" id="form" class="form-horizontal" action="javascript:void(0);">
 				<input type="hidden" id="circleId" name="circleId" value="${sessionScope.USER.circleId}">
 				<div class="modal-body">
 					<fieldset>

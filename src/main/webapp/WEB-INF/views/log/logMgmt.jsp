@@ -51,7 +51,7 @@
 											<div class="tab-content">	
 												<div class="panel-body">
 													<form class="form-horizontal" id="logForm" action="javascript:void(0);">
-														<input type="hidden" id="choiceTreeStr" value="all">
+														<input type="hidden" id="choiceTreeStr" name="choiceTreeStr" value="">
 														<input type="hidden" id="tabDiv" name="tabDiv" value="1">
 														<div class="row">
 															<div class="col-lg-6">
@@ -92,8 +92,8 @@
 																	<div class="form-group">
 																		<label class="col-sm-3 control-label">Service Type</label>
 																		<div class="col-sm-4">
-																			<select id="serviceType" class="input-sm form-control input">
-												                               <option value="all">All</option>
+																			<select id="serviceType" name="serviceType" class="input-sm form-control input">
+												                               <option value="">All</option>
 												                               <option value="fileDownload">fileDownload</option>
 												                               <option value="streaming">streaming</option>
 												                               <option value="carouselMultiple">carouselMultiple</option>
@@ -118,7 +118,7 @@
 																<div class="form-group">
 																	<label class="col-sm-2 control-label" style="width: 113px;">Service Class</label>
 																	<div class="col-sm-3">
-																		<select id="serviceClass" class="input-sm form-control input">
+																		<select id="serviceClass" name="serviceClass" class="input-sm form-control input">
 											                               <option value="">Select Class</option>
 											                               <c:forEach var="row" items="${scList}">
 											                               	<option value="${row.class_name}">${row.class_name}</option>

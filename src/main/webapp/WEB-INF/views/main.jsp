@@ -706,7 +706,6 @@
 					$(".jstree-icon.jstree-themeicon").remove();
 					
 					if(data.node.openYn == undefined) {
-						if(data.node.data.init == 'A') $(".jstree").jstree('select_node', this);
 						$("#" + data.node.id + " li[role=treeitem]").each(function () {
 						     $(".jstree").jstree('select_node', this);
 						});	
@@ -716,8 +715,7 @@
 				})
 				.bind('ready.jstree', function(e, data) {
 					$(".jstree-icon.jstree-themeicon").remove();
-					
-					if($("#searchType").val() != '' && $("#search-input").val() != '') arrangeTreeSearchData();
+					arrangeTreeSearchData();
 			    }).jstree({
 			    	"checkbox" : {
 			  	      "keep_selected_style" : false,
@@ -759,8 +757,11 @@
 			for(var i=0; i < searchResultList.length; i++) {
 				var searchNode = $(searchResultList[i]);
 				
-				if(i == 0) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
-				else if(!searchNode.hasClass("hotspot")) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
+				//일부 arae만 나올 경우는 모두 오픈
+				if($("#circleId").val() != '') 
+					$("#treeNode").jstree("open_all");
+				
+				if(!searchNode.hasClass("hotspot")) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
 			}
 		}
 		

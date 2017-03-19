@@ -169,7 +169,6 @@ function treeInit(data, openAllYn) {
 			$(".jstree-icon.jstree-themeicon").remove();
 			
 			if(data.node.openYn == undefined) {
-				if(data.node.data.init == 'A') $(".jstree").jstree('select_node', this);
 				$("#" + data.node.id + " li[role=treeitem]").each(function () {
 				     $(".jstree").jstree('select_node', this);
 				});	
@@ -179,8 +178,7 @@ function treeInit(data, openAllYn) {
 		})
 		.bind('ready.jstree', function(e, data) {
 			$(".jstree-icon.jstree-themeicon").remove();
-			
-			if($("#searchType").val() != '' && $("#search-input").val() != '') arrangeTreeSearchData();
+			 arrangeTreeSearchData();
 	    }).jstree({
 	    	"checkbox" : {
 	  	      "keep_selected_style" : false,
@@ -222,15 +220,16 @@ function arrangeTreeSearchData() {
 	for(var i=0; i < searchResultList.length; i++) {
 		var searchNode = $(searchResultList[i]);
 		
-		if(i == 0) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
-		else if(!searchNode.hasClass("hotspot")) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
+		//일부 arae만 나올 경우는 모두 오픈
+		if($("#circleId").val() != '') 
+			$("#treeNode").jstree("open_all");
+		
+		if(!searchNode.hasClass("hotspot")) searchNode.find("span[name='childCnt']")[0].innerHTML = $(searchNode.find("ul")[0]).children().length;
 	}
 }
 
 function choiceArea() {
-	var circleListStr = '';
-	var cityListStr = '';
-	var hotspotListStr = '';
+	var choiceObjectStr = '';
 	
 	var allNode = $("#treeNode ul li").not(".root");			
 	for(var i=0; i < allNode.length; i++) {
@@ -238,23 +237,19 @@ function choiceArea() {
 		
 		if($(tempObj.find("a")[0]).hasClass("jstree-clicked")) {
 			if(tempObj.hasClass("circle")) {
-				circleListStr += ',' + tempObj.attr("data-init").substring(1);
+				choiceObjectStr += ',' + tempObj.attr("data-init").substring(1);
 			} else if(tempObj.hasClass("city")) {
-				cityListStr += ',' + tempObj.attr("data-init").substring(tempObj.attr("data-init").indexOf("B")+1);
+				choiceObjectStr += ',' + tempObj.attr("data-init").substring(tempObj.attr("data-init").indexOf("B")+1);
 			} else if(tempObj.hasClass("hotspot")) {
-				hotspotListStr += ',' + tempObj.attr("data-init").substring(tempObj.attr("data-init").indexOf("C")+1);
+				choiceObjectStr += ',' + tempObj.attr("data-init").substring(tempObj.attr("data-init").indexOf("C")+1);
 			}
 		}
 	}
 	
-	circleListStr = circleListStr.substring(1);
-	cityListStr = cityListStr.substring(1); 
-	hotspotListStr = hotspotListStr.substring(1); 
+	choiceObjectStr = choiceObjectStr.substring(1);
 	
 	var param = {
-		circleListStr : circleListStr,
-		cityListStr : cityListStr,
-		hotspotListStr : hotspotListStr
+		choiceObjectStr : choiceObjectStr
 	}
 	
 	$("#choiceTreeStr").val(JSON.stringify(param));

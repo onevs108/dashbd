@@ -1,10 +1,12 @@
 package com.catenoid.dashbd;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
@@ -24,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.model.Log;
 import com.catenoid.dashbd.service.LogService;
+import com.google.gson.Gson;
 
 /**
  * Handles requests for the application home page.
@@ -67,6 +71,10 @@ public class LogController {
 		List<Log> resultList = logServiceImpl.selectLogDate(param);
 		mv.addObject("resultList", resultList);
 		
+		ScheduleMapper schedulemapper = sqlSession.getMapper(ScheduleMapper.class);
+		List<Map<String, String>> scList = schedulemapper.selectServiceClassAll();
+		mv.addObject("scList", scList);
+		
 		return mv;
 	}
 	
@@ -90,13 +98,36 @@ public class LogController {
 			param.put("searchDateFrom", searchDateFromSpliteList[2] + "-" + searchDateFromSpliteList[0] + "-" + searchDateFromSpliteList[1]);
 			param.put("searchDateTo", searchDateToSpliteList[2] + "-" + searchDateToSpliteList[0] + "-" + searchDateToSpliteList[1]);
 			
+			//각 탭에 따라 적용되는 검색 조건 초기화
 			if(param.get("tabDiv").equals("1")) {
+				param.put("serviceType", "");
+				param.put("serviceClass", "");
+				param.put("serviceId", "");
+				param.put("choiceTreeStr", "");
 				param.put("reqType", "\'Login\', \'Operator\', \'OperatorGroup\', \'Content\', \'ServiceArea\', \'ServiceAreaGroup\', \'Schedule\', \'Database\'");
 			} else if(param.get("tabDiv").equals("2")) {
+				param.put("searchKeyword", "");
+				param.put("serviceType", "");
+				param.put("serviceClass", "");
+				param.put("serviceId", "");
+				param.put("choiceTreeStr", "");
 				param.put("reqType", "\'ServiceArea\'");
 			} else if(param.get("tabDiv").equals("3")) {
+				if(!param.get("choiceTreeStr").toString().equals("")) {
+					Gson json = new Gson();
+					HashMap<String, Object> choiceObjectMap = json.fromJson(param.get("choiceTreeStr").toString(), HashMap.class);
+					String[] choiceObjectList = choiceObjectMap.get("choiceObjectStr").toString().split(",");
+					param.put("choiceList", choiceObjectList);
+				}
+				
+				param.put("searchKeyword", "");
 				param.put("reqType", "\'Schedule\'");
 			} else if(param.get("tabDiv").equals("4")) {
+				param.put("searchKeyword", "");
+				param.put("serviceType", "");
+				param.put("serviceClass", "");
+				param.put("serviceId", "");
+				param.put("choiceTreeStr", "");
 				param.put("reqType", "\'Database\'");
 			}
 			

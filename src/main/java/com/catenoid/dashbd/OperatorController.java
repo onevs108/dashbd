@@ -671,6 +671,10 @@ public class OperatorController {
 				}
 			}
 			
+			logMap.put("reqType", "OperatorGroup");
+			logMap.put("reqUrl", "/api/operator/proccessGroup.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
 			usersMapper.insertSystemAjaxLog(logMap);
 		} catch(Exception e) {
 			txManager.rollback(txStatus);
