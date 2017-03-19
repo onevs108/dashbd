@@ -182,29 +182,24 @@ public class ScheduleMgmtController {
 	public Map<String, Object> checkBandwidth(@RequestParam Map<String, String> params, HttpServletRequest req, Locale locale) {
 		Map< String, Object > resultMap = new HashMap< String, Object >();
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		int inputBandwidth = Integer.parseInt(params.get("bandwidth"));
 		if(params.get("saidList").equals("")){
 			resultMap.put("result", "SUCCESS");
 			resultMap.put("resultObj", "SUCCESS");
 			return resultMap;
 		}
-		String[] listArray = params.get("saidList").split(",");
+		
 		List<Map<String, String>> bwList = mapper.checkBandwidth(params);
 		
-		for (int i = 0; i < listArray.length; i++) {
-			for (int j = 0; j < bwList.size(); j++) {
-				if(String.valueOf(bwList.get(j).get("said")).equals(listArray[i])){	//bandwidth가 초과할 때 
-				    if(Integer.parseInt(String.valueOf(bwList.get(j).get("bandwidth"))) < Integer.parseInt(params.get("bandwidth"))) {
-						resultMap.put("result", "bwExceed");
-					    resultMap.put("resultObj", bwList.get(j));
-					    return resultMap;
-					}
-				    break;
-				}
-				if(j == bwList.size()-1){	//Said가 존재 하지 않을 때 
-					resultMap.put("result", "noSaid");
-				    resultMap.put("resultObj", listArray[i]);
+		for (int j = 0; j < bwList.size(); j++) {
+			int enableBandwidth = mapper.getEnableBandwidth(bwList.get(j));
+			if(enableBandwidth - inputBandwidth < 0){
+				if(Integer.parseInt(String.valueOf(bwList.get(j).get("bandwidth"))) < Integer.parseInt(params.get("bandwidth"))) {
+					resultMap.put("result", "bwExceed");
+				    resultMap.put("resultObj", bwList.get(j));
 				    return resultMap;
 				}
+			    break;
 			}
 		}
 		
@@ -646,7 +641,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@RequestMapping(value = "view/ .do")
+	@RequestMapping(value = "view/scheduleReg.do")
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
 			@RequestParam(value="saidData", required=false) List<String> saidData,

@@ -329,6 +329,12 @@
 		where class_name = #{className} 
 	</select>
 	
+	<select id="getEnableBandwidth" parameterType="java.util.Map" resultType="int">
+		SELECT ${bandwidth} - sum(gbr) FROM broadcast_info 
+		where instr(CONCAT(',', said, ','), CONCAT(',',#{said},','))<![CDATA[ > ]]> 0 
+		and (now() <![CDATA[ < ]]> schedule_stop)
+	</select>
+	
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
 		(	 

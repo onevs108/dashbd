@@ -177,13 +177,11 @@ $(document).ready(function()
 	$("#frmScheduleReg").ajaxForm({
 		dataType : "json",
 		beforeSubmit : function(data, frm, opt) {
-			
 			if (!valadationCheck())
 				return false;
 			if (!confirm('are you sure?')) {
 				return false;
 			}
-			
 		},
 		success : function(result) {
 			outMsgForAjax(result);
