@@ -21,6 +21,15 @@
   		  <if test="searchKeyword != '' and searchKeyword != null">
   		  	AND target_id = #{searchKeyword}
   		  </if>
+  		  <if test="serviceType != '' and serviceType != null and serviceType != 'all'">
+  		  	AND service_type = #{serviceType}
+  		  </if>
+  		  <if test="serviceClass != '' and serviceClass != null">
+  		  	AND service_class = #{serviceClass}
+  		  </if>
+  		  <if test="serviceId != '' and serviceId != null">
+  		  	AND service_id = #{serviceId}
+  		  </if>
   		ORDER BY created_at DESC
   </select>
 </mapper>

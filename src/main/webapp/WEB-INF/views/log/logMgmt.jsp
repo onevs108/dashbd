@@ -70,17 +70,75 @@
 																	</div>
 																</div>
 															</div>
-															<div class="col-lg-6">
-																<div class="form-group">
-																	<label class="col-sm-2 control-label">User ID</label>
-																	<div class="col-sm-10">
-																		<div class="input-group">
-																			<input type="text" id="searchKeyword" name="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) selectLogData();">
-																			<span class="input-group-btn">
-																				<button type="button" onclick="selectLogData()" class="btn btn-primary">Search</button>
-																			</span>
+															<div id="operatorLog">
+																<div class="col-lg-6">
+																	<div class="form-group">
+																		<label class="col-sm-2 control-label">User ID</label>
+																		<div class="col-sm-10">
+																			<div class="input-group">
+																				<input type="text" id="searchKeyword" name="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) selectLogData();">
+																				<span class="input-group-btn">
+																					<button type="button" onclick="selectLogData()" class="btn btn-primary">View Log</button>
+																				</span>
+																			</div>
 																		</div>
 																	</div>
+																</div>
+															</div>
+															<div name="scheduleLog">
+																<div class="col-lg-6">
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">Service Type</label>
+																		<div class="col-sm-4">
+																			<select id="serviceType" class="input-sm form-control input">
+												                               <option value="all">All</option>
+												                               <option value="fileDownload">fileDownload</option>
+												                               <option value="streaming">streaming</option>
+												                               <option value="carouselMultiple">carouselMultiple</option>
+												                               <option value="carouselSingle">carouselSingle</option>
+												                            </select>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<div id="others">
+																<div class="col-lg-6">
+																	<div class="form-group">
+																		<span class="input-group-btn">
+																			<button type="button" onclick="selectLogData()" class="btn btn-primary">View Log</button>
+																		</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div name="scheduleLog" class="row">
+															<div class="col-lg-8">
+																<div class="form-group">
+																	<label class="col-sm-2 control-label" style="width: 113px;">Service Class</label>
+																	<div class="col-sm-3">
+																		<select id="serviceClass" class="input-sm form-control input">
+											                               <option value="">Select Class</option>
+											                               <c:forEach var="row" items="${scList}">
+											                               	<option value="${row.class_name}">${row.class_name}</option>
+											                               </c:forEach>
+											                            </select>
+																	</div>
+																	<label class="col-sm-2 control-label" style="width: 93px;">Service Id</label>
+																	<div class="col-sm-4">
+																		<div class="input-group">
+																			<input type="text" id="serviceId" name="serviceId" class="form-control" onkeydown="javascript:if(event.keyCode == 13) selectLogData();">
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<div class="col-lg-4">
+																<div class="form-group">
+																	<span class="input-group-btn">
+																		<a href="#" class="btn btn-w-m btn-link"><i class="fa fa-link"></i> <u onclick="choiceServiceArea()">Select Service Area</u></a>
+																	</span>
+																	<span class="input-group-btn">
+																		<button type="button" onclick="selectLogData()" class="btn btn-primary">View Log</button>
+																	</span>
 																</div>
 															</div>
 														</div>

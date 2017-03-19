@@ -75,6 +75,7 @@ public class LogController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/selectLogDate.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public void serviceAreaProccess(@RequestParam HashMap<String, Object> param, HttpServletResponse response) {
 		try {

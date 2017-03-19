@@ -789,6 +789,10 @@ public class ScheduleMgmtController {
 					+ ", Service ID : " + params.get("serviceId") + ", Service Class : " + params.get("serviceClass")
 					+ ", Service Name : " + params.get("name") + ", Start Date : [" + convertDateFormat2(params.get("schedule_start")) +"]"
 					+ ", End Date : [" + convertDateFormat2(params.get("schedule_stop")) +"]" );
+			logMap.put("serviceType", params.get("serviceType"));
+			logMap.put("serviceClass", params.get("serviceClass"));
+			logMap.put("serviceId", params.get("serviceId"));
+			logMap.put("said", params.get("serviceAreaId"));
 			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
 			logMapper.insertSystemAjaxLog(logMap);
 			

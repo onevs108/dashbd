@@ -297,7 +297,7 @@
 					                <select class="input-sm form-control input-s-sm" id="serviceType" name="serviceType">
 		                    	</c:if>
 	                        	<c:if test="${not empty mapSchedule.BCID}">
-	                        		<select id="serviceType" class="input-sm form-control input-s-sm" disabled>            	
+	                        		<select id="serviceType" name="serviceType" class="input-sm form-control input-s-sm" readonly>            	
 	                        	</c:if>
                        	        	   <option value="fileDownload" <c:if test="${mapSchedule.service eq 'fileDownload'}"> selected</c:if>>File Download</option>
                                        <option value="streaming" <c:if test="${mapSchedule.service eq 'streaming'}">selected</c:if>>Streaming</option>
@@ -544,7 +544,7 @@
 					                                    </div>
 				                                    	<div class="row">
 				                                    		<div class="col-sm-2">
-						                                    	<input type="text" class="form-control" id="bcSaid" name="bcSaid" required="required" value="">
+						                                    	<input type="text" class="form-control" id="bcSaid" name="bcSaid" value="">
 						                                    </div>
 					                                    	<div class="col-sm-2"> 
 						                                    	<button type="button" id="bcSaidAdd" name="bcSaidAdd" class="btn btn-block btn-default">Add</button>
