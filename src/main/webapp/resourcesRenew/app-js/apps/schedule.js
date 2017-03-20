@@ -196,7 +196,7 @@ $(document).ready(function()
 		}
 	});
 	
-	$("#btnOK").click(function() {
+	$("#btnOK,#btnUPDATE").click(function() {
 		if($("#serviceId").val() == ""){
 			alert("Please enter the Service Id");
 			$("#serviceId").focus();

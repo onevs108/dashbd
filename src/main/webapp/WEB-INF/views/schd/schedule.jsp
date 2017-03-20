@@ -710,7 +710,7 @@
 		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="margin-left:10px;margin-top:10px">OK
 		                        	</c:if>
 		                        	<c:if test="${not empty mapSchedule.BCID}">
-		                        	<button class="col-sm-2 btn btn-success" type="submit" id="btnUPDATE" style="margin-left:10px;margin-top:10px">UPDATE            	
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnUPDATE" style="margin-left:10px;margin-top:10px">UPDATE            	
 		                        	</c:if>            	
 		                        	</button>
 		                        	

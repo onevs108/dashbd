@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="com.catenoid.dashbd.util.SessionCounterListener" %>
 <c:set var="now" value="<%= new java.util.Date() %>" />
 
 <!DOCTYPE html>

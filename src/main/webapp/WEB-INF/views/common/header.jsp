@@ -3,8 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<%@ page import="com.catenoid.dashbd.util.SessionCounterListener"%>
-
 <div class="row border-bottom">
 	<input type="hidden" id="globalGrade" value="${USER.grade}">
 	<nav class="navbar navbar-static-top" role="navigation"
