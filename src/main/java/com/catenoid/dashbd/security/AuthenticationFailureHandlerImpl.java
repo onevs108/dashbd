@@ -80,7 +80,6 @@ public class AuthenticationFailureHandlerImpl implements AuthenticationFailureHa
 		
 		logger.info("<- [redirect = {}] [cause = {}]", "/dashbd/loginfail.do", cause);
 		
-		request.getSession().invalidate();
 		request.getSession(true).setAttribute("userId", userId);
 		response.sendRedirect("/dashbd/loginfail.do?cause=" + cause);
 	}

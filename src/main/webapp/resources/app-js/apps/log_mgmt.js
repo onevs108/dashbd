@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	$.blockUI();
 	jsTreeSetting();
 	
 	getMenuList('LOG_MGMT');
@@ -179,6 +180,7 @@ function treeInit(data, openAllYn) {
 		.bind('ready.jstree', function(e, data) {
 			$(".jstree-icon.jstree-themeicon").remove();
 			 arrangeTreeSearchData();
+			 $.unblockUI();
 	    }).jstree({
 	    	"checkbox" : {
 	  	      "keep_selected_style" : false,

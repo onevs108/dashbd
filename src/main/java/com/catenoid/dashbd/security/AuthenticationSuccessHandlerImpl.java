@@ -24,7 +24,6 @@ import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.UserService;
-import com.catenoid.dashbd.util.SessionCounterListener;
 
 public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
 	
@@ -91,7 +90,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 	        if (ip == null)
 	            ip = request.getRemoteAddr();
 			
-	        Users LogUser = (Users)request.getSession().getAttribute("USER");
+	        Users LogUser = (Users)session.getAttribute("USER");
 			HashMap<String, Object> logMap = new HashMap<String, Object>();
 			logMap.put("reqType", "Login");
 			logMap.put("reqSubType", "Login");

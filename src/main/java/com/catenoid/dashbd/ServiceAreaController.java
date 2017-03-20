@@ -1366,7 +1366,10 @@ public class ServiceAreaController {
 		ModelAndView mv = new ModelAndView("main");
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
-		mv.addObject("total_users", "123");
+		
+		mv.addObject("total_user", "123");
+		mv.addObject("count_bc", "123");
+		mv.addObject("count_uc", "123");
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, -7);
