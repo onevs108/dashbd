@@ -192,6 +192,16 @@ public class ScheduleMgmtController {
 		List<Map<String, String>> bwList = mapper.checkBandwidth(params);
 		
 		for (int j = 0; j < bwList.size(); j++) {
+			List<String> saidList = mapper.selectSaidRange(bwList.get(j));
+			String searchString = "";
+			for (int i = 0; i < saidList.size(); i++) {
+				if(i == saidList.size()-1){
+					searchString += saidList.get(i);
+				}else{
+					searchString += saidList.get(i)+",|,";
+				}
+			}
+			bwList.get(j).put("searchString", searchString);
 			int enableBandwidth = mapper.getEnableBandwidth(bwList.get(j));
 			if(enableBandwidth - inputBandwidth < 0){
 				if(Integer.parseInt(String.valueOf(bwList.get(j).get("bandwidth"))) < Integer.parseInt(params.get("bandwidth"))) {

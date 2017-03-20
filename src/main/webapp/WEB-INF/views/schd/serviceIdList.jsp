@@ -47,7 +47,7 @@
 	                                	<input type="text" id="idName" class="form-control input-sm" placeholder="Service Id" value="">
 	                                </div>
 	                                <div class="col-md-4">
-	                                	<input type="text" id="idDescription" class="form-control input-sm" placeholder="Unique String" value="">
+	                                	<input type="text" id="idDescription" class="form-control input-sm" placeholder="description" value="">
 	                                </div>
 	                                <div class="col-md-2">
 	                                	<button type="button" id="addId" class="btn btn-block btn-primary btn-sm" onclick="addId()">Add</button>

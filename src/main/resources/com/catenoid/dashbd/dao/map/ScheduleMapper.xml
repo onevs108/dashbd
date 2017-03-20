@@ -330,8 +330,8 @@
 	</select>
 	
 	<select id="getEnableBandwidth" parameterType="java.util.Map" resultType="int">
-		SELECT ${bandwidth} - sum(gbr) FROM broadcast_info 
-		where instr(CONCAT(',', said, ','), CONCAT(',',#{said},','))<![CDATA[ > ]]> 0 
+		SELECT ifnull(${bandwidth} - sum(gbr), 999999999) bandwidth FROM broadcast_info 
+		where CONCAT(',', said, ',') REGEXP CONCAT(',', #{searchString}, ',')
 		and (now() <![CDATA[ < ]]> schedule_stop)
 	</select>
 	
@@ -597,21 +597,39 @@
 <!--  inbo 작성 쿼리 끝  -->
 
 	<select id="checkBandwidth" parameterType="java.util.Map" resultType="java.util.Map">
-		select said, bandwidth from 
+		select said, bandwidth, type from 
 		(
-			select circle_id as said, bandwidth from circle
+			select circle_id as said, bandwidth, 'circle' as type from circle
 			where circle_id IN (${saidList})
 			
 			union all
 			
-			select city_id as said, bandwidth from city
+			select city_id as said, bandwidth, 'city' as type from city
 			where city_id IN (${saidList})
 			
 			union all
 			
-			select hotspot_id as said, bandwidth from hotspot 
+			select hotspot_id as said, bandwidth, 'hotspot' as type from hotspot 
 			where hotspot_id IN (${saidList})
 		) T
+	</select>
+
+	<select id="selectSaidRange" parameterType="java.util.Map" resultType="String">
+		<if test="type == 'circle'">
+			select city_id said from city where circle_id = #{said}
+			union all
+			select hotspot_id said from hotspot where city_id IN (select city_id from city where circle_id = #{said})
+		</if>
+		<if test="type == 'city'">
+			select circle_id said from city where city_id = #{said}
+			union all
+			select hotspot_id said from hotspot where city_id IN (select city_id from city where city_id = #{said})
+		</if>
+		<if test="type == 'hotspot'">
+			select city_id said from hotspot where hotspot_id = #{said}
+			union all
+			select circle_id said from city where city_id = (select city_id said from hotspot where hotspot_id = #{said})
+		</if>
 	</select>
 	
 	<select id="getGroupListFromCircleId" parameterType="HashMap" resultType="HashMap">

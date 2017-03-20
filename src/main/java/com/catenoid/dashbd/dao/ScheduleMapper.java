@@ -77,6 +77,7 @@ public interface ScheduleMapper {
 	void editServiceId(HashMap<String, Object> params);
 	void deleteServiceId(HashMap<String, Object> params);
 	int getEnableBandwidth(Map<String, String> params);
+	List<String> selectSaidRange(Map<String, String> map);
     
     
 }

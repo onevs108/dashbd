@@ -441,7 +441,7 @@ function getServiceIdList() {
 			}
 		}, {
 			field: 'description',
-			title: 'Unique String',
+			title: 'Description',
 			width: '40%',
 			align: 'center',
 			valign: 'middle',
