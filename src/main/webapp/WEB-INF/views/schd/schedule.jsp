@@ -253,7 +253,7 @@
                     	<c:choose>
                     		<c:when test="${mapSchedule.nationalYN == 'Y'}">National</c:when>
                     		<c:otherwise>
-                    			<c:if test="${not empty mapSchedule.serviceAreaId}">Area ${mapSchedule.serviceAreaId}</c:if>
+                    			<c:if test="${empty mapSchedule.serviceGroupId}">Area ${mapSchedule.serviceAreaId}</c:if>
                     			<c:if test="${not empty mapSchedule.serviceGroupId}">Group ${mapSchedule.serviceGroupId}</c:if>
                     		</c:otherwise>
                     	</c:choose> 
@@ -268,7 +268,7 @@
 					                <select class="input-sm form-control input-s-sm" id="serviceType" name="serviceType">
 		                    	</c:if>
 	                        	<c:if test="${not empty mapSchedule.BCID}">
-	                        		<select id="serviceType" name="serviceType" class="input-sm form-control input-s-sm" readonly>            	
+	                        		<select id="serviceType" name="serviceType" class="input-sm form-control input-s-sm" disabled>            	
 	                        	</c:if>
                        	        	   <option value="fileDownload" <c:if test="${mapSchedule.service eq 'fileDownload'}"> selected</c:if>>File Download</option>
                                        <option value="streaming" <c:if test="${mapSchedule.service eq 'streaming'}">selected</c:if>>Streaming</option>

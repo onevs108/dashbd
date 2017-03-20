@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -204,12 +203,9 @@ public class ScheduleMgmtController {
 			bwList.get(j).put("searchString", searchString);
 			int enableBandwidth = mapper.getEnableBandwidth(bwList.get(j));
 			if(enableBandwidth - inputBandwidth < 0){
-				if(Integer.parseInt(String.valueOf(bwList.get(j).get("bandwidth"))) < Integer.parseInt(params.get("bandwidth"))) {
-					resultMap.put("result", "bwExceed");
-				    resultMap.put("resultObj", bwList.get(j));
-				    return resultMap;
-				}
-			    break;
+				resultMap.put("result", "bwExceed");
+			    resultMap.put("resultObj", bwList.get(j));
+			    return resultMap;
 			}
 		}
 		
@@ -728,9 +724,9 @@ public class ScheduleMgmtController {
 						said += String.valueOf(groupSaid.get(i).get("sub_said"))+",";
 					}
 				}
-				param.put("serviceAreaId", params.get("serviceGroupId"));
+				params.put("serviceAreaId", said);
 				saidList.add(said);
-				paramList.add(6, saidList);
+//				paramList.add(6, saidList);
 			}
 			
 			params.put("transactionId", transId);
@@ -764,7 +760,6 @@ public class ScheduleMgmtController {
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
-				
 				//schedule start 갯수만큼
 				for (int i = 0; i < paramList.get(0).size(); i++) {	
 					
@@ -943,8 +938,8 @@ public class ScheduleMgmtController {
 			//@ update delete flag 
 			int ret = mapper.updateBroadcastInfo4Del(params);
 			logger.info("insertBroadcastInfo ret{}", ret);
-
-			 */
+			*/
+			
 			//@ update delete flag 
 			int ret = mapper.updateSchedule4Del(params);
 			logger.info("updateSchedule ret{}", ret);

@@ -179,6 +179,9 @@ $(document).ready(function()
     		$("#selectHotspotLabel").hide();
     		$("#selectCityLabel").html("Group");
     		$("#selectArea").show();
+    		if(glovalSaid != ""){
+    			$('#scheduleSearch').click();
+    		}
     	}
     	else if(radioType == "area")
     	{

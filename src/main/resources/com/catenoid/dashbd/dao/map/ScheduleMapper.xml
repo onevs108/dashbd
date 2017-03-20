@@ -424,15 +424,15 @@
 	<update id="updateBroadcastInfo" parameterType="java.util.Map">
 		UPDATE broadcast_info SET
 			updated_at = now()
-			, transactionId		= #{transactionId}
+				, transactionId		= #{transactionId}
 			<if test="name != null and name !=''" >
 				, service_name 		= #{name}
 			</if>
 			<if test="serviceClass != null and serviceClass !=''" >
-			, serviceClass 		= #{serviceClass}
+				, serviceClass 		= #{serviceClass}
 			</if>
 			<if test="serviceLanguage != null and serviceLanguage !=''" >
-			, language			= #{serviceLanguage}
+				, language			= #{serviceLanguage}
 			</if>	 
 			<if test="GBR != null and GBR !=''" >
 				, GBR				= #{GBR}
@@ -459,7 +459,7 @@
 				, segmentAvailableOffset	=#{segmentAvailableOffset}
 			</if>
 			<if test="said != null and said !=''" >
-				, said				= #{said}
+				, said				= #{serviceAreaId}
 			</if>
 			<if test="schedule_start != null and schedule_start !=''" >
 				, schedule_start	= str_to_date(#{schedule_start}, '%Y%m%d%H%i%s')
@@ -542,8 +542,11 @@
 	</select>
 	
 	<update id = "updateSchedule" parameterType="java.util.Map">
-		UPDATE schedule	SET
+		UPDATE schedule	
+		SET
+			<if test="serviceGroupId != '' and serviceGroupId != null">
 			service_area_id = #{serviceAreaId},
+			</if>
 			name = #{name},
 			BCID = #{BCID},
 			end_date = str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s'),

@@ -229,6 +229,7 @@ $(document).ready(function()
 			success : function( data ) {
 				if(data.result == "SUCCESS")
 				{
+					$("#serviceType").removeAttr("disabled");
 					$("#frmScheduleReg").submit();
 				}
 				else if(data.result == "bwExceed")
