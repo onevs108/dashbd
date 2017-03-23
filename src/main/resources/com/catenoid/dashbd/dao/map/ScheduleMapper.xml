@@ -336,8 +336,8 @@
 		where class_name = #{className} 
 	</select>
 	
-	<select id="getEnableBandwidth" parameterType="java.util.Map" resultType="int">
-		SELECT ifnull(${bandwidth} - sum(gbr), 999999999) bandwidth FROM broadcast_info 
+	<select id="getEnableBandwidth" parameterType="java.util.Map" resultType="HashMap">
+		SELECT ifnull(${bandwidth} - sum(gbr), ${bandwidth}) usableBW, ifnull(sum(gbr), 0) usedBW FROM broadcast_info 
 		where CONCAT(',', said, ',') REGEXP CONCAT(',', #{searchString}, ',')
 		and (now() <![CDATA[ < ]]> schedule_stop)
 	</select>

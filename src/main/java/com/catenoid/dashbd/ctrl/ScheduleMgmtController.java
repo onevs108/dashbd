@@ -204,13 +204,20 @@ public class ScheduleMgmtController {
 				}
 			}
 			bwList.get(j).put("searchString", searchString);
-			enableBandwidth = mapper.getEnableBandwidth(bwList.get(j));
-			if(enableBandwidth - inputBandwidth < 0){
+			HashMap<String, String> bwMap = mapper.getEnableBandwidth(bwList.get(j));
+			
+			Double d1 = new Double(String.valueOf(bwMap.get("usableBW")));
+			Double d2 = new Double(String.valueOf(bwMap.get("usedBW")));
+			int usableBWint = d1.intValue();
+			int usedBWint = d2.intValue();
+			
+			if(usableBWint - inputBandwidth < 0){
 				resultMap.put("result", "bwExceed");
 			    resultMap.put("resultObj", bwList.get(j));
 			    return resultMap;
 			}
-			resultMap.put("enableBandwidth", enableBandwidth);
+			resultMap.put("usedBandwidth", usedBWint);
+			resultMap.put("enableBandwidth", usableBWint);
 		}
 		
 		resultMap.put("result", "SUCCESS");
