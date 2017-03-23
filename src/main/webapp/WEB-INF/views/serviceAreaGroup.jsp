@@ -10,7 +10,6 @@
 	<jsp:include page="common/head.jsp" />
 	
 	<!-- JSTree -->
-	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<link href="/dashbd/resources/newPublish/css/plugins/chosen/chosen.css" rel="stylesheet"> 
 	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
 	

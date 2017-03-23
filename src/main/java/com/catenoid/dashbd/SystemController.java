@@ -1,10 +1,14 @@
 package com.catenoid.dashbd;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +16,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
@@ -39,6 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
+import com.catenoid.dashbd.dao.model.Log;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
@@ -47,6 +53,7 @@ import com.catenoid.dashbd.dao.model.SystemDatabaseBackup;
 import com.catenoid.dashbd.dao.model.SystemIncomingLog;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.BmscService;
+import com.google.gson.Gson;
 
 /**
  * Handles requests for the application home page.
@@ -979,5 +986,146 @@ public class SystemController{
 			logger.error("~~ [An error occurred!]", e);
 		}
 		return jsonResult.toString();
+	}
+	
+	/**
+	 * CPU, Memory 차트 데이터 조회 메소드
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/api/getSystemLogData.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void serviceAreaProccess(@RequestParam HashMap<String, Object> param, HttpServletResponse response) {
+		try {
+			JSONObject resultMap = new JSONObject();
+			JSONArray jsonArray1 = new JSONArray();
+			JSONArray jsonArray2 = new JSONArray();
+			JSONArray jsonArray3 = new JSONArray();
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			String year = String.valueOf(cal.get(Calendar.YEAR));
+			String month = String.valueOf(cal.get(Calendar.MONTH) + 1);
+			String date = String.valueOf(cal.get(Calendar.DATE));
+			
+			month = (month.length() == 1)? "0" + month : month; 
+			date = (date.length() == 1)? "0" + date : date;
+			
+			//cpu로그 데이터와 memory 로그 데이터를 가지고 옴
+			File file1 = new File("C:/dashbd/system/resources/cpu/" + year + month + date + ".log");
+			File file2 = new File("C:/dashbd/system/resources/memory/" + year + month + date + ".log");
+			File file3 = new File("C:/dashbd/system/resources/hdd/" + year + month + date + ".log");
+			
+			List<String> cpuStrList = new ArrayList<String>();
+			List<String> memoryStrList = new ArrayList<String>();
+			List<String> hddStrList = new ArrayList<String>();
+			
+			FileReader fileReader = new FileReader(file1);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				cpuStrList.add(line);
+			}
+			
+			
+			fileReader = new FileReader(file2);
+			bufferedReader = new BufferedReader(fileReader);
+			line = "";
+			while ((line = bufferedReader.readLine()) != null) {
+				memoryStrList.add(line);
+			}
+			
+			
+			fileReader = new FileReader(file3);
+			bufferedReader = new BufferedReader(fileReader);
+			line = "";
+			while ((line = bufferedReader.readLine()) != null) {
+				hddStrList.add(line);
+			}
+			
+			fileReader.close();
+			
+			//마지막 cpu사용량을 담을 변수
+			String finalCpu="";
+			for(int i=((cpuStrList.size()-20 < 0)? 0 : cpuStrList.size()-20); i < cpuStrList.size(); i++) {
+				JSONObject cpuObject = new JSONObject();
+				
+				String tempCpuInfo = cpuStrList.get(i);
+				int tempIndex = tempCpuInfo.indexOf("]");
+				cpuObject.put(0, tempCpuInfo.substring(tempIndex-8, tempIndex)); 
+				cpuObject.put(1, Integer.parseInt(tempCpuInfo.substring(tempIndex+2, tempCpuInfo.indexOf("%"))));
+				jsonArray1.add(cpuObject);
+				
+				if(i == cpuStrList.size() -1) {
+					finalCpu = tempCpuInfo.substring(tempIndex+2, tempCpuInfo.indexOf("%"));
+				}
+			}
+			
+			//마지막 memory사용량을 담을 변수
+			String finalMemory="";
+			for(int i=((memoryStrList.size()-20 < 0)? 0 : memoryStrList.size()-20); i < memoryStrList.size(); i++) {
+				JSONObject memoryObject = new JSONObject();
+				
+				String tempMemoryInfo = memoryStrList.get(i);
+				int tempIndex = tempMemoryInfo.indexOf("]");
+				memoryObject.put(0, tempMemoryInfo.substring(tempIndex-8, tempIndex)); 
+				memoryObject.put(1, Integer.parseInt(tempMemoryInfo.substring(tempIndex+2, tempMemoryInfo.indexOf("%"))));
+				jsonArray2.add(memoryObject);
+				
+				if(i == memoryStrList.size() -1) {
+					finalMemory = tempMemoryInfo.substring(tempIndex+2, tempMemoryInfo.indexOf("%"));
+				}
+			}
+			
+			//Hdd 로그에서 맨 아래 4(Const 전역 변수 값에 따라 달라짐) 줄을 담아줌
+			JSONObject hddObject = new JSONObject();
+			hddObject.put("1", "Filesystem");
+			hddObject.put("2", "1K-blocks");
+			hddObject.put("3", "Used");
+			hddObject.put("4", "Available");
+			hddObject.put("5", "Use%");
+			hddObject.put("6", "Mounted on");
+			jsonArray3.add(hddObject);
+			
+			for(int i=((hddStrList.size()-(Const.hddLogLine) < 0)? 0 : hddStrList.size()-(Const.hddLogLine)); i < hddStrList.size()-1; i++) {
+				hddObject = new JSONObject();
+				String totalStr = hddStrList.get(i);
+				
+				List<String> tempArr = new ArrayList<String>();
+				for(int j=0; j < totalStr.length(); j++) {
+					if(j == totalStr.length()-1) break;
+					
+					char tempStr = totalStr.charAt(j);
+					char tempNextStr = totalStr.charAt(j+1);
+					
+					if(!String.valueOf(tempStr).equals(" ") && String.valueOf(tempNextStr).equals(" ")) {
+						tempArr.add(String.valueOf(j+1));
+					} else if(String.valueOf(tempStr).equals(" ") && !String.valueOf(tempNextStr).equals(" ")) {
+						tempArr.add(String.valueOf(j+1));
+					}
+				}
+				
+				hddObject.put("1", totalStr.substring(0, Integer.parseInt(tempArr.get(0))));
+				hddObject.put("2", totalStr.substring(Integer.parseInt(tempArr.get(1)), Integer.parseInt(tempArr.get(2))));
+				hddObject.put("3", totalStr.substring(Integer.parseInt(tempArr.get(3)), Integer.parseInt(tempArr.get(4))));
+				hddObject.put("4", totalStr.substring(Integer.parseInt(tempArr.get(5)), Integer.parseInt(tempArr.get(6))));
+				hddObject.put("5", totalStr.substring(Integer.parseInt(tempArr.get(7)), Integer.parseInt(tempArr.get(8))));
+				hddObject.put("6", totalStr.substring(Integer.parseInt(tempArr.get(9))));
+				
+				jsonArray3.add(hddObject);
+			}
+			
+			resultMap.put("cupResultList", jsonArray1);
+			resultMap.put("memoryResultList", jsonArray2);
+			resultMap.put("hddResultList", jsonArray3);
+			resultMap.put("finalCpu", finalCpu);
+			resultMap.put("finalMemory", finalMemory); 
+			
+			System.out.println("test:" + resultMap.toJSONString());
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(resultMap.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 }

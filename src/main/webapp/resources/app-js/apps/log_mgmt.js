@@ -89,40 +89,37 @@ function choiceServiceArea() {
 }
 
 function jsTreeSetting(openAllYn) {
-	$.getScript( "/dashbd/resourcesRenew/js/plugins/jsTree/jstree.min.js" )
-		.done(function( script, textStatus ) {
-			$.ajax({
-			    url : "/dashbd/api/getTreeNodeData.do",
-			    type: "POST",
-			    data : { 
-			    	gruop_id : '',
-			    	searchType : $("#searchType").val(),
-			    	searchInput : $("#search-input").val(),
-			    	circle_id : $("#circleId").val()
-			    },
-			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-			    success : function(responseData) {
-			        $("#ajax").remove();
-			        var data = JSON.parse(responseData);
-			         
-			        if(data.resultList.length != 0) {
-				        $("#treeNode").jstree("destroy").empty();
-				        treeInit(data, openAllYn);
-			        } else {
-			        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
-			        		$("#search-input").val('');
-			        		$("#searchType").val('');
-			    		})
-			        }
-			        
-			    },
-		        error : function(xhr, status, error) {
-		        	swal({
-		                title: "Fail !",
-		                text: "Error"
-		            });
+		$.ajax({
+		    url : "/dashbd/api/getTreeNodeData.do",
+		    type: "POST",
+		    data : { 
+		    	gruop_id : '',
+		    	searchType : $("#searchType").val(),
+		    	searchInput : $("#search-input").val(),
+		    	circle_id : $("#circleId").val()
+		    },
+		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		    success : function(responseData) {
+		        $("#ajax").remove();
+		        var data = JSON.parse(responseData);
+		         
+		        if(data.resultList.length != 0) {
+			        $("#treeNode").jstree("destroy").empty();
+			        treeInit(data, openAllYn);
+		        } else {
+		        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
+		        		$("#search-input").val('');
+		        		$("#searchType").val('');
+		    		})
 		        }
-			});
+		        
+		    },
+	        error : function(xhr, status, error) {
+	        	swal({
+	                title: "Fail !",
+	                text: "Error"
+	            });
+	        }
 		});
 }
 

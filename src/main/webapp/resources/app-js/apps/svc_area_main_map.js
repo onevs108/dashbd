@@ -83,42 +83,39 @@ function tabChange(tabDiv) {
 }
 
 function jsTreeSetting(openAllYn) {
-	$.getScript( "/dashbd/resourcesRenew/js/plugins/jsTree/jstree.min.js" )
-		.done(function( script, textStatus ) {
-			$.ajax({
-			    url : "/dashbd/api/getTreeNodeData.do",
-			    type: "POST",
-			    data : { 
-			    	gruop_id : '',
-			    	searchType : $("#searchType").val(),
-			    	searchInput : $("#search-input").val()
-			    },
-			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-			    success : function(responseData) {
-			        $("#ajax").remove();
-			        var data = JSON.parse(responseData);
-			         
-			        if(data.resultList.length != 0) {
-				        $("#treeNode").jstree("destroy").empty();
-				        treeInit(data, openAllYn);
-			        } else {
-			        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
-			        		$("#search-input").val('');
-			        		$("#searchType").val('');
-			    		})
-			        }
-			        
-			        $.unblockUI();
-			    },
-		        error : function(xhr, status, error) {
-		        	$.unblockUI();
-		        	swal({
-		                title: "Fail !",
-		                text: "Error"
-		            });
-		        }
-			});
-		});
+	$.ajax({
+	    url : "/dashbd/api/getTreeNodeData.do",
+	    type: "POST",
+	    data : { 
+	    	gruop_id : '',
+	    	searchType : $("#searchType").val(),
+	    	searchInput : $("#search-input").val()
+	    },
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    success : function(responseData) {
+	        $("#ajax").remove();
+	        var data = JSON.parse(responseData);
+	         
+	        if(data.resultList.length != 0) {
+		        $("#treeNode").jstree("destroy").empty();
+		        treeInit(data, openAllYn);
+	        } else {
+	        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
+	        		$("#search-input").val('');
+	        		$("#searchType").val('');
+	    		})
+	        }
+	        
+	        $.unblockUI();
+	    },
+        error : function(xhr, status, error) {
+        	$.unblockUI();
+        	swal({
+                title: "Fail !",
+                text: "Error"
+            });
+        }
+	});
 }
 
 //jsTree Init Function
@@ -518,7 +515,8 @@ function initMap() {
 			tempInfoWindow.close();
 		
 		var infowindow = new google.maps.InfoWindow({ content: contentString
-						, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+						, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+						, maxWidth: 300});
 		infowindow.open(map, this);
 		tempInfoWindow = infowindow
 	});
@@ -529,39 +527,35 @@ function initMap() {
 
 function makeInfoWindow(div, object) {
 	var contentString = '';
-	contentString = '<div>';
-	contentString = '<form name="serviceAreaForm">'; 
+	contentString = '<div class="row" style="max-width:321px">';
+	contentString += '<form name="serviceAreaForm">'; 
 	contentString += '<input type="hidden" name="proccessDiv">';
 	contentString += '<input type="hidden" name="currentZoomLevel">';
 	if(currentZoomLevel != 'circle') {
 		contentString += '<input type="hidden" name="upper_said">';
 		contentString += '<input type="hidden" name="upper_name">';
 	}
-	contentString += '<table>';
-	contentString += '<tbody>';
-	contentString += '<tr>';
+	contentString += '<div class="form-group col-lg-12">';
 	var upperChar = currentZoomLevel.substring(0,1).toUpperCase();
-	contentString += '<td>' + upperChar + currentZoomLevel.substring(1) + '</td>';
+	contentString += '<label class="col-sm-4 control-label">' + upperChar + currentZoomLevel.substring(1) + '</label>';
 	var name = '';
 	if(div == 'edit') name = object.name;
-	contentString += '<td colspan="2"><input type="text" style="width:100%" name="name" value="' + name + '"></td>';
-	contentString += '</tr>';
-	contentString += '<tr>';
-	contentString += '<td>SAID</td>';
+	contentString += '<input type="text" class="col-sm-8" name="name" value="' + name + '">';
+	contentString += '</div>';
+	contentString += '<div class="form-group col-lg-12">';
+	contentString += '<label class="col-sm-4 control-label">Said</label>';
 	var said = '';
 	if(div == 'edit') said = object.said;
-	contentString += '<td colspan="2"><input type="text" style="width:100%" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + ' onblur="validationCheck(\'number\', this)"></td>';
-	contentString += '</tr>';
+	contentString += '<input type="text" class="col-sm-8" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + ' onblur="validationCheck(\'number\', this)">';
+	contentString += '</div>';
 	if(currentZoomLevel != 'circle') {
 		var bandwidth = '';
 		if(div == 'edit') bandwidth = object.bandwidth;
-		contentString += '<tr>';
-		contentString += '<td>Bandwidth</td>';
-		contentString += '<td colspan="2"><input type="text" style="width:100%" name="bandwidth" value="' + bandwidth + '" onblur="validationCheck(\'number\', this)"></td>';
-		contentString += '</tr>';
+		contentString += '<div class="form-group col-lg-12">';
+		contentString += '<label class="col-sm-4 control-label">Bandwidth</label>';
+		contentString += '<input type="text" class="col-sm-8" name="bandwidth" value="' + bandwidth + '" onblur="validationCheck(\'number\', this)">';
+		contentString += '</div>';
 	}
-	contentString += '<tr>';
-	contentString += '<td>Latitude</td>';
 	var lat,lng;
 	if(div == 'add') {
 		lat =  object.latLng.lat();
@@ -576,19 +570,37 @@ function makeInfoWindow(div, object) {
 			lng = object.position.lng();
 		}
 	}
-	contentString += '<td><input type="text" name="lat" value="' + lat + '" readonly></td>';
-	if(div == 'edit')
-		contentString += '<td rowspan="2"><button type="button" class="btn btn-success btn-xs button-edit" style="padding:6px;" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset<br>Location</button></td>';
-	contentString += '</tr>';
-	contentString += '<tr>';
-	contentString += '<td>Longitude</td>';
-	contentString += '<td><input type="text" name="lng" value="' + lng + '" readonly></td>';
-	contentString += '</tr>';
-	contentString += '</tbody>';
-	contentString += '</table>';
+	
+	if(div == 'edit') {
+		contentString += '<div class="form-group col-lg-12">';
+			contentString += '<div class="row col-sm-10">';
+				contentString += '<div class="col-sm-4">';
+					contentString += '<label class="control-label" style="margin-bottom: 20px;">Latitude</label>';
+					contentString += '<label class="control-label">Longitude</label>';
+				contentString += '</div>';
+				contentString += '<div class="col-sm-8" style="padding-right:0px;padding-left: 26px;">';
+					contentString += '<input type="text" style="padding-left: 15px; margin-bottom: 15px;width:105%" name="lat" value="' + lat + '" readonly>';
+					contentString += '<input type="text" style="padding-left: 15px; width:105%" name="lng" value="' + lng + '" readonly>';
+				contentString += '</div>';
+			contentString += '</div>';
+			contentString += '<div>';
+				contentString += '<button type="button" class="btn btn-success btn-xs button-edit" style="padding:10px; margin-left:10px;" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset<br>Location</button>';
+			contentString += '</div>';
+		contentString += '</div>';
+	} else {
+		contentString += '<div class="form-group col-lg-12">';
+		contentString += '<label class="col-sm-4 control-label">Latitude</label>';
+		contentString += '<input type="text" class="col-sm-8" name="lat" value="' + lat + '" readonly>';
+		contentString += '</div>';
+		contentString += '<div class="form-group col-lg-12">';
+		contentString += '<label class="col-sm-4 control-label">Longitude</label>';
+		contentString += '<input type="text" class="col-sm-8" name="lng" value="' + lng + '" readonly>';
+		contentString += '</div>';
+	}
+	
 	contentString += '</form>';
 	contentString += '</div>';
-	contentString += '<div style="text-align:center; margin-top:3px">';
+	contentString += '<div class="row" style="text-align:center; margin-top:3px">';
 	
 	if(div == 'add') {
 		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" onclick="serviceAreaProccess(\'map\', \'add\', this)">Add</button>';
@@ -793,7 +805,8 @@ function drawServiceAreaByCity(circle) {
 	        				tempInfoWindow.close();
 	        			
 	        			var infowindow = new google.maps.InfoWindow({ content: contentString
-	        							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+	        							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+	        							, maxWidth: 320});
 	        			infowindow.open(map, this);
 	        			tempInfoWindow = infowindow
 	        		});
@@ -893,7 +906,8 @@ function drawServiceAreaByHotspot(city) {
 	    				tempInfoWindow.close();
 	    			
 	    			var infowindow = new google.maps.InfoWindow({ content: contentString
-	    							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()) });
+	    							, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+	    							, maxWidth: 300});
 	    			infowindow.open(map, this);
 	    			tempInfoWindow = infowindow
 	    		});

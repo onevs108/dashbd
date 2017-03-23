@@ -9,15 +9,17 @@
 <head>
 	<jsp:include page="common/head.jsp" />
 	
- 	<!-- JSTree -->
-	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
-	
 	<style type="text/css">
 		.jstree-node {
 			font-size:14px
 		}
 		
 		.circle-item .noHover {
+		}
+		
+		.gm-style-iw {
+		    overflow:hidden!important;
+		    height:206px!important; //for 3 lines of text in the InfoWindow
 		}
 	</style>
 </head>
@@ -80,7 +82,7 @@
 																</div>
 															</div>
 															<div class="row">
-																<div id="treeNode" class="tab-pane active"></div>					
+																<div id="treeNode" class="tab-pane active"></div>
 															</div>
 														</form>								
 													</div>

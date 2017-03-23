@@ -105,4 +105,6 @@ public class Const {
         String sysdate = year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
 		return sysdate;
 	}
+	
+	public static final int hddLogLine = 4;
 }

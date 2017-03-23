@@ -7,10 +7,10 @@
 	<input type="hidden" id="globalGrade" value="${USER.grade}">
 	<nav class="navbar navbar-static-top" role="navigation"
 		style="margin-bottom: 0;">
+		<a href="#" class="btn btn-w-m btn-link" style="padding-top: 18px;"><i class="fa fa-rss"></i> <u onclick="javascript:showServiceAreaBandwidth()">Service Area Bandwidth</u></a>
 		<div class="navbar-header">
 			<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"> <i class="fa fa-bars"></i></a> <span class="navbar-form-custom">SeSM (<c:choose><c:when test="${USER.gradeName != null}">${USER.gradeName}</c:when><c:otherwise>Administrator Group</c:otherwise></c:choose>)</span>
 		</div>
-
 		<ul class="nav navbar-top-links navbar-right">
 			<li>
 				<div class="profile-element">
@@ -184,6 +184,7 @@
 			</form>
 		</div>
 	</div>
+	<jsp:include page="serviceAreaBandwidth.jsp" />
 </div>
 <!-- e : POPUP - Add Operator -->
 
@@ -544,5 +545,150 @@
 				}
 			});
 		});
+	}
+	
+	function showServiceAreaBandwidth() {
+		$.ajax({
+		    url : "/dashbd/api/getTreeNodeData.do",
+		    type: "POST",
+		    beforeSend:function() {
+		    	$.blockUI();
+		    },
+		    data : { 
+		    	gruop_id : '',
+		    	searchType : $("#areaBandwidthModal #searchType").val(),
+		    	searchInput : $("#areaBandwidthModal #search-input").val(),
+		    	circle_id : $("#circleModal #circleId").val()
+		    },
+		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		    success : function(responseData) {
+		        $("#ajax").remove();
+		        var data = JSON.parse(responseData);
+		         
+		        if(data.resultList.length != 0) {
+			        $("#serviceAreaTree").jstree("destroy").empty();
+			        serviceAreaTreeInit(data);
+		        } else {
+		        	swal({title:"Not Found !", text:"Please enter the keyword", type:"warning"}, function() {
+		        		$("#areaBandwidthModal #search-input").val('');
+		        		$("#areaBandwidthModal #searchType").val('');
+		    		})
+		        }
+		        
+		        $.unblockUI();
+		    },
+	        error : function(xhr, status, error) {
+	        	$.unblockUI();
+	        	
+	        	swal({
+	                title: "Fail !",
+	                text: "Error"
+	            });
+	        }
+		});
+	}
+	
+	//jsTree Init Function
+	function serviceAreaTreeInit(data) {
+		var treeData = data.resultList;
+		for(var i=0; i < treeData.length; i++) {
+			var node = treeData[i];
+			
+			//root를 그려줌(Circles)
+			if(i == 0) {
+				$('#serviceAreaTree').append('<ul><li class="' + node.node_div + '" data-init="' + node.node_id + '">' + node.name + '</li></ul>');
+				continue;
+			}
+			
+			//현재 붙여넣어 줄 노드의 구분값을 판단하여 그에 따른 상위 노드만 모아서 부모 노드를 찾음
+			var divClass = '';
+			if(node.node_div == 'circle') divClass='root';
+			else if(node.node_div == 'city') divClass='circle';
+			else if(node.node_div == 'hotspot') divClass='city';
+			
+			for(var j=0; j < $('#serviceAreaTree li.' + divClass).length; j++) {
+				var compareNode = $('#serviceAreaTree li.' + divClass)[j];
+				
+				if($(compareNode).attr("data-init") == node.pnode_id) { 
+					var liStr = '<li class="' + node.node_div + '" title="' + node.node_div + '" data-init="' + node.node_id + '" data-lat="' 
+								+ node.latitude + '" data-lng="' + node.longitude + '" data-band="' + node.bandwidth + '">' + node.name + '</li>';
+					
+					if($(compareNode).html().indexOf("ul") == -1) {
+						$(compareNode).append('<ul>' + liStr + '</ul>');
+					} else {
+						$($(compareNode).find("ul")[0]).append(liStr);
+					}
+					
+					break;
+				}
+			}
+		}
+		
+		$("#serviceAreaTree")
+			.bind('before_open.jstree', function(evt, data) {
+				$(".jstree-icon.jstree-themeicon").remove();
+			})  
+			.bind('select_node.jstree', function(evt, data) {
+				var said = '';
+				var tempSaid = $("#" + data.selected[0]).attr("data-init");
+				if($("#" + data.selected[0]).hasClass("circle")) {
+					said = tempSaid.substring(tempSaid.indexOf("A")+1);
+				} else if($("#" + data.selected[0]).hasClass("city")) {
+					said = tempSaid.substring(tempSaid.indexOf("B")+1);
+				} else if($("#" + data.selected[0]).hasClass("hotspot")) {
+					said = tempSaid.substring(tempSaid.indexOf("C")+1);
+				} else {
+					return;
+				}
+				
+				$.ajax({
+				    url : "/dashbd/view/checkBandwidth.do",
+				    type: "POST",
+				    data : { 
+				    	saidList : said,
+				    	bandwidth : data.node.data.band
+				    },
+				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+				    success : function(responseData) {
+				        $("#areaBandwidthModal #bandwidth").val(data.node.data.band);
+				        $("#areaBandwidthModal #usedBandwidth").val(responseData.usedBandwidth);
+				        $("#areaBandwidthModal #remainedBandwidth").val(responseData.enableBandwidth);
+				    },
+			        error : function(xhr, status, error) {
+			        	swal({
+			                title: "Fail !",
+			                text: "Error"
+			            });
+			        }
+				});
+			})
+			.bind('ready.jstree', function(e, data) {
+				$(".jstree-icon.jstree-themeicon").remove();
+				$("#areaBandwidthModal").modal("show");
+		    }).jstree({
+		    	"core" : {
+	    	       "check_callback" : true
+	    	     },
+	    	    "plugins" : [ "contextmenu" ]
+			  });
+		
+		//제일 처음 노드 오픈
+		$("#serviceAreaTree").jstree("open_node", $("#serviceAreaTree .root"));
+	}
+
+	$(document).on("keydown", "#areaBandwidthModal #search-input", function(event) {
+		//Enter입력시에만 조회
+		if(event.keyCode == 13) {
+			searchServiceAreaTreeNode();
+	    }
+	})
+
+	function searchServiceAreaTreeNode() {
+		var searchString = $("#areaBandwidthModal #search-input").val();
+		
+		if(searchString == '') 
+			$("#areaBandwidthModal #searchType").val('');
+		
+		showServiceAreaBandwidth();
 	}
 </script>

@@ -9,9 +9,8 @@
 <head>
 	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
 	<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<link href="../resources/css/sampleVideo.css" rel="stylesheet" />
-	<script src="../resources/js/jquery-2.1.1.js"></script>
+<!-- 	<script src="../resources/js/jquery-2.1.1.js"></script> -->
 	<script src="../resources/js/dash.all.debug.js"></script>
 	<script src="../resources/js/sampleVideo.js"></script>
 	<style type="text/css">
@@ -400,6 +399,14 @@
 					valign: 'middle',
 					sortable: false,
 					visible: false
+				}, {
+					field: 'emergencyYn',
+					title: 'emergencyYn',
+					width: '0%',
+					align: 'left',
+					valign: 'middle',
+					sortable: false,
+					visible: false
 				}, { 
 					field: 'circleName',
 					title: 'Area',
@@ -443,7 +450,14 @@
 					formatter: function(value, row, index) {
 						if(value != undefined && value != '') {
 							if($("#circleId").val() == '') {
-								var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';	
+								//Emergency_schedule
+								if(row.emergencyYn == 'Y') {
+									var html='<a href="javascript:void(0);" style="color:#ed5565;" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';	
+								} 
+								//National Schedule
+								else {
+									var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';
+								}
 							} else if($("#circleId").val() != '' && row.circleName != 'national') {
 								var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';
 							} else {

@@ -3,71 +3,43 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>System Mgmt</title>
+<!-- 	<meta charset="utf-8"> -->
+<!-- 	<meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+<!-- 	<title>System Mgmt</title> -->
 	
-	<link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
-	<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-	<link href="../resourcesRenew/css/plugins/iCheck/custom.css" rel="stylesheet">
-	<link href="../resourcesRenew/css/animate.css" rel="stylesheet">
-	<link href="../resourcesRenew/css/style.css" rel="stylesheet">
+<!-- 	<link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet"> -->
+<!-- 	<link href="font-awesome/css/font-awesome.css" rel="stylesheet"> -->
+<!-- 	<link href="../resourcesRenew/css/plugins/iCheck/custom.css" rel="stylesheet"> -->
+<!-- 	<link href="../resourcesRenew/css/animate.css" rel="stylesheet"> -->
+<!-- 	<link href="../resourcesRenew/css/style.css" rel="stylesheet"> -->
 	<link href="../resourcesRenew/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 	
 	<!-- FooTable -->
 	<link href="../resourcesRenew//css/plugins/footable/footable.core.css" rel="stylesheet">
 	
-	<script src="js/jquery-2.1.1.js"></script>
-	<script src="js/jquery.cookie.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/bootstrap-table.js"></script>
-	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <!-- FooTable -->
-    <script src="../resources/js/plugins/footable/footable.all.min.js"></script>
+	<jsp:include page="common/head.jsp" />
+	
+<!-- 	<script src="js/jquery-2.1.1.js"></script> -->
+<!-- 	<script src="js/jquery.cookie.js"></script> -->
+<!-- 	<script src="js/bootstrap.min.js"></script> -->
+<!-- 	<script src="js/bootstrap-table.js"></script> -->
+<!-- 	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+<!-- 	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script> -->
     
 	<!-- Custom and plugin javascript -->
-	<script src="js/inspinia.js"></script>
-	<script src="js/plugins/pace/pace.min.js"></script>
+<!-- 	<script src="js/inspinia.js"></script> -->
+<!-- 	<script src="js/plugins/pace/pace.min.js"></script> -->
 	
 	<!-- iCheck -->
-	<script src="js/plugins/iCheck/icheck.min.js"></script>
+<!-- 	<script src="js/plugins/iCheck/icheck.min.js"></script> -->
 	
-	<link href="css/plugins/c3/c3.min.css" rel="stylesheet">
-	<script src="js/plugins/d3/d3.min.js"></script>
-	<script src="js/plugins/c3/c3.min.js"></script>
+<!-- 	<link href="css/plugins/c3/c3.min.css" rel="stylesheet"> -->
+<!-- 	<script src="js/plugins/d3/d3.min.js"></script> -->
+<!-- 	<script src="js/plugins/c3/c3.min.js"></script> -->
 	<!-- Page-Level Scripts -->
 
-	<link href="css/plugins/chartist/chartist.min.css" rel="stylesheet">
-	<script src="js/plugins/chartist/chartist.min.js"></script>
-	<script src="/dashbd/resources/app-js/apps/svc_systemConf.js"></script>
-	<script src="/dashbd/resources/js/common.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('.footable').footable();
-			$('.footable2').footable();
-			getMenuList('SYSTEM_CONF_MGMT');
-			
-			if('${sessionCntsessionHostNameCnt}' == 'nexdream'){
-				
-			}else{
-				$("#viewApp1").show();
-				$("#viewApp2").hide();
-				$("#appView1").css("opacity", "1");
-				$("#appView2").css("opacity", "0.6");
-				
-				$('#tomCheck1').prop("checked", true);
-				$('#dbCheck1').prop("checked", true);
-				$('#tomCheck1').removeAttr("disabled");
-				$('#dbCheck1').removeAttr("disabled");
-				
-				$('#tomCheck2').attr("disabled", true);
-				$('#dbCheck2').attr("disabled", true);
-				$("#tomCheck2").prop("checked",false);
-				$("#dbCheck2").prop("checked",false);
-			}
-		});
-	</script>
+<!-- 	<link href="css/plugins/chartist/chartist.min.css" rel="stylesheet"> -->
+	
 	<style type="text/css">
 	.labels {
 		color: red;
@@ -148,6 +120,14 @@
 	}
  	.checkbox input[type="checkbox"]:checked + label::after, .checkbox input[type="radio"]:checked + label::after{
  	}
+ 	
+ 	
+ 	
+ 	/* CSS used here will be applied after bootstrap.css */
+		.big-chart {
+		  width:100%;
+		  height:220px;
+		}
     </style>
 </head>
 <body>
@@ -232,6 +212,30 @@
 										</tbody>
 									</table>
 									<div class="hr-line-dashed"></div>
+									<div>
+										<div class="container">
+										  <div class="col-xs-6 col-xs-offset-3">
+										    <h4 class="text-left">CPU<span id="finalCpu" style="margin-left:30px"></span></h4>
+										    <div id="chart1" class="big-chart"></div>
+										  </div>
+										</div>
+									</div>
+									<div style="margin-top:40px">
+										<div class="container">
+										  <div class="col-xs-6 col-xs-offset-3">
+										    <h4 class="text-left">Memory<span id="finalMemory" style="margin-left:30px"></span></h4>
+										    <div id="chart2" class="big-chart"></div>
+										  </div>
+										</div>
+									</div>
+									<div style="margin-top:40px">
+										<div class="container">
+										  <div class="col-xs-6 col-xs-offset-3">
+										  	<h4 class="text-left">HDD<span id="finalMemory" style="margin-left:30px"></span></h4>
+										  	<div id="hddStr" style="font-size: 18px;"></div>
+										  </div>
+										</div>
+									</div>
 					            </div>
 					         </div>
 				        </div>
@@ -242,6 +246,135 @@
 	</div><!-- end page-wrapper -->
 </div><!-- end wrapper -->
 
+<script src="js/plugins/chartist/chartist.min.js"></script>
+	<script src="/dashbd/resources/app-js/apps/svc_systemConf.js"></script>
+<!-- 	<script src="/dashbd/resources/js/common.js"></script> -->
+	
+	<!-- FooTable -->
+    <script src="../resources/js/plugins/footable/footable.all.min.js"></script>
+	<script type="text/javascript">
+		var plot;
+	    var plot2;
+	    var updateInterval = 10000;
+	
+		$(document).ready(function() {
+			$('.footable').footable();
+			$('.footable2').footable();
+			getMenuList('SYSTEM_CONF_MGMT');
+			
+			if('${sessionCntsessionHostNameCnt}' == 'nexdream'){
+				
+			}else{
+				$("#viewApp1").show();
+				$("#viewApp2").hide();
+				$("#appView1").css("opacity", "1");
+				$("#appView2").css("opacity", "0.6");
+				
+				$('#tomCheck1').prop("checked", true);
+				$('#dbCheck1').prop("checked", true);
+				$('#tomCheck1').removeAttr("disabled");
+				$('#dbCheck1').removeAttr("disabled");
+				
+				$('#tomCheck2').attr("disabled", true);
+				$('#dbCheck2').attr("disabled", true);
+				$("#tomCheck2").prop("checked",false);
+				$("#dbCheck2").prop("checked",false);
+			}
+			
+			 getChartData(true);
+		});
+			
+		function getChartData(initYn) {
+			$.ajax({
+			    url : "/dashbd/api/getSystemLogData.do",
+			    type: "POST",
+			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			    success : function(responseData) {
+			        $("#ajax").remove();
+			        var data = JSON.parse(responseData);
+			        
+			        var cpuLogArray = new Array();
+			        for(var i=0; i < data.cupResultList.length; i++) {
+			        	var tempVal = data.cupResultList[i][0].split(":");
+			        	cpuLogArray.push({
+			        		0 : Date.UTC(9999,12,31,tempVal[0], tempVal[1], tempVal[2]),
+			        		1 : data.cupResultList[i][1]
+			        	})
+			        }
+			        
+			        var memoryLogArray = new Array();
+					for(var i=0; i < data.memoryResultList.length; i++) {
+						var tempVal = data.memoryResultList[i][0].split(":");
+						memoryLogArray.push({
+			        		0 : Date.UTC(9999,12,31,tempVal[0], tempVal[1], tempVal[2]),
+			        		1 : data.memoryResultList[i][1]
+			        	})
+			        }
+					
+					var hddLogArray = new Array();
+					var hddInfoStr ="<table style='width:800px;'>";
+					for(var i=0; i < data.hddResultList.length; i++) {
+						var tempVal = data.hddResultList[i];
+						hddInfoStr += "<tr>";
+						if(i==0) {
+							for(var j=1; j < 7; j++) {
+								hddInfoStr += "<th>" + tempVal[j] + "</th>";
+							}
+						} else {
+							for(var j=1; j < 7; j++) {
+								hddInfoStr += "<td>" + tempVal[j] + "</td>";
+							}
+						}
+						hddInfoStr += "</tr>";
+					}
+					hddInfoStr += "</table>";
+			        
+			        $("#finalCpu").text(data.finalCpu + "%");
+			        $("#finalMemory").text(data.finalMemory + "%");
+			        $("#hddStr").empty();
+			        $("#hddStr").append(hddInfoStr);
+			        
+			        $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js',function(){
+			        	$.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.time.min.js',function(){
+					      if(initYn) {
+					    	  // setup plots
+						      var options = {
+						        grid:{borderColor:'#ccc'},
+						        series:{shadowSize:0,color:"#33ff33"},
+						        yaxis:{min:0,max:100},
+						        xaxis:{
+						        	show:true,
+						        	mode:"time"
+						        }
+						      };
+					    	  
+					    	  plot = $.plot($("#chart1"), [ cpuLogArray ], options);
+						      plot2 = $.plot($("#chart2"), [ memoryLogArray ], options);
+						      
+						      setTimeout(function() {
+						    	  getChartData(false);
+						      }, updateInterval);
+					      } else {
+					    	  plot.setData([ cpuLogArray ]);
+						      plot.draw();
+						      plot2.setData([ memoryLogArray ]);
+						      plot2.draw();
+						      setTimeout(function() {
+						    	  getChartData(false);
+						      }, updateInterval);
+					      }
+			        	});
+					});// end getScript
+			    },
+		        error : function(xhr, status, error) {
+		        	swal({
+		                title: "Fail !",
+		                text: "Error"
+		            });
+		        }
+			});
+		}
+</script>
+
 </body>
 </html>
-	

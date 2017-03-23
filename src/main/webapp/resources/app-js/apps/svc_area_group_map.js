@@ -14,46 +14,43 @@ $(document).ready(function() {
 });
 
 function jsTreeSetting() {
-	$.getScript( "/dashbd/resources/js/plugins/jsTree/jstree.min.js" )
-		.done(function( script, textStatus ) {
-			var trList = $("#group_area li");
-			var group_id = '';
-			
-			for(var i=0; i < trList.length; i++) {
-				var tempTr = $(trList[i]);
-				
-				if(tempTr.attr("choiceYn") == 'Y') {
-					group_id = tempTr.attr("data-init");
-					break;
-				}
-			}
-			
-			//Tree 데이터를 불러오기 전에 전역변수에 할당
-			serviceAreaGroupId = group_id;
-			
-			$.ajax({
-			    url : "/dashbd/api/getTreeNodeData.do",
-			    type: "POST",
-			    data : { 
-			    	group_id : group_id,
-			    	circle_id : $("#search-circle").val()
-			    },
-			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-			    success : function(responseData) {
-			        $("#ajax").remove();
-			        var data = JSON.parse(responseData);
-			        
-			        $("#treeNode").jstree("destroy").empty();
-			        treeInit(data);
-			    },
-		        error : function(xhr, status, error) {
-		        	swal({
-		                title: "Fail !",
-		                text: "Error"
-		            });
-		        }
-			});
-		});
+	var trList = $("#group_area li");
+	var group_id = '';
+	
+	for(var i=0; i < trList.length; i++) {
+		var tempTr = $(trList[i]);
+		
+		if(tempTr.attr("choiceYn") == 'Y') {
+			group_id = tempTr.attr("data-init");
+			break;
+		}
+	}
+	
+	//Tree 데이터를 불러오기 전에 전역변수에 할당
+	serviceAreaGroupId = group_id;
+	
+	$.ajax({
+	    url : "/dashbd/api/getTreeNodeData.do",
+	    type: "POST",
+	    data : { 
+	    	group_id : group_id,
+	    	circle_id : $("#search-circle").val()
+	    },
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    success : function(responseData) {
+	        $("#ajax").remove();
+	        var data = JSON.parse(responseData);
+	        
+	        $("#treeNode").jstree("destroy").empty();
+	        treeInit(data);
+	    },
+        error : function(xhr, status, error) {
+        	swal({
+                title: "Fail !",
+                text: "Error"
+            });
+        }
+	});
 }
 
 var checkNodeList;

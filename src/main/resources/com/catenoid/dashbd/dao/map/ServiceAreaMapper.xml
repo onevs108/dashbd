@@ -1678,6 +1678,7 @@
 						            , circle.viewers
 						            , circle.onAirYn
 						            , circle.scheduleId
+						            , null as emergencyYn
 						      FROM (
 						          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
 						          FROM (
@@ -1780,6 +1781,7 @@
 						          , format('10000', ',') as viewers
 						          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 						          , schedule.id as scheduleId
+						          , null as emergencyYn
 						          FROM circle circle
 						          INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 						          ON circle.circle_id = broad.said
@@ -1796,7 +1798,7 @@
 						      <if test="searchSchedule != 'national'">
 						      	UNION ALL
 						      </if>
-								SELECT 	'' as circleId, 'national' as circleName
+								SELECT 	'' as circleId, IF(schedule.emergency_yn = 'Y', 'emergency','national') as circleName
 									  , 0 as subCnt, '' as psaid, 'national' as layerDiv
 									  , broad.serviceId, broad.service_name as serviceName
 							          , broad.fileURI, broad.serviceClass
@@ -1805,7 +1807,8 @@
 							          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
 							          , format('10000', ',') as viewers
 							          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
-							          , schedule.id as scheduleId				 
+							          , schedule.id as scheduleId		
+							          , schedule.emergency_yn as emergencyYn
 								FROM broadcast_info broad
 								INNER JOIN schedule schedule
 								ON broad.bcid = schedule.bcid
@@ -1880,7 +1883,7 @@
 								</otherwise>
 							</choose>
 						</if>
-					    ORDER BY <if test="sort == null">circleId</if>
+					    ORDER BY <if test="sort == null">emergencyYn desc, circleId</if>
 					  		   <if test="sort != null">
 					  		       <if test="sort == 'circleName'">circleName</if>
 					  		       <if test="sort == 'serviceId'">serviceId</if>

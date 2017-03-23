@@ -13,6 +13,9 @@
 <link href="/dashbd/resources/newPublish/css/plugins/timetable/timetablejs.css" rel="stylesheet">
 <link href="/dashbd/resources/newPublish/css/plugins/digitalclock/style.css" rel="stylesheet">
 
+<!-- JSTree -->
+<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
+
 <link href="css/custom.css" rel="stylesheet">
 
 <!-- Sweet Alert -->
@@ -27,6 +30,7 @@
 <script src="/dashbd/resources/newPublish/js/plugins/pace/pace.min.js"></script>
 <script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
 <script src="/dashbd/resources/js/common.js"></script>
+<script src="/dashbd/resources/js/plugins/jsTree/jstree.min.js"></script>
 
 <!-- Sweet alert -->
 <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
