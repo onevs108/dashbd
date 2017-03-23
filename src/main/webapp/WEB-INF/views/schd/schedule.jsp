@@ -27,6 +27,7 @@
 	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 	<script src="../resourcesRenew/js/jsrender.min.js"></script>
+	<script src="../resources/newPublish/js/plugins/filestyle/bootstrap-filestyle.js"> </script>
 	
 	<!-- FooTable -->
 	<script src="../resourcesRenew/js/plugins/footable/footable.all.min.js"></script>
@@ -49,6 +50,7 @@
 		
 		var viewMode = "${mode}";
 		$(document).ready(function() {
+			$(".bootstrap-filestyle > input").css("background-color", "white");
 			$("#serviceClass").val("${mapSchedule.serviceClass}");
 			getMenuList('SCHEDULE_MGMT');
 			$("button[name='addSchedule']").hide();
@@ -65,6 +67,7 @@
 			}
 			$("#FileRepair").change();
 			$("#receptionReport").change();
+			$("#reportClientId").change();
 			
 			if(viewMode == "update") {
 				for (var i = 0; i < contentJson.length; i++) {
@@ -251,6 +254,7 @@
                 <div class="ibox-title">
                     <h3>Schedule for Service
                     	<c:choose>
+                    		<c:when test="${mapSchedule.nationalYN == 'Y' and mapSchedule.emergencyYN == 'Y'}">Emergency</c:when>
                     		<c:when test="${mapSchedule.nationalYN == 'Y'}">National</c:when>
                     		<c:otherwise>
                     			<c:if test="${empty mapSchedule.serviceGroupId}">Area ${mapSchedule.serviceAreaId}</c:if>
@@ -286,9 +290,9 @@
 	                            <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>service Mode</label>
 	                       	    <div class="col-sm-3">
 	                       	    	<select class="input-sm form-control input-s-sm" id="serviceMode" name="serviceMode">
-	                       	    		<option value="bc">BC (Broadcast Only)</option>
-                                    	<option value="sc">SC (Service Continuity)</option>
-                                    	<option value="mood">MooD</option>
+	                       	    		<option value="BC">BC (Broadcast Only)</option>
+                                    	<option value="SC">SC (Service Continuity)</option>
+                                    	<option value="MooD">MooD</option>
 	                       	    	</select>
 	                       	    </div>
                        	    </div>
@@ -468,6 +472,18 @@
 					                                    </c:if>
 					                                </div>
 			                                    </div>
+			                                    <div id="fileUpload" class="form-group">
+			                                    	<div class="row">
+			                                    		<div class="col-sm-8"> 
+			                                    			<form id="uploadFileForm" action="saidUpload.do" method="post" enctype="multipart/form-data">
+					                                    		<input type="file" class="filestyle" data-buttonBefore="true">
+					                                    	</form>
+					                                    </div>
+				                                        <div class="col-sm-4"> 
+					                                    	<button type="button" id="uploadFile" name="uploadFile" onclick="" class="btn btn-block btn-default">Upload File</button>
+					                                    </div>
+			                                    	</div>
+			                                    </div>
 			                                    <div class="form-group">
 			                                    	<div class="row">
 			                                    		<input type="hidden" id="contentSetId" name="contentSetId" value="${mapSchedule.contentId}">
@@ -521,7 +537,7 @@
 						                                    	<button type="button" id="bcSaidAdd" name="bcSaidAdd" class="btn btn-block btn-default">Add</button>
 						                                    </div>
 						                                    <div class="col-sm-4">
-						                                        <button type="button" id="bcSapAdd" name="bcSapAdd" class="btn btn-block btn-default">Add bcServiceArea with Map</button>
+						                                        <button type="button" id="bcMapAdd" name="bcMapAdd" class="btn btn-block btn-default">Add bcServiceArea with Map</button>
 						                                    </div>
 												        </div>
 					                                </div>
@@ -687,19 +703,19 @@
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Report Interval</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodReportInterval" name="moodReportInterval" value="${mapSchedule.samplePercentage}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodReportInterval" name="moodReportInterval" value="${mapSchedule.moodReportInterval}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Offset Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodOffsetTime" name="moodOffsetTime" value="${mapSchedule.samplePercentage}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodOffsetTime" name="moodOffsetTime" value="${mapSchedule.moodOffsetTime}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Random Time Period</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodRandomTimePeriod" name="moodRandomTimePeriod" value="${mapSchedule.offsetTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodRandomTimePeriod" name="moodRandomTimePeriod" value="${mapSchedule.moodRandomTimePeriod}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Sample Percentage</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodSamplePercentage" name="moodSamplePercentage" value="${mapSchedule.randomTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodSamplePercentage" name="moodSamplePercentage" value="${mapSchedule.moodSamplePercentage}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                             	</div>
                             </div>

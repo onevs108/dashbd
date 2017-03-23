@@ -12,7 +12,8 @@
 			    	<if test="serviceAreaId != null and serviceAreaId !=''" >
 						AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
 							<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
-							<if test="type == 'national'">national_yn = 'Y'</if> 
+							<if test="type == 'national'">national_yn = 'Y' and emergency_yn is null</if>
+							<if test="type == 'emergency'">national_yn = 'Y' and emergency_yn = 'Y'</if> 
 					</if>
 					<if test="searchDate != null and searchDate !=''" >
 						AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
@@ -33,7 +34,8 @@
 		    	<if test="serviceAreaId != null and serviceAreaId !=''" >
 					AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
 						<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
-						<if test="type == 'national'">national_yn = 'Y'</if> 
+						<if test="type == 'national'">national_yn = 'Y' and emergency_yn is null</if> 
+						<if test="type == 'emergency'">national_yn = 'Y' and emergency_yn = 'Y'</if> 
 				</if>
 				<if test="searchDate != null and searchDate !=''" >
 					AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
@@ -48,6 +50,7 @@
 				, service_area_id
 				, service_group_id
 				, national_yn
+				, emergency_yn
 				, NAME
 				, BCID
 				, start_comp 
@@ -57,7 +60,8 @@
 			    	<if test="serviceAreaId != null and serviceAreaId !=''" >
 						AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
 							<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
-							<if test="type == 'national'">national_yn = 'Y'</if> 
+							<if test="type == 'national'">national_yn = 'Y' and emergency_yn is null</if> 
+							<if test="type == 'emergency'">national_yn = 'Y' and emergency_yn = 'Y'</if> 
 					</if>
 					<if test="searchDate != null and searchDate !=''" >
 						AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
@@ -91,6 +95,7 @@
 		         s.service_area_id,
 				 s.service_group_id,
 				 s.national_yn, 
+				 s.emergency_yn, 
 				 s.NAME,
 				 s.BCID,
 				 s.start_date,
@@ -103,7 +108,8 @@
 		    	<if test="serviceAreaId != null and serviceAreaId !=''" >
 		    		AND <if test="type == 'area'">instr(CONCAT(',', s.service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
 						<if test="type == 'group'">s.service_group_id = #{serviceAreaId}</if>
-						<if test="type == 'national'">s.national_yn = 'Y'</if>
+						<if test="type == 'national'">s.national_yn = 'Y' and s.emergency_yn is null </if>
+						<if test="type == 'emergency'">s.national_yn = 'Y' and s.emergency_yn = 'Y' </if> 
 				</if>
 				<if test="searchDate != null and searchDate !=''" >
 					AND DATE_FORMAT(s.start_date , '%Y-%m-%d') = #{searchDate}
@@ -161,6 +167,7 @@
 				, service_area_id as serviceAreaId
 				, service_group_id as serviceGroupId
 				, ifnull(national_yn, '') as nationalYN
+				, ifnull(emergency_yn, '') as emergencyYN
 				, content_id as contentId
 				, name
 				, s.BCID
@@ -340,6 +347,7 @@
 		(	 
 			bmscId,
 			<if test="type == 'national'">service_area_id, national_yn, </if>
+			<if test="type == 'emergency'">service_area_id, national_yn, emergency_yn, </if>
 			<if test="type == 'area'">service_area_id, </if>
 			<if test="type == 'group'">service_group_id, </if> 
 			content_id, name, 
@@ -349,7 +357,8 @@
 		(	  
 			#{bmscId},
 			<if test="type == 'national'">#{serviceAreaId}, 'Y', </if>
-			<if test="type != 'national'">#{serviceAreaId}, </if>
+			<if test="type == 'emergency'">#{serviceAreaId}, 'Y', 'Y', </if>
+			<if test="type != 'national' and type != 'emergency'">#{serviceAreaId}, </if>
 			#{contentId}, #{titleName}, 
 			str_to_date(#{startTime}, '%Y%m%d%H%i%s'), 
 			str_to_date(#{endTime}, '%Y%m%d%H%i%s') 

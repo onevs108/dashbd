@@ -1,10 +1,8 @@
 package com.catenoid.dashbd.security;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -15,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -23,12 +20,8 @@ import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Permission;
 import com.catenoid.dashbd.dao.model.Users;
-import com.catenoid.dashbd.service.UserService;
 
 public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHandler {
-	
-	@Autowired
-	private UserService userService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthenticationSuccessHandlerImpl.class);
 	

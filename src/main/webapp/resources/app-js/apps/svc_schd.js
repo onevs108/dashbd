@@ -11,11 +11,11 @@ $(function() {
 
 	$("#btnScheduleDetail").click(function() {
 		var type = $("input[name='radio']:checked").val();
-		if(type == "national"){
+		if(type == "national" || type == "emergency"){
 			g_ServiceAreaId = setAllCircleSaid();
 		}
 		if (g_ServiceAreaId == '' || g_ServiceAreaId == undefined){
-			if(type != "national"){
+			if(type != "national" && type != "emergency"){
 				alert('Please, choose ServiceArea.');
 				return;
 			}
@@ -44,7 +44,7 @@ function setAllCircleSaid() {
 }
 
 function callTimetable(bmscId, serviceAreaId_val, type){
-	if(type == "national"){
+	if(type == "national" || type == "emergency"){
 		serviceAreaId_val = setAllCircleSaid();
 	}
 	if(serviceAreaId_val == ""){
@@ -119,9 +119,9 @@ function setTimeTable(data){
 		beforPosition = position;
 		
 		var link = 'schedule.do?id='+contents[i].ID+'&BCID='+contents[i].BCID+'&type='+$("input[name='radio']:checked").val();
-		if(userGrade == 9999 && contents[i].national_yn == "Y"){
+		if(userGrade == 9999 && (contents[i].national_yn == "Y" || contents[i].emergency_yn == "Y")){
 			link = "#";
-		} 
+		}
 		timetable.addEvent(contents[i].NAME, 'position' + position, 
 									new Date(start_year,start_month, start_day,start_hour,start_mins ),
 				 					new Date(end_year,end_month, end_day,end_hour,end_mins ), link, serviceId);

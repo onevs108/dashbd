@@ -258,7 +258,7 @@ public class XmlManager {
 		}
 		
 		String serviceId = params.get("serviceId");
-		if (serviceId == null){
+		if (serviceId == null) {
 			serviceId = "";
 		}
 		
@@ -318,22 +318,19 @@ public class XmlManager {
 			fileDownload.addContent(transferConfig);
 			fileDownload.addContent(serviceArea);
 			
-			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport"))){
-				fileDownload.addContent(associatedDelivery);
-			}
 			serviceType = fileDownload;
 		}
 		else{ //streaming
 			service.setAttribute(new Attribute("serviceType", "streaming"));
+			
 			Element streaming = new Element("streaming");
 			streaming.setAttribute(new Attribute("serviceId", serviceId));
-
 			if ( null != params.get("serviceClass") && !"".equals(params.get("serviceClass"))){
 				streaming.setAttribute(new Attribute("serviceClass", params.get("serviceClass")));
 			}
+			streaming.setAttribute(new Attribute("serviceMode", params.get("serviceMode")));
 			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
-			
 			
 			if ("on".equals(params.get("reportType"))){
 				receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
@@ -345,14 +342,25 @@ public class XmlManager {
 			
 			if ( null != params.get("serviceLanguage") && !"".equals(params.get("serviceLanguage")))
 				streaming.addContent(serviceLanguage);
-			
+		 	
 			streaming.addContent(transferConfig);
-			
-			if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport")))
-				streaming.addContent(associatedDelivery);
-			
+			Element consumptionReport = null;
+			if ("MooD".equals(params.get("serviceMode"))){
+				consumptionReport = new Element("consumptionReport");
+				consumptionReport.setAttribute(new Attribute("location", params.get("moodLocation")));
+				if ("on".equals(params.get("reportClientId"))){
+					consumptionReport.setAttribute(new Attribute("reportClientId", "true"));
+					consumptionReport.setAttribute(new Attribute("reportInterval", params.get("moodReportInterval")));
+					consumptionReport.setAttribute(new Attribute("offsetTime", params.get("moodOffsetTime")));
+					consumptionReport.setAttribute(new Attribute("randomTime", params.get("moodRandomTimePeriod")));			
+					consumptionReport.setAttribute(new Attribute("samplePercentage", params.get("moodSamplePercentage")));
+				}else{
+					consumptionReport.setAttribute(new Attribute("reportClientId", "false"));
+				}
+				associatedDelivery.addContent(consumptionReport);
+			}
 			serviceType = streaming;
-		}
+		} 
 		
 		Element schedule = null;
 		for (int i = 0; i < paramList.get(0).size(); i++) {	//schedule start 갯수에 따라 동작
@@ -383,6 +391,9 @@ public class XmlManager {
 					schedule.addContent(content);
 				}
 				serviceType.addContent(schedule);
+				if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport"))){
+					serviceType.addContent(associatedDelivery);
+				}
 			}
 			else
 			{
@@ -400,18 +411,30 @@ public class XmlManager {
 					}
 				}
 				
-//				String[] said = params.get("saidDefault").split(",");
-//				for (int k = 0; k < said.length; k++) {
-//					serviceArea.addContent( new Element("said").setText(said[k]));
-//				}
 				Element mpd = new Element("mpd");
 				mpd.setAttribute(new Attribute("changed", "false"));									
 				mpd.addContent(new Element("mpdURI").setText(paramList.get(7).get(i)));
 				
+				Element mood = new Element("mood");
+				Element r12MpdURI = new Element("r12MpdURI");
+				r12MpdURI.setText(params.get("r12mpdURI"));
+				r12MpdURI.setAttribute(new Attribute("changed", "false"));		
+				Element bcServiceArea = new Element("bcServiceArea");
+				
+				for (int j = 0; j < paramList.get(9).size(); j++) {
+					bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
+				}
+				
+				mood.addContent(r12MpdURI);
+				mood.addContent(bcServiceArea);
 				contentSet.addContent(serviceArea);
 				contentSet.addContent(mpd);
+				contentSet.addContent(mood);
 				serviceType.addContent(schedule);
 				serviceType.addContent(contentSet);
+				if ("MooD".equals(params.get("serviceMode")) || "on".equals(params.get("receptionReport"))){
+					serviceType.addContent(associatedDelivery);
+				} 
 			}
 		}
 		

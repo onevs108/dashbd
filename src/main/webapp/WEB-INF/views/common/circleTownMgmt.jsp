@@ -5,7 +5,7 @@
 	<div class="modal-dialog" role="document">
 	<div class="modal-content" style="width: 710px;">
 	<div id="wrapper" class="sub01">
-
+		<input type="hidden" id="popupType" value="normal">
 		<div class="wrapper wrapper-content">
 			<!--
 			 You need to include this script on any page that has a Google Map.

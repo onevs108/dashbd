@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -1385,6 +1384,10 @@ public class ServiceAreaController {
 		logger.info("-> [isBack = {}]", isBack);
 		
 		Users user = (Users) session.getAttribute("USER");
+		if(user == null){
+			return "redirect:/dashbd/out";
+		}
+		
 		String circleName = user.getCircleName();
 		if(circleName != null) {
 			List<Circle> townList = userServiceImpl.selectTownFromCircle(circleName);

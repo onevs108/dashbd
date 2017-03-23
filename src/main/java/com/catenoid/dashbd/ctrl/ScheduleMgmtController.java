@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.catenoid.dashbd.Const;
@@ -73,6 +74,7 @@ public class ScheduleMgmtController {
 	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		Users user = (Users) session.getAttribute("USER");
+		
 		try
 		{
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
@@ -106,6 +108,7 @@ public class ScheduleMgmtController {
 					}
 				}
 			}
+			
 			mv.addObject("circleList", circleList);
 			mv.addObject("OperatorList", result);
 			mv.addObject("BmscList", bmscs);
@@ -189,7 +192,7 @@ public class ScheduleMgmtController {
 		}
 		
 		List<Map<String, String>> bwList = mapper.checkBandwidth(params);
-		
+		int enableBandwidth = 0;
 		for (int j = 0; j < bwList.size(); j++) {
 			List<String> saidList = mapper.selectSaidRange(bwList.get(j));
 			String searchString = "";
@@ -201,12 +204,13 @@ public class ScheduleMgmtController {
 				}
 			}
 			bwList.get(j).put("searchString", searchString);
-			int enableBandwidth = mapper.getEnableBandwidth(bwList.get(j));
+			enableBandwidth = mapper.getEnableBandwidth(bwList.get(j));
 			if(enableBandwidth - inputBandwidth < 0){
 				resultMap.put("result", "bwExceed");
 			    resultMap.put("resultObj", bwList.get(j));
 			    return resultMap;
 			}
+			resultMap.put("enableBandwidth", enableBandwidth);
 		}
 		
 		resultMap.put("result", "SUCCESS");
@@ -228,6 +232,16 @@ public class ScheduleMgmtController {
 		}else{
 			resultMap.put("result", "SUCCESS");
 		}
+		
+		return resultMap;
+	}
+	
+	@RequestMapping(value = "view/saidUpload.do")
+	@ResponseBody
+	public Map<String, Object> saidUpload(MultipartHttpServletRequest multipartRequest) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap.put("result", "SUCCESS");
 		
 		return resultMap;
 	}
@@ -660,6 +674,7 @@ public class ScheduleMgmtController {
 			@RequestParam(value="saidList", required=false) List<String> saidList,
 			@RequestParam(value="mpdURI", required=false) List<String> mpdURI,
 			@RequestParam(value="contentId", required=false) List<String> contentId,
+			@RequestParam(value="bcSaidList", required=false) List<String> bcSaidList,
 			@RequestParam(value="bcBasePattern", required=false) List<String> bcBasePattern,
             HttpServletRequest request, Locale locale ) {
 		
@@ -677,7 +692,8 @@ public class ScheduleMgmtController {
 		paramList.add(saidList);			//6
 		paramList.add(mpdURI);				//7
 		paramList.add(contentId);			//8
-		paramList.add(bcBasePattern);		//9
+		paramList.add(bcSaidList);			//9
+		paramList.add(bcBasePattern);		//10
 		
 		String tmp = params.get("preEmptionCapabiity");
 		if (tmp == null){

@@ -171,6 +171,7 @@ $(document).ready(function()
     $("input[name='radio']").click(function() {
     	var radioType = $("input[name='radio']:checked").val();
     	if(userGrade == 9999) {
+    		$("#emergency").hide();
 			$("#national").hide();
 		}
     	if(radioType == "group")
@@ -214,7 +215,7 @@ $(document).ready(function()
     	}, 500);
     }else{
     	setTimeout(() => {
-        	$($("input[name='radio']")[0]).click();
+        	$($("input[name='radio']")[1]).click();
     	}, 500);
     }
 });

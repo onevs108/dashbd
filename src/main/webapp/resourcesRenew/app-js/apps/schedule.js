@@ -59,16 +59,17 @@ $(document).ready(function()
 			addServiceAreaEvent(0);
 		}
 		$("input[name='saidList']").val($("#serviceAreaId").val());
+		$("input[name='bcSaidList']").val($("#serviceAreaId").val());
 	});
 	
 	$("#serviceMode").on("change", function() {
-		if($(this).val() == "bc") 
+		if($(this).val() == "BC") 
 		{
 			$("#moodArea").hide();
 			$("#bcServiceArea").hide();
 			$("#consumptionReport").hide();
 		} 
-		else if($(this).val() == "sc") 
+		else if($(this).val() == "SC")
 		{
 			$("#moodArea").show();
 			$("#bcServiceArea").hide();
@@ -253,12 +254,78 @@ $(document).ready(function()
 		});
 	});
 	
+	$("button[name='bcSaidAdd']").click(function(e) {
+		
+		var bcSaid = $("input[name='bcSaid']").val();
+		var bcSaidDefault = $("input[name='saidDefault']").val();
+
+		if (bcSaid == ""){
+			alert ('please enter the said.');
+			return;
+		}
+		
+		if (bcSaidDefault == bcSaid){
+			alert ('this bcSaid is default.other bcSaid input.');
+			return;
+		}
+		//  bcS
+		$.ajax({
+			type : "POST",
+			url : "checkExistSaid.do",
+			dataType : "json",
+			data : {said: bcSaid},
+			async : false,
+			success : function( data ) {
+				if(data.result == "SUCCESS")
+				{
+					var saidListValue = "";
+					if($("input[name='bcSaidList']").val() == ""){
+						saidListValue = bcSaid;
+					}else{
+						saidListValue = $("input[name='bcSaidList']").val()+","+bcSaid;
+					}
+					$("input[name='bcSaidList']").val(saidListValue);
+					
+					$("input[name='bcSaid']").val("");
+				}else{
+					swal({
+		                title: "Warn !",
+		                text: "SAID-"+bcSaid+" is not exist" 
+		            });
+				}
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	});
+	
+	$("button[name='bcMapAdd']").click(function(){
+		$("#popupType").val("mood");
+		$("#circleCiryPop").modal();
+	})
+	
 	$("#newClass").click(openServiceClass);
 	
 	addScheduleRemoveEvent();
 	addContentRemoveEvent();
 	$("#serviceType").change();
 	$("#serviceMode").change();
+	
+	$("#uploadFile").click(function(){
+		var form = $("#uploadFileForm")[0];
+        var formData = new FormData(form);
+        $.ajax({
+           url: 'saidUpload.do',
+           processData: false,
+           contentType: false,
+           data: formData,
+           type: 'POST',
+           success: function(result){
+               alert("업로드 성공!!");
+           }
+       });
+	})
 	
 });
 
@@ -665,6 +732,7 @@ function SetContentTime(idx) {
 
 function addServiceAreaEvent(idx){
 	$($("button[name='mapAdd']")[idx]).click(function(){
+		$("#popupType").val("normal");
 		$("#circleCiryPop").modal();
 	})
 	

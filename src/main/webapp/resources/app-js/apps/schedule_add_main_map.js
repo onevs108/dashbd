@@ -32,7 +32,7 @@ $(document).ready(function()
 	$("#cityId").on("change", function(){
 		checkSAID = false;
 	});
-	//getServiceAreaBmSc(1, $('#operator option:selected').val());
+
 	$('#createServiceAreaLayer').on('hidden.bs.modal', function (e) {
 		$('#createServiceAreaLayer').find('input').val('');
 	})
@@ -42,8 +42,6 @@ $(document).ready(function()
     
     $('#bmsc').change(function(){
     	$("#viewEnbIDAdd").hide();
-//    	$("#viewEnbIDList").hide();
-//        drawServiceAreaByBmSc($('#bmsc option:selected').val());
         $('#toAddENBsBmscId').val($('#bmsc option:selected').val());
     });
     
@@ -1473,57 +1471,6 @@ function getServiceAreaByBmScCity(page, bmscId, city, toSearchTxt)
             
             $('.footable').footable();
         	$("#service_area").find('tr').removeClass("footable-odd");
-            // Pagination
-            /*
-            var totalCount = datas[0].totalCount;
-            if(totalCount > perPage) {
-            	var totalPageCount = Math.ceil(totalCount / perPage); // 마지막 페이지
-            	
-            	var pageination = '';
-                pageination += '<div class="text-center">';
-                pageination += '<ul class="pagination">';
-                if( page == 1 )
-                {
-                	pageination += '<li class="disabled"><a href="javascript:getServiceAreaByBmScCity(' + (page-1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-left"></span></a></li>';
-                }
-                else {
-                	pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + (page-1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-left"></span></a></li>';
-                }
-                
-                if(totalPageCount > listPageCount) {
-                	for(var i = page, j = 0; i <= totalPageCount && j < listPageCount ; i++, j++) {
-                    	if( i == page ) {
-                    		pageination += '<li class="active"><a href="#">' + i + '</a></li>';
-                    	}
-                    	else {
-                    		pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + i + ',' + bmscId + ', \'' + city + '\');">' + i + '</a></li>';
-                    	}
-                    }
-                }
-                else {
-                	for(var i = 1; i <= totalPageCount && i <= listPageCount ; i++) {
-                    	if( i == page ) {
-                    		pageination += '<li class="active"><a href="#">' + i + '</a></li>';
-                    	}
-                    	else {
-                    		pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + i + ',' + bmscId + ', \'' + city + '\');">' + i + '</a></li>';
-                    	}
-                    }
-                }
-                
-                
-                if( page == totalPageCount ) {
-                	pageination += '<li class="disabled"><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>';
-                }
-                else {
-                	pageination += '<li><a href="javascript:getServiceAreaByBmScCity(' + (page+1) + ',' + bmscId + ', \'' + city + '\');"><span class="glyphicon glyphicon-chevron-right"></span></a></li>';
-                }
-    			pageination += '</ul>';
-    			pageination += '</div>';
-    			
-    			$("#service_area").append(pageination);
-            }
-            */
         }
     });
 }
@@ -1539,16 +1486,12 @@ function drawServiceAreaByBmSc() {
 	clearEnbMarkers();
 	clearDatas();
 	clearCircle();
-//	map.setZoom( 8 );
-	
-//	$("#service_area").empty();
-//	$("#service_area").append(default_service_area);
+
 	$("#enb_table").empty();
 	$("#enb_table").append(default_enb_table);
 	$("#selectedSvcArea").empty();
     $("#selectedENBs").empty();
 	
-//    map.setZoom(7);
     // 원그리기
     for (var circle in circleMap) {
 	    // Add the circle for this city to the map.
@@ -1573,9 +1516,6 @@ function drawServiceAreaByBmSc() {
 			    content: contentString
 			});
     		infowindow.open(map, this);
-	    	
-//        	getServiceGroupList();
-//        	getServiceAreaByBmScCity(1, bmscId, this.title, "");
 		});
 	    
 	    cityCircle.addListener('click', function() {
@@ -1586,8 +1526,6 @@ function drawServiceAreaByBmSc() {
 	}
 
     map.setCenter(new google.maps.LatLng(default_lat, default_lng));
-//    map.setZoom(default_zoom);
-    
     
 }
 
@@ -1808,7 +1746,11 @@ function drawCity(cityMap, color, circleId, circleTitle) {
 	    });
 	    
 	    townCircle.addListener('rightclick', function(e){
-	    	addSaidFromMap(this.id);
+	    	if($("#popupType").val() == "mood"){
+	    		addBcSaidFromMap(this.id);
+	    	}else{
+	    		addSaidFromMap(this.id);
+	    	}
 	    });
 	    
 	    townCircle.addListener('click', function(e) {
@@ -1818,6 +1760,47 @@ function drawCity(cityMap, color, circleId, circleTitle) {
 	    
 	    townCircles.push(townCircle);
 	}
+}
+
+function addBcSaidFromMap(said) {
+	var bcSaidDefault = $("input[name='saidDefault']").val();
+	
+	if (bcSaidDefault == said){
+		alert ('this said is default.other said input.');
+		return;
+	}
+	
+	$.ajax({
+		type : "POST",
+		url : "checkExistSaid.do",
+		dataType : "json",
+		data : {said: said},
+		async : false,
+		success : function( data ) {
+			if(data.result == "SUCCESS")
+			{
+				var saidListValue = "";
+				if($("input[name='bcSaidList']").val() == ""){
+					saidListValue = bcSaid;
+				}else{
+					saidListValue = $("input[name='bcSaidList']").val()+","+said;
+				}
+				$("input[name='bcSaidList']").val(saidListValue);
+				
+				$("input[name='bcSaid']").val("");
+				$("#circleCiryPop").modal('hide');
+			}else{
+				document.oncontextmenu = "return false";
+				swal({
+	                title: "Warn !",
+	                text: "SAID-"+said+" is not exist" 
+	            });
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
 }
 
 function addSaidFromMap(said) {
@@ -1950,7 +1933,11 @@ function drawHotSpot(hotSpotMap, color, cityId) {
 		});
 
 		hotSpotMarker.addListener('rightclick', function(e){
-			addSaidFromMap(this.id);
+			if($("#popupType").val() == "mood"){
+	    		addBcSaidFromMap(this.id);
+	    	}else{
+	    		addSaidFromMap(this.id);
+	    	}
 	    });
 		
 	    hotSpotMarkers.push(hotSpotMarker);

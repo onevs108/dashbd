@@ -44,8 +44,8 @@
 			$('.footable2').footable();
 			
 			getMenuList('SCHEDULE_MGMT');
-// 			$($("input[name='radio']")[1]).click();
 			$("#selectCircle").val("");
+			$($("input[name='radio']")[1]).click();
 		});
 	</script>
     	
@@ -98,6 +98,7 @@
 							<div>
 								<h5 style="padding-right: 20px;">Schedule</h5>
 								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Schedule</button>
+								<span id="emergency"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="emergency"/>Emergency</span>
 								<span id="national"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="national" checked/>National</span>
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area"/>Service Area&nbsp;
 								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
