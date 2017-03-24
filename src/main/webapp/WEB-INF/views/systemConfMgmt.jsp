@@ -6,7 +6,7 @@
 	<link href="../resourcesRenew/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 	
 	<!-- FooTable -->
-	<link href="../resourcesRenew//css/plugins/footable/footable.core.css" rel="stylesheet">
+	<link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
 	
 	<jsp:include page="common/head.jsp" />
 	
