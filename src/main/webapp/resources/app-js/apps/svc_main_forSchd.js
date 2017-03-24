@@ -204,7 +204,7 @@ $(document).ready(function()
     });
     
     if(userGrade == 9999) {
-    	$($("input[name='radio']")[1]).click();
+    	$($("input[name='radio']")[2]).click();
     	setTimeout(() => {
     		$("#selectHotspot").show();
     		$("#selectHotspotLabel").show();

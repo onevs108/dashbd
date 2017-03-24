@@ -1,13 +1,17 @@
 package com.catenoid.dashbd.ctrl;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -245,10 +250,47 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/saidUpload.do")
 	@ResponseBody
-	public Map<String, Object> saidUpload(MultipartHttpServletRequest multipartRequest) {
+	public Map<String, Object> saidUpload(MultipartHttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		resultMap.put("result", "SUCCESS");
+		InputStream inputStream = null;
+		InputStreamReader inputStreamReader = null;
+		BufferedReader br = null;
+		String temp = "";
+		String content = "";
+		Iterator<String> itr = request.getFileNames();
+		if (itr.hasNext()) {
+			MultipartFile mpf = request.getFile(itr.next());
+			try {
+				inputStream = mpf.getInputStream();
+				inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+
+				br = new BufferedReader(inputStreamReader);
+
+				while( (temp = br.readLine()) != null) {
+	                content += temp + "\n";
+	                break;
+	            }
+	             
+	            System.out.println("================== 파일 내용 출력 ==================");
+	            System.out.println(content);
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					br.close();
+					inputStreamReader.close();
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		resultMap.put("result", content);
 		
 		return resultMap;
 	}
@@ -765,16 +807,16 @@ public class ScheduleMgmtController {
 				return makeRetMsg("9000", resStr[0]);
 			
 			if (bcid == null || "".equals(bcid)) {
-				//@ insert broadcast_info  with flag which createBroadcast is successed or not
-				
-				if(params.get("serviceType").equals("streaming")){
-					
-				}
-				else
-				{
-					/*if(!saidList.get(0).equals("")){
-						params.put("serviceAreaId", params.get("serviceAreaId")+","+saidList.get(0));
-					}*/
+				if(params.get("serviceMode").equals("MooD")){
+					String bcSaidListString = "";
+					for (int i = 0; i < bcSaidList.size(); i++) {
+						if(i == bcSaidList.size()-1){
+							bcSaidListString += bcSaidList.get(i);
+						}else{
+							bcSaidListString += bcSaidList.get(i)+",";
+						}
+					}
+					params.put("bcServiceArea", bcSaidListString);
 				}
 				
 				//서비스ID 숫자 증가
@@ -783,24 +825,6 @@ public class ScheduleMgmtController {
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
-				//schedule start 갯수만큼
-				for (int i = 0; i < paramList.get(0).size(); i++) {	
-					
-				}
-				
-				//@ insert schedule append said
-				/*if (saidList.size() > 0) {
-					for(int i = 0; i < saidList.size(); i++) {
-						if(!saidList.get(i).equals("")){
-							String[] saidArray = saidList.get(i).split(",");
-							for (int j = 0; j < saidArray.length; j++) {
-								params.put("serviceAreaId", saidArray[j]);
-								ret = mapper.insertAddSchedule(params);
-								logger.info("insertAddSchedule ret{}", ret);
-							}
-						}
-					}
-				}*/
 				
 				insertContentInfo(resStr[1], params.get("id"));
 				
@@ -815,6 +839,8 @@ public class ScheduleMgmtController {
 			String type = " Create";
 			if(params.get("type").equals("national")){
 				scheduleType = "National Schedule";
+			}else if(params.get("type").equals("emergency")){
+				scheduleType = "Emergency Schedule";
 			}
 			if(xmlMode == xmlManager.BMSC_XML_UPDATE){
 				type = " Modified";
@@ -873,6 +899,21 @@ public class ScheduleMgmtController {
 				Element mpd = contentSet.getChild("mpd");
 				param.put("contentId", contentSet.getAttributeValue("contentSetId"));
 				param.put("mpdURI", mpd.getChild("mpdURI").getText());
+				
+				Element mood = contentSet.getChild("mood");
+				param.put("r12MpdURI", mood.getChild("r12MpdURI").getText());
+				Element bcServiceArea = mood.getChild("bcServiceArea");
+				List<Element> said = bcServiceArea.getChildren();
+				String saidList = "";
+				for (int i = 0; i < said.size(); i++) {
+					if(i == said.size()-1){
+						saidList += said.get(i).getText();
+					}else{
+						saidList += said.get(i).getText()+",";
+					}
+				}
+				param.put("bcServiceArea", mood.getChild("bcServiceArea").getText());
+				
 			}
 			else 
 			{
@@ -912,6 +953,7 @@ public class ScheduleMgmtController {
 	 * @param locale
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "view/delSchedule.do")
 	@ResponseBody
 	public Map< String, Object > delSchedule( @RequestParam Map< String, String > params,
@@ -941,6 +983,8 @@ public class ScheduleMgmtController {
 				String scheduleType = "Schedule";
 				if(params.get("type").equals("national")){
 					scheduleType = "National Schedule";
+				}else if(params.get("type").equals("emergency")){
+					scheduleType = "Emergency Schedule";
 				}
 				
 				Users LogUser = (Users)request.getSession().getAttribute("USER");

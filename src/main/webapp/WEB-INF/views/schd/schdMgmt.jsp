@@ -45,7 +45,7 @@
 			
 			getMenuList('SCHEDULE_MGMT');
 			$("#selectCircle").val("");
-			$($("input[name='radio']")[1]).click();
+// 			$($("input[name='radio']")[2]).click();
 		});
 	</script>
     	

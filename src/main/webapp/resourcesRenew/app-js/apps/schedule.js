@@ -17,6 +17,7 @@ $(document).ready(function()
 				addServiceAreaEvent(0);
 			}
 			$("#serviceModeArea").hide();
+			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
 		}else if($(this).val() == "carouselMultiple"){
 			$("#bcType_fileDownload").show();
@@ -31,6 +32,7 @@ $(document).ready(function()
 				addServiceAreaEvent(0);
 			}
 			$("#serviceModeArea").hide();
+			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
 		}else if($(this).val() == "carouselSingle"){
 			$("#bcType_fileDownload").show();
@@ -45,6 +47,7 @@ $(document).ready(function()
 				addServiceAreaEvent(0);
 			}
 			$("#serviceModeArea").hide();
+			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
 		}else{
 			$("div[name='bcType_fileDownload']").hide();
@@ -54,12 +57,15 @@ $(document).ready(function()
 			$("div[name='bcType_streaming2']").show();
 			$("div[name='contentStartStop']").hide();
 			$("#interval").hide();
-			$("#addServiceArea").remove();
 			$("#serviceModeArea").show();
+			$("#addServiceArea").remove();
+			$("#fileUpload_F").remove();
 			addServiceAreaEvent(0);
 		}
 		$("input[name='saidList']").val($("#serviceAreaId").val());
 		$("input[name='bcSaidList']").val($("#serviceAreaId").val());
+		$(".bootstrap-filestyle > input").css("background-color", "white");
+		$(":file").filestyle({buttonBefore: true});
 	});
 	
 	$("#serviceMode").on("change", function() {
@@ -313,6 +319,13 @@ $(document).ready(function()
 	$("#serviceMode").change();
 	
 	$("#uploadFile").click(function(){
+		var fileName = $(".bootstrap-filestyle > input").val();
+		var startIdx = fileName.indexOf(".")+1;
+		var fileType = fileName.substring(startIdx).toLowerCase();
+		if(fileType != "txt"){
+			alert("please upload .txt file");
+			return;
+		}
 		var form = $("#uploadFileForm")[0];
         var formData = new FormData(form);
         $.ajax({
@@ -321,13 +334,57 @@ $(document).ready(function()
            contentType: false,
            data: formData,
            type: 'POST',
-           success: function(result){
-               alert("업로드 성공!!");
+           success: function(data){
+               setSaidFromFile(data.result);
            }
        });
 	})
 	
 });
+
+function setSaidFromFile(saidList) {
+	var saidArray = saidList.split(",");
+	for (var i = 0; i < saidArray.length; i++) {
+		addSaidCheckFromFile(saidArray[i]);
+	}
+}
+
+function addSaidCheckFromFile(said) {
+	if(saidDefault == said) {
+		alert ('this said is default.other said input.');
+		return;
+	}
+	
+	$.ajax({
+		type : "POST",
+		url : "checkExistSaid.do",
+		dataType : "json",
+		data : {said: said},
+		async : false,
+		success : function( data ) {
+			if(data.result == "SUCCESS")
+			{
+				var saidListValue = "";
+				if($("input[name='saidList']").val() == ""){
+					saidListValue = said;
+				}else{
+					saidListValue = $("input[name='saidList']").val()+","+said;
+				}
+				$("input[name='saidList']").val(saidListValue);
+				
+				$("input[name='said']").val("");
+			}else{
+				swal({
+	                title: "Warn !",
+	                text: "SAID-"+said+" is not exist" 
+	            });
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
 
 function addSearchContentEvent(idx) {
 	$($("button[name='searchContent']")[idx]).click(function(){

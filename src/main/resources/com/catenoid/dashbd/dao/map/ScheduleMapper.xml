@@ -208,8 +208,15 @@
 				, b.mpdURI
 				, b.samplePercentage
 				, b.retrieve_interval
-				, b.retrieve_interval
 				, (select title from contents where id = s.content_id) content_name
+				, b.serviceMode
+				, b.bcServiceArea
+				, b.moodLocation
+				, b.moodReportClientId
+				, b.moodReportInterval
+				, b.moodOffsetTime
+				, b.moodRandomTimePeriod
+				, b.moodSamplePercentage
 			FROM schedule s 
 			left join broadcast_info b on s.BCID = b.BCID
 			WHERE 1=1
@@ -339,6 +346,7 @@
 	<select id="getEnableBandwidth" parameterType="java.util.Map" resultType="HashMap">
 		SELECT ifnull(${bandwidth} - sum(gbr), ${bandwidth}) usableBW, ifnull(sum(gbr), 0) usedBW FROM broadcast_info 
 		where CONCAT(',', said, ',') REGEXP CONCAT(',', #{searchString}, ',')
+		and (now() <![CDATA[ > ]]> schedule_start)
 		and (now() <![CDATA[ < ]]> schedule_stop)
 	</select>
 	
@@ -401,6 +409,16 @@
 			, mpdURI
 			, samplePercentage
 			, retrieve_interval
+			<if test="serviceType == 'streaming'">, serviceMode</if>
+			<if test="serviceMode == 'MooD'">
+			, bcServiceArea
+			, moodLocation
+			, moodReportClientId
+			, moodReportInterval
+			, moodOffsetTime
+			, moodRandomTimePeriod
+			, moodSamplePercentage
+			</if>
 		) VALUES (#{transactionId}
 			, #{serviceId}
 			, #{serviceType}
@@ -427,6 +445,16 @@
 			, #{mpdURI}
 			, #{samplePercentage}
 			, #{retrieveInterval}
+			<if test="serviceType == 'streaming'">, #{serviceMode}</if>
+			<if test="serviceMode == 'MooD'">
+			, #{bcServiceArea}
+			, #{moodLocation}
+			, #{reportClientId}
+			, #{moodReportInterval}
+			, #{moodOffsetTime}
+			, #{moodRandomTimePeriod}
+			, #{moodSamplePercentage}
+			</if>
 		)
 	</insert>
 	
@@ -489,7 +517,7 @@
 				, fileURI			= #{fileURI}
 			</if>
 			<if test="deliveryInfo_start != null and deliveryInfo_start !=''" >
-				, deliveryInfo_start= str_to_date(#{deliveryInfo_start}, '%Y%m%d%H%i%s')
+				, deliveryInfo_start = str_to_date(#{deliveryInfo_start}, '%Y%m%d%H%i%s')
 			</if>
 			<if test="deliveryInfo_end != null and deliveryInfo_end !=''" >
 				, deliveryInfo_end	= str_to_date(#{deliveryInfo_end}, '%Y%m%d%H%i%s')
@@ -505,6 +533,27 @@
 			</if>
 			<if test="retrieveInterval != null and retrieveInterval !=''" >
 				, retrieve_interval	= #{retrieveInterval} 
+			</if>
+			<if test="serviceMode != null and serviceMode !=''" >
+				, serviceMode		= #{serviceMode} 
+			</if>
+			<if test="moodLocation != null and moodLocation !=''" >
+				, moodLocation		= #{moodLocation} 
+			</if>
+			<if test="reportClientId != null and reportClientId !=''" >
+				, moodReportClientId = #{reportClientId} 
+			</if>
+			<if test="moodReportInterval != null and moodReportInterval !=''" >
+				, moodReportInterval = #{moodReportInterval} 
+			</if>
+			<if test="moodReportInterval != null and moodReportInterval !=''" >
+				, moodReportInterval = #{moodReportInterval} 
+			</if>
+			<if test="moodRandomTimePeriod != null and moodRandomTimePeriod !=''" >
+				, moodRandomTimePeriod = #{moodRandomTimePeriod} 
+			</if>
+			<if test="moodSamplePercentage != null and moodSamplePercentage !=''" >
+				, moodSamplePercentage = #{moodSamplePercentage} 
 			</if>
 		WHERE 1=1
 		AND BCID = #{BCID}
@@ -538,6 +587,14 @@
 			, mpdURI			
 			, samplePercentage	 
 			, retrieve_interval	 
+			, serviceMode
+			, bcServiceArea
+			, moodLocation
+			, moodReportClientId
+			, moodReportInterval
+			, moodOffsetTime
+			, moodRandomTimePeriod
+			, moodSamplePercentage
 		FROM broadcast_info 
 		WHERE 1=1
 		AND BCID = #{BCID}
@@ -627,6 +684,8 @@
 	</select>
 
 	<select id="selectSaidRange" parameterType="java.util.Map" resultType="String">
+		select #{said}
+		union all
 		<if test="type == 'circle'">
 			select city_id said from city where circle_id = #{said}
 			union all

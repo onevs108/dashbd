@@ -50,21 +50,9 @@
 		
 		var viewMode = "${mode}";
 		$(document).ready(function() {
-			$(".bootstrap-filestyle > input").css("background-color", "white");
-			$("#serviceClass").val("${mapSchedule.serviceClass}");
 			getMenuList('SCHEDULE_MGMT');
 			$("button[name='addSchedule']").hide();
-			if(serviceType == "streaming") 
-			{
-				
-			}
-			else
-			{
-// 				$("#serviceAreaRow").append($("#serviceArea").render());
-// 				$("div[name='bcType_streaming2']").hide();
-// 				addServiceAreaEvent(0);
-// 				addSearchContentEvent(0);
-			}
+
 			$("#FileRepair").change();
 			$("#receptionReport").change();
 			$("#reportClientId").change();
@@ -79,13 +67,14 @@
 					$($("input[name='deliveryInfo_start']")[i]).val(contentJson[i].start_time);
 					$($("input[name='deliveryInfo_end']")[i]).val(contentJson[i].end_time);
 				}
+				$("#serviceMode").val("${mapSchedule.serviceMode}");
+				$("#serviceMode").change();
+				$("#serviceClass").val("${mapSchedule.serviceClass}");
+				$("#fileUpload").remove();
+				$("#fileUpload_F").remove();
+				$("#bcSaidList").val("${mapSchedule.bcServiceArea}");
 			}
-// 			else if("new")
-// 			{
-// 				for (var i = 0; i < $("input[name='saidList']").length; i++) {
-// 					$("input[name='saidList']")[i].placeholder = "";
-// 				}
-// 			}
+			
 			$("#searchContentStream").click(searchStreaming);
 		});
 		
@@ -152,89 +141,8 @@
 <body>
 <div id="wrapper">
     <jsp:include page="../common/leftTab.jsp" />
-<div id="page-wrapper" class="gray-bg">
-	<div class="row border-bottom">
-        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-            <form role="search" class="navbar-form-custom" action="search_results.html">
-                <div class="form-group">
-                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-                </div>
-            </form>
-        </div><!-- end navbar-header -->
-            <ul class="nav navbar-top-links navbar-right">
-                <li>
-                    <a>
-                    <i class="fa fa-user"></i><span id="navbar-user-name"></span>
-                    </a>
-                </li>
-                <li class="dropdown">
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="mailbox.html">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="profile.html">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="grid_options.html">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <div class="text-center link-block">
-                                <a href="notifications.html">
-                                    <strong>See All Alerts</strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="/dashbd/out">
-                        <i class="fa fa-sign-out"></i> Log out
-                    </a>
-                </li>
-				<li>
-					<img src="../resources/img/samsung_small.png">
-				</li>
-            </ul>
-        </nav>
-	</div><!-- end border-bottom -->
-
-	<div class="row wrapper border-bottom white-bg page-heading">
-		<div class="col-lg-12">
-			<h2><strong>Schedule Mgmt</strong></h2>
-			<ol class="breadcrumb">
-			    <li>
-				   <a href="index.html">Home</a>
-			    </li>
-			    <li class="active">
-				   <strong>Schedule Management</strong>
-			    </li>
-			</ol>
-		</div>
-	</div><!-- end row wrapper border-bottom white-bg page-heading -->
-            
+	<div id="page-wrapper" class="gray-bg">
+	<c:import url="/resources/header.do"></c:import>
 	<div class="wrapper wrapper-content">
 	<form class="form-horizontal" id="frmScheduleReg" name="frmScheduleReg" action="scheduleReg.do" method="post">
     <input type="hidden" id="id" name="id" value="${mapSchedule.id}">
@@ -475,8 +383,8 @@
 			                                    <div id="fileUpload" class="form-group">
 			                                    	<div class="row">
 			                                    		<div class="col-sm-8"> 
-			                                    			<form id="uploadFileForm" action="saidUpload.do" method="post" enctype="multipart/form-data">
-					                                    		<input type="file" class="filestyle" data-buttonBefore="true">
+			                                    			<form id="uploadFileForm" method="post" enctype="multipart/form-data">
+					                                    		<input type="file" id="fileId" name="fileId" class="filestyle" data-buttonBefore="true">
 					                                    	</form>
 					                                    </div>
 				                                        <div class="col-sm-4"> 
@@ -529,6 +437,7 @@
 					                                    <div class="col-sm-6">
 					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;" readonly>
 					                                    </div>
+					                                    <c:if test="${empty mapSchedule.BCID and type == 'area'}">
 				                                    	<div class="row">
 				                                    		<div class="col-sm-2">
 						                                    	<input type="text" class="form-control" id="bcSaid" name="bcSaid" value="">
@@ -540,6 +449,7 @@
 						                                        <button type="button" id="bcMapAdd" name="bcMapAdd" class="btn btn-block btn-default">Add bcServiceArea with Map</button>
 						                                    </div>
 												        </div>
+												        </c:if>
 					                                </div>
 			                                    </div>
 			                                </div>
@@ -903,6 +813,18 @@
 				</div>
 			</div>
 		</c:if>
+	</div>
+	<div id="fileUpload_F" class="form-group row">
+		<div class="row">
+			<div class="col-sm-6 col-sm-offset-2" style="padding-right: 20px;"> 
+				<form id="uploadFileForm" method="post" enctype="multipart/form-data" style="padding-left: 10px;">
+	  				<input type="file" id="fileId" name="fileId" class="filestyle" data-buttonBefore="true">
+	  			</form>
+	 		</div>
+	    	<div class="col-sm-4"> 
+	  			<button type="button" id="uploadFile" name="uploadFile" onclick="" class="btn btn-block btn-default" style="margin-left: -5px;">Upload File</button>
+	  		</div>
+		</div>
 	</div>
 </script>
 
