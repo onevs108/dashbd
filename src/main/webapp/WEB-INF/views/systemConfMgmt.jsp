@@ -48,6 +48,7 @@
 	    -o-transition: border 0.15s ease-in-out;
 	    transition: border 0.15s ease-in-out;
 	}
+	
 	.custom-table .checkbox label::after {
 	    display: inline-block;
 	    position: absolute;

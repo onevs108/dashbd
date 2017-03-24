@@ -1012,9 +1012,9 @@ public class SystemController{
 			date = (date.length() == 1)? "0" + date : date;
 			
 			//cpu로그 데이터와 memory 로그 데이터를 가지고 옴
-			File file1 = new File("C:/dashbd/system/resources/cpu/" + year + month + date + ".log");
-			File file2 = new File("C:/dashbd/system/resources/memory/" + year + month + date + ".log");
-			File file3 = new File("C:/dashbd/system/resources/hdd/" + year + month + date + ".log");
+			File file1 = new File("/dashbd/system/resources/cpu/" + year + month + date + ".log");
+			File file2 = new File("/dashbd/system/resources/memory/" + year + month + date + ".log");
+			File file3 = new File("/dashbd/system/resources/hdd/" + year + month + date + ".log");
 			
 			List<String> cpuStrList = new ArrayList<String>();
 			List<String> memoryStrList = new ArrayList<String>();
@@ -1121,7 +1121,7 @@ public class SystemController{
 			resultMap.put("finalCpu", finalCpu);
 			resultMap.put("finalMemory", finalMemory); 
 			
-			System.out.println("test:" + resultMap.toJSONString());
+//			System.out.println("test:" + resultMap.toJSONString());
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(resultMap.toJSONString());
 	    } catch (Exception e) {
