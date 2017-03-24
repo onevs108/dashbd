@@ -646,10 +646,11 @@
 				    type: "POST",
 				    data : { 
 				    	saidList : said,
-				    	bandwidth : data.node.data.band
+				    	bandwidth : '0'
 				    },
 				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 				    success : function(responseData) {
+				    	debugger;
 				        $("#areaBandwidthModal #bandwidth").val(data.node.data.band);
 				        $("#areaBandwidthModal #usedBandwidth").val(responseData.usedBandwidth);
 				        $("#areaBandwidthModal #remainedBandwidth").val(responseData.enableBandwidth);

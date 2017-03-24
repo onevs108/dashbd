@@ -3,42 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html>
 <head>
-<!-- 	<meta charset="utf-8"> -->
-<!-- 	<meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-<!-- 	<title>System Mgmt</title> -->
-	
-<!-- 	<link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet"> -->
-<!-- 	<link href="font-awesome/css/font-awesome.css" rel="stylesheet"> -->
-<!-- 	<link href="../resourcesRenew/css/plugins/iCheck/custom.css" rel="stylesheet"> -->
-<!-- 	<link href="../resourcesRenew/css/animate.css" rel="stylesheet"> -->
-<!-- 	<link href="../resourcesRenew/css/style.css" rel="stylesheet"> -->
 	<link href="../resourcesRenew/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 	
 	<!-- FooTable -->
 	<link href="../resourcesRenew//css/plugins/footable/footable.core.css" rel="stylesheet">
 	
 	<jsp:include page="common/head.jsp" />
-	
-<!-- 	<script src="js/jquery-2.1.1.js"></script> -->
-<!-- 	<script src="js/jquery.cookie.js"></script> -->
-<!-- 	<script src="js/bootstrap.min.js"></script> -->
-<!-- 	<script src="js/bootstrap-table.js"></script> -->
-<!-- 	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
-<!-- 	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script> -->
-    
-	<!-- Custom and plugin javascript -->
-<!-- 	<script src="js/inspinia.js"></script> -->
-<!-- 	<script src="js/plugins/pace/pace.min.js"></script> -->
-	
-	<!-- iCheck -->
-<!-- 	<script src="js/plugins/iCheck/icheck.min.js"></script> -->
-	
-<!-- 	<link href="css/plugins/c3/c3.min.css" rel="stylesheet"> -->
-<!-- 	<script src="js/plugins/d3/d3.min.js"></script> -->
-<!-- 	<script src="js/plugins/c3/c3.min.js"></script> -->
-	<!-- Page-Level Scripts -->
-
-<!-- 	<link href="css/plugins/chartist/chartist.min.css" rel="stylesheet"> -->
 	
 	<style type="text/css">
 	.labels {
@@ -281,10 +251,10 @@
 				$("#dbCheck2").prop("checked",false);
 			}
 			
-			 getChartData(true);
+			 getChartData();
 		});
 			
-		function getChartData(initYn) {
+		function getChartData() {
 			$.ajax({
 			    url : "/dashbd/api/getSystemLogData.do",
 			    type: "POST",
@@ -336,33 +306,23 @@
 			        
 			        $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js',function(){
 			        	$.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.time.min.js',function(){
-					      if(initYn) {
-					    	  // setup plots
-						      var options = {
-						        grid:{borderColor:'#ccc'},
-						        series:{shadowSize:0,color:"#33ff33"},
-						        yaxis:{min:0,max:100},
-						        xaxis:{
-						        	show:true,
-						        	mode:"time"
-						        }
-						      };
-					    	  
-					    	  plot = $.plot($("#chart1"), [ cpuLogArray ], options);
-						      plot2 = $.plot($("#chart2"), [ memoryLogArray ], options);
-						      
-						      setTimeout(function() {
-						    	  getChartData(false);
-						      }, updateInterval);
-					      } else {
-					    	  plot.setData([ cpuLogArray ]);
-						      plot.draw();
-						      plot2.setData([ memoryLogArray ]);
-						      plot2.draw();
-						      setTimeout(function() {
-						    	  getChartData(false);
-						      }, updateInterval);
-					      }
+				    	  // setup plots
+					      var options = {
+					        grid:{borderColor:'#ccc'},
+					        series:{shadowSize:0,color:"#33ff33"},
+					        yaxis:{min:0,max:100},
+					        xaxis:{
+					        	show:true,
+					        	mode:"time"
+					        }
+					      };
+				    	  
+				    	  plot = $.plot($("#chart1"), [ cpuLogArray ], options);
+					      plot2 = $.plot($("#chart2"), [ memoryLogArray ], options);
+					      
+					      setTimeout(function() {
+					    	  getChartData();
+					      }, updateInterval);
 			        	});
 					});// end getScript
 			    },
