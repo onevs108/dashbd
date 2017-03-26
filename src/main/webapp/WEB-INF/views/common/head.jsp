@@ -24,7 +24,7 @@
 <script src="/dashbd/resources/newPublish/js/jquery-2.1.1.js"></script>
 <script src="/dashbd/resources/newPublish/js/bootstrap.min.js"></script>
 <script src="js/bootstrap-table.js"></script>
-<script src="/dashbd/resources/newPublish/js/inspinia.js"></script>
+<script src="/dashbd/resources/js/inspinia.js"></script>
 <script src="/dashbd/resources/newPublish/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 <script src="/dashbd/resources/newPublish/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="/dashbd/resources/newPublish/js/plugins/pace/pace.min.js"></script>

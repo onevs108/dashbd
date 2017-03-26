@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Mgmt</title>
     <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/style.css" rel="stylesheet">
+    <link href="/dashbd/resources/newPublish/css/style.css" rel="stylesheet">
     <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/footable/footable.core.css" rel="stylesheet">
@@ -48,7 +48,9 @@
 	<script src="../resourcesRenew/app-js/apps/schdMgmtDetail.js"></script>
 	
 	<script src="../resources/js/common.js"></script>
-	
+	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
+	<script src="/dashbd/resources/js/plugins/jsTree/jstree.min.js"></script>
+	<script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
 	<!-- Page-Level Scripts -->
 	<script>
 		$(document).ready(function() {
@@ -86,38 +88,6 @@
      height: auto;
  }
 	
-/*
-#wrap {
-		width: 1100px;
-		margin: 0 auto;
-	}
-		
-
-		
-	#external-events h4 {
-		font-size: 16px;
-		margin-top: 0;
-		padding-top: 1em;
-	}
-		
-
-		
-	#external-events p {
-		margin: 1.5em 0;
-		font-size: 11px;
-		color: #666;
-	}
-		
-	#external-events p input {
-		margin: 0;
-		vertical-align: middle;
-	}
-
-	#calendar {
-		float: right;
-		width: 900px;
-	}
-	*/	
 	</style>
 	
 <script>

@@ -8,11 +8,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Schedule Mgmt</title>
 	
-	<link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
 	
 	<link href="../resourcesRenew/css/animate.css" rel="stylesheet">
-	<link href="../resourcesRenew/css/style.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/css/style.css" rel="stylesheet">
 	<link href="../resourcesRenew/css/custom.css" rel="stylesheet">
 	<link href="../resourcesRenew/css/timetable/timetablejs.css" rel="stylesheet" >
 	<link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
@@ -35,7 +35,9 @@
 	<script src="../resources/js/plugins/pace/pace.min.js"></script>
 	
 	<script src="../resources/js/common.js"></script>
-	
+	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
+	<script src="/dashbd/resources/js/plugins/jsTree/jstree.min.js"></script>
+	<script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
 	<!-- Page-Level Scripts -->
 	<script>
 		var userGrade = ${userGrade};
@@ -81,6 +83,7 @@
  }
 	
 	</style>
+	
 </head>
 
 <body>
