@@ -197,7 +197,6 @@ public class ScheduleMgmtController {
 		}
 		
 		List<Map<String, String>> bwList = mapper.checkBandwidth(params);
-		int enableBandwidth = 0;
 		for (int j = 0; j < bwList.size(); j++) {
 			List<String> saidList = mapper.selectSaidRange(bwList.get(j));
 			String searchString = "";
@@ -710,6 +709,15 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
+//	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "view/receviceMoodRequest.do")
+	public void receviceMoodRequest(@RequestParam HashMap<String,String> param) {
+		
+//		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+//		List<HashMap<String,String>> groupSaidList = scheduleMapper.insertMoodRequest(param);
+		
+	}
+	
 	@RequestMapping(value = "view/scheduleReg.do")
 	@ResponseBody
 	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
@@ -886,6 +894,7 @@ public class ScheduleMgmtController {
 			Element parameters = (Element) root.getChildren().get(1);
 			Element service = parameters.getChild("services").getChild("service");
 			String serviceType = parameters.getChild("services").getChild("service").getAttribute("serviceType").getValue();
+			String serviceMode = "noMooD";
 			Element customType = service.getChild(serviceType);
 			
 			List<Element> schedule = customType.getChildren("schedule");
@@ -894,26 +903,27 @@ public class ScheduleMgmtController {
 			param.put("scheduleId", scheduleId);
 			if(serviceType.equals("streaming")) 
 			{
+				serviceMode = customType.getAttribute("serviceMode").getValue();
 				Element contentSet = customType.getChild("contentSet");
 				
 				Element mpd = contentSet.getChild("mpd");
 				param.put("contentId", contentSet.getAttributeValue("contentSetId"));
 				param.put("mpdURI", mpd.getChild("mpdURI").getText());
 				
-				Element mood = contentSet.getChild("mood");
-				param.put("r12MpdURI", mood.getChild("r12MpdURI").getText());
-				Element bcServiceArea = mood.getChild("bcServiceArea");
-				List<Element> said = bcServiceArea.getChildren();
-				String saidList = "";
-				for (int i = 0; i < said.size(); i++) {
-					if(i == said.size()-1){
-						saidList += said.get(i).getText();
-					}else{
-						saidList += said.get(i).getText()+",";
+				if("MooD".equals(serviceMode)){
+					Element mood = contentSet.getChild("mood");
+					param.put("r12MpdURI", mood.getChild("r12MpdURI").getText());
+					List<Element> bcBasePattern = mood.getChildren("bcBasePattern");
+					String bcBasePatternStr = "";
+					for (int i = 0; i < bcBasePattern.size(); i++) {
+						if(i == bcBasePattern.size()-1){
+							bcBasePatternStr += bcBasePattern.get(i).getText();
+						}else{
+							bcBasePatternStr += bcBasePattern.get(i).getText()+",";
+						}
 					}
+					param.put("bcBasePattern", bcBasePatternStr);
 				}
-				param.put("bcServiceArea", mood.getChild("bcServiceArea").getText());
-				
 			}
 			else 
 			{
@@ -932,7 +942,8 @@ public class ScheduleMgmtController {
 					}
 				}
 			}
-			
+			param.put("serviceType", serviceType);
+			param.put("serviceMode", serviceMode);
 			mapper.insertScheduleContent(param);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

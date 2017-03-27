@@ -418,15 +418,20 @@ public class XmlManager {
 				Element mood = new Element("mood");
 				Element r12MpdURI = new Element("r12MpdURI");
 				r12MpdURI.setText(params.get("r12mpdURI"));
-				r12MpdURI.setAttribute(new Attribute("changed", "false"));		
-				Element bcServiceArea = new Element("bcServiceArea");
+				r12MpdURI.setAttribute(new Attribute("changed", "false"));
 				
+				Element bcServiceArea = new Element("bcServiceArea");
 				for (int j = 0; j < paramList.get(9).size(); j++) {
 					bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
 				}
 				
 				mood.addContent(r12MpdURI);
+				Element bcBasePattern = new Element("bcBasePattern");
+				for (int k = 0; k < paramList.get(10).size(); k++) {
+					mood.addContent(new Element("bcBasePattern").setText(paramList.get(10).get(k)));
+				}
 				mood.addContent(bcServiceArea);
+				
 				contentSet.addContent(serviceArea);
 				contentSet.addContent(mpd);
 				contentSet.addContent(mood);

@@ -69,23 +69,23 @@ $(document).ready(function()
 	});
 	
 	$("#serviceMode").on("change", function() {
-		if($(this).val() == "BC") 
-		{
-			$("#moodArea").hide();
-			$("#bcServiceArea").hide();
-			$("#consumptionReport").hide();
-		} 
-		else if($(this).val() == "SC")
+		if($(this).val() == "SC")
 		{
 			$("#moodArea").show();
 			$("#bcServiceArea").hide();
 			$("#consumptionReport").hide();
 		}
-		else 	//Mood 일 때
+		else if($(this).val() == "MooD")	//Mood 일 때
 		{
 			$("#moodArea").show();
 			$("#bcServiceArea").show();
 			$("#consumptionReport").show();
+		}
+		else
+		{
+			$("#moodArea").hide();
+			$("#bcServiceArea").hide();
+			$("#consumptionReport").hide();
 		}
 	});
 	

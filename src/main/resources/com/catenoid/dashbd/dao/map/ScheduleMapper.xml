@@ -155,6 +155,8 @@
 				mpd,       
 				DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') start_time,
 				DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') end_time,  
+				r12mpdURI,
+				bcBasePattern,
 				created_at,
 				updated_at 
 		FROM schedule_contents
@@ -633,6 +635,9 @@
 			schedule_id, content_id, cancelled, changed, 
 			<if test="fileURI != null">url,</if><if test="mpdURI != null">mpd,</if>
 			<if test="startTime != null">start_time,</if><if test="endTime != null">end_time,</if> 
+			<if test="serviceType == 'streaming' and serviceMode != 'BC'">
+				r12mpdURI, bcBasePattern,
+			</if>
 			created_at, updated_at
 		)
 		values
@@ -640,6 +645,9 @@
 			${scheduleId}, ${contentId}, 0, 0,
 			<if test="fileURI != null">#{fileURI},</if><if test="mpdURI != null">#{mpdURI},</if>
 			<if test="startTime != null">#{startTime},</if><if test="endTime != null">#{endTime},</if> 
+			<if test="serviceType == 'streaming' and serviceMode != 'BC'">
+				#{r12MpdURI}, #{bcBasePattern},
+			</if>
 			now(), now()
 		)
 	</insert>

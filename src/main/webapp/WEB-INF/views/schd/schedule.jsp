@@ -71,6 +71,16 @@
 					$($("input[name='deliveryInfo_start']")[i]).val(contentJson[i].start_time);
 					$($("input[name='deliveryInfo_end']")[i]).val(contentJson[i].end_time);
 				}
+				if(contentJson[0].r12mpdURI != undefined){
+					$($("input[name='r12mpdURI']")[0]).val(contentJson[0].r12mpdURI);
+					var pattern = contentJson[0].bcBasePattern.split(",");
+					for (var i = 0; i < pattern.length; i++) {
+						if(i != 0) {
+							$("#addBcPattern").click();
+						}
+						$($("input[name='bcBasePattern']")[i]).val(pattern[i]);
+					}
+				}
 				$("#serviceMode").val("${mapSchedule.serviceMode}");
 				$("#serviceMode").change();
 				$("#serviceClass").val("${mapSchedule.serviceClass}");
@@ -422,13 +432,13 @@
 			                                    	<div class="row">
 			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px">r12mpdURI</label>
 				                                        <div class="col-sm-8">
-				                                        	<input type="text" class="form-control" id="r12mpdURI" name="r12mpdURI" value="">
+				                                        	<input type="text" class="form-control" id="r12mpdURI" name="r12mpdURI" value="${mapContentUrl.r12mpdURI}">
 				                                        </div>
 			                                    	</div>
 			                                    	<div name="bcPattern" class="row">
 			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px">bcBasePattern</label>
 				                                        <div class="col-sm-8">
-				                                        	<input type="text" class="form-control" id="bcBasePattern" name="bcBasePattern" value="">
+				                                        	<input type="text" class="form-control" id="bcBasePattern" name="bcBasePattern" value="${mapSchedule.bcBasePattern}">
 				                                        </div>
 				                                        <button type="button" id="addBcPattern" title="Create new cluster" class="btn btn-primary btn-sm">
 					                                		<i class="fa fa-plus"></i> <span class="bold"></span>
