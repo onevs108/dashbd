@@ -37,17 +37,30 @@
 		</property>
 	</bean>
 	
+	<bean id="checkCRSInfoCron" class="org.springframework.scheduling.quartz.JobDetailBean">
+	    <property name="jobClass" value="com.catenoid.dashbd.scheduling.CheckCRSInfoCron"/>
+	    <property name="jobDataAsMap">
+			<map>
+				<entry key="init" value-ref="sqlSessionTemplate"/>
+			</map>
+		</property>
+	</bean>
+	
 	<!-- 2. Cron 시간 설정 -->
 <!--  	 ** 참조 : Quartz 시간 expression * * * * * ? (*) : 초 분 시 일 월 요일 (년) -->
 	<bean id="cronTriggerSessionEMBMS" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="sessionEMBMS"/>
-	    <property name="cronExpression" value="0 */1 * * * ?"/> <!-- 매 30초마다 (for test) --> 
+	    <property name="cronExpression" value="0 */1 * * * ?"/> <!-- 매 1분마다 (for test) --> 
 	</bean>
 	
 	<bean id="dbBackupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="dbBackupCron"/>
-	    <property name="cronExpression" value="0/30 * * * * ?"/>	<!-- 매 1분마다 (for test)  -->
-<!-- 	    <property name="cronExpression" value="0 */1 * * * ?"/>	매 1분마다 (for test)  -->
+	    <property name="cronExpression" value="0/30 * * * * ?"/>	<!-- 매 30초마다 (for test)  -->
+	</bean>
+	
+	<bean id="checkCRSInfoTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	    <property name="jobDetail" ref="checkCRSInfoCron"/>
+	    <property name="cronExpression" value="0 */1 * * * ?"/>	<!-- 매 30초마다 (for test)  -->
 	</bean>
 	
 	<!-- 3. Cron 실행 -->
@@ -56,6 +69,7 @@
 	        <list>
 	            <!-- <ref bean="cronTriggerSessionEMBMS"/> -->
 	            <ref bean="dbBackupTrigger"/>
+	            <ref bean="checkCRSInfoTrigger"/>
 	        </list>
 	    </property>
 	    <property name="quartzProperties">

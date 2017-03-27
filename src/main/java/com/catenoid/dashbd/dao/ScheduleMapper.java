@@ -78,6 +78,9 @@ public interface ScheduleMapper {
 	void deleteServiceId(HashMap<String, Object> params);
 	HashMap<String, String> getEnableBandwidth(Map<String, String> params);
 	List<String> selectSaidRange(Map<String, String> map);
+	void insertMoodRequest(HashMap<String, String> param);
+	List<Map<String, Object>> selectMoodRequestInfo();
+	Map<String, Object> selectCrsLimit();
     
     
 }

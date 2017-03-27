@@ -76,4 +76,5 @@ public interface UsersMapper {
 	int updateAutoBackupYN(String autoYN);
 
 	int updateBackupTime(String backupTime);
+
 }

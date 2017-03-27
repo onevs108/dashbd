@@ -352,6 +352,17 @@
 		and (now() <![CDATA[ < ]]> schedule_stop)
 	</select>
 	
+	<insert id = "insertMoodRequest" parameterType="HashMap">
+		INSERT INTO mood_request
+		(	 
+			transaction, agentKey, crsId, serviceId, saId, countUC, countBC, timestamp, insertDate 
+		)
+		VALUES
+		(	  
+			#{transaction}, #{agentKey}, #{crsId}, #{serviceId}, #{saId}, ${countUC}, ${countBC}, #{timestamp}, now() 
+		)
+	</insert>
+	
 	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
 		INSERT INTO schedule
 		(	 
@@ -738,7 +749,16 @@
 			where hotspot_id = ${said}
 		) T
 	</select>
-
+	
+	<select id="selectMoodRequestInfo" resultType="java.util.Map">
+		select * from mood_request
+		order by id desc 
+		limit 20
+	</select>
+	
+	<select id="selectCrsLimit" resultType="java.util.Map">
+		select * from crs_limit
+	</select>
 
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >
     <id column="id" property="id" jdbcType="INTEGER" />

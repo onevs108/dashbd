@@ -49,6 +49,13 @@
 			$("#selectCircle").val("");
 // 			$($("input[name='radio']")[2]).click();
 		});
+		
+		function sendMood() {
+			$.ajax({
+		        url : "receviceMoodRequest.do",
+		        type: "post"
+		    });
+		}
 	</script>
     	
     <script src="../resourcesRenew/js/plugins/fullcalendar/moment.min.js"></script>
@@ -100,6 +107,7 @@
 						<div class="ibox-title">
 							<div>
 								<h5 style="padding-right: 20px;">Schedule</h5>
+								<button type="button" class="btn btn-primary btn-xs" id="sendMood" style="float: right;" onclick="sendMood()">Send MoodData Test</button>
 								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Schedule</button>
 								<span id="emergency"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="emergency"/>Emergency</span>
 								<span id="national"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="national" checked/>National</span>

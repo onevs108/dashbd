@@ -305,7 +305,6 @@ function getServiceAreaBmSc(page, operatorId)
         data : { "page" : page, "operatorId" : operatorId },
         //data : { "page" : page, "operatorId" : 1 },
         success : function(responseData){
-            $("#ajax").remove();
             var data = JSON.parse(responseData);
             var dataLen = data.length;
             var options = '<option value="">Select BM-SC</option>';

@@ -3,6 +3,7 @@ package com.catenoid.dashbd.ctrl;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.xml.sax.InputSource;
 
 import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.BmscMapper;
@@ -709,13 +712,37 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-//	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "view/receviceMoodRequest.do")
+	@ResponseBody
 	public void receviceMoodRequest(@RequestParam HashMap<String,String> param) {
+		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+		SAXBuilder builder = new SAXBuilder(); 
 		
-//		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
-//		List<HashMap<String,String>> groupSaidList = scheduleMapper.insertMoodRequest(param);
-		
+		try {
+			Document jdomdoc = builder.build(new InputSource(new FileReader("C:/CRS.xml")));	//test XML 파일
+			Element message = jdomdoc.getRootElement();
+			Element transaction = (Element) message.getChildren().get(0);
+			Element request = (Element) message.getChildren().get(1);
+			Element moodData = request.getChild("moodData");
+			Element serviceArea = moodData.getChild("serviceArea");
+			
+			param.put("transaction", transaction.getAttribute("id").getValue());
+			param.put("agentKey", transaction.getChild("agentKey").getText());
+			param.put("crsId", moodData.getChild("crsId").getText());
+			param.put("serviceId", moodData.getChild("serviceId").getText());
+			param.put("timestamp", convertDateFormat3(moodData.getChild("timestamp").getText()));			
+			param.put("saId", serviceArea.getChild("saId").getText());
+			param.put("countUC", serviceArea.getChild("countUC").getText());
+			param.put("countBC", serviceArea.getChild("countBC").getText());
+			scheduleMapper.insertMoodRequest(param);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	@RequestMapping(value = "view/scheduleReg.do")
@@ -1092,7 +1119,7 @@ public class ScheduleMgmtController {
 		return retStr;
 		
 	}
-
+	
 	//20170317174445 --> 2017-02-27 16:00:00
 	private String convertDateFormat2(String dateTime){
 		String retStr = "";
@@ -1101,6 +1128,20 @@ public class ScheduleMgmtController {
 		try {
 			java.util.Date dateFrom = sdfFrom.parse(dateTime);
 			retStr = sdfTo.format(dateFrom);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return retStr;
+	}
+	
+	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
+	private String convertDateFormat3(String dateTime){
+		Date dt = new Date("Wed Mar 15 17:17:00 2017");
+		
+		String retStr = "";
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			retStr = sdfTo.format(dt);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
