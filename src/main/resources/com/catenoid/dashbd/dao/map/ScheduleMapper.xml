@@ -777,7 +777,7 @@
 	</select>
 	
 	<select id="getBcIdFromServiceId" parameterType="String" resultType="java.util.Map">
-		select serviceId from broadcast_info
+		select BCID from broadcast_info
 		where serviceId = #{svId}
 	</select>
 
