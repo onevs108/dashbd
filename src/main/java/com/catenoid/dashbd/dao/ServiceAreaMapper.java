@@ -149,4 +149,6 @@ public interface ServiceAreaMapper {
 	int selectRegionalScheduleCount(HashMap<String, Object> param);
 	
     List<HashMap<String, Object>> getRegionalSubSchedule(HashMap<String, Object> searchParam);
+    
+    List<HashMap<String, Object>> getNationalSubSchedule(HashMap<String, Object> searchParam);
 }

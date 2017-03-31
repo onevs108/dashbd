@@ -638,6 +638,9 @@
 				} else if($("#" + data.selected[0]).hasClass("hotspot")) {
 					said = tempSaid.substring(tempSaid.indexOf("C")+1);
 				} else {
+					$("#areaBandwidthModal #bandwidth").val("");
+					$("#areaBandwidthModal #usedBandwidth").val("");
+					$("#areaBandwidthModal #remainedBandwidth").val("");
 					return;
 				}
 				
@@ -664,6 +667,9 @@
 			})
 			.bind('ready.jstree', function(e, data) {
 				$(".jstree-icon.jstree-themeicon").remove();
+				$("#areaBandwidthModal #bandwidth").val("");
+				$("#areaBandwidthModal #usedBandwidth").val("");
+				$("#areaBandwidthModal #remainedBandwidth").val("");
 				$("#areaBandwidthModal").modal("show");
 		    }).jstree({
 		    	"core" : {

@@ -1553,7 +1553,6 @@
 	        	UNION
 		        SELECT cityTreeView.*
 		        FROM cityTreeView
-<!-- 		        <if test="searchType != '' and searchType != null"> -->
 		        	INNER JOIN (
 			            SELECT SUBSTRING(node_id, 1, IF(INSTR(node_id, 'C') = 0, 9999999999, INSTR(node_id, 'C')-1)) as compare_node_id
 			            FROM treeView
@@ -1572,14 +1571,12 @@
 				            </choose>
 			        ) cityTemp
 			        ON cityTreeView.node_id = cityTemp.compare_node_id
-<!-- 		        </if> -->
 	        </if>
 	        <if test="searchType != 'circle' and searchType != 'city'
 	        			and searchType != 'circleCity'">
 	        	UNION
 		        SELECT hotspotTreeView.*
 		        FROM hotspotTreeView
-<!-- 		        <if test="searchType != '' and searchType != null"> -->
 		        	INNER JOIN (
 			            SELECT node_id as compare_node_id
 			            FROM treeView
@@ -1598,7 +1595,6 @@
 				            </choose>
 			        ) hotspotTemp
 			        ON hotspotTreeView.node_id = hotspotTemp.compare_node_id
-<!-- 		        </if> -->
 	        </if>
 		) result
 		LEFT JOIN (
@@ -1679,6 +1675,7 @@
 						            , circle.onAirYn
 						            , circle.scheduleId
 						            , null as emergencyYn
+						            , circle.serviceMode
 						      FROM (
 						          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
 						          FROM (
@@ -1777,11 +1774,12 @@
 						          , broad.fileURI, broad.serviceClass
 						          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 						          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-						          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-						          , format('10000', ',') as viewers
+						          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+						          , '-' as viewers
 						          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 						          , schedule.id as scheduleId
 						          , null as emergencyYn
+						          , broad.serviceMode
 						          FROM circle circle
 						          INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 						          ON circle.circle_id = broad.said
@@ -1799,16 +1797,17 @@
 						      	UNION ALL
 						      </if>
 								SELECT 	'' as circleId, IF(schedule.emergency_yn = 'Y', 'emergency','national') as circleName
-									  , 0 as subCnt, '' as psaid, 'national' as layerDiv
+									  , 3 as subCnt, '' as psaid, 'national' as layerDiv
 									  , broad.serviceId, broad.service_name as serviceName
 							          , broad.fileURI, broad.serviceClass
 							          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 							          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-							          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-							          , format('10000', ',') as viewers
+							          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+							          , '-' as viewers
 							          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 							          , schedule.id as scheduleId		
 							          , schedule.emergency_yn as emergencyYn
+							          , broad.serviceMode
 								FROM broadcast_info broad
 								INNER JOIN schedule schedule
 								ON broad.bcid = schedule.bcid
@@ -2026,8 +2025,8 @@
 				          , broad.fileURI, broad.serviceClass
 				          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				          , format('10000', ',') as viewers
+				          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				          , '-' as viewers
 				          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				          , schedule.id as scheduleId
 				          FROM circle circle
@@ -2047,13 +2046,13 @@
 			      	UNION ALL
 			      </if>
 					SELECT 	'' as circleId, 'national' as circleName
-						  , 0 as subCnt, '' as psaid, 'national' as layerDiv
+						  , 3 as subCnt, '' as psaid, 'national' as layerDiv
 						  , broad.serviceId, broad.service_name as serviceName
 				          , broad.fileURI, broad.serviceClass
 				          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				          , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				          , format('10000', ',') as viewers
+				          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				          , '-' as viewers
 				          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				          , schedule.id as scheduleId				 
 					FROM broadcast_info broad
@@ -2189,8 +2188,8 @@
 				    , broad.serviceId, broad.service_name as serviceName, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				    , format('10000', ',') as viewers
+				    , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				    , '-' as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				  FROM city city
 				  INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
@@ -2207,8 +2206,8 @@
 					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				    , format('10000', ',') as viewers
+				    , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				    , '-' as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId, schedule.national_yn as nationalYn 
 				FROM (<include refid="Reginal_Schedule_Divide" />) broad
@@ -2226,8 +2225,8 @@
 					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , 'Unicats' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				    , format('10000', ',') as viewers
+				    , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				    , '-' as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId
 				    , schedule.national_yn as nationalYn
@@ -2303,6 +2302,31 @@
 			</otherwise>
 		</choose>
 		, scheduleStart DESC
+	</select>
+	
+	<select id="getNationalSubSchedule" parameterType="HashMap" resultType="HashMap">
+		SELECT circle.circle_name as circleName, mood.serviceId, broad.service_name as serviceName
+		      , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
+		      , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr, IFNULL(broad.fecRatio, 0) as fecRatio
+		      , IF(mood.countUC > 0, 'Unicast', 'Broadcast') as deleveryType
+		      , format(IF(mood.countUC > 0, mood.countUC, mood.countBC), ',') as viewers
+			  , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+			  , schedule.id as scheduleId
+		FROM mood_request mood
+		INNER JOIN broadcast_info broad
+		ON mood.serviceId = broad.serviceId
+		INNER JOIN circle circle
+		ON mood.said = circle.circle_id
+		INNER JOIN schedule schedule
+		ON broad.BCID = schedule.BCID
+		WHERE mood.serviceId = #{serviceId}
+		AND (mood.serviceId, mood.said, mood.insertDate) IN (
+		  SELECT serviceId, said, MAX(insertDate) as insertDate
+		  FROM mood_request
+		  WHERE serviceId = #{serviceId}
+		  GROUP BY serviceId, said
+		)
+		ORDER BY mood.said
 	</select>
 </mapper>
 

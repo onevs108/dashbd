@@ -1585,6 +1585,38 @@ public class ServiceAreaController {
 	    }
 	} 
 	
+	/**
+	 * 메인 화면 national 하위 스케쥴 데이터 조회 메소드
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/api/getNationalSubSchedule.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public void getNationalSubSchedule(HttpServletRequest request, HttpServletResponse response) {
+		JSONObject resultObj = new JSONObject();
+		
+		try {
+			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+			String serviceId = request.getParameter("serviceId");
+			
+			HashMap< String, Object > searchParam = new HashMap();
+			searchParam.put("serviceId", serviceId);
+			
+			List<HashMap<String, Object>> resultList = mapper.getNationalSubSchedule(searchParam);
+				
+			if(resultList.size() > 0) {
+				resultObj.put("resultCode", "S");
+				resultObj.put("resultList", resultList);
+			} else {
+				resultObj.put("resultCode", "F");
+			}
+			
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+	        response.getWriter().print(resultObj.toJSONString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	} 
+	
 	@RequestMapping( value = "/resources/mainembmsList.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public Map< String, Object > mainembmsList( @RequestParam Map< String, Object > params,
