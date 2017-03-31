@@ -160,7 +160,16 @@
 				created_at,
 				updated_at 
 		FROM schedule_contents
-		WHERE schedule_id = #{id}
+		WHERE 1=1
+		AND
+		<choose>
+		<when test="id == null or id == ''">
+			BCID = #{BCID}
+		</when>
+		<otherwise>
+			schedule_id = #{id}
+		</otherwise>
+		</choose>
 	</select>
 	
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
@@ -609,8 +618,15 @@
 			, moodRandomTimePeriod
 			, moodSamplePercentage
 		FROM broadcast_info 
-		WHERE 1=1
-		AND BCID = #{BCID}
+		WHERE 1=1 AND 
+		<choose>
+		<when test="BCID == null or BCID == ''">
+			serviceId = #{serviceId}
+		</when>
+		<otherwise>
+			BCID = #{BCID}
+		</otherwise>
+		</choose>
 	</select>
 	
 	<select id="selectBroadcastToday" parameterType="java.util.Map" resultType="java.util.Map">
@@ -623,9 +639,9 @@
 	<update id = "updateSchedule" parameterType="java.util.Map">
 		UPDATE schedule	
 		SET
-			<if test="serviceGroupId != '' and serviceGroupId != null">
+<!-- 			<if test="serviceGroupId != '' and serviceGroupId != null"> -->
 			service_area_id = #{serviceAreaId},
-			</if>
+<!-- 			</if> -->
 			name = #{name},
 			BCID = #{BCID},
 			end_date = str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s'),
@@ -750,14 +766,19 @@
 		) T
 	</select>
 	
-	<select id="selectMoodRequestInfo" resultType="java.util.Map">
+	<select id="selectMoodRequestInfo" parameterType="java.util.Map" resultType="java.util.Map">
 		select * from mood_request
+		where insertDate > date_add(now(), interval-${interval} minute)
 		order by id desc 
-		limit 20
 	</select>
 	
 	<select id="selectCrsLimit" resultType="java.util.Map">
 		select * from crs_limit
+	</select>
+	
+	<select id="getBcIdFromServiceId" parameterType="String" resultType="java.util.Map">
+		select serviceId from broadcast_info
+		where serviceId = #{svId}
 	</select>
 
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >

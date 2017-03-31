@@ -295,11 +295,14 @@ public class XmlManager {
 				if(!saidArray[i].equals("")){
 					serviceArea.addContent( new Element("said").setText(saidArray[i]));
 				}
-			}//111111,9999912 | 111111
+			}
+			
+//			111111,9999912 | 111111
 //			String[] said = params.get("saidDefault").split(",");
 //			for (int i = 0; i < said.length; i++) {
 //				serviceArea.addContent( new Element("said").setText(said[i]));
 //			}
+			
 			if ("on".equals(params.get("FileRepair"))){
 				Element fileRepair= null; 
 				fileRepair = new Element("postFileRepair");
@@ -402,13 +405,8 @@ public class XmlManager {
 				contentSet.setAttribute(new Attribute("cancelled", "false"));				
 									
 				Element serviceArea = new Element("serviceArea");
-				if(paramList.get(6).size() != 0){
-					String[] saidArray = paramList.get(6).get(i).split(",");
-					for (int j = 0; j < saidArray.length; j++) {
-						if(!saidArray[i].equals("")){
-							serviceArea.addContent( new Element("said").setText(saidArray[i]));
-						}
-					}
+				for (int j = 0; j < paramList.get(6).size(); j++) {
+					serviceArea.addContent( new Element("said").setText(paramList.get(6).get(j)));
 				}
 				
 				Element mpd = new Element("mpd");
@@ -418,19 +416,20 @@ public class XmlManager {
 				Element mood = new Element("mood");
 				Element r12MpdURI = new Element("r12MpdURI");
 				r12MpdURI.setText(params.get("r12mpdURI"));
-				r12MpdURI.setAttribute(new Attribute("changed", "false"));
-				
-				Element bcServiceArea = new Element("bcServiceArea");
-				for (int j = 0; j < paramList.get(9).size(); j++) {
-					bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
-				}
-				
+				r12MpdURI.setAttribute(new Attribute("changed", "false"));				
 				mood.addContent(r12MpdURI);
-				Element bcBasePattern = new Element("bcBasePattern");
+				
 				for (int k = 0; k < paramList.get(10).size(); k++) {
 					mood.addContent(new Element("bcBasePattern").setText(paramList.get(10).get(k)));
 				}
-				mood.addContent(bcServiceArea);
+				
+				if (BMSC_XML_UPDATE == mode){
+					Element bcServiceArea = new Element("bcServiceArea");
+					for (int j = 0; j < paramList.get(9).size(); j++) {
+						bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
+					}
+					mood.addContent(bcServiceArea);
+				}
 				
 				contentSet.addContent(serviceArea);
 				contentSet.addContent(mpd);

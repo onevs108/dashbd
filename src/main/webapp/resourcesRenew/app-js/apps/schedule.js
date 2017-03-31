@@ -64,8 +64,8 @@ $(document).ready(function()
 		}
 		$("input[name='saidList']").val($("#serviceAreaId").val());
 		$("input[name='bcSaidList']").val($("#serviceAreaId").val());
-		$(".bootstrap-filestyle > input").css("background-color", "white");
 		$(":file").filestyle({buttonBefore: true});
+		$(".bootstrap-filestyle > input").css("background-color", "white");
 	});
 	
 	$("#serviceMode").on("change", function() {
@@ -78,7 +78,7 @@ $(document).ready(function()
 		else if($(this).val() == "MooD")	//Mood 일 때
 		{
 			$("#moodArea").show();
-			$("#bcServiceArea").show();
+			$("#bcServiceArea").hide();
 			$("#consumptionReport").show();
 		}
 		else

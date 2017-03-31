@@ -57,7 +57,7 @@ import com.catenoid.dashbd.service.XmlManager;
 import com.catenoid.dashbd.util.Utils;
 import com.google.gson.Gson;
 
-
+@SuppressWarnings("unchecked")
 @Controller
 public class ScheduleMgmtController {
 	
@@ -82,7 +82,9 @@ public class ScheduleMgmtController {
 	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		Users user = (Users) session.getAttribute("USER");
-		
+		if(user == null){
+			mv.setViewName("redirect:/login.do");
+		}
 		try
 		{
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
@@ -469,7 +471,7 @@ public class ScheduleMgmtController {
 		return mv;
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/getServiceIdTable.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String getServiceIdTable(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
@@ -508,7 +510,7 @@ public class ScheduleMgmtController {
 		return "SUCCESS";
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/insertServiceId.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String insertServiceId(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
@@ -539,7 +541,7 @@ public class ScheduleMgmtController {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/getServiceClassTable.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String getServiceClassTable(@RequestBody HashMap<String, Object> params, HttpServletRequest req) {
@@ -565,7 +567,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/selectServiceClassAll.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String selectServiceClassAll(HttpServletRequest req) {
@@ -585,7 +587,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/selectServiceIdAll.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String selectServiceIdAll(HttpServletRequest req) {
@@ -605,7 +607,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/actionServiceClass.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String actionServiceClass(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
@@ -624,7 +626,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/actionServiceId.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String actionServiceId(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
@@ -643,7 +645,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping( value = "/view/insertServiceClass.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String insertServiceClass(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
@@ -674,7 +676,7 @@ public class ScheduleMgmtController {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping(value = "view/getGroupListFromCircleId.do")
 	@ResponseBody
 	public String getGroupListFromCircleId(@RequestParam HashMap<String,String> param) {
@@ -693,7 +695,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping(value = "view/getGroupSaidList.do")
 	@ResponseBody
 	public String getGroupSaidList(@RequestParam HashMap<String,String> param) {
@@ -712,6 +714,7 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
+	
 	@RequestMapping(value = "view/receviceMoodRequest.do")
 	@ResponseBody
 	public void receviceMoodRequest(@RequestParam HashMap<String,String> param) {
@@ -724,17 +727,20 @@ public class ScheduleMgmtController {
 			Element transaction = (Element) message.getChildren().get(0);
 			Element request = (Element) message.getChildren().get(1);
 			Element moodData = request.getChild("moodData");
-			Element serviceArea = moodData.getChild("serviceArea");
+			List<Element> serviceArea = moodData.getChildren("serviceArea");
 			
-			param.put("transaction", transaction.getAttribute("id").getValue());
-			param.put("agentKey", transaction.getChild("agentKey").getText());
-			param.put("crsId", moodData.getChild("crsId").getText());
-			param.put("serviceId", moodData.getChild("serviceId").getText());
-			param.put("timestamp", convertDateFormat3(moodData.getChild("timestamp").getText()));			
-			param.put("saId", serviceArea.getChild("saId").getText());
-			param.put("countUC", serviceArea.getChild("countUC").getText());
-			param.put("countBC", serviceArea.getChild("countBC").getText());
-			scheduleMapper.insertMoodRequest(param);
+			for (int i = 0; i < serviceArea.size(); i++) {
+				param.put("transaction", transaction.getAttribute("id").getValue());
+				param.put("agentKey", transaction.getChild("agentKey").getText());
+				param.put("crsId", moodData.getChild("crsId").getText());
+				param.put("serviceId", moodData.getChild("serviceId").getText());
+				param.put("timestamp", convertDateFormat3(moodData.getChild("timestamp").getText()));	
+				param.put("saId", serviceArea.get(i).getChild("saId").getText());
+				param.put("countUC", serviceArea.get(i).getChild("countUC").getText());
+				param.put("countBC", serviceArea.get(i).getChild("countBC").getText());
+				scheduleMapper.insertMoodRequest(param);
+			}
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -811,12 +817,12 @@ public class ScheduleMgmtController {
 			}
 			
 			//Group으로 생성할 경우
+			String said = "";
 			if(params.get("serviceAreaId").equals("")){
 				saidList.clear();
 				HashMap<String, String> param = new HashMap<String, String>();
 				param.put("cityId", params.get("serviceGroupId"));
 				List<HashMap<String, String>> groupSaid = mapper.getGroupSaidList(param);
-				String said = "";
 				for (int i = 0; i < groupSaid.size(); i++) {
 					if(i == groupSaid.size()-1){
 						said += String.valueOf(groupSaid.get(i).get("sub_said"));
@@ -827,6 +833,15 @@ public class ScheduleMgmtController {
 				params.put("serviceAreaId", said);
 				saidList.add(said);
 //				paramList.add(6, saidList);
+			}else{
+				for (int i = 0; i < saidList.size(); i++) {
+					if(i == saidList.size()-1){
+						said += String.valueOf(saidList.get(i));
+					}else{
+						said += String.valueOf(saidList.get(i))+",";
+					}
+				}
+				params.put("serviceAreaId", said);
 			}
 			
 			params.put("transactionId", transId);
@@ -862,12 +877,9 @@ public class ScheduleMgmtController {
 				ret = mapper.updateSchedule(params);
 				
 				insertContentInfo(resStr[1], params.get("id"));
-				
-				logger.info("updateSchedule ret{}", ret);
 			}else{
 				ret = mapper.updateSchedule(params);
 				ret = mapper.updateBroadcastInfo(params);
-				logger.info("updateSchedule ret{}", ret);
 			}
             
 			String scheduleType = "Schedule";
@@ -908,7 +920,7 @@ public class ScheduleMgmtController {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public int insertContentInfo(String xmlString, String scheduleId) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		int result = 0;
@@ -991,7 +1003,7 @@ public class ScheduleMgmtController {
 	 * @param locale
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	
 	@RequestMapping(value = "view/delSchedule.do")
 	@ResponseBody
 	public Map< String, Object > delSchedule( @RequestParam Map< String, String > params,
@@ -1097,15 +1109,6 @@ public class ScheduleMgmtController {
 		return (Map<String, Object>) resultMap;
 	}
 	
-	private String exampleGBRSum(){
-		Map< String, String > params = new HashMap<String, String>();
-		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		
-		params.put("serviceAreaId", "3048");
-		Map <String, String> retmap = mapper.selectGBRSum(params);
-		return String.valueOf(retmap.get("GBRSum"));
-	}
-	
 	//2017-02-27T16:00:00.000+09:00 --> 2017-02-27 16:00:00
 	private String convertDateFormat(String dateTime){
 		String retStr = "";
@@ -1136,6 +1139,7 @@ public class ScheduleMgmtController {
 	
 	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
 	private String convertDateFormat3(String dateTime){
+		@SuppressWarnings("deprecation")
 		Date dt = new Date("Wed Mar 15 17:17:00 2017");
 		
 		String retStr = "";
