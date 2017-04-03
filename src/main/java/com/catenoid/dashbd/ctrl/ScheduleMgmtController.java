@@ -850,6 +850,7 @@ public class ScheduleMgmtController {
 			params.put("deliveryInfo_start", convertMysqlDateFormat(params.get("deliveryInfo_start"), false));
 			params.put("deliveryInfo_end", convertMysqlDateFormat(params.get("deliveryInfo_end"),false));
 			params.put("bmscIp", bmsc.getIpaddress());
+			
 			String[] resStr = xmlManager.sendBroadcast(params, xmlMode, saidData, paramList);
 			
 			//@ check return XML success

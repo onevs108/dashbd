@@ -73,8 +73,15 @@ public class XmlManager {
 			else
 				reqBody = makeXmlDelete(params);
 			
-			//@ xml send 
+			//@ xml send
+			if("MooD".equals(params.get("serviceMode")) && (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)){
+				//CRS 연동 ?
+//				for (int i = 0; i < paramList.get(6).size(); i++) {
+//					respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
+//				}
+			}
 			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
+			
 			logger.info("[returnXML=" + respBody + "]");
 			if (BMSC_XML_RETRIEVE == mode)
 				respBody = tmpRespRETRIEVE_Body();
@@ -100,7 +107,7 @@ public class XmlManager {
 		Element message = doc.getRootElement();
 		int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
 		
-		if (resultCode == 100)
+		if (resultCode == 1000)
 			return true;
 		
 		return false;
@@ -433,7 +440,9 @@ public class XmlManager {
 				
 				contentSet.addContent(serviceArea);
 				contentSet.addContent(mpd);
-				contentSet.addContent(mood);
+				if (!("BC".equals(params.get("serviceMode")))){
+					contentSet.addContent(mood);
+				}
 				serviceType.addContent(schedule);
 				serviceType.addContent(contentSet);
 				if ("MooD".equals(params.get("serviceMode")) || "on".equals(params.get("receptionReport"))){

@@ -36,6 +36,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.catenoid.dashbd.dao.AdPostFileRepairMapper;
+import com.catenoid.dashbd.dao.AdReceptionReportMapper;
+import com.catenoid.dashbd.dao.ScheduleContentsMapper;
 import com.catenoid.dashbd.dao.ServiceMapper;
 import com.catenoid.dashbd.dao.ServiceNamesMapper;
 import com.catenoid.dashbd.dao.ServiceScheduleMapper;
@@ -43,16 +46,8 @@ import com.catenoid.dashbd.dao.ServiceServiceAreaMapper;
 import com.catenoid.dashbd.dao.ServicesMapper;
 import com.catenoid.dashbd.dao.TransReportMapper;
 import com.catenoid.dashbd.dao.TransferConfigMapper;
-import com.catenoid.dashbd.util.Base64Coder;
-import com.catenoid.dashbd.util.ErrorCodes;
-import com.catenoid.dashbd.util.MyException;
-import com.catenoid.dashbd.dao.AdPostFileRepairMapper;
-import com.catenoid.dashbd.dao.AdReceptionReportMapper;
-import com.catenoid.dashbd.dao.ContentsMapper;
-import com.catenoid.dashbd.dao.ScheduleContentsMapper;
 import com.catenoid.dashbd.dao.model.AdPostFileRepair;
 import com.catenoid.dashbd.dao.model.AdReceptionReport;
-import com.catenoid.dashbd.dao.model.Contents;
 import com.catenoid.dashbd.dao.model.ScheduleContents;
 import com.catenoid.dashbd.dao.model.ScheduleContentsExample;
 import com.catenoid.dashbd.dao.model.Service;
@@ -67,6 +62,9 @@ import com.catenoid.dashbd.dao.model.ServicesExample;
 import com.catenoid.dashbd.dao.model.TransReport;
 import com.catenoid.dashbd.dao.model.TransReportExample;
 import com.catenoid.dashbd.dao.model.TransferConfig;
+import com.catenoid.dashbd.util.Base64Coder;
+import com.catenoid.dashbd.util.ErrorCodes;
+import com.catenoid.dashbd.util.MyException;
 
 import catenoid.net.msg.XmlPara;
 import catenoid.net.msg.XmlParaSet;
@@ -1819,7 +1817,7 @@ public class ServiceController {
                     "<message name=\"SERVICE.CREATE\" type=\"RESPONSE\">\n" +
                     "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
                     "        <result>\n" +
-                    "            <code>100</code>\n" +
+                    "            <code>1000</code>\n" +
                     "            <message>OK</message>\n" +
                     "        </result>\n" +
                     "    </transaction>\n" +

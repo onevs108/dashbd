@@ -772,13 +772,72 @@
 		order by id desc 
 	</select>
 	
+	<select id="selectMoodServiceId" parameterType="java.util.Map" resultType="String">
+		select serviceId from mood_request
+		where insertDate > date_add(now(), interval-${interval} minute)
+		group by serviceId
+		order by id desc 
+	</select>
+	
 	<select id="selectCrsLimit" resultType="java.util.Map">
 		select * from crs_limit
 	</select>
 	
-	<select id="getBcIdFromServiceId" parameterType="String" resultType="java.util.Map">
+	<select id="getBcIdFromServiceId" parameterType="java.util.Map" resultType="String">
 		select BCID from broadcast_info
-		where serviceId = #{svId}
+		where serviceId = #{serviceId}
+	</select>
+	
+	<select id="getScheduleIdFromBCID" parameterType="java.util.Map" resultType="String">
+		select id from schedule
+		where BCID = #{BCID}
+	</select>
+	
+	<select id="getCrsInfo" parameterType="String" resultType="String">
+		select serverInfo from crs_server_info
+		where id = (select crsId from mood_request where serviceId = #{tempSvId} limit 1)
+	</select>
+	
+	<select id="getSendBcSaid" parameterType="java.util.Map" resultType="String">
+		select said from (
+			select * from
+			( select serviceId, said, sum(Atype) as aCnt, sum(Btype) as bCnt, ntype
+			 from
+			 (select serviceId, said, ntype,
+			 case when castMode ='A' then castCnt else 0 end as 'Atype', 
+			 case when castMode ='B' then castCnt else 0 end as 'Btype'
+			 from
+			 ( select distinct serviceId, said, castMode, count(castMode) as castCnt, ntype
+			  from
+			  (select serviceId, said,  case when countUC > (select unicast from crs_limit) and countUC > 0 then 'A' else 'B' end as castMode
+			  ,'UC' as ntype
+			from mood_request
+			where insertDate > date_add(now(), interval-1000 minute)
+			and (case when countUC = 0 and countBC != 0 then 'BC' when countUC != 0 and countBC = 0 then 'UC' else 'T' end) = 'UC'
+			 ) K
+			  group by serviceId, said, castMode, ntype ) T ) H
+			  group by serviceId, said, ntype ) Q
+			where aCnt > 0 and bCnt = 0
+			union all
+			select * from
+			( select serviceId, said, sum(Atype) as aCnt, sum(Btype) as bCnt, ntype
+			 from
+			 (select serviceId, said, ntype, 
+			 case when castMode ='A' then castCnt else 0 end as 'Atype', 
+			 case when castMode ='B' then castCnt else 0 end as 'Btype'
+			 from
+			 ( select distinct serviceId, said, castMode, count(castMode) as castCnt, ntype
+			  from
+			  (select serviceId, said,  case when countBC <![CDATA[ < ]]> (select unicast from crs_limit) and countBC <![CDATA[ > ]]> 0 then 'A' else 'B' end as castMode
+			  ,'BC' as ntype
+			from mood_request
+			where insertDate <![CDATA[ > ]]>date_add(now(), interval-1000 minute)
+			and (case when countUC = 0 and countBC != 0 then 'BC' when countUC != 0 and countBC = 0 then 'UC' else 'T' end) = 'BC'
+			 ) K
+			  group by serviceId, said, castMode, ntype ) T ) H
+			  group by serviceId, said, ntype ) Q
+			where aCnt > 0 and bCnt = 0) T
+		where serviceId = #{serviceId}
 	</select>
 
   <resultMap id="BaseResultMap" type="com.catenoid.dashbd.dao.model.Schedule" >

@@ -2,6 +2,7 @@ package com.catenoid.dashbd.scheduling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,34 +28,41 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
 	
+	@Value("#{config['b2.bmsc.ip']}")
+	private String bmscIp;
+	
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		Map<String, Object> modeLimit = mapper.selectCrsLimit();
 		List<Map<String, Object>> moodRequestInfo = mapper.selectMoodRequestInfo(modeLimit);
+		List<String> moodServiceId = mapper.selectMoodServiceId(modeLimit);
 		int uniMax = (Integer) modeLimit.get("unicast");
-		List<String> serviceIdList = new ArrayList<String>();
-		for (int i = 0; i < moodRequestInfo.size(); i++) {
-			if(uniMax < (Integer) moodRequestInfo.get(i).get("countUC")){
-				System.out.println("초과했음");
-				serviceIdList.add(moodRequestInfo.get(i).get("serviceId").toString());
-			} else {
-				System.out.println("안 초과했음");
-			}
+		List<String> removeSaIdList = new ArrayList<String>();
+		List<HashMap<String, List<String>>> serviceIdList = new ArrayList<HashMap<String, List<String>>>();
+		
+		for (int i = 0; i < moodServiceId.size(); i++) {
+			modeLimit.put("serviceId", moodServiceId.get(i));
+			List<String> bcSaIdList = mapper.getSendBcSaid(modeLimit);
+			HashMap<String, List<String>> param = new HashMap<String, List<String>>();
+			param.put(moodServiceId.get(i), bcSaIdList);
+			serviceIdList.add(param);
 		}
 		
 		for (int i = 0; i < serviceIdList.size(); i++) {
 			String[] rtvs = new String[2];
 			String respBody = "SUCCESS";
 			String reqBody = "";
-			String bmscIp = "127.0.0.1";
-			String agentKey = Base64Coder.encode(bmscIp);
+			String agentKey = Base64Coder.encode("127.0.0.1");
 			
 			try {
 				reqBody = makeModityXml(serviceIdList.get(i), agentKey);
-				respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
+				Iterator<String> it = serviceIdList.get(i).keySet().iterator();
+				String tempSvId = it.next();
+				String crsIp = mapper.getCrsInfo(tempSvId);
+				respBody = new HttpNetAgent().execute("http://" + crsIp + ":8080/dashbd/B2interface.do", "", reqBody, false);
 			} catch (Exception e) {
-				
+				System.out.println(e);
 			}
 			rtvs[0] = respBody;
 			rtvs[1] = reqBody;		
@@ -63,14 +71,18 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String makeModityXml(String svId, String agentKey) {
+	public String makeModityXml(HashMap<String, List<String>> svId, String agentKey) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		Map<String, String> bcParam = new HashMap<String, String>();
-		bcParam.put("serviceId", mapper.getBcIdFromServiceId(svId));
+		Iterator<String> it = svId.keySet().iterator();
+		String tempSvId = it.next();
+		bcParam.put("serviceId", tempSvId);
+		bcParam.put("BCID", mapper.getBcIdFromServiceId(bcParam));
 		Map<String, String> params = mapper.selectBroadcast(bcParam);
-		Map<String, String> contentList = mapper.selectSchduleContentList(params.get("BCID"));
+		bcParam.put("id", mapper.getScheduleIdFromBCID(bcParam));
+		List<Map<String, String>> contentList = mapper.selectSchduleContentList(bcParam);
 		Element message = new Element("message");
-		message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));	
+		message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));
 		
 		message.setAttribute(new Attribute("type", "REQUEST"));
 		Document doc = new Document(message);
@@ -79,7 +91,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		//common- depth one
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));		//key ??
+		transaction.addContent(new Element("agentKey").setText(agentKey));					//key ??
 		
 		doc.getRootElement().addContent(transaction);
 
@@ -88,7 +100,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		Element service = new Element("service");
 		
 		Element name = new Element("name");
-		name.setAttribute(new Attribute("lang", "en"));											//??
+		name.setAttribute(new Attribute("lang", "en"));										//??
 		name.setText(params.get("name"));
 		Element serviceLanguage = new Element("serviceLanguage");
 		serviceLanguage.setText(params.get("serviceLanguage"));
@@ -185,7 +197,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		schedule.setAttribute(new Attribute("stop", convertDateFormatNew(params.get("schedule_stop"))));
 		
 		Element contentSet = new Element("contentSet");
-		contentSet.setAttribute(new Attribute("contentSetId", params.get("contentSetId"))); 					
+		contentSet.setAttribute(new Attribute("contentSetId", String.valueOf(contentList.get(0).get("content_id")))); 					
 		contentSet.setAttribute(new Attribute("cancelled", "false"));				
 							
 		Element serviceArea = new Element("serviceArea");
@@ -196,7 +208,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		
 		Element mpd = new Element("mpd");
 		mpd.setAttribute(new Attribute("changed", "false"));									
-		mpd.addContent(new Element("mpdURI").setText(params.get("mpd")));
+		mpd.addContent(new Element("mpdURI").setText(contentList.get(0).get("mpd")));
 
 		Element mood = new Element("mood");
 		Element r12MpdURI = new Element("r12MpdURI");
@@ -204,16 +216,15 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		r12MpdURI.setAttribute(new Attribute("changed", "false"));				
 		mood.addContent(r12MpdURI);
 		
-		String[] pattern = params.get("bcBasePattern").split(",");
+		String[] pattern = contentList.get(0).get("bcBasePattern").split(",");
 		for (int k = 0; k < pattern.length; k++) {
 			mood.addContent(new Element("bcBasePattern").setText(pattern[k]));
 		}
 		
 		//핵심부분
-		String[] baSaid = params.get("said").split(",");
 		Element bcServiceArea = new Element("bcServiceArea");
-		for (int j = 0; j < baSaid.length; j++) {
-			bcServiceArea.addContent(new Element("said").setText(baSaid[j]));
+		for (int j = 0; j < svId.get(tempSvId).size(); j++) {
+			bcServiceArea.addContent(new Element("said").setText(svId.get(tempSvId).get(j)));
 		}
 		mood.addContent(bcServiceArea);
 		
@@ -231,7 +242,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		parameters.addContent(services);
 		
 		doc.getRootElement().addContent(parameters);
-		System.out.println(outString(doc));
+//		System.out.println(outString(doc));
 		return outString(doc);
 	}
 	
@@ -252,7 +263,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		return retStr;
 		
 	}
-	
 
 	private String outString(Document doc){
 		XMLOutputter xmlOutput = new XMLOutputter();
@@ -260,4 +270,32 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		return xmlOutput.outputString(doc);
 	}
 	
+	/*for (int j = 0; j < moodRequestInfo.size(); j++) {
+		if(moodServiceId.get(i).equals(moodRequestInfo.get(j).get("serviceId").toString())){
+			int bro = (Integer) moodRequestInfo.get(j).get("countBC");
+			//UNI캐스트 일때
+			if(bro == 0) {
+				if(uniMax > (Integer) moodRequestInfo.get(j).get("countUC"))
+				{
+					
+				}
+				else 
+				{
+					saIdList.add(moodRequestInfo.get(j).get("said").toString());
+				}
+			}
+			//BRO캐스트 일때
+			else // if(uni == 0)
+			{
+				if(uniMax > (Integer) moodRequestInfo.get(j).get("countBC")) 
+				{
+					
+				}
+				else 
+				{
+					saIdList.add(moodRequestInfo.get(j).get("said").toString());
+				}
+			}
+		}dffffffffffffasdfs 
+	}*/
 }
