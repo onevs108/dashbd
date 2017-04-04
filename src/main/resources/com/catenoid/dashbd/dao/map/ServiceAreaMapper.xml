@@ -1632,7 +1632,8 @@
 			, t.segmentAvailableOffset, t.schedule_start, t.schedule_stop, t.reportType, t.offsetTime, t.randomTime, t.fileURI, t.deliveryInfo_start
 			, t.deliveryInfo_end, t.mpdURI, t.samplePercentage, t.created_at, t.updated_at, t.retrieve_interval, t.serviceMode, t.bcServiceArea
 			, t.moodLocation, t.moodReportClientId, t.moodReportInterval, t.moodOffsetTime, t.moodRandomTimePeriod, t.moodSamplePercentage
-	    FROM (SELECT broad.* FROM broadcast_info broad INNER JOIN schedule schedule ON broad.BCID = schedule.BCID WHERE schedule.national_yn is null AND schedule.del_yn = 'N') t CROSS JOIN 
+	    FROM (SELECT broad.* FROM broadcast_info broad INNER JOIN schedule schedule ON broad.BCID = schedule.BCID
+	    		WHERE schedule.national_yn is null AND schedule.del_yn = 'N') t CROSS JOIN 
 	    (
 	       SELECT a.N + b.N * 10 + 1 n
 	         FROM 
@@ -1774,17 +1775,31 @@
 						          , broad.fileURI, broad.serviceClass
 						          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 						          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-						          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-						          , '-' as viewers
+						          , IFNULL(fecRatio, 0) as fecRatio
 						          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 						          , schedule.id as scheduleId
 						          , null as emergencyYn
 						          , broad.serviceMode
+						          , CASE WHEN mood.countUC is null THEN 'Unicast'
+						          		 ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+						          	END as deleveryType
+						          , CASE WHEN mood.countUC is null THEN '-'
+						          		 ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
+						          	END as viewers
 						          FROM circle circle
 						          INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 						          ON circle.circle_id = broad.said
 						          INNER JOIN schedule schedule
                                   ON broad.bcid = schedule.bcid
+                                  LEFT JOIN mood_request mood
+                                  ON circle.circle_id = mood.said
+                                  AND broad.serviceId = mood.serviceId
+                                  AND (mood.serviceId, mood.said, mood.insertDate) IN (
+									  SELECT serviceId, said, MAX(insertDate) as insertDate
+									  FROM mood_request
+									  WHERE serviceId = broad.serviceId
+									  GROUP BY serviceId, said
+								  )
                                   WHERE schedule.del_yn = 'N'
                                     AND schedule.national_yn is null
 						      ) circle
@@ -2152,8 +2167,8 @@
 				      , city.scheduleStart
 				      , city.scheduleStop
 				      , city.gbr
-				      , city.deleveryType
 				      , city.fecRatio
+				      , city.deleveryType
 				      , city.viewers
 				      , city.onAirYn
 				      , hotspot.scheduleId
@@ -2188,14 +2203,30 @@
 				    , broad.serviceId, broad.service_name as serviceName, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				    , '-' as viewers
+				    , IFNULL(fecRatio, 0) as fecRatio
+<!-- 				    , '-' as deleveryType -->
+<!-- 				    , '-' as viewers -->
+					, CASE WHEN mood.countUC is null THEN 'Unicast'
+			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+			          END as deleveryType
+			        , CASE WHEN mood.countUC is null THEN '-'
+			          		ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
+			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				  FROM city city
 				  INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 				  ON city.city_id = broad.said
+				  LEFT JOIN mood_request mood
+                  ON city.city_id = mood.said
+                  AND broad.serviceId = mood.serviceId
+                  AND (mood.serviceId, mood.said, mood.insertDate) IN (
+					  SELECT serviceId, said, MAX(insertDate) as insertDate
+					  FROM mood_request
+					  WHERE serviceId = broad.serviceId
+					  GROUP BY serviceId, said
+				  )
 				  <if test="cityListStr != '' and cityListStr != null">
-				  	AND city.city_id IN (${cityListStr})
+				  	WHERE city.city_id IN (${cityListStr})
 				  </if>
 				) city
 				ON hotspot.city_id = city.city_id
@@ -2206,8 +2237,15 @@
 					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				    , '-' as viewers
+				    , IFNULL(fecRatio, 0) as fecRatio
+<!-- 				    , '-' as deleveryType -->
+<!-- 				    , '-' as viewers -->
+					, CASE WHEN mood.countUC is null THEN 'Unicast'
+			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+			          END as deleveryType
+			        , CASE WHEN mood.countUC is null THEN '-'
+			          		ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
+			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId, schedule.national_yn as nationalYn 
 				FROM (<include refid="Reginal_Schedule_Divide" />) broad
@@ -2215,6 +2253,15 @@
 				ON hotspot.hotspot_id = broad.said
 				INNER JOIN schedule schedule
 				ON broad.bcid = schedule.bcid 
+				LEFT JOIN mood_request mood
+                  ON hotspot.hotspot_id = mood.said
+                  AND broad.serviceId = mood.serviceId
+                  AND (mood.serviceId, mood.said, mood.insertDate) IN (
+					  SELECT serviceId, said, MAX(insertDate) as insertDate
+					  FROM mood_request
+					  WHERE serviceId = broad.serviceId
+					  GROUP BY serviceId, said
+				  )
 				WHERE hotspot.city_id = #{psaid}
 				<if test="hotspotListStr != '' and hotspotListStr != null">
 					AND hotspot.hotspot_id IN (${hotspotListStr})
@@ -2225,8 +2272,15 @@
 					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
-				    , '-' as viewers
+				    , IFNULL(fecRatio, 0) as fecRatio
+<!-- 				    , '-' as deleveryType -->
+<!-- 				    , '-' as viewers -->
+					, CASE WHEN mood.countUC is null THEN 'Unicast'
+			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+			          END as deleveryType
+			        , CASE WHEN mood.countUC is null THEN '-'
+			          		ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
+			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId
 				    , schedule.national_yn as nationalYn
@@ -2237,6 +2291,15 @@
 				ON city.city_id = hotspot.city_id 
 				INNER JOIN schedule schedule
 				ON broad.bcid = schedule.bcid 
+				LEFT JOIN mood_request mood
+                  ON hotspot.hotspot_id = mood.said
+                  AND broad.serviceId = mood.serviceId
+                  AND (mood.serviceId, mood.said, mood.insertDate) IN (
+					  SELECT serviceId, said, MAX(insertDate) as insertDate
+					  FROM mood_request
+					  WHERE serviceId = broad.serviceId
+					  GROUP BY serviceId, said
+				  )
 				WHERE city.circle_id = #{psaid}
 				<if test="hotspotListStr != '' and hotspotListStr != null">
 					AND hotspot.hotspot_id IN (${hotspotListStr})

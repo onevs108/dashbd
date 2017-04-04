@@ -65,10 +65,10 @@
 									<div class="row">
 										<form class="form-horizontal" action="javascript:void(0);">
 											<input type="hidden" id="choiceTreeStr" value="all">
-											<div class="col-lg-8">
+											<div class="col-lg-7">
 												<div class="form-group">
-													<label class="col-sm-2 control-label">Service Type</label>
-													<div class="col-sm-10">
+													<label class="col-sm-3 control-label">Service Type</label>
+													<div class="col-sm-9">
 														<div class="input-group">
 															<select id="searchServiceType" class="input-sm form-control input-s-sm inline">
 																<option value="">All</option>
@@ -84,8 +84,8 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-sm-2 control-label">Schedule</label>
-													<div class="col-sm-10">
+													<label class="col-sm-3 control-label">Schedule</label>
+													<div class="col-sm-9">
 														<div class="row">
 															<div class="col-lg-12">
 																<div class="m-b">
@@ -125,8 +125,8 @@
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-sm-2 control-label">Search</label>
-													<div class="col-sm-10">
+													<label class="col-sm-3 control-label">Search</label>
+													<div class="col-sm-9">
 														<div class="col-xs-3">
 															<select id="searchType" name="searchType" class="form-control">
 							                                    <option value="">Select</option>
@@ -147,19 +147,37 @@
 													</div>
 												</div>
 											</div>
-											<div class="col-lg-4 profile-content today">
-												<h2 class="text-left"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
+											<div class="col-lg-5 profile-content today">
+												<h2 class="text-center"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
 												<div id="clock" class="light">
 													<div class="digits"></div>
 												</div>
-												<h3 class="font-bold no-margins total">
-													<div class="panel panel-primary">
-														<div class="panel-heading" style="text-align:center">Total User</div>
-														<div class="panel-body">
-															<p class="text-info" style="text-align:center">${total_user}</p>
+												<div class="row total">
+													<div class="col-sm-4">
+														<div class="panel panel-primary text-center">
+															<div class="panel-heading">Total Users</div>
+															<div class="panel-body">
+																<span class="text-info">${total_user}</span>
+															</div>
 														</div>
 													</div>
-												</h3>
+													<div class="col-sm-4">
+														<div class="panel panel-primary text-center">
+															<div class="panel-heading">CountUC</div>
+															<div class="panel-body">
+																<span class="text-info">${count_uc}</span>
+															</div>
+														</div>
+													</div>
+													<div class="col-sm-4">
+														<div class="panel panel-primary text-center">
+															<div class="panel-heading">CountBC</div>
+															<div class="panel-body">
+																<span class="text-info">${count_bc}</span>
+															</div>
+														</div>
+													</div>
+												</div>
 											</div>
 										</form>
 									</div>

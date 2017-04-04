@@ -1361,7 +1361,7 @@ public class ServiceAreaController {
 	}
 	
 	@RequestMapping(value = "/resources/main.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public ModelAndView getMain(HttpServletRequest request) {
+	public ModelAndView getMain(HttpServletRequest request, HttpSession session) {
 		ModelAndView mv = new ModelAndView("main");
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
