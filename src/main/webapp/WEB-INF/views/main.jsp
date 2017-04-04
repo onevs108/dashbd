@@ -39,7 +39,7 @@
 				<div class="session">
 					<h2>SeSM Main</h2>
 					<div class="pull-right">
-						<span>Num Sessions:</span>
+						<span>Num Sessions: ${total_session}</span>
 						<span>
 							<span class="onDisp on1"></span><!-- 활성화일때 클래스 on1, on2 -->
 							<span class="onDisp"></span>

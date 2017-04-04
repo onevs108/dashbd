@@ -2391,5 +2391,22 @@
 		)
 		ORDER BY mood.said
 	</select>
+	
+	<select id="selectCountBCUC" resultType="HashMap">
+		SELECT FORMAT(SUM(countUC), 0) AS countUC, FORMAT(SUM(countBC), 0) AS countBC
+		FROM broadcast_info broad
+		INNER JOIN mood_request mood
+		ON broad.serviceId = mood.serviceId
+		WHERE now() BETWEEN broad.schedule_start AND broad.schedule_stop
+		  AND (mood.serviceId, mood.said, mood.insertDate) IN (
+			  SELECT serviceId, said, MAX(insertDate) as insertDate
+			  FROM mood_request
+			  WHERE serviceId = broad.serviceId
+			  <if test="circleId != null and circleId != ''">
+			  	AND said = #{circleId}
+			  </if>
+			  GROUP BY serviceId, said
+		  )
+	</select>
 </mapper>
 

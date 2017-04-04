@@ -151,4 +151,6 @@ public interface ServiceAreaMapper {
     List<HashMap<String, Object>> getRegionalSubSchedule(HashMap<String, Object> searchParam);
     
     List<HashMap<String, Object>> getNationalSubSchedule(HashMap<String, Object> searchParam);
+    
+    HashMap<String, Object> selectCountBCUC(HashMap<String, Object> param);
 }

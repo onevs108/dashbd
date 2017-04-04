@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionContext;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.poi.ss.usermodel.Cell;
@@ -39,6 +40,7 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -46,6 +48,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -101,7 +104,11 @@ public class ServiceAreaController {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceAreaController.class);
 	@Resource(name = "transactionManager") 
 	protected DataSourceTransactionManager txManager;
-
+	
+	@Autowired
+	@Qualifier("sessionRegistry")
+	private SessionRegistry sessionRegistry;
+	
 	@Resource
 	private Environment env;
 		
@@ -1361,14 +1368,45 @@ public class ServiceAreaController {
 	}
 	
 	@RequestMapping(value = "/resources/main.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public ModelAndView getMain(HttpServletRequest request, HttpSession session) {
+	public ModelAndView getMain(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("main");
 		
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		Users user = (Users) request.getSession().getAttribute("USER");
 		
-		mv.addObject("total_user", "123");
-		mv.addObject("count_bc", "123");
-		mv.addObject("count_uc", "123");
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		//Area 유저일 경우에는 자신의 Area관련 UC, BC만 가지고 옴
+		if(user.getGrade() == 9999) param.put("circleId", user.getCircleId());
+		HashMap<String, Object> countBCUC = mapper.selectCountBCUC(param);
+		
+		List<Object> principals = sessionRegistry.getAllPrincipals();
+		mv.addObject("total_session", principals.size());
+		
+		int total_user = 0;
+		if(user.getGrade() == 9999) {
+			//자신의 Area 전체를 셀 경우 사용
+//			total_user = userServiceImpl.getUserListCount("", "", user.getGrade(), user.getCircleName());
+			
+			//자신이 속한 Operator 안의 user수만 셀 경우 상용
+			param.put("targetDiv", "operator");
+			param.put("operatorId", user.getOperatorId());
+			List<Users> userList = operatorServiceImpl.selectMemberList(param);
+			total_user = userList.size();
+		} else if(user.getGrade() == 13) {
+			total_user = userServiceImpl.getUserListCount("", "", null, null);
+		} else {
+			total_user = userServiceImpl.getUserListCount("", "", user.getGrade(), null);
+		}
+		
+		mv.addObject("total_user", total_user);
+		
+		if(countBCUC != null) {
+			mv.addObject("count_uc", countBCUC.get("countUC"));
+			mv.addObject("count_bc", countBCUC.get("countBC"));
+		} else {
+			mv.addObject("count_uc", "0");
+			mv.addObject("count_bc", "0");
+		}
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_MONTH, -7);
