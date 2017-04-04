@@ -927,6 +927,10 @@
 				$("#streamingArea").show();
 				$("#infoArea").hide();
 				$(".modal-title").text("Streaming Info");
+				var url = "http://dash.edgesuite.net/dash264/TestCases/1c/qualcomm/2/MultiRate.mpd";
+				var player = dashjs.MediaPlayer().create();
+				player.initialize(document.querySelector("#Video1"), url, true);
+				$("video")[0].play();
 			} else {
 				$("#streamingArea").hide();
 				$("#infoArea").show();

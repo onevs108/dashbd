@@ -16,7 +16,7 @@
 				<div class="modal-body">
 					<fieldset>
 						<div id="streamingArea" class="row">
-							<video id="Video1" data-dashjs-player src="http://dash.edgesuite.net/dash264/TestCases/1c/qualcomm/2/MultiRate.mpd" controls></video>
+							<video id="Video1" data-dashjs-player controls></video>
 						</div>
 						<div id="infoArea" class="row" style="display:none;">
 							<div align="center">BroadCast Info Page</div> 
