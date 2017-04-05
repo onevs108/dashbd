@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.HttpNetAgent;
@@ -44,6 +45,9 @@ public class XmlManager {
 	
 	@Value("#{config['b2.interface.url']}")
 	private String b2InterfefaceURL;
+	
+	@Value("#{config['b3.interface.url']}")
+	private String b3InterfefaceURL;
 
 	@Autowired
 	private SqlSession sqlSession;
@@ -56,9 +60,11 @@ public class XmlManager {
 	
 	public String[] sendBroadcast(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList){
  		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+ 		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
 		String[] rtvs = new String[2];
 		String respBody = "SUCCESS";
 		String reqBody = "";
+		String respBodyCrs = "";
 		String bmscIp = params.get("bmscIp");
 		params.put("methodMode", String.valueOf(mode));
 		String agentKey = Base64Coder.encode(bmscIp);
@@ -73,14 +79,18 @@ public class XmlManager {
 			else
 				reqBody = makeXmlDelete(params);
 			
+			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
 			//@ xml send
 			if("MooD".equals(params.get("serviceMode")) && (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)){
 				//CRS 연동 ?
-//				for (int i = 0; i < paramList.get(6).size(); i++) {
-//					respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
-//				}
+				for (int i = 0; i < paramList.get(6).size(); i++) {
+					String crsIp = scheduleMapper.getCrsInfoFromMapping(paramList.get(6).get(i)); //said
+					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + b3InterfefaceURL, "", reqBody, false);
+				}
+				if(!isSuccess(respBodyCrs)){
+					//CRS 연동 실패 시 로직
+				}
 			}
-			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
 			
 			logger.info("[returnXML=" + respBody + "]");
 			if (BMSC_XML_RETRIEVE == mode)
@@ -91,7 +101,7 @@ public class XmlManager {
 			usersMapper.insertSystemInterFaceLog(params);
 		} catch (Exception e) {
 			params.put("methodCode", "Fail");
-			params.put("methodMsg", e.getMessage());		
+			params.put("methodMsg", e.getMessage());
 			usersMapper.insertSystemInterFaceLog(params);
 			logger.error("", e);
 			respBody = e.getMessage();

@@ -88,5 +88,6 @@ public interface ScheduleMapper {
 	List<String> getSendBcSaid(Map<String, Object> modeLimit);
 	String getScheduleIdFromBCID(Map<String, String> bcParam);
 	String getCrsInfo(String tempSvId);
+	String getCrsInfoFromMapping(String string);
     
 }

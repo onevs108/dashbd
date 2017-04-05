@@ -798,6 +798,11 @@
 		where id = (select crsId from mood_request where serviceId = #{tempSvId} limit 1)
 	</select>
 	
+	<select id="getCrsInfoFromMapping" parameterType="String" resultType="String">
+		select serverInfo from crs_server_info
+		where id = (select crs_id from crs_said_mapping where said = #{said})
+	</select>
+	
 	<select id="getSendBcSaid" parameterType="java.util.Map" resultType="String">
 		select said from (
 			select * from
