@@ -81,9 +81,9 @@
 								</div>
 							</div>
 							<div class="col-lg-6">
-								<c:if test="${USER.grade == 13}">
+<%-- 								<c:if test="${USER.grade == 13}"> --%>
 									<button type="button" id="init-password-btn" onclick="javascript:initPassword();" class="btn btn-primary">Reset Password</button>
-								</c:if>
+<%-- 								</c:if> --%>
 							</div>
 						</div>
 						<div class="row">

@@ -25,8 +25,9 @@
 		var cause = '${cause}' * 1;
 		
 		if (cause == COMMON_SERVER_ERROR) {
-			alert('Server Error! Please try again.');
-			history.back();
+			swal({title:"Fail !", text:"Server Error! Please try again.", type:"warning"}, function() {
+				history.back();
+			});
 		}
 		else if (cause == LOGIN_FAIL_CREDENTIALS_EXPIRED) {
 			swal({title:"Fail !", text:"Your Account has been reset! Please change your password!", type:"warning"}, function() {
@@ -44,8 +45,9 @@
 			});
 		}
 		else {
-			alert('Incorrect account.');
-			location.href='/dashbd/out';
+			swal({title:"Fail !", text:"Incorrect account", type:"warning"}, function() {
+				location.href='/dashbd/out';
+			});
 		}
 	});
 	
