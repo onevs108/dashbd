@@ -111,6 +111,7 @@ public class HomeController {
 			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
 			logMapper.insertSystemAjaxLog(logMap);
 	        
+			sessionRegistry.removeSessionInformation(request.getSession().getId());
 			request.getSession().invalidate();
 		}
 		

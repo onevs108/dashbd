@@ -1644,6 +1644,54 @@
 	    <![CDATA[
 	     WHERE n.n <= 1 + (LENGTH(t.said) - LENGTH(REPLACE(t.said, ',', '')))
 	     ]]> 
+	    <if test="searchServiceType != null and searchServiceType != ''">
+			AND IFNULL(service, #{searchServiceType}) = #{searchServiceType}
+		</if>
+		<if test="searchSchedule != null and searchSchedule != ''">
+			<choose>
+				<when test="searchSchedule == 'onair'">
+					AND now() between IFNULL(schedule_start, now()) and IFNULL(schedule_stop, now())
+				</when>
+				<when test="searchSchedule == 'today'">
+					<![CDATA[
+					AND (date_format(now(), '%Y%m%d') = date_format(IFNULL(schedule_start, now()), '%Y%m%d')
+						OR date_format(now(), '%Y%m%d') < date_format(IFNULL(schedule_stop, now()), '%Y%m%d'))
+					]]>
+				</when>
+			</choose>
+		</if>
+		<if test="searchDateFrom != null and searchDateFrom != ''">
+			<![CDATA[
+			AND date_format(IFNULL(schedule_start, #{searchDateFrom}), '%Y%m%d') >= #{searchDateFrom}
+			]]>
+		</if>
+		<if test="searchDateTo != null and searchDateTo != ''">
+			<![CDATA[
+			AND date_format(IFNULL(schedule_stop, #{searchDateTo}), '%Y%m%d') <= #{searchDateTo}
+			]]>
+		</if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<choose>
+				<when test="searchType == 'serviceId'">
+					AND IFNULL(serviceId, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<when test="searchType == 'serviceName'">
+					AND IFNULL(service_name, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<when test="searchType == 'uri'">
+					AND IFNULL(fileURI, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<when test="searchType == 'serviceClass'">
+					AND IFNULL(serviceClass, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<otherwise>
+					AND (IFNULL(serviceId, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+						OR IFNULL(service_name, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%')
+							OR IFNULL(fileURI, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') 
+							OR IFNULL(serviceClass, #{searchKeyword}) LIKE CONCAT('%', #{searchKeyword}, '%') )
+					</otherwise>
+				</choose>
+			</if>
 	</sql>
 	
 	<select id="selectRegionalSchedule" parameterType="HashMap" resultType="HashMap">
