@@ -56,12 +56,19 @@
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
 			$("button[name='addSchedule']").hide();
-
-			$("#FileRepair").change();
-			$("#receptionReport").change();
-			$("#reportClientId").change();
 			
 			if(viewMode == "update") {
+				if("${mapSchedule.reportType}" != ""){
+					$("#reportType").val("${mapSchedule.reportType}");	
+				}
+				if("${mapSchedule.frOffsetTime}" != ""){
+					$("#FileRepair").prop('checked', true);	
+				}
+				
+				if("${mapSchedule.offsetTime}" != ""){
+					$("#receptionReport").prop('checked', true);
+				}
+				
 				for (var i = 0; i < contentJson.length; i++) {
 					if(i != 0) {
 						$("button[name='addContent']").click();	
@@ -88,6 +95,10 @@
 				$("#fileUpload_F").remove();
 				$("#bcSaidList").val("${mapSchedule.bcServiceArea}");
 			}
+			
+			$("#FileRepair").change();
+			$("#receptionReport").change();
+			$("#reportClientId").change();
 			
 			$("#searchContentStream").click(searchStreaming);
 		});
@@ -584,7 +595,7 @@
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Report Type</label>
                                        <div class="col-sm-9">
-                                           <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>>
+                                           <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == null}">disabled</c:if>>
                                                <option value="RAck">RAck</option>
                                                <option value="StaR-all">StaR-all</option>
                                            </select>
@@ -592,7 +603,7 @@
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Sample Percentage</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="samplePercentage" name="samplePercentage" value="${mapSchedule.samplePercentage}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="samplePercentage" name="samplePercentage" value="${mapSchedule.samplePercentage}"></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Offset Time</label>

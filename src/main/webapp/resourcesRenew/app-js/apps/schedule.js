@@ -111,17 +111,17 @@ $(document).ready(function()
 	$("#receptionReport").on("change", function() {
 		if(this.checked){
 			$("#offsetTime").prop('disabled', false);
-			$("#samplePercentage").prop('disabled', false);
 			$("#reportType").prop('disabled', false);
+			$("#samplePercentage").prop('disabled', false);
 			$("#randomTime").prop('disabled', false);
-			changePercentage();
 		}else{
 			$("#offsetTime").prop('disabled', true);
-			$("#samplePercentage").prop('disabled', true);
 			$("#reportType").prop('disabled', true);
+			$("#samplePercentage").prop('disabled', true);
 			$("#randomTime").prop('disabled', true);
-			$("#samplePercentage").val("");
+//			$("#samplePercentage").val("");
 		}
+		changePercentage();
 	});
 	
 	$("#reportClientId").on("change", function() {
@@ -199,6 +199,7 @@ $(document).ready(function()
 			location.href = "schdMgmt.do";
 		},
 		error : function(request, status, error) {
+//			alert("request=" +request +",status=" + status + ",error=" + error);
 			alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
@@ -935,6 +936,6 @@ function changePercentage(){
 		$("#samplePercentage").val("100");
 	}else{
 		$("#samplePercentage").prop('disabled', false);
-		$("#samplePercentage").val("");
+//		$("#samplePercentage").val("");
 	}
 }
