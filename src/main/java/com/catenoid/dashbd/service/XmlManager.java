@@ -117,8 +117,8 @@ public class XmlManager {
 		Element message = doc.getRootElement();
 		int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
 		
-		if (resultCode == 1000)
-			return true;
+//		if (resultCode == 1000)
+//			return true;
 		
 		return false;
 	}

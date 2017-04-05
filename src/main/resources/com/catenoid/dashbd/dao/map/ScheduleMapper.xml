@@ -210,6 +210,8 @@
 				, DATE_FORMAT(DATE_ADD(end_date, INTERVAL 15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_end
 				, DATE_FORMAT(schedule_start, '%Y-%m-%d %H:%i:%s') schedule_start
 				, DATE_FORMAT(schedule_stop, '%Y-%m-%d %H:%i:%s') schedule_stop
+				, b.frOffsetTime
+				, b.frRandomTime
 				, b.reportType
 				, b.offsetTime
 				, b.randomTime
@@ -422,6 +424,8 @@
 			, said
 			, schedule_start
 			, schedule_stop
+			, frOffsetTime
+			, frRandomTime
 			, reportType
 			, offsetTime
 			, randomTime
@@ -458,6 +462,8 @@
 			, #{serviceAreaId}
 			, str_to_date(#{schedule_start}, '%Y%m%d%H%i%s')
 			, str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s')
+			, #{frOffsetTime}
+			, #{frRandomTime}
 			, #{reportType}
 			, #{offsetTime}
 			, #{randomTime}

@@ -834,7 +834,8 @@ public class ScheduleMgmtController {
 				saidList.add(said);
 //				paramList.add(6, saidList);
 			}else{
-				if(params.get("serviceType").equals("streaming")){
+				if(params.get("serviceType").equals("streaming"))
+				{
 					for (int i = 0; i < saidList.size(); i++) {
 						if(i == saidList.size()-1){
 							said += String.valueOf(saidList.get(i));
@@ -842,7 +843,9 @@ public class ScheduleMgmtController {
 							said += String.valueOf(saidList.get(i))+",";
 						}
 					}
-				}else{
+				}
+				else
+				{
 					String[] saidArray = saidList.get(0).split(",");
 					for (int i = 0; i < saidArray.length; i++) {
 						if(i == saidArray.length-1){
@@ -865,8 +868,8 @@ public class ScheduleMgmtController {
 			String[] resStr = xmlManager.sendBroadcast(params, xmlMode, saidData, paramList);
 			
 			//@ check return XML success
-			if (!xmlManager.isSuccess(resStr[0]))
-				return makeRetMsg("9000", resStr[0]);
+//			if (!xmlManager.isSuccess(resStr[0]))
+//				return makeRetMsg("9000", resStr[0]);
 			
 			if (bcid == null || "".equals(bcid)) {
 				if(params.get("serviceMode").equals("MooD")){
