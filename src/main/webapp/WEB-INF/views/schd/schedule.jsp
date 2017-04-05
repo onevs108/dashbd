@@ -58,7 +58,9 @@
 			$("button[name='addSchedule']").hide();
 			
 			if(viewMode == "update") {
-				$("#reportType").val("${mapSchedule.reportType}");
+				if("${mapSchedule.reportType}" != ""){
+					$("#reportType").val("${mapSchedule.reportType}");	
+				}
 				if("${mapSchedule.frOffsetTime}" != ""){
 					$("#FileRepair").prop('checked', true);	
 				}
