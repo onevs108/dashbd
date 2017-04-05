@@ -288,7 +288,7 @@ public class OperatorServiceImpl implements OperatorService {
 	}
 
 	@Override
-	public boolean checkGradeName(String operatorName) {
+	public boolean checkGradeName(String groupName) {
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
 		Map<String, Object> syslogMap = new HashMap<String, Object>();
 		try {
@@ -299,7 +299,9 @@ public class OperatorServiceImpl implements OperatorService {
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
 //			usersMapper.insertSystemAjaxLog(syslogMap);
-			return operatorMapper.selectByGradeName(operatorName) == null ? true : false;
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			param.put("groupName", groupName);
+			return operatorMapper.selectByGradeInfo(param) == null ? true : false;
 		} catch (Exception e) {
 			syslogMap.put("reqType", "Operator Mgmt");
 			syslogMap.put("reqSubType", "check");
@@ -343,9 +345,9 @@ public class OperatorServiceImpl implements OperatorService {
 	}
 	
 	@Override
-	public Operator selectByGradeName(String operatorName) {
+	public Operator selectByGradeInfo(HashMap<String, Object> param) {
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
-		return operatorMapper.selectByGradeName(operatorName);
+		return operatorMapper.selectByGradeInfo(param);
 	}
 	
 	@Override

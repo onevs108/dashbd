@@ -261,8 +261,6 @@
 	
 	<!-- Custom and plugin javascript -->
 	<script src="/dashbd/resources/newPublish/js/plugins/video/responsible-video.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
-	<script src="/dashbd/resources/newPublish/js/plugins/digitalclock/script.js"></script>
 	<!-- iCheck -->
     <script src="/dashbd/resources/newPublish/js/plugins/iCheck/icheck.min.js"></script>
     <!-- Data picker -->

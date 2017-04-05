@@ -320,7 +320,7 @@ public class OperatorController {
 			Operator operator = null;
 			
 			if(param.get("groupDiv").equals("National")) {
-				operator = operatorServiceImpl.selectByGradeName(param.get("groupName").toString());
+				operator = operatorServiceImpl.selectByGradeInfo(param);
 				param.put("targetDiv", "grade");
 				param.put("grade", operator.getId());
 			} else if(param.get("groupDiv").equals("Regional")) {
@@ -715,16 +715,19 @@ public class OperatorController {
 			String memberListStr = param.get("memberListStr").toString();
 			
 			if(proccessDiv.equals("add")) {
+				//grade에 지정된 Permission들을 들고옴
+				List<String> realPermissions = new ArrayList<String>();
+				Operator operator = operatorServiceImpl.selectByGradeInfo(param);
+				String permissionListStr = operator.getPermission();
+				StringTokenizer subStk = new StringTokenizer(permissionListStr, ",");
+				while(subStk.hasMoreTokens()) {
+					realPermissions.add(subStk.nextToken());
+				}
+				
 				StringTokenizer stk = new StringTokenizer(memberListStr, ",");
 				
 				while(stk.hasMoreTokens()) {
 					String userId = stk.nextToken();
-					
-					List<String> realPermissions = new ArrayList<String>();
-					List<Permission> permissions = usersMapper.selectPermissionsByUserId(userId);
-					for(Permission per : permissions) {
-						realPermissions.add(per.getId().toString());
-					}
 					
 					Users record = new Users();
 					record.setUserId(userId);

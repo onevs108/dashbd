@@ -342,6 +342,355 @@
 }
 
 
+
+
+
+
+
+
+
+
+#headerClock{
+	position:relative;
+}
+
+/* #headerClock:after{ */
+/* 	content:''; */
+/* 	position:absolute; */
+/* 	width:400px; */
+/* 	height:20px; */
+/* 	border-radius:100%; */
+/* 	left:50%; */
+/* 	margin-left:-200px; */
+/* 	bottom:2px; */
+/* 	z-index:-1; */
+/* } */
+
+
+#headerClock .display{
+	text-align:center;
+	padding: 40px 20px 20px;
+	border-radius:6px;
+	position:relative;
+	height: 54px;
+}
+
+#headerClock .digits {
+	width:146px;
+	margin:0 auto;
+}
+
+
+
+/*-------------------------
+	Light color theme
+--------------------------*/
+
+
+#headerClock.light{
+	color:#272e38;
+}
+
+#headerClock.light:after{
+	box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+#headerClock.light .digits div span{
+	background-color:#6bc7ae;
+	border-color:#6bc7ae;	
+}
+
+#headerClock.light .digits div.dots:before,
+#headerClock.light .digits div.dots:after{
+	background-color:#272e38;
+}
+
+#headerClock.light .alarm{
+	background:url('../img/alarm_light.jpg');
+}
+
+#headerClock.light .display{
+	background-color:#dddddd;
+	box-shadow:0 1px 1px rgba(0,0,0,0.08) inset, 0 1px 1px #fafafa;
+}
+
+
+/*-------------------------
+	Dark color theme
+--------------------------*/
+
+
+#headerClock.dark{
+	background-color:#272e38;
+	color:#cacaca;
+}
+
+#headerClock.dark:after{
+	box-shadow:0 4px 10px rgba(0,0,0,0.3);
+}
+
+#headerClock.dark .digits div span{
+	background-color:#cacaca;
+	border-color:#cacaca;	
+}
+
+#headerClock.dark .alarm{
+	background:url('../img/alarm_dark.jpg');
+}
+
+#headerClock.dark .display{
+	background-color:#0f1620;
+	box-shadow:0 1px 1px rgba(0,0,0,0.08) inset, 0 1px 1px #2d3642;
+}
+
+#headerClock.dark .digits div.dots:before,
+#headerClock.dark .digits div.dots:after{
+	background-color:#cacaca;
+}
+
+
+/*-------------------------
+	The Digits
+--------------------------*/
+
+
+#headerClock .digits div{
+	text-align:left;
+	position:relative;
+	width: 12px;
+	height:50px;
+	display:inline-block;
+	margin:0 4px;
+}
+
+#headerClock .digits div span{
+	opacity:0;
+	position:absolute;
+
+	-webkit-transition:0.25s;
+	-moz-transition:0.25s;
+	transition:0.25s;
+}
+
+#headerClock .digits div span:before,
+#headerClock .digits div span:after{
+	content:'';
+	position:absolute;
+	width:0;
+	height:0;
+	border:5px solid transparent;
+}
+
+#headerClock .digits .d1{			height:5px;width:6px;top:0;left:6px;}
+#headerClock .digits .d1:before{	border-width:0 5px 5px 0;border-right-color:inherit;left:-5px;}
+#headerClock .digits .d1:after{	border-width:0 0 5px 5px;border-left-color:inherit;right:-5px;}
+
+#headerClock .digits .d2{			height:5px;width:6px;top:14px;left:6px;}
+#headerClock .digits .d2:before{	border-width:3px 4px 2px;border-right-color:inherit;left:-8px;}
+#headerClock .digits .d2:after{	border-width:3px 4px 2px;border-left-color:inherit;right:-8px;}
+
+#headerClock .digits .d3{			height:5px;width:6px;top:28px;left:6px;}
+#headerClock .digits .d3:before{	border-width:5px 5px 0 0;border-right-color:inherit;left:-5px;}
+#headerClock .digits .d3:after{	border-width:5px 0 0 5px;border-left-color:inherit;right:-5px;}
+
+#headerClock .digits .d4{			width:5px;height:4px;top:7px;left:0;}
+#headerClock .digits .d4:before{	border-width:0 5px 5px 0;border-bottom-color:inherit;top:-5px;}
+#headerClock .digits .d4:after{	border-width:0 0 5px 5px;border-left-color:inherit;bottom:-5px;}
+
+#headerClock .digits .d5{			width:5px;height:4px;top:7px;right:-6px;}
+#headerClock .digits .d5:before{	border-width:0 0 5px 5px;border-bottom-color:inherit;top:-5px;}
+#headerClock .digits .d5:after{	border-width:5px 0 0 5px;border-top-color:inherit;bottom:-5px;}
+
+#headerClock .digits .d6{			width:5px;height:4px;top:22px;left:0;}
+#headerClock .digits .d6:before{	border-width:0 5px 5px 0;border-bottom-color:inherit;top:-5px;}
+#headerClock .digits .d6:after{	border-width:0 0 5px 5px;border-left-color:inherit;bottom:-5px;}
+
+#headerClock .digits .d7{			width:5px;height:4px;top:22px;right:-6px;}
+#headerClock .digits .d7:before{	border-width:0 0 5px 5px;border-bottom-color:inherit;top:-5px;}
+#headerClock .digits .d7:after{	border-width:5px 0 0 5px;border-top-color:inherit;bottom:-5px;}
+
+
+/* 1 */
+
+#headerClock .digits div.one .d5,
+#headerClock .digits div.one .d7{
+	opacity:1;
+}
+
+/* 2 */
+
+#headerClock .digits div.two .d1,
+#headerClock .digits div.two .d5,
+#headerClock .digits div.two .d2,
+#headerClock .digits div.two .d6,
+#headerClock .digits div.two .d3{
+	opacity:1;
+}
+
+/* 3 */
+
+#headerClock .digits div.three .d1,
+#headerClock .digits div.three .d5,
+#headerClock .digits div.three .d2,
+#headerClock .digits div.three .d7,
+#headerClock .digits div.three .d3{
+	opacity:1;
+}
+
+/* 4 */
+
+#headerClock .digits div.four .d5,
+#headerClock .digits div.four .d2,
+#headerClock .digits div.four .d4,
+#headerClock .digits div.four .d7{
+	opacity:1;
+}
+
+/* 5 */
+
+#headerClock .digits div.five .d1,
+#headerClock .digits div.five .d2,
+#headerClock .digits div.five .d4,
+#headerClock .digits div.five .d3,
+#headerClock .digits div.five .d7{
+	opacity:1;
+}
+
+/* 6 */
+
+#headerClock .digits div.six .d1,
+#headerClock .digits div.six .d2,
+#headerClock .digits div.six .d4,
+#headerClock .digits div.six .d3,
+#headerClock .digits div.six .d6,
+#headerClock .digits div.six .d7{
+	opacity:1;
+}
+
+
+/* 7 */
+
+#headerClock .digits div.seven .d1,
+#headerClock .digits div.seven .d5,
+#headerClock .digits div.seven .d7{
+	opacity:1;
+}
+
+/* 8 */
+
+#headerClock .digits div.eight .d1,
+#headerClock .digits div.eight .d2,
+#headerClock .digits div.eight .d3,
+#headerClock .digits div.eight .d4,
+#headerClock .digits div.eight .d5,
+#headerClock .digits div.eight .d6,
+#headerClock .digits div.eight .d7{
+	opacity:1;
+}
+
+/* 9 */
+
+#headerClock .digits div.nine .d1,
+#headerClock .digits div.nine .d2,
+#headerClock .digits div.nine .d3,
+#headerClock .digits div.nine .d4,
+#headerClock .digits div.nine .d5,
+#headerClock .digits div.nine .d7{
+	opacity:1;
+}
+
+/* 0 */
+
+#headerClock .digits div.zero .d1,
+#headerClock .digits div.zero .d3,
+#headerClock .digits div.zero .d4,
+#headerClock .digits div.zero .d5,
+#headerClock .digits div.zero .d6,
+#headerClock .digits div.zero .d7{
+	opacity:1;
+}
+
+
+/* The dots */
+
+#headerClock .digits div.dots{
+	width:5px;
+	top:-10px;
+	left:3px;
+}
+
+#headerClock .digits div.dots:before,
+#headerClock .digits div.dots:after{
+	width:5px;
+	height:5px;
+	content:'';
+	position:absolute;
+	left:0;
+	top:14px;
+}
+
+#headerClock .digits div.dots:after{
+	top:34px;
+}
+
+
+/*-------------------------
+	The Alarm
+--------------------------*/
+
+
+#headerClock .alarm{
+	width:16px;
+	height:16px;
+	bottom:20px;
+	background:url('../img/alarm_light.jpg');
+	position:absolute;
+	opacity:0.2;
+}
+
+#headerClock .alarm.active{
+	opacity:1;
+}
+
+
+/*-------------------------
+	Weekdays
+--------------------------*/
+
+
+#headerClock .weekdays{
+	font-size:12px;
+	position:absolute;
+	width:100%;
+	top:10px;
+	left:0;
+	text-align:center;
+}
+
+
+#headerClock .weekdays span{
+	opacity:0.2;
+	padding:0 10px;
+}
+
+#headerClock .weekdays span.active{
+	opacity:1;
+}
+
+
+/*-------------------------
+		AM/PM
+--------------------------*/
+
+
+#headerClock .ampm{
+	position:absolute;
+	bottom:20px;
+	right:20px;
+	font-size:12px;
+}
+
+
 /*-------------------------
 		Button
 --------------------------*/

@@ -344,7 +344,7 @@
 		ORDER BY length(name) ASC, name ASC
 	</select>
 	
-	<select id="selectByGradeName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
+	<select id="selectByGradeInfo" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">
 	    SELECT
 	    	id,
 			name,
@@ -353,7 +353,14 @@
 			created_at AS createdAt,
 			updated_at AS updatedAt
 		FROM grade
-		WHERE name = #{operatorName}
+		WHERE 1=1
+		<if test="groupName != null and groupName != ''">
+			AND name = #{groupName}
+		</if>
+		<if test="groupId != null and groupId != ''">
+			AND id = #{groupId}
+		</if>
+		
 	</select>
 	
 	<select id="selectByOperatorName" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Operator">

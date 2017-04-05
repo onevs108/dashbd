@@ -32,7 +32,7 @@ public interface OperatorMapper {
     int insertOperator(Operator operator);
 	int getGradeListCount();
 	int insertGrade(Operator operator);
-	Operator selectByGradeName(String operatorName);
+	Operator selectByGradeInfo(HashMap<String, Object> param);
 	Operator selectByOperatorName(String operatorName);
 	List<Circle> selectCircleListAll();
 	int selectOperatorFromCircleCount(HashMap<String, String> param);

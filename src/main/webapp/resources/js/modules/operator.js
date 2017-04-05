@@ -910,10 +910,10 @@ function proccessGroup(accessDiv, proccessDiv, formId) {
 			return;
 		}
 		
-		if(menuListStr == '') {
-			swal("Fail !","Please check the Menu", "warning");
-			return;
-		}
+//		if(menuListStr == '') {
+//			swal("Fail !","Please check the Menu", "warning");
+//			return;
+//		}
 		
 		$.ajax({
 			url: '/dashbd/api/operator/proccessGroup.do',

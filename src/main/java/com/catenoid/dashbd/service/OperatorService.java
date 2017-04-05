@@ -32,7 +32,7 @@ public interface OperatorService {
 	public List<HashMap<String,String>> selectOperatorFromCircle(HashMap<String, String> param);
 	
 	public List<Users> selectMemberList(HashMap<String, Object> param);
-	public Operator selectByGradeName(String operatorName);
+	public Operator selectByGradeInfo(HashMap<String, Object> param);
 	public Operator selectByOperatorName(String operatorName);
 	public int getMemberListCount(HashMap<String, Object> param);
 	

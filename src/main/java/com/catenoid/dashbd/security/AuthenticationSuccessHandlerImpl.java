@@ -72,8 +72,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_LOCKED + "&userId="+userId);
 		}
 		
-		// Super Admin일 경우
-		if (permission.size() != 0) {
+//		if (permission.size() != 0) {
 			HttpSession session = request.getSession(false);
 			session.setAttribute("USER", user);
 			
@@ -95,18 +94,18 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			logMapper.insertSystemAjaxLog(logMap);
 			
 			response.sendRedirect("/dashbd/resources/main.do");
-		}
-		else { // 부여된 권한이 없는 경우
-			logger.info("<- [redirect = {}] [cause = {}]", "/dashbd/loginfail.do", Const.LOGIN_FAIL_MISMATCH);
-
-			map.put("reqType", "Login");
-			map.put("reqSubType", "login");
-			map.put("reqUrl", "login.do");
-			map.put("reqCode", "Fail");
-			map.put("reqMsg", Const.LOGIN_FAIL_MISMATCH);
+//		}
+//		else { // 부여된 권한이 없는 경우
+//			logger.info("<- [redirect = {}] [cause = {}]", "/dashbd/loginfail.do", Const.LOGIN_FAIL_MISMATCH);
+//
+//			map.put("reqType", "Login");
+//			map.put("reqSubType", "login");
+//			map.put("reqUrl", "login.do");
+//			map.put("reqCode", "Fail");
+//			map.put("reqMsg", Const.LOGIN_FAIL_MISMATCH);
 //			mapper.insertSystemAjaxLog(map);
-			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_MISMATCH);
-		}
+//			response.sendRedirect("/dashbd/loginfail.do?cause=" + Const.LOGIN_FAIL_MISMATCH);
+//		}
 	}
 
 }

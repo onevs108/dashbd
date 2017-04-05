@@ -233,7 +233,9 @@ public class UsersController {
 		if(addUser.getOperatorId() != null){
 			operator = operatorServiceImpl.getOperator(addUser.getOperatorId());
 		}else{
-			operator = operatorServiceImpl.selectByGradeName(addUser.getOperatorName());
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			param.put("groupName", addUser.getOperatorName());
+			operator = operatorServiceImpl.selectByGradeInfo(param);
 		}
 		String[] permission = operator.getPermission().split(",");
 		List<String> permissions = new ArrayList<String>();

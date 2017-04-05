@@ -34,6 +34,8 @@
 	<script src="../resources/js/common.js"></script>
 	<script src="../resources/js/modules/content-list.js"></script>
 	
+	<script src="/dashbd/resources/newPublish/js/plugins/digitalclock/script.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
 	
 	<script type="text/javascript">
 		$(document).ready(function() {

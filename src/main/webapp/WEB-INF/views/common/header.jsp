@@ -15,7 +15,7 @@
 			<li>
 				<div class="profile-element">
 					<span class="clear">
-						<span class="block m-t-xs">
+						<span class="block m-t-xs" style="padding: 14px 10px 14px 15px;">
 							<c:choose>
 								<c:when test="${USER.grade == 13}">
 									<strong class="font-bold">${USER.lastName} ${USER.firstName} (${USER.department})</strong>
@@ -26,6 +26,13 @@
 							</c:choose>
 						</span>
 					</span>
+					
+				</div>
+			</li>
+			<li>
+				<h2 class="text-center"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
+				<div id="headerClock" class="light">
+					<div class="digits"></div>
 				</div>
 			</li>
 			<li><a href="/dashbd/out"><i class="fa fa-sign-out"></i>
