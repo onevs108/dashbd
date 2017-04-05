@@ -834,11 +834,22 @@ public class ScheduleMgmtController {
 				saidList.add(said);
 //				paramList.add(6, saidList);
 			}else{
-				for (int i = 0; i < saidList.size(); i++) {
-					if(i == saidList.size()-1){
-						said += String.valueOf(saidList.get(i));
-					}else{
-						said += String.valueOf(saidList.get(i))+",";
+				if(params.get("serviceType").equals("streaming")){
+					for (int i = 0; i < saidList.size(); i++) {
+						if(i == saidList.size()-1){
+							said += String.valueOf(saidList.get(i));
+						}else{
+							said += String.valueOf(saidList.get(i))+",";
+						}
+					}
+				}else{
+					String[] saidArray = saidList.get(0).split(",");
+					for (int i = 0; i < saidArray.length; i++) {
+						if(i == saidArray.length-1){
+							said += saidArray[i];
+						}else{
+							said += saidArray[i]+",";
+						}
 					}
 				}
 				params.put("serviceAreaId", said);
