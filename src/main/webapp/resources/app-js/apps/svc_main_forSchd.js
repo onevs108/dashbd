@@ -203,22 +203,21 @@ $(document).ready(function()
     	$("#selectHotspot").html("");
     });
     
-    if(userGrade == 9999) {
-    	$($("input[name='radio']")[2]).click();
-    	setTimeout(() => {
-    		$("#selectHotspot").show();
-    		$("#selectHotspotLabel").show();
-    		$("#selectCityLabel").html("City");
-    		$("#selectArea").show();
-    		$("#selectCircle option:eq(1)").attr("selected", "selected");
-    		$("#selectCircle").change();
-    	}, 500);
-    }else{
-    	setTimeout(() => {
-        	$($("input[name='radio']")[1]).click();
-    	}, 500);
-    }
 });
+
+$(window).load(function() {
+    if(userGrade == 9999) {
+		$($("input[name='radio']")[2]).click();
+		$("#selectHotspot").show();
+		$("#selectHotspotLabel").show();
+		$("#selectCityLabel").html("City");
+		$("#selectArea").show();
+		$($("#selectCircle option")[1]).prop("selected", true);
+		$("#selectCircle").change();
+	} else {
+		$($("input[name='radio']")[1]).click();
+	}
+})
 
 var perPage = 15;
 var listPageCount = 10;
