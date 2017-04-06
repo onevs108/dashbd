@@ -72,8 +72,6 @@ public class Const {
 //	public static final String MENU_SCHEDULE_MGMT 			= "SCHEDULE_MGMT";
 //	public static final String MENU_SYSTEM_MGMT 			= "SYSTEM_MGMT";
 //	public static final String MENU_SYSTEM_STAT_MGMT		= "SYSTEM_STAT_MGMT";
-//	public static final String MENU_SYSTEM_CONF_MGMT		= "SYSTEM_CONF_MGMT";
-//	public static final String MENU_SYSTEM_DB_MGMT			= "SYSTEM_DB_MGMT";
 	
 	public static final String MENU_OPERATOR_MGMT 			= "USER_MGMT";
 	public static final String MENU_OPERATOR_GROUP_MGMT		= "OPERATOR_MGMT";
@@ -86,6 +84,8 @@ public class Const {
 	public static final String MENU_SESSION_MONITORING		= "SESSION_MONITORING";
 	public static final String MENU_SYSTEM_MGMT				= "SYSTEM_MGMT";
 	public static final String MENU_LOG_MGMT				= "LOG_MGMT";
+	public static final String MENU_SYSTEM_CONF_MGMT		= "SYSTEM_CONF_MGMT";
+	public static final String MENU_SYSTEM_DB_MGMT			= "SYSTEM_DB_MGMT";
 	
 	public static String getLogTime() {
 		Calendar cal = Calendar.getInstance(Locale.KOREA);
