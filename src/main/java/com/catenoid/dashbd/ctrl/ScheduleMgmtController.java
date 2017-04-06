@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -342,7 +343,7 @@ public class ScheduleMgmtController {
 		int ret = mapper.addScheduleWithInitContent(params);
 		logger.info("addScheduleWithInitContent [ret={}]", ret);
 
-		return makeRetMsg("1000", "SUCCESS");
+		return makeRetMsg("1000", "OK");
 	}
 	
 	@RequestMapping(value = "view/modifyScheduleTime.do")
@@ -351,7 +352,7 @@ public class ScheduleMgmtController {
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		logger.info("modifyScheduleTime param{}", params);
-
+		HashMap<String, String> retValue = new HashMap<String, String>();
 		try{
 			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
 			Bmsc bmsc = mapperBmsc.selectBmsc(Integer.parseInt(params.get("bmscId")));
@@ -380,27 +381,19 @@ public class ScheduleMgmtController {
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				
 				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
-	
+				retValue = parseRes(resStr[0]);
 				//@ check return XML success
 				if (!xmlManager.isSuccess(resStr[0]))
-					return makeRetMsg("9000", resStr[0]);
-		}
+					return makeRetMsg(retValue.get("code"), retValue.get("message"));
+			}
 		}catch(Exception e){
 			logger.error("", e);
 			return makeRetMsg("9999", e.getMessage());
 		}
-		
-		return makeRetMsg("1000", "SUCCESS");
+		return makeRetMsg(retValue.get("code"), retValue.get("message"));
 	}
 	
 
-	/**
-	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏�
-	 * @param locale
-	 * @param model
-	 * @return
-	 * @throws UnsupportedEncodingException
-	 */
 	@RequestMapping(value = "view/schdMgmtDetail.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
 		logger.info("schdMgmtDetail {}", params);
@@ -866,10 +859,11 @@ public class ScheduleMgmtController {
 			params.put("bmscIp", bmsc.getIpaddress());
 			
 			String[] resStr = xmlManager.sendBroadcast(params, xmlMode, saidData, paramList);
-			
+			HashMap<String, String> retValue = parseRes(resStr[0]);
 			//@ check return XML success
-//			if (!xmlManager.isSuccess(resStr[0]))
-//				return makeRetMsg("9000", resStr[0]);
+			if (!xmlManager.isSuccess(resStr[0])){
+				return makeRetMsg(retValue.get("code"), retValue.get("message"));
+			}
 			
 			if (bcid == null || "".equals(bcid)) {
 				if(params.get("serviceMode").equals("MooD")){
@@ -928,13 +922,23 @@ public class ScheduleMgmtController {
 			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
 			logMapper.insertSystemAjaxLog(logMap);
 			
-	        return makeRetMsg("1000", "SUCCESS");
+	        return makeRetMsg(retValue.get("code"), retValue.get("message"));
 		}catch(Exception e){
 			logger.error("", e);
 			return makeRetMsg("9999", e.getMessage());
 		}
 	}
 	
+	public HashMap<String, String> parseRes(String retStr) throws JDOMException, IOException{
+		HashMap<String, String> retValue = new HashMap<String, String>(); 
+		Document doc = null;
+		doc = new SAXBuilder().build(new StringReader(retStr));
+		Element message = doc.getRootElement();
+		retValue.put("code", message.getChild("transaction").getChild("result").getChild("code").getValue());
+		retValue.put("message", message.getChild("transaction").getChild("result").getChild("message").getValue());
+		
+		return retValue;
+	}
 	
 	public int insertContentInfo(String xmlString, String scheduleId) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -1023,7 +1027,7 @@ public class ScheduleMgmtController {
 	@ResponseBody
 	public Map< String, Object > delSchedule( @RequestParam Map< String, String > params,
             HttpServletRequest request, Locale locale ) {
-		
+		HashMap<String, String> retValue = new HashMap<String, String>();
 		logger.info("delSchedule params{}", params);
 		try{
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -1040,10 +1044,10 @@ public class ScheduleMgmtController {
 				
 				//@ xmlMake & Send, recv
 				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_DELETE);
-				
+				retValue = parseRes(resStr[0]);
 				//@ check return XML success
 				if (!xmlManager.isSuccess(resStr[0]))
-					return makeRetMsg("9000", resStr[0]);
+					return makeRetMsg(retValue.get("code"), retValue.get("message"));
 				
 				String scheduleType = "Schedule";
 				if(params.get("type").equals("national")){
@@ -1066,23 +1070,11 @@ public class ScheduleMgmtController {
 				logMapper.insertSystemAjaxLog(logMap);
 			}
 
-			/*
-			//@ update delete flag 
-			int ret = mapper.updateBroadcastInfo4Del(params);
-			logger.info("insertBroadcastInfo ret{}", ret);
-			*/
-			
 			//@ update delete flag 
 			int ret = mapper.updateSchedule4Del(params);
 			logger.info("updateSchedule ret{}", ret);
-
-			Map< String, Object > returnMap = new HashMap< String, Object >();
-	        returnMap.put( "resultCode", "1000" );
-	        returnMap.put( "resultMsg", "SUCCESS");
-	        Map< String, Object > resultMap = new HashMap< String, Object >();
-	        resultMap.put( "resultInfo", returnMap );
-	        
-			return (Map<String, Object>) resultMap;
+			
+			return makeRetMsg(retValue.get("code"), retValue.get("message"));
 			
 		}catch(Exception e){
 			logger.error("", e);
@@ -1111,9 +1103,8 @@ public class ScheduleMgmtController {
 		
 		return "" + ++transID;
 	}
-
+	
 	private Map<String, Object> makeRetMsg(String code, String resStr) {
-		
 		Map< String, Object > returnMap = new HashMap< String, Object >();
 	    returnMap.put( "resultCode", code );
 	    returnMap.put( "resultMsg", resStr);

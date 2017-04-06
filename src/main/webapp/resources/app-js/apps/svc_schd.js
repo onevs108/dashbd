@@ -140,7 +140,7 @@ function setTimeTable(data){
 			}
 		}
 	}
-//	$("time").css("width", "100%");
+
 	setTimeline(maxPosition, viewStartHour);
 }
 

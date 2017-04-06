@@ -142,7 +142,7 @@ $(document).ready(function()
     					title: "Success !",
     					text: "Circle is updated!"
     				});
-    				setTimeout(() => {
+    				setTimeout(function() {
     					location.reload();
     				}, 1000);
     			} else {
@@ -189,7 +189,7 @@ $(document).ready(function()
     					title: "Success !",
     					text: "City is created!"
     				});
-    				setTimeout(() => {
+    				setTimeout(function() {
     					location.reload();
     				}, 2000);
     			} else {
@@ -229,7 +229,7 @@ $(document).ready(function()
     					title: "Success !",
     					text: "City is updated!"
     				});
-    				setTimeout(() => {
+    				setTimeout(function() {
     					location.reload();
     				}, 2000);
     			} else {

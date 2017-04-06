@@ -205,7 +205,7 @@ $(document).ready(function()
     
     if(userGrade == 9999) {
     	$($("input[name='radio']")[2]).click();
-    	setTimeout(() => {
+    	setTimeout(function(){
     		$("#selectHotspot").show();
     		$("#selectHotspotLabel").show();
     		$("#selectCityLabel").html("City");
@@ -214,7 +214,7 @@ $(document).ready(function()
     		$("#selectCircle").change();
     	}, 500);
     }else{
-    	setTimeout(() => {
+    	setTimeout(function(){
         	$($("input[name='radio']")[1]).click();
     	}, 500);
     }

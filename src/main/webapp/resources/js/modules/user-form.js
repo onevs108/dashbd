@@ -160,7 +160,7 @@ function setElements(user) {
 	if(user.grade == '9999'){$("#circleArea").show();}
 	$('#form-operator-id').val(user.circleName);
 	getTownListFromCircle(user.circleName);
-	setTimeout(() => {
+	setTimeout(function() {
 		$('#form-circle').val(user.operatorId);
 	}, 200);
 	$('#form-circle').val(user.operatorId);

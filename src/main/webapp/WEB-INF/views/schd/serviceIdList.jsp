@@ -79,11 +79,11 @@
 
 	$(document).ready(function(){
 		getServiceIdList();
-		$("#serviceId_M").val($("#selectServiceId").val()+$("#idIdx").val());
+		$("#serviceId_M").val($("#selectServiceId").val()+":"+$("#idIdx").val());
 	});
 	
 	function setSelectServiceId() {
-		$("#serviceId_M").val($("#selectServiceId").val()+$("#idIdx").val());
+		$("#serviceId_M").val($("#selectServiceId").val()+":"+$("#idIdx").val());
 	}
 	
 	function setServiceId() {

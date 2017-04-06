@@ -199,17 +199,11 @@ $(document).ready(function()
 			location.href = "schdMgmt.do";
 		},
 		error : function(request, status, error) {
-//			alert("request=" +request +",status=" + status + ",error=" + error);
 			alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
 	
 	$("#btnOK,#btnUPDATE").click(function() {
-		if($("#serviceId").val() == ""){
-			alert("Please enter the Service Id");
-			$("#serviceId").focus();
-			return;
-		}
 		var saidList = "";
 		if($("#serviceType").val() == "streaming") {
 			var saidListLength = $("input[name='saidList']").length;
@@ -863,6 +857,12 @@ function addContentRemoveEvent(){
 }
 
 function valadationCheck(){
+	if($("#serviceId").val() == ""){
+		alert("Please enter the Service Id");
+		$("#serviceId").focus();
+		return;
+	}
+	
 	if ($("#fecType").val()== 'Raptor' && $("#fecRatio").val() == '0'){
 		alert('0 is not allowed for ratio.')
 		return false;
@@ -880,14 +880,16 @@ function valadationCheck(){
 	
 	//console.log(s_start, '+', s_stop, '+',d_start, '+',d_end, '+');
 	
-	if (d_start < s_start ){
-		alert("It can not be 'content start time' over than 'schedule start time' ");
-		return false;
-	}
-	
-	if (d_end > s_stop ){
-		alert("It can not be 'content start stop time' over than 'schedule Stop time' ");
-		return false;
+	if($("#serviceType").val() != "streaming"){
+		if (d_start < s_start ){
+			alert("It can not be 'content start time' over than 'schedule start time' ");
+			return false;
+		}
+		
+		if (d_end > s_stop ){
+			alert("It can not be 'content start stop time' over than 'schedule Stop time' ");
+			return false;
+		}
 	}
 	
 	return true;

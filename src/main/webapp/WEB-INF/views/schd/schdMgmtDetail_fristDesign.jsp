@@ -517,7 +517,7 @@
 				data : param,
 				dataType : "json",
 				success : function( data ) {
-					alert('Success to add schedule');
+					alert('Please enter detailed parameters in next screen');
 				},
 				error : function(request, status, error) {
 					alert("request=" +request +",status=" + status + ",error=" + error);
