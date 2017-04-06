@@ -129,7 +129,7 @@ $(document).ready(function()
                         title: "Success !",
                         text: "Circle is created!"
                     });
-            		setTimeout(() => {
+            		setTimeout(function() {
             			location.reload();
 					}, 1000);
             	} else {
@@ -165,7 +165,7 @@ $(document).ready(function()
     					title: "Success !",
     					text: "Circle is updated!"
     				});
-    				setTimeout(() => {
+    				setTimeout(function() {
     					location.reload();
     				}, 1000);
     			} else {
@@ -212,7 +212,7 @@ $(document).ready(function()
     					title: "Success !",
     					text: "City is created!"
     				});
-    				setTimeout(() => {
+    				setTimeout(function() {
     					location.reload();
     				}, 2000);
     			} else {
@@ -252,7 +252,7 @@ $(document).ready(function()
     					title: "Success !",
     					text: "City is updated!"
     				});
-    				setTimeout(() => {
+    				setTimeout(function() {
     					location.reload();
     				}, 2000);
     			} else {
@@ -1563,7 +1563,7 @@ function deleteCircle(circleId) {
 	                title: "Success !",
 	                text: "삭제 되었습니다."
 	            });
-	        	setTimeout(() => {
+	        	setTimeout(function() {
 	        		location.reload();
 				}, 2000);
 	        },
@@ -1715,7 +1715,7 @@ function changeCityInCircle(cityId, circleId, circleName) {
                 title: "Success !",
                 text: "이동 되었습니다."
             });
-        	setTimeout(() => {
+        	setTimeout(function() {
 				location.reload();
 			}, 1000);
         },

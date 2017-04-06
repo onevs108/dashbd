@@ -436,7 +436,7 @@ function setTimeline(calView) {
     .css('left',left+"px")
     .css('top',top+"px") 
     
-    $(".fc-time-grid-container").animate({scrollTop : top - top/4}, 400);	//최초 스크롤 위치 조정
+    $(".fc-time-grid-container").animate({scrollTop : top - top/12}, 400);	//최초 스크롤 위치 조정
     $(".fc-widget-content").css("background-color", "white");				//달력 배경 흰색으로
 }
 
@@ -496,8 +496,6 @@ function deleteSchedule(url){
 		async: false,
 		success : function( data ) {
 			g_delRetrun = outMsgForAjax(data)
-			
-			//location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate;
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -507,7 +505,6 @@ function deleteSchedule(url){
 }
 	
 function addSchedule(content_id, g_name, startTime, endTime){
-	
 	var param = {
 			serviceAreaId : $("#serviceAreaId").val(),
 			bmscId : $("#bmscId").val(),
@@ -524,13 +521,12 @@ function addSchedule(content_id, g_name, startTime, endTime){
 		data : param,
 		dataType : "json",
 		success : function( data ) {
-			alert('Success to add schedule');
+			alert('Please enter detailed parameters in next screen');
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
-
 }
 function replaceAll4Time(input){
 	var output;

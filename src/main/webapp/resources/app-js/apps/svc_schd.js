@@ -140,7 +140,7 @@ function setTimeTable(data){
 			}
 		}
 	}
-//	$("time").css("width", "100%");
+
 	setTimeline(maxPosition, viewStartHour);
 }
 
@@ -157,12 +157,12 @@ function setTimeline(maxRow, viewStartHour) {
     var width =   24;
     var height =  46;
     
-    //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;;
+    //var top = ( (now.hours()*3600)+(now.minutes()*60)+now.seconds() )/86400;
     var position = ((now.hours() - viewStartHour) + (now.minutes() / 60)) * 4 ;
     
     console.log('now.hours()=',now.hours(), ', height=',height,', left=',left,', position=',position);
     
-    var rowsHeight= height * maxRow ;
+    var rowsHeight= height * maxRow;
     var left = width * position;
     console.log('top=',top);
     

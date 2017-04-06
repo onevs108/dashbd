@@ -592,17 +592,17 @@
       VALUES (
       	#{reqType} <if test="targetId != null and targetId != ''">, #{targetId}</if>, #{reqSubType},
       	<if test="reqUrl == 'scheduleReg.do'">#{serviceType}, #{serviceClass}, #{serviceId}, #{said},</if> 
-      	#{reqUrl}, #{reqCode}, #{reqMsg}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW()
+      	#{reqUrl}, #{reqCode}, #{reqMsg}, substring(now(), 1, 10), NOW()
       )
   </insert>
   
   <insert id="insertSystemInterFaceLog" parameterType="Map">
       INSERT INTO system_interface_log 
       	(method_bcid, method_bmsc_id, method_mode, method_transaction_id, method_service_type, method_fec_type, method_mpd_uri, method_file_uri, 
-      	 method_bmsc_ip, method_name, method_service_id, method_said, method_code, method_msg, insert_at, created_at)
+      	 method_bmsc_ip, method_name, method_service_id, method_said, method_code, insert_at, created_at)
       VALUES
       	(#{BCID}, #{bmscId}, #{methodMode}, #{transactionId}, #{serviceType}, #{fecType}, #{mpdURI}, #{fileURI}, 
-      	 #{bmscIp}, #{name}, #{serviceId}, #{said}, #{methodCode}, #{methodMsg}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW())
+      	 #{bmscIp}, #{name}, #{serviceId}, #{said}, #{methodCode}, DATE_FORMAT(NOW(), '%Y-%m-%d'), NOW())
   </insert>
   
   <select id="selectUserListByCondition" parameterType="HashMap" resultMap="BaseResultMap">

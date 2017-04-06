@@ -117,8 +117,8 @@ public class XmlManager {
 		Element message = doc.getRootElement();
 		int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
 		
-//		if (resultCode == 1000)
-//			return true;
+		if (resultCode == 1000)
+			return true;
 		
 		return false;
 	}
@@ -314,12 +314,6 @@ public class XmlManager {
 				}
 			}
 			
-//			111111,9999912 | 111111
-//			String[] said = params.get("saidDefault").split(",");
-//			for (int i = 0; i < said.length; i++) {
-//				serviceArea.addContent( new Element("said").setText(said[i]));
-//			}
-			
 			if ("on".equals(params.get("FileRepair"))){
 				Element fileRepair= null; 
 				fileRepair = new Element("postFileRepair");
@@ -379,6 +373,11 @@ public class XmlManager {
 				}
 				associatedDelivery.addContent(consumptionReport);
 			}
+			
+			if ("on".equals(params.get("receptionReport"))){
+				associatedDelivery.addContent(receptionReport);
+			}
+			
 			serviceType = streaming;
 		} 
 		
@@ -400,8 +399,6 @@ public class XmlManager {
 					content.setAttribute(new Attribute("changed", "false"));				
 					content.addContent(new Element("fileURI").setText(paramList.get(2).get(j)));
 					Element deliveryInfo = new Element("deliveryInfo");
-//					ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
-//					scheduleMapper.insertContents();
 					//time format ex) 2015-04-10T17:24:09.000+09:00
 					if(SERVICE_TYPE_FILE_DOWNLOAD.equals(params.get("serviceType"))) {
 						deliveryInfo.setAttribute(new Attribute("start", convertDateFormatNew(paramList.get(3).get(j))));
