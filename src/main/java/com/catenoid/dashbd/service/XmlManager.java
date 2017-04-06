@@ -373,6 +373,11 @@ public class XmlManager {
 				}
 				associatedDelivery.addContent(consumptionReport);
 			}
+			
+			if ("on".equals(params.get("receptionReport"))){
+				associatedDelivery.addContent(receptionReport);
+			}
+			
 			serviceType = streaming;
 		} 
 		
