@@ -368,53 +368,50 @@ $(document).on("click", "#save-btn", function() {
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Yes",
         cancelButtonText: "No",
-        closeOnConfirm: false,
-        closeOnCancel: false
-    }, function(isConfirm) {
-    	if(isConfirm) {
-    		//체크된 핫스팟 아이디들을 불러옴
-    		var resultStr = getCheckedHotspotData();
-    		
-    		if(resultStr != '') {
-    			$.ajax({
-    			    url : "/dashbd/api/saveServiceAreaGroupSub.do",
-    			    type: "POST",
-    			    data : { 
-        				group_id : serviceAreaGroupId,
-    			    	resultStr : resultStr
-    			    },
-    			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-    			    success : function(responseData) {
-    			        $("#ajax").remove();
-    			        var data = JSON.parse(responseData);
-    			        
-    			        if(data.resultCode == 'S') {
-    			        	swal({
-    			                title: "Success !",
-    			                text: "Success",
-    			                type:"success"
-    			            },
-    			            function() {
-    			            	
-    			            })
-    			        } else {
-    			        	swal({
-    			                title: "Fail !",
-    			                text: "Error"
-    			            });
-    			        }
-    			    },
-    		        error : function(xhr, status, error) {
-    		        	swal({
-    		                title: "Fail !",
-    		                text: "Error"
-    		            });
-    		        }
-    			});
-    		} else {
-    			swal("Fail !", "Please select data", "error");
-    		}
-    	} 
+        closeOnConfirm: false
+    }, function() {
+		//체크된 핫스팟 아이디들을 불러옴
+		var resultStr = getCheckedHotspotData();
+		
+		if(resultStr != '') {
+			$.ajax({
+			    url : "/dashbd/api/saveServiceAreaGroupSub.do",
+			    type: "POST",
+			    data : { 
+    				group_id : serviceAreaGroupId,
+			    	resultStr : resultStr
+			    },
+			    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			    success : function(responseData) {
+			        $("#ajax").remove();
+			        var data = JSON.parse(responseData);
+			        
+			        if(data.resultCode == 'S') {
+			        	swal({
+			                title: "Success !",
+			                text: "Success",
+			                type:"success"
+			            },
+			            function() {
+			            	
+			            })
+			        } else {
+			        	swal({
+			                title: "Fail !",
+			                text: "Error"
+			            });
+			        }
+			    },
+		        error : function(xhr, status, error) {
+		        	swal({
+		                title: "Fail !",
+		                text: "Error"
+		            });
+		        }
+			});
+		} else {
+			swal("Fail !", "Please select data", "error");
+		}
 //    	else {
 //    		swal("Cancelled", "Your imaginary file is safe :)", "error");
 //    	} 
