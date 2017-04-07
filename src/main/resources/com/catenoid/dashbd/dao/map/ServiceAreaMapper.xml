@@ -1725,6 +1725,7 @@
 						            , circle.scheduleId
 						            , null as emergencyYn
 						            , circle.serviceMode
+						            , circle.said
 						      FROM (
 						          SELECT circle_id, circle_name, max(layerDiv) as layerDiv
 						          FROM (
@@ -1834,6 +1835,7 @@
 						          , CASE WHEN mood.countUC is null THEN '-'
 						          		 ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
 						          	END as viewers
+						          , broad.said
 						          FROM circle circle
 						          INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 						          ON circle.circle_id = broad.said
@@ -1871,6 +1873,7 @@
 							          , schedule.id as scheduleId		
 							          , schedule.emergency_yn as emergencyYn
 							          , broad.serviceMode
+							          , broad.said
 								FROM broadcast_info broad
 								INNER JOIN schedule schedule
 								ON broad.bcid = schedule.bcid
@@ -2221,6 +2224,7 @@
 				      , city.onAirYn
 				      , hotspot.scheduleId
 				      , hotspot.nationalYn
+				      , city.said
 				FROM (
 				    SELECT circle_id, city_id, city_name, max(layerDiv) as layerDiv, schedule.id as scheduleId, schedule.national_yn as nationalYn
 				    FROM (
@@ -2261,6 +2265,7 @@
 			          		ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
+				    , broad.said
 				  FROM city city
 				  INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 				  ON city.city_id = broad.said
@@ -2286,8 +2291,6 @@
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 				    , IFNULL(fecRatio, 0) as fecRatio
-<!-- 				    , '-' as deleveryType -->
-<!-- 				    , '-' as viewers -->
 					, CASE WHEN mood.countUC is null THEN 'Unicast'
 			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
 			          END as deleveryType
@@ -2296,6 +2299,7 @@
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId, schedule.national_yn as nationalYn 
+				    , broad.said
 				FROM (<include refid="Reginal_Schedule_Divide" />) broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said
@@ -2321,8 +2325,6 @@
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 				    , IFNULL(fecRatio, 0) as fecRatio
-<!-- 				    , '-' as deleveryType -->
-<!-- 				    , '-' as viewers -->
 					, CASE WHEN mood.countUC is null THEN 'Unicast'
 			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
 			          END as deleveryType
@@ -2332,6 +2334,7 @@
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId
 				    , schedule.national_yn as nationalYn
+				    , broad.said
 				FROM (<include refid="Reginal_Schedule_Divide" />) broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said

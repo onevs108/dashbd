@@ -19,7 +19,6 @@
 							<video id="Video1" data-dashjs-player controls></video>
 						</div>
 						<div id="infoArea" class="row" style="display:none;">
-							<div align="center">BroadCast Info Page</div> 
 						</div>
 					</fieldset>
 				</div>

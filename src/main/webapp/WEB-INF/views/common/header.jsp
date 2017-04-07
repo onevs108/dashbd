@@ -30,10 +30,7 @@
 				</div>
 			</li>
 			<li>
-				<h2 class="text-center"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
-				<div id="headerClock" class="light">
-					<div class="digits"></div>
-				</div>
+				<h3 class="text-center" style="padding-top: 9px;"><div id="headerClock"></div></h3>
 			</li>
 			<li><a href="/dashbd/out"><i class="fa fa-sign-out"></i>
 					Log out</a></li>
@@ -198,6 +195,14 @@
 <script type="text/javascript">
 	var commonYn;
 	var checkUserId = false;
+	
+	$(document).ready(function() {
+		if(location.href.indexOf("main") != -1) {
+			$("#headerClock").remove();
+		} else {
+			setInterval('updateClock ()', 1000);	
+		}
+	});
 	
 	function doSearch() {
 		$('#table').bootstrapTable('destroy');

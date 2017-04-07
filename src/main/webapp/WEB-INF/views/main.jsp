@@ -16,16 +16,22 @@
 	<style type="text/css">
 		.main .main-sch .tb_tpl1 #table > tbody > tr > td > table thead th {
 		    padding: 3px 8px;
-		    background-color: #6f6f6f;
+		    background-color: #1ab394;
 		    text-align : left;
 		}
 		.main .main-sch .tb_tpl1 #table > tbody > tr > td> table {
-		    border-top: solid 2px #000;
-		    border-bottom: solid 1px #000; 
+		    border-top: solid 2px #1ab394;
+		    border-bottom: solid 1px #1ab394; 
 		}
 	</style>
 	
 	<jsp:include page="common/head.jsp" />
+	
+	<style type="text/css">
+		.table {
+			font-size: 11px;
+		}
+	</style>
 </head>
 <body>
 	<div id="wrapper" class="main">
@@ -219,7 +225,7 @@
 													<th>Service ID</th>
 													<th>Service Name</th>
 													<th>Service type</th>
-													<th>Schedule Type</th>
+<!-- 													<th>Schedule Type</th> -->
 													<th>Start time</th>
 													<th>Stop time</th>
 													<th>GBR</th>
@@ -229,20 +235,6 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr name="tr${status.index}">
-													<td><c:if test="${obj.subCnt > 0}"><span style="cursor: pointer;" onclick="callSubScheduleData(this, '${obj.layerDiv}', '${obj.psaid}')"><i class="fa fa-plus-square"></i></span></c:if></td>
-													<td name="circleName">${obj.circleName}</td>
-													<td name="serviceId"><i class="ondisp ${onairYn}"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup('${obj.scheduleType}', '${obj.serviceId}')">${obj.serviceId}</a></td>
-													<td name="serviceName">${obj.serviceName}</td>
-													<td name="service">${obj.service}</td>
-													<td name="scheduleType">${obj.scheduleType}</td>
-													<td name="scheduleStart">${obj.scheduleStart}</td>
-													<td name="scheduleStop">${obj.scheduleStop}</td>
-													<td name="gbr">${obj.gbr}</td>
-													<td name="fecRatio">${obj.fecRatio}%</td>
-													<td name="deleveryType">${obj.deleveryType}</td>
-													<td name="viewers">${obj.viewers}</td>
-												</tr>												
 											</tbody>
 										</table>
 									</div>
@@ -435,12 +427,12 @@
 						
 						if(value == 'emergency' || value == 'national') {
 							if(row.serviceMode == 'MooD') 
-								html += '<span style="cursor: pointer;" onclick="callNationalSubScheduleData(this, \'' + row.serviceId + '\')"><i class="fa fa-plus-square"></i>' + value + '</span> ';
+								html += '<span style="cursor: pointer;" onclick="callNationalSubScheduleData(this, \'' + row.serviceId + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')"><i class="fa fa-plus-square"></i> ' + value + '</span> ';
 							else
 								html = value;
 						} else {
 							if(row.subCnt > 0) 
-								html += '<span style="cursor: pointer;" onclick="callSubScheduleData(this, \'' + row.layerDiv + '\', \'' + row.psaid + '\')"><i class="fa fa-plus-square"></i>' + value + '</span> ';
+								html += '<span style="cursor: pointer;" onclick="callSubScheduleData(this, \'' + row.layerDiv + '\', \'' + row.psaid + '\')"><i class="fa fa-plus-square"></i> ' + value + '</span> ';
 							else
 								html = value;	
 						}
@@ -450,14 +442,14 @@
 				}, {
 					field: 'serviceId',
 					title: 'Service ID',
-					width: '10%',
+					width: '13%',
 					align: 'left',
 					valign: 'middle',
 					sortable: true,
 					formatter: function(value, row, index) {
 						if(value != undefined && value != '') {
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
-	 						var html = '<i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a>';	
+	 						var html = '<i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\',  ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.serviceId + '</a>';	
 						} else {
 							var html = '';
 						}
@@ -467,7 +459,7 @@
 				}, {
 					field: 'serviceName',
 					title: 'Service Name',
-					width: '10%',
+					width: '12%',
 					align: 'left',
 					valign: 'middle',
 					sortable: true,
@@ -506,7 +498,8 @@
 					width: '10%',
 					align: 'left',
 					valign: 'middle',
-					sortable: true
+					sortable: true,
+					visible: false
 				}, {
 					field: 'scheduleStart',
 					title: 'Start Time',
@@ -531,7 +524,7 @@
 				}, {
 					field: 'fecRatio',
 					title: 'FEC (%)',
-					width: '10%',
+					width: '5%',
 					align: 'left',
 					valign: 'middle',
 					sortable: true,
@@ -589,7 +582,7 @@
 				        var data = JSON.parse(responseData).resultList;
 				        
 				        tableHtml += '<thead><tr><th>' + (data[0].layerDiv == 'hotspot'? 'City' : 'Hotspot') + '</th><th>Service ID</th><th>Service Name</th><th>Service type</th>';
-						tableHtml += '<th>Schedule Type</th><th>Start time</th><th>Stop time</th><th>GBR</th><th>FEC (%)</th>';
+						tableHtml += '<th>Start time</th><th>Stop time</th><th>GBR</th><th>FEC (%)</th>';
 						tableHtml += '<th>Delivery Type</th><th>#of Viewers</th></tr></thead>';
 						tableHtml += '<tbody>';
 				        
@@ -614,10 +607,10 @@
 							}
 							
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
-							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a></td>'; 						
+							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.serviceId + '</a></td>'; 						
 							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + row.serviceName + '</a></td>';
 							tableHtml += '<td>' + row.service + '</td>';
-							tableHtml += '<td>' + row.scheduleType + '</td>';
+// 							tableHtml += '<td>' + row.scheduleType + '</td>';
 							tableHtml += '<td>' + row.scheduleStart + '</td>';
 							tableHtml += '<td>' + row.scheduleStop + '</td>';
 							tableHtml += '<td>' + row.gbr + '</td>';
@@ -650,7 +643,7 @@
 			}
 		}
 		
-		function callNationalSubScheduleData(targetObj, serviceId) {
+		function callNationalSubScheduleData(targetObj, serviceId, rowData) {
 			if($(targetObj).find("i.fa-plus-square").length > 0) {
 				targetObj = $(targetObj).parents("tr")[0];
 				
@@ -665,52 +658,40 @@
 				    type: "POST",
 				    data : { 
 				    	serviceId : serviceId,
-				    	searchServiceType : $("#searchServiceType").val(),
-				    	searchSchedule : $("form input[type='radio'][name='searchSchedule']:checked").val(),
-				    	searchDateFrom : $("#searchDateFrom").val(),
-				    	searchDateTo : $("#searchDateTo").val(), 
-				    	searchType : $("#searchType").val(),
-				    	searchKeyword : $("#searchKeyword").val(),
+				    	rowData : JSON.stringify(rowData).replace(/\"/gi, "\'")
 				    },
 				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 				    success : function(responseData) {
 				        $("#ajax").remove();
 				        var data = JSON.parse(responseData).resultList;
 				        
-				        if(data != undefined) {
-				        	tableHtml += '<thead><tr><th>Area</th><th>Service ID</th><th>Service Name</th><th>Service type</th>';
-							tableHtml += '<th>Schedule Type</th><th>Start time</th><th>Stop time</th><th>GBR</th><th>FEC (%)</th>';
-							tableHtml += '<th>Delivery Type</th><th>#of Viewers</th></tr></thead>';
-							tableHtml += '<tbody>';
-					        
-					        for(var i=0; i < data.length; i++) {
-					        	var row = data[i];
-					        	tableHtml += '<tr>';
-								tableHtml += '<td>' + row.circleName + "</td>"
-								var onair = row.onAirYn == 'Y'? 'onair' : '';
-								tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.serviceId + '\')">' + row.serviceId + '</a></td>'; 						
-								tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + row.serviceName + '</a></td>';
-								tableHtml += '<td>' + row.service + '</td>';
-								tableHtml += '<td>' + row.scheduleType + '</td>';
-								tableHtml += '<td>' + row.scheduleStart + '</td>';
-								tableHtml += '<td>' + row.scheduleStop + '</td>';
-								tableHtml += '<td>' + row.gbr + '</td>';
-								tableHtml += '<td>' + row.fecRatio + '%</td>';
-								tableHtml += '<td>' + row.deleveryType + '</td>';
-								tableHtml += '<td>' + row.viewers + '</td>';
-								tableHtml += '</tr>';
-					        }
-					       	
-					        tableHtml += '</tbody></table></td></tr>';
-							$(targetObj).after(tableHtml);
-							$(targetObj).find("i.fa-plus-square").addClass("fa-minus-square");
-							$(targetObj).find("i.fa-plus-square").removeClass("fa-plus-square");
-				        } else {
-				        	swal({
-				                title: "Fail !",
-				                text: "No Data"
-				            });
+			        	tableHtml += '<thead><tr><th>Area</th><th>Service ID</th><th>Service Name</th><th>Service type</th>';
+						tableHtml += '<th>Start time</th><th>Stop time</th><th>GBR</th><th>FEC (%)</th>';
+						tableHtml += '<th>Delivery Type</th><th>#of Viewers</th></tr></thead>';
+						tableHtml += '<tbody>';
+				        
+				        for(var i=0; i < data.length; i++) {
+				        	var row = data[i];
+				        	tableHtml += '<tr>';
+							tableHtml += '<td>' + row.circleName + "</td>"
+							var onair = row.onAirYn == 'Y'? 'onair' : '';
+							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.serviceId + '</a></td>'; 						
+							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + row.serviceName + '</a></td>';
+							tableHtml += '<td>' + row.service + '</td>';
+// 							tableHtml += '<td>' + row.scheduleType + '</td>';
+							tableHtml += '<td>' + row.scheduleStart + '</td>';
+							tableHtml += '<td>' + row.scheduleStop + '</td>';
+							tableHtml += '<td>' + row.gbr + '</td>';
+							tableHtml += '<td>' + row.fecRatio + '%</td>';
+							tableHtml += '<td>' + row.deleveryType + '</td>';
+							tableHtml += '<td>' + row.viewers + '</td>';
+							tableHtml += '</tr>';
 				        }
+				       	
+				        tableHtml += '</tbody></table></td></tr>';
+						$(targetObj).after(tableHtml);
+						$(targetObj).find("i.fa-plus-square").addClass("fa-minus-square");
+						$(targetObj).find("i.fa-plus-square").removeClass("fa-plus-square");
 				    },
 			        error : function(xhr, status, error) {
 			        	swal({
@@ -920,7 +901,7 @@
 			});
 		}
 		
-		function callDetailLayerPopup(onAirYn, serviceType, serviceId) {
+		function callDetailLayerPopup(onAirYn, serviceType, row) {
 			if(onAirYn == 'Y' && serviceType == 'streaming') {
 				$("#streamingArea").show();
 				$("#infoArea").hide();
@@ -933,6 +914,32 @@
 				$("#streamingArea").hide();
 				$("#infoArea").show();
 				$(".modal-title").text("Service Info");
+				
+				var name = (row.circleName != undefined)? row.circleName : ((row.cityName != undefined)? row.cityName : row.hotspotName);    
+				
+				var innerHtml = '';
+				innerHtml += '<div class="col-lg-12">';
+					innerHtml += '<div class="form-group">';
+						innerHtml += '<label class="col-sm-12" style="font-size: 20px;">' + name + ' Schedule</label>';
+					innerHtml += '</div>';
+					innerHtml += '<div class="form-group">';
+						innerHtml += '<label class="col-sm-3">Service</label>';
+						innerHtml += '<div class="col-sm-9">' + row.serviceId + '</div>';
+					innerHtml += '</div>';
+					innerHtml += '<div class="form-group">';
+						innerHtml += '<label class="col-sm-3">Service Type</label>';
+						innerHtml += '<div class="col-sm-9">' + row.service + '</div>';
+					innerHtml += '</div>';
+					innerHtml += '<div class="form-group">';
+						innerHtml += '<label class="col-sm-3">Service Name</label>';
+						innerHtml += '<div class="col-sm-9">' + row.serviceName + '</div>';
+					innerHtml += '</div>';
+					innerHtml += '<div class="form-group">';
+						innerHtml += '<label class="col-sm-3">SAID List</label>';
+						innerHtml += '<div class="col-sm-9">' + row.said + '</div>';
+					innerHtml += '</div>';
+				innerHtml += '</div>';
+				$("#infoArea").html(innerHtml);
 			}
 			
 			$("#serviceModal").modal('show');		
