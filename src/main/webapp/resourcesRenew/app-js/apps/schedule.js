@@ -192,6 +192,9 @@ $(document).ready(function()
 		},
 		success : function(result) {
 			outMsgForAjax(result);
+			if(result.resultInfo.resultMsg == "9999"){
+				return;
+			}
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
 			var bmscId= $("#bmscId").val();
@@ -335,7 +338,29 @@ $(document).ready(function()
        });
 	})
 	
+	detailValidationCheck();
+	
 });
+
+function detailValidationCheck() {
+	$("#GBR").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("GBR is 1 ~ 7 digits");
+		}
+		return false;
+	});
+	
+}
+
+//정수 인지 체크
+function checkInteger(agr) {
+	var idReg = /^[0-9]{1,7}$/;
+	if(idReg.test(agr)){
+		return true;
+	}
+	return false;
+}
 
 function setSaidFromFile(saidList) {
 	var saidArray = saidList.split(",");
@@ -347,6 +372,10 @@ function setSaidFromFile(saidList) {
 function addSaidCheckFromFile(said) {
 	if(saidDefault == said) {
 		alert ('this said is default.other said input.');
+		return;
+	}
+	
+	if((","+$("input[name='saidList']").val()+",").indexOf(","+said+",") > -1) {
 		return;
 	}
 	
