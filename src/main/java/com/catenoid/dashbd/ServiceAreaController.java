@@ -1644,19 +1644,37 @@ public class ServiceAreaController {
 		try {
 			ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 			String serviceId = request.getParameter("serviceId");
+			String rowData = request.getParameter("rowData");
 			
 			HashMap< String, Object > searchParam = new HashMap();
 			searchParam.put("serviceId", serviceId);
 			
 			List<HashMap<String, Object>> resultList = mapper.getNationalSubSchedule(searchParam);
+			
+			//MooD데이터가 없을 경우 가비지 데이터를 만들어 넣어줌
+			if(resultList.size() == 0) {
+				Gson json = new Gson();
+				HashMap<String, Object> rowMap = json.fromJson(rowData, HashMap.class);
+				List<Circle> circleList = operatorServiceImpl.getCircleListNameAll();
 				
-			if(resultList.size() > 0) {
-				resultObj.put("resultCode", "S");
-				resultObj.put("resultList", resultList);
-			} else {
-				resultObj.put("resultCode", "F");
+				for(Circle circle : circleList) {
+					HashMap<String, Object> tempMap = new HashMap<String, Object>();
+					tempMap.put("circleName", circle.getCircle_name());
+					tempMap.put("onAirYn", rowMap.get("onAirYn"));
+					tempMap.put("service", rowMap.get("service"));
+					tempMap.put("serviceId", rowMap.get("serviceId"));
+					tempMap.put("serviceName", rowMap.get("serviceName"));
+					tempMap.put("scheduleStart", rowMap.get("scheduleStart"));
+					tempMap.put("scheduleStop", rowMap.get("scheduleStop"));
+					tempMap.put("gbr", rowMap.get("gbr"));
+					tempMap.put("fecRatio", rowMap.get("fecRatio"));
+					tempMap.put("deleveryType", rowMap.get("deleveryType"));
+					tempMap.put("viewers", rowMap.get("viewers"));
+					resultList.add(tempMap);
+				}
 			}
 			
+			resultObj.put("resultList", resultList);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 	        response.getWriter().print(resultObj.toJSONString());
 	    } catch (Exception e) {

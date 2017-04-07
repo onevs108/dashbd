@@ -286,3 +286,20 @@ function getTimeAddSecond15Guard(date, second) {
 		leadingZeros(d.getDate(), 2) + ' ' + d.toTimeString().substr(0,8);
 	return s;
 }
+
+function updateClock ()
+	{
+ 	var currentTime = new Date ( );
+  	var currentHours = currentTime.getHours ( );
+  	var currentMinutes = currentTime.getMinutes ( );
+  	var currentSeconds = currentTime.getSeconds ( );
+
+  	currentHours = ( currentHours == 0 ) ? 12 : ( currentHours > 12 )? currentHours - 12 : currentHours;
+  	currentHours = ( currentHours < 10 ) ? '0' + currentHours : currentHours; 
+  	currentMinutes = ( currentMinutes  < 10 ) ? '0'+ currentMinutes : currentMinutes;
+  	currentSeconds = ( currentSeconds  < 10 ) ? '0'+ currentSeconds : currentSeconds;
+
+  	// Compose the string for display
+  	var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
+  	$("#headerClock").html(currentTimeString);
+ }
