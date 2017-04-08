@@ -4,6 +4,9 @@ var gDuration = "";
 var g_name = "";
 var g_delRetrun;
 var currentTime = getTimeStamp();
+var glovalSaid = "";
+var g_ServiceGroupId = '';
+var g_ServiceAreaId = '';
 
 function getTimeStamp() {
 	var d = new Date();
@@ -30,29 +33,222 @@ function leadingZeros(n, digits) {
 }
 
 $(document).ready(function() {
-	
-	ctrl.initialize();
-	/*
-	$('.fc-prev-button span').click(function(){
-		alert('prev is clicked, do something');
+	$('#scheduleSearch').click(function(){
+		ctrl.initialize();
 	});
-	*/
-	loadContentList(1);
 	
 	$("#go-search").click(function() {
 		loadContentList();
 	});
 	
+	$("#selectCircle").on("change", function(e) {
+    	var url = "";
+    	var type = $("input[name='radio']:checked").val();
+    	if(type == "group"){
+    		url = "getGroupListFromCircleId.do";
+    	}else{
+    		url = "/dashbd/hotspot/getCityListFromCircleId.do";
+    	}
+    	
+    	var array = e.target[e.target.selectedIndex].value.split("^");
+    	var circleId = array[0];
+    	var circleName = array[1];
+    	if(circleId == ""){
+    		g_ServiceAreaId = "";
+    		$("#selectCity").html("");
+        	$("#selectHotspot").html("");
+    		return;
+    	}
+    	$.ajax({
+    		url : url,
+    		type: "post",
+    		data : { "circleId" : circleId },
+    		success : function(data) {
+    			var json = JSON.parse(data).result;
+    			var html = "<option value=''>Select City</option>";
+    			if(type == "group"){
+    				html = "<option value=''>Select Group</option>";
+    				for (var i = 0; i < json.length; i++) {
+                		html += "<option value='"+json[i].group_id+"^"+json[i].group_name+"^"+json[i].circle_id+"'>"+json[i].group_name+"</option>";
+    				}
+    			}else{
+    				for (var i = 0; i < json.length; i++) {
+                		html += "<option value='"+json[i].city_id+"^"+json[i].city_name+"^"+json[i].latitude+"^"+json[i].longitude+"'>"+json[i].city_name+"</option>";
+    				}
+    			}
+    			glovalSaid = circleId;
+    			g_ServiceAreaId = circleId;
+            	$("#selectCity").html(html);
+            	$("#selectHotspot").html("");
+            	ctrl.initialize();
+    		},
+    		error : function(xhr, status, error){
+    			swal({
+    				title: "Fail !",
+    				text: "Network Error"
+    			});
+    		}
+    	});
+    });
+    
+    $("#selectCity").on("change", function(e){
+    	var url = "";
+    	var type = $("input[name='radio']:checked").val();
+    	if(type == "group"){
+    		url = "getGroupSaidList.do";
+    	}else{
+    		url = "/dashbd/hotspot/getHotSpotListFromCityId.do";
+    	}
+    	
+    	var array = e.target[e.target.selectedIndex].value.split("^");
+    	var cityId = array[0];
+    	var cityName = array[1];
+    	if(cityId == ""){
+    		g_ServiceAreaId = "";
+    		g_ServiceGroupId = "";
+    		$("#selectCircle").val("");
+    		$("#selectHotspot").html("");
+    		return;
+    	}
+    	$.ajax({
+    		url : url,
+    		type: "post",
+    		data : { "cityId" : cityId },
+    		success : function(data) {
+    			var json = JSON.parse(data).result;
+    			if(type == "group"){
+//    				var said = ""
+//    				for (var i = 0; i < json.length; i++) {
+//    					if(i == json.length-1){
+//    						said += json[i].sub_said;
+//    					}else{
+//    						said += json[i].sub_said + ","
+//    					}
+//					}
+    				if(json.length == 0){
+    					alert("Group's element is not exist !");
+    					$("#selectCity").val("");
+    					return;
+    				}
+    				glovalSaid = cityId;
+    				g_ServiceGroupId = cityId;
+    				ctrl.initialize();
+    	    	} 
+    			else 
+    	    	{
+        			var html = "<option value=''>Select Hotspot</option>";
+        			for (var i = 0; i < json.length; i++) {
+        				html += "<option value='"+json[i].hotspot_id+"^"+json[i].hotspot_name+"'>"+json[i].hotspot_name+"</option>";
+        			}
+        			glovalSaid = cityId;
+        			g_ServiceAreaId = cityId;
+        			$("#selectHotspot").html(html);
+        			ctrl.initialize();
+    	    	}
+    		},
+    		error : function(xhr, status, error){
+    			swal({
+    				title: "Fail !",
+    				text: "Network Error"
+    			});
+    		}
+    	});
+    });
+    
+    $("#selectHotspot").on("change", function(e){
+    	var array = e.target[e.target.selectedIndex].value.split("^");
+    	var hotspotId = array[0];
+    	var hotspotName = array[1];
+    	if(hotspotId == ""){
+    		g_ServiceAreaId = "";
+    		g_ServiceGroupId = "";
+    		$("#selectCircle").val("");
+    		$("#selectCity").val("");
+    		$("#selectHotspot").html("");
+    		return;
+    	}
+    	glovalSaid = hotspotId;
+		g_ServiceAreaId = hotspotId;
+		ctrl.initialize();
+    });
+    
+    $("input[name='radio']").click(function() {
+    	var radioType = $("input[name='radio']:checked").val();
+    	if(userGrade == 9999) {
+    		$("#emergency").hide();
+			$("#national").hide();
+		}
+    	if(radioType == "group")
+    	{
+    		$("#selectHotspot").hide();
+    		$("#selectHotspotLabel").hide();
+    		$("#selectCityLabel").html("Group");
+    		$("#selectArea").show();
+    		if(glovalSaid != ""){
+    			$('#scheduleSearch').click();
+    		}
+    	}
+    	else if(radioType == "area")
+    	{
+    		$("#selectHotspot").show();
+    		$("#selectHotspotLabel").show();
+    		$("#selectCityLabel").html("City");
+    		$("#selectArea").show();
+    	}
+    	else
+    	{
+    		$("#selectArea").hide();
+    		$('#scheduleSearch').click();
+    	}
+		
+    	$("#selectCircle").val("");
+		$("#selectCity").val("");
+		$("#selectCity").html("");
+    	$("#selectHotspot").html("");
+    });
+	
 });
 
+$(window).load(function() {
+    if(userGrade == 9999) {
+		$($("input[name='radio']")[2]).click();
+		$("#selectHotspot").show();
+		$("#selectHotspotLabel").show();
+		$("#selectCityLabel").html("City");
+		$("#selectArea").show();
+		$($("#selectCircle option")[1]).prop("selected", true);
+		$("#selectCircle").change();
+		g_ServiceAreaId = $("#selectCircle").val().split("^")[0];
+	} else {
+		$($("input[name='radio']")[1]).click();
+	}
+    
+//    ctrl.initialize();
+	loadContentList(1);
+})
 	
 var ctrl = {
 	initialize : function() {
-		
+		var type = $("input[name='radio']:checked").val();
+		$("#type").val(type);
+		if(type == "national" || type == "emergency"){
+			g_ServiceAreaId = setAllCircleSaid();
+		}
+		if (g_ServiceAreaId == '' || g_ServiceAreaId == undefined){
+			if(type != "national" && type != "emergency"){
+				alert('Please, choose ServiceArea.');
+				return;
+			}
+		}
+		if(g_ServiceGroupId != '') {
+			g_ServiceAreaId = g_ServiceGroupId;
+			type = "group";
+		}
 		var param = {
-				 serviceAreaId 	: $('#serviceAreaId').val()
-				,type 			: $("#type").val()
-				/*, searchDate : $('#searchDate').val()*/
+				  serviceAreaId : g_ServiceAreaId
+				, type 			: type
+				, serviceType	: $("#serviceType").val()
+				, serviceClass	: $("#serviceClass").val()
 			};
 			
 		$.ajax({
@@ -215,7 +411,7 @@ function getContents(data, page){
 	
 	
 function setTimeTable(data){
-	var tmpServiceAreaId = $("#serviceAreaId").val();
+	var tmpServiceAreaId = g_ServiceAreaId;
 	var tmpbmscId = $("#bmscId").val();
 	var searchDate = $("#searchDate").val();
 	var title = $("#form-title").val();
@@ -277,11 +473,10 @@ function setTimeTable(data){
 		//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#eeeeee"};
 		events.push( schedule );
 	}
-  		
-	//
-	$('#calendar').fullCalendar({
+	$("#calendar").fullCalendar('destroy');
+	$('#calendar').fullCalendar({ 
 		schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-		defaultView: 'agendaDay',
+		defaultView: 'agendaWeek', 
 		editable: true, 			// enable draggable events
 		droppable: true, 			// this allows things to be dropped onto the calendar
 		slotDuration: '00:15:00',
@@ -335,12 +530,12 @@ function setTimeTable(data){
 				addSchedule(content_id, gTitle, startTime, endTime);
 			}
 			
-			var b = $('#calendar').fullCalendar('getDate');
-		 	var searchDate = b.format('YYYY-MM-DD');
-			
-			var title = encodeURI($("#form-title").val());
-			var category =  encodeURI($("#form-category").val());
-			location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
+//			var b = $('#calendar').fullCalendar('getDate');
+//		 	var searchDate = b.format('YYYY-MM-DD');
+//			
+//			var title = encodeURI($("#form-title").val());
+//			var category =  encodeURI($("#form-category").val());
+//			location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 		},
 		eventDrop: function(event) { // called when an event (already on the calendar) is moved
 			var ret = confirm("It's going to update. are you sure??");
@@ -383,14 +578,14 @@ function setTimeTable(data){
 		    	if ( g_delRetrun == 1)
 		    		$('#calendar').fullCalendar('removeEvents', event._id);
 		    	else
-		    		alert(nRet);
+		    		alert(bRet);
 		    	
 		    }
 	    }
-		/*
 		, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
 			console.log('eventAfterRender..', event);
 		}
+		/*
 		
 		, eventRender: function(event, element) {
 			console.log('eventRender', event, element);
@@ -400,9 +595,11 @@ function setTimeTable(data){
 			var now4compare = replaceAll4Day(moment().format());
 			var viewDay4compare = replaceAll4Day(view.start.format());
 			// console.log(now4compare , viewDay4compare);
-			if (now4compare == viewDay4compare)
-				setTimeline(view);
-			
+			if (now4compare == viewDay4compare){
+				setTimeline(view, "day");
+			}else{
+				setTimeline(view, "week");
+			}
 //			setInterval(function () {
 //		        setTimeline(view);
 //			}, 5000);
@@ -413,7 +610,8 @@ function setTimeTable(data){
 	 //fbg.append('<div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"></span></div>');
 	 fbg.append('<div id="calendarTrash" style="float: right; padding-top: 2px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>');
 }
-function setTimeline(calView) {
+
+function setTimeline(calView, mode) {
 	
    if(jQuery(".timeline").length == 0){
       jQuery(".fc-time-grid-container").prepend("<div style='width:100%;overflow: visible;'><hr class='timeline'/></div>") 
@@ -437,7 +635,9 @@ function setTimeline(calView) {
     .css('top',top+"px") 
     
     $(".fc-time-grid-container").animate({scrollTop : top - top/12}, 400);	//최초 스크롤 위치 조정
-    $(".fc-widget-content").css("background-color", "white");				//달력 배경 흰색으로
+    if(mode == "day"){
+    	$(".fc-widget-content").css("background-color", "white");				//달력 배경 흰색으로
+    }
 }
 
 function modifySchedule(url, startTime, endTime) {
@@ -495,7 +695,7 @@ function deleteSchedule(url){
 		dataType : "json",
 		async: false,
 		success : function( data ) {
-			g_delRetrun = outMsgForAjax(data)
+			g_delRetrun = outMsgForAjax(data);
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -506,7 +706,7 @@ function deleteSchedule(url){
 	
 function addSchedule(content_id, g_name, startTime, endTime){
 	var param = {
-			serviceAreaId : $("#serviceAreaId").val(),
+			serviceAreaId : g_ServiceAreaId,
 			bmscId : $("#bmscId").val(),
 			contentId : content_id,
 			titleName : g_name,
@@ -522,6 +722,8 @@ function addSchedule(content_id, g_name, startTime, endTime){
 		dataType : "json",
 		success : function( data ) {
 			alert('Please enter detailed parameters in next screen');
+			var url = $(".fc-time-grid-event")[i].href.split("=")[0]+"="+data.scheduleId+"&BCID=";
+			location.href = url; 
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -542,4 +744,18 @@ function replaceAll4Day(input){
 	output = input.replace(/-/gi,"");
 	output = output.substring(0,8);
 	return output;
+}
+
+//national 일 경우 전체 서클 넣어주기
+function setAllCircleSaid() {
+	var said = "";
+	var optionLength = $("#selectCircle option").length;
+	for (var i = 1; i < optionLength; i++) {
+		if(i == optionLength - 1){
+			said += $("#selectCircle option")[i].value.split("^")[0];
+		}else{
+			said += $("#selectCircle option")[i].value.split("^")[0]+",";
+		}
+	}
+	return said;
 }

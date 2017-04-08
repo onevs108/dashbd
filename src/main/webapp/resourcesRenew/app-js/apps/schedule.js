@@ -19,6 +19,7 @@ $(document).ready(function()
 			$("#serviceModeArea").hide();
 			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
+			$($("#reportType option")[2]).remove();
 		}else if($(this).val() == "carouselMultiple"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
@@ -34,6 +35,7 @@ $(document).ready(function()
 			$("#serviceModeArea").hide();
 			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
+			$($("#reportType option")[2]).remove();
 		}else if($(this).val() == "carouselSingle"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
@@ -49,6 +51,7 @@ $(document).ready(function()
 			$("#serviceModeArea").hide();
 			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
+			$($("#reportType option")[2]).remove();
 		}else{
 			$("div[name='bcType_fileDownload']").hide();
 			$("#bcType_fileDownload").hide();
@@ -61,6 +64,8 @@ $(document).ready(function()
 			$("#addServiceArea").remove();
 			$("#fileUpload_F").remove();
 			addServiceAreaEvent(0);
+			var html = "<option value='StaR-only'>StaR-only</option>";
+			$("#reportType").append(html);
 			$("#reportType").val("StaR-only");
 		}
 		$("input[name='saidList']").val($("#serviceAreaId").val());
@@ -203,8 +208,7 @@ $(document).ready(function()
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
 			var bmscId= $("#bmscId").val();
-//			location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
-			location.href = "schdMgmt.do";
+			location.href = "schdMgmtDetail.do";
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -356,92 +360,140 @@ $(window).load(function(){
 
 function detailValidationCheck() {
 	$("#GBR").blur(function(){
-		if(!checkInteger(this.value)){
-			this.value = "";
-			alert("GBR is 1 ~ 7 digits");
+		if(this.val() != ""){
+			if(!checkInteger9(this.value)){
+				this.value = "";
+				alert("The value of the GBR must be integer.  (0~999999999)");
+			}
+			return false;
 		}
-		return false;
 	});
 	
 	$("#QCI").blur(function(){
-		if(!checkInteger(this.value)){
-			this.value = "";
-			alert("QCI is Integer");
+		if(this.val() != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("QCI is Integer");
+				return false;
+			}
+			if(!(this.value > 0 && this.value < 10) && !(this.value > 127 && this.value < 255)){
+				this.value = "";
+				alert("please enter Integer(1~9, 128~254)");
+				return false;
+			}
 			return false;
 		}
-		if(!(this.value > 0 && this.value < 10) && !(this.value > 127 && this.value < 255)){
-			this.value = "";
-			alert("please enter Integer(1~9, 128~254)");
-			return false;
-		}
-		return false;
 	});
 	
 	$("#segmentAvailableOffset").blur(function(){
-		if(!checkInteger(this.value)){
-			this.value = "";
-			alert("segmentAvailableOffset is Integer");
+		if(this.val() != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("segmentAvailableOffset is Integer");
+				return false;
+			}
+			if(!(this.value > 0 && this.value < 11)){
+				this.value = "";
+				alert("please enter Integer(1~10)");
+				return false;
+			}
 			return false;
 		}
-		if(!(this.value > 0 && this.value < 11)){
-			this.value = "";
-			alert("please enter Integer(1~10)");
-			return false;
-		}
-		return false;
 	});
 	
 	$("#level").blur(function(){
-		if(!checkInteger(this.value)){
-			this.value = "";
-			alert("Level is Integer");
+		if(this.val() != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("Level is Integer");
+				return false;
+			}
+			if(!(this.value > 0 && this.value < 16)){
+				this.value = "";
+				alert("please enter Integer(1~15)");
+				return false;
+			}
 			return false;
 		}
-		if(!(this.value > 0 && this.value < 16)){
-			this.value = "";
-			alert("please enter Integer(1~15)");
-			return false;
-		}
-		return false;
 	});
 	
 	$("#samplePercentage").blur(function(){
-		if(!checkInteger(this.value)){
-			this.value = "";
-			alert("samplePercentage is Integer");
+		if(this.value != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("The value of SamplePercentage is Integer");
+				return false;
+			}
+			if(!(this.value > -1 && this.value < 101)){
+				this.value = "";
+				alert("The value of Sementation Availble Offset must be integer (1~10)");
+				return false;
+			}
 			return false;
 		}
-		if(!(this.value > -1 && this.value < 101)){
-			this.value = "";
-			alert("please enter Integer(0~100)");
-			return false;
-		}
-		return false;
 	});
 	
 	$("#offsetTime").blur(function(){
-		if(!checkInteger(this.value)){
-			this.value = "";
-			alert("offsetTime is 1 ~ 7 digits");
+		if(this.value != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("The value of Offset Time must be integer (0~9999999)");
+				return false;
+			}
 			return false;
 		}
-		return false;
 	});
 	
 	$("#randomTime").blur(function(){
-		if(!checkInteger(this.value)){
-			this.value = "";
-			alert("randomTime is 1 ~ 7 digits");
+		if(this.value != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("The value of random time must be integer (0~9999999)");
+				return false;
+			}
 			return false;
 		}
-		return false;
+	});
+	
+	$("#fecRatio").blur(function(){
+		if(this.value != ""){
+			if(!checkInteger3(this.value)){
+				this.value = "";
+				alert("The value of FecRatio is Integer");
+				return false;
+			}
+			if(!(this.value > -1 && this.value < 101)){
+				this.value = "";
+				alert("The value of the Ration must be integer (0~100)");
+				return false;
+			}
+			return false;
+		}
 	});
 	
 }
 
-//정수 인지 체크(자리수 제한)
-function checkInteger(agr) {
+//정수 인지 체크(3자리수 제한)
+function checkInteger3(agr) {
+	var idReg = /^[0-9]{1,3}$/;
+	if(idReg.test(agr)){
+		return true;
+	}
+	return false;
+}
+
+//정수 인지 체크(7자리수 제한)
+function checkInteger7(agr) {
 	var idReg = /^[0-9]{1,7}$/;
+	if(idReg.test(agr)){
+		return true;
+	}
+	return false;
+}
+
+//정수 인지 체크(9자리수 제한)
+function checkInteger9(agr) {
+	var idReg = /^[0-9]{1,9}$/;
 	if(idReg.test(agr)){
 		return true;
 	}

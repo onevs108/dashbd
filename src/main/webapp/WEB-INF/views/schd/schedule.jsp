@@ -636,7 +636,6 @@
                                            <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == null}">disabled</c:if>>
                                                <option value="RAck">RAck</option>
                                                <option value="StaR-all">StaR-all</option>
-                                               <option value="StaR-only">StaR-only</option>
                                            </select>
                                        </div>
                                    </div>

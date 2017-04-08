@@ -33,6 +33,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,11 +65,15 @@ public class ScheduleMgmtController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ScheduleMgmtController.class);
 	long transID = 101;	//101 ~ 65535
+	
 	@Autowired
 	private SqlSession sqlSession;
+	
 	@Autowired
 	private XmlManager xmlManager;
 	
+	@Value("#{config['bmscId']}")
+	private String bmscId;
 	/**
 	 * �뒪耳�以� 硫붿씤�럹�씠吏�
 	 * @param params
@@ -163,7 +168,7 @@ public class ScheduleMgmtController {
 	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
-		//params.put("serviceId", "3048");
+
 		int maxPosition = mapper.selectSchduleMaxPosition(params);
 		List<Map> list = mapper.selectSchdule(params);
 		
@@ -322,16 +327,7 @@ public class ScheduleMgmtController {
 		return (Map<String, Object>) resultMap;
 	}
 	
-	/**
-	 * �뒪耳�以� �긽�꽭�럹�씠吏� > �뙘�뾽 > �뒪耳�以� 異붽�(ajax)
-	 * @param params
-	 * @param req
-	 * @param locale
-	 * @return
-	 * @throws JsonGenerationException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
+	//스케쥴 최초 등록
 	@RequestMapping(value = "view/addScheduleWithInitContent.do")
 	@ResponseBody
 	public Map< String, Object > addScheduleWithInitContent( @RequestParam Map< String, Object > params,
@@ -343,7 +339,9 @@ public class ScheduleMgmtController {
 		int ret = mapper.addScheduleWithInitContent(params);
 		logger.info("addScheduleWithInitContent [ret={}]", ret);
 
-		return makeRetMsg("1000", "OK");
+		Map<String, Object> result = makeRetMsg("1000", "OK");
+		result.put("scheduleId", params.get("id"));
+		return result;
 	}
 	
 	@RequestMapping(value = "view/modifyScheduleTime.do")
@@ -395,16 +393,26 @@ public class ScheduleMgmtController {
 	
 
 	@RequestMapping(value = "view/schdMgmtDetail.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req) throws UnsupportedEncodingException {
-		logger.info("schdMgmtDetail {}", params);
+	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req, HttpSession session) throws UnsupportedEncodingException {
+		Users user = (Users) session.getAttribute("USER");
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
+		List<Circle> circleList = operatorMapper.selectCircleListNameAll();
+		List<Map<String, String>> scList = mapper.selectServiceClassAll();
+		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
+		int serviceIdIdx = mapper.selectServiceIdIdx();
 		mv.addObject("serviceAreaId", params.get("serviceAreaId")); 
-		mv.addObject("bmscId", params.get("bmscId"));
-		mv.addObject("searchDate", params.get("searchDate"));
+		mv.addObject("bmscId", bmscId);
+		mv.addObject("searchDate", Utils.getFileDate("yyyy-MM-dd"));
 		mv.addObject("title", params.get("title"));
 		mv.addObject("category", params.get("category"));
 		mv.addObject("type", params.get("type"));
-		
+		mv.addObject("userGrade", user.getGrade());
+		mv.addObject("circleList", circleList);
+		mv.addObject("scList", scList);
+		mv.addObject("serviceIdList", serviceIdList);
+		mv.addObject("serviceIdIdx", serviceIdIdx);
 		return mv;
 	}
 	
@@ -1073,13 +1081,14 @@ public class ScheduleMgmtController {
 						+ " - "+scheduleType+" Deleted(Schedule ID : "+ params.get("id")+")");
 				UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
 				logMapper.insertSystemAjaxLog(logMap);
+				return makeRetMsg(retValue.get("code"), retValue.get("message"));
 			}
 
 			//@ update delete flag 
 			int ret = mapper.updateSchedule4Del(params);
 			logger.info("updateSchedule ret{}", ret);
 			
-			return makeRetMsg(retValue.get("code"), retValue.get("message"));
+			return makeRetMsg("1000", "OK");
 			
 		}catch(Exception e){
 			logger.error("", e);

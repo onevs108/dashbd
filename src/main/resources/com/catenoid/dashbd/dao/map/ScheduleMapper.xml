@@ -374,7 +374,7 @@
 		)
 	</insert>
 	
-	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map">
+	<insert id = "addScheduleWithInitContent" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO schedule
 		(	 
 			bmscId,

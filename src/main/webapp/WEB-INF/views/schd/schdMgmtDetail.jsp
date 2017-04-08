@@ -53,8 +53,10 @@
 	<script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
 	<!-- Page-Level Scripts -->
 	<script>
+		var userGrade = ${userGrade};
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
+			$("#selectCircle").val("");
 		});
 	</script>
 	
@@ -110,15 +112,70 @@
             <input type="hidden" id="type" name="type" value="${type}"/>
             
             <div class="col-lg-12">
-                    <div class="ibox float-e-margins">
+                    <div class="ibox float-e-margins ibox-title">
                         <div class="ibox-title">
-                            <h5>Schedule Mgmt </h5>
-<!--                             <div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div> -->
-                            <div class="ibox-tools">
-                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                                <a class="close-link"><i class="fa fa-times"></i></a>
-                            </div>
-                        </div>
+							<div>
+								<h5 style="padding-right: 20px;">Schedule</h5>
+								<button type="button" class="btn btn-primary btn-xs" id="sendMood" style="float: right;" onclick="sendMood()">Send MoodData Test</button>
+<!-- 								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Schedule</button> -->
+								<span id="emergency"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="emergency"/>Emergency</span>
+								<span id="national"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="national" checked/>National</span>
+								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area"/>Service Area&nbsp;
+								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
+							</div>
+						</div>
+						<div class="row" style="margin-left: 1px;">
+							<div id="selectArea" class="form-group" style="display: none;">
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Area</label>
+								<div class="col-sm-3" style="width: 20%;">
+		                       		<select id="selectCircle" class="input-sm form-control input">
+		                               <option value="">Select Area</option>
+		                               <c:forEach var="row" items="${circleList}">
+		                               	<option value="${row.circle_id}^${row.circle_name}">${row.circle_name}</option>
+		                               </c:forEach>
+		                            </select>
+								</div>
+								<label id="selectCityLabel" class="col-sm-2" style="margin-top: 5px;width: 12%;">City</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="selectCity" class="input-sm form-control input">
+		                               
+		                            </select>
+		                        </div>
+		                        <label id="selectHotspotLabel" class="col-sm-2" style="margin-top: 5px;width: 12%;">Hot Spot</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="selectHotspot" class="input-sm form-control input">
+		                               
+		                            </select>
+		                        </div>
+	                        </div>
+		                </div>
+		                <hr style="margin-top: 10px;margin-bottom: 10px;">
+		                <div class="row" style="margin-left: 1px;margin-bottom: 10px;">
+							<div class="form-group">
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Service Type</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="serviceType" class="input-sm form-control input">
+		                               <option value="">All</option>
+		                               <option value="fileDownload">File Download</option>
+                                       <option value="streaming">Streaming</option>
+                                       <option value="carouselMultiple">Carousel Multiple Files</option>
+                                       <option value="carouselSingle">Carousel Single File</option>
+		                            </select>
+	                            </div>
+	                            <label class="col-sm-2" style="margin-top: 5px;width: 12%;">Service Class</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="serviceClass" class="input-sm form-control input">
+		                               <option value="">Select Class</option>
+		                               <c:forEach var="row" items="${scList}">
+		                               	<option value="${row.class_name}">${row.class_name}</option>
+		                               </c:forEach>
+		                            </select>
+	                            </div>
+								<div class="col-sm-2" style="width: 15%;">
+									<button id="scheduleSearch" class="btn btn-primary btn-sm">Search</button>
+	                            </div>
+							</div>
+						</div>
                         <div class="ibox-content">
                         <form method="get" class="form-horizontal">
                             <div class="row">
@@ -147,8 +204,6 @@
                                     
                                     <div class="hr-line-dashed"></div>
                                     <div class="search-list" style="display:none">
-                                    	
-                                        <h5>Search Result</h5>
                                         <div id='external-events'>
                                         </div>
                                     </div>
