@@ -273,7 +273,7 @@ public class ScheduleMgmtController {
 				br = new BufferedReader(inputStreamReader);
 
 				while( (temp = br.readLine()) != null) {
-	                content += temp + "\n";
+	                content += temp;
 	                break;
 	            }
 	             
@@ -432,7 +432,7 @@ public class ScheduleMgmtController {
 			mode = "new";
 			mapSchedule.put("service_name", mapSchedule.get("content_name"));
 			mapSchedule.put("language", "en");
-			mapSchedule.put("GBR", "1000");
+			mapSchedule.put("GBR", "150000");
 			mapSchedule.put("QCI", "1");
 			mapSchedule.put("FileRepair", "off");
 			mapSchedule.put("receptionReport", "off");
@@ -982,6 +982,7 @@ public class ScheduleMgmtController {
 					}
 					param.put("bcBasePattern", bcBasePatternStr);
 				}
+				mapper.insertScheduleContent(param);
 			}
 			else 
 			{
@@ -989,20 +990,24 @@ public class ScheduleMgmtController {
 					List<Element> content = schedule.get(i).getChildren();
 					for (int j = 0; j < content.size(); j++) {
 						List<Element> child = content.get(j).getChildren();
-						param.put("contentId", content.get(j).getAttributeValue("contentId"));
 						if(serviceType.equals("fileDownload")){
+							param.put("contentId", content.get(j).getAttributeValue("contentId"));
 							if(child.get(1).getAttributeValue("start") != null){
 								param.put("startTime", convertDateFormat(child.get(1).getAttributeValue("start")));
 								param.put("endTime", convertDateFormat(child.get(1).getAttributeValue("end")));
 							}
+						}else if(serviceType.equals("carousel-SingleFile")){
+							param.put("contentId", String.valueOf(j));
+						}else if(serviceType.equals("carousel-MultipleFiles")){
+							param.put("contentId", content.get(j).getAttributeValue("contentId"));
 						}
 						param.put("fileURI", child.get(0).getText());
+						mapper.insertScheduleContent(param);
 					}
 				}
 			}
 			param.put("serviceType", serviceType);
 			param.put("serviceMode", serviceMode);
-			mapper.insertScheduleContent(param);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -1146,7 +1151,7 @@ public class ScheduleMgmtController {
 	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
 	private String convertDateFormat3(String dateTime){
 		@SuppressWarnings("deprecation")
-		Date dt = new Date("Wed Mar 15 17:17:00 2017");
+		Date dt = new Date(dateTime);
 		
 		String retStr = "";
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

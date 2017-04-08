@@ -17,6 +17,7 @@
     <link href="../resourcesRenew/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/chosen/chosen.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../resourcesRenew/css/plugins/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet">
 
     <!-- Mainly scripts -->
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
@@ -45,7 +46,12 @@
 	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<script src="/dashbd/resources/js/plugins/jsTree/jstree.min.js"></script>
 	<script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
+	<script src="../resourcesRenew/js/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 	
+<!-- 	<!-- ax5ui --> -->
+<!-- 	<link href="../resourcesRenew/css/plugins/ax5ui/ax5formatter.css" rel="stylesheet"> -->
+<!-- 	<script src="../resourcesRenew/js/plugins/ax5ui/ax5core.js"></script> -->
+<!-- 	<script src="../resourcesRenew/js/plugins/ax5ui/ax5formatter.js"></script> -->
 	
 	<!-- Page-Level Scripts -->
 	<script>
@@ -54,6 +60,15 @@
 		
 		var viewMode = "${mode}";
 		$(document).ready(function() {
+			$("#schedule_start").blur(function(){
+				checkScheduleStartTime();
+			});
+			$("#schedule_stop").blur(function(){
+				checkScheduleEndTime();
+			});
+			$("#schedule_start, #schedule_stop").datetimepicker({
+				format:'Y-m-d H:i:s',
+			});
 			getMenuList('SCHEDULE_MGMT');
 			$("button[name='addSchedule']").hide();
 			
@@ -153,6 +168,24 @@
 			$($("div[name='bcPattern']")[idx]).remove();
 		}
 		
+		function checkScheduleStartTime() {
+			var scheduleS = $("#schedule_start").val();
+			var contentS = $($("input[name='deliveryInfo_start']")[0]).val();
+			if(scheduleS > contentS){
+				alert("schedule_start check");
+				$("#schedule_start").val("");
+			}
+		}
+		
+		function checkScheduleEndTime() {
+			var scheduleE = $("#schedule_stop").val();
+			var contentE = $($("input[name='deliveryInfo_end']")[0]).val();
+			if(scheduleE < contentE){
+				alert("deliveryInfo_end check");
+				$("#schedule_stop").val("");
+			}
+		}
+		
  	</script>
 
 	<style>
@@ -246,7 +279,9 @@
 		                        			<input type="hidden" id=serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}">
 		                        			<select class="input-sm form-control input-s-sm" disabled>            	
 		                        		</c:if>
-		                        	    	    <option value="en" <c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
+	                        	    	    <option value="en"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
+	                        	    	    <option value="kr">kr</option>
+	                        	    	    <option value="fr">fr</option>
 	                                    </select>
                                     </div>
                              </div>
@@ -280,14 +315,18 @@
                                                 </div>
                                                 <div class="panel-body">
                                                     <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> GBR</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control" id="GBR" name="GBR" required="required" value="${mapSchedule.GBR}"></div>
+                                                        <div class="col-sm-9">
+                                                        	<input type="text" class="form-control" id="GBR" name="GBR" required="required" value="${mapSchedule.GBR}">
+                                                        </div>
                                                     </div>
                                                     <div class="form-group"><label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i> QCI</label>
-                                                        <div class="col-sm-9"><input type="text" class="form-control" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}"></div>
+                                                        <div class="col-sm-9">
+                                                        	<input type="text" class="form-control" id="QCI" name="QCI" required="required" value="${mapSchedule.QCI}">
+                                                        </div>
                                                     </div>
                                                     <div class="form-group"><label class="col-sm-3 control-label">ARP</label>
                                                         <div class="col-sm-8" style="padding:10px;margin-left:14px;background:#eee">
-                                                            <div class="form-group"><label class="col-sm-6 control-label"><i class="fa fa-check text-importance"></i> Level</label>
+                                                            <div class="form-group"><label class="col-sm-6 control-label">Level</label>
                                                                 <div class="col-sm-6"><input type="text" class="form-control" id="level" name="level" required="required" value="${mapSchedule.level}"></div>
                                                             </div>
                                                             <label class="col-sm-6 control-label">PreEmptionCapabiity</label>
@@ -326,7 +365,6 @@
                                                     <div class="col-sm-6">
                                                       <select class="input form-control"  id="fecType" name="fecType">
                                                                 <option value="NoFEC" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> selected</c:if>>NoFEC</option>
-                                                                
                                                                 <option value="Raptor" <c:if test="${mapSchedule.fecType eq 'Raptor'}"> selected</c:if>>Raptor</option>
                                                                 <option value="RaptorQ" <c:if test="${mapSchedule.fecType eq 'RaptorQ'}"> selected</c:if>>RaptorQ</option>
                                                                 <option value="RSLDPC" <c:if test="${mapSchedule.fecType eq 'RSLDPC'}"> selected</c:if>>RSLDPC</option>
@@ -598,6 +636,7 @@
                                            <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == null}">disabled</c:if>>
                                                <option value="RAck">RAck</option>
                                                <option value="StaR-all">StaR-all</option>
+                                               <option value="StaR-only">StaR-only</option>
                                            </select>
                                        </div>
                                    </div>

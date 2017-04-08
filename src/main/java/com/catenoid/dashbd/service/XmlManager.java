@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,8 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import com.catenoid.dashbd.dao.ScheduleMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.HttpNetAgent;
+import com.google.gson.Gson;
 
 @Service
 public class XmlManager {
@@ -48,6 +53,9 @@ public class XmlManager {
 	
 	@Value("#{config['b3.interface.url']}")
 	private String b3InterfefaceURL;
+	
+	@Value("#{config['b3.moodUsageDataReportInterval']}")
+	private String moodUsageDataReportInterval;
 
 	@Autowired
 	private SqlSession sqlSession;
@@ -64,6 +72,7 @@ public class XmlManager {
 		String[] rtvs = new String[2];
 		String respBody = "SUCCESS";
 		String reqBody = "";
+		String reqBodyCrs = "";
 		String respBodyCrs = "";
 		String bmscIp = params.get("bmscIp");
 		params.put("methodMode", String.valueOf(mode));
@@ -82,11 +91,42 @@ public class XmlManager {
 			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
 			//@ xml send
 			if("MooD".equals(params.get("serviceMode")) && (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)){
-				//CRS 연동 ?
+				List<HashMap<String, String>> crsList = new ArrayList<HashMap<String, String>>();
 				for (int i = 0; i < paramList.get(6).size(); i++) {
-					String crsIp = scheduleMapper.getCrsInfoFromMapping(paramList.get(6).get(i)); //said
-					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + b3InterfefaceURL, "", reqBody, false);
+					String crsInfo = scheduleMapper.getCrsInfoFromMapping(paramList.get(6).get(i)); //said
+					String[] crsInfoArray = crsInfo.split(",");
+					HashMap<String, String> param = new HashMap<String, String>();
+					param.put("id", crsInfoArray[0]);
+					param.put("ip", crsInfoArray[1]);
+					param.put("said", paramList.get(6).get(i));
+					crsList.add(param);
 				}
+				
+				HashMap<String, JSONArray> obj = new HashMap<String, JSONArray>();
+				Gson gson = new Gson();
+				JSONArray array = null;
+				for (int i = 0; i < crsList.size(); i++) {
+					String id = crsList.get(i).get("id");
+					if(obj.get(id) == null){
+						array = new JSONArray();
+						array.put(new JSONObject(gson.toJson(crsList.get(i))));
+					}
+					else
+					{	
+						array = (JSONArray)obj.get(id);
+						array.put(new JSONObject(gson.toJson(crsList.get(i))));
+					}
+					obj.put(id, array);
+				}
+				
+				Iterator<String> it = obj.keySet().iterator();
+				while(it.hasNext()){
+					String id = it.next();
+					String crsIp = (String) ((JSONObject)obj.get(id).get(0)).get("ip");
+					reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));				
+					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + b3InterfefaceURL, "", reqBodyCrs, false);
+				}
+				
 				if(!isSuccess(respBodyCrs)){
 					//CRS 연동 실패 시 로직
 				}
@@ -111,6 +151,73 @@ public class XmlManager {
 		return rtvs;
 	}
 	
+	private String makeXmlCreateCRS(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList, String id, JSONArray bcSaidList) {
+		Element message = new Element("message");
+		if (BMSC_XML_CREATE == mode){
+			message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
+		}else{
+			message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));	
+		}
+		
+		message.setAttribute(new Attribute("type", "REQUEST"));
+		Document doc = new Document(message);
+		doc.setRootElement(message);
+
+		Element transaction = new Element("transaction");
+		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));
+		
+		doc.getRootElement().addContent(transaction);
+
+		Element request = new Element("request");
+		Element service = new Element("service");
+		
+		String serviceId = params.get("serviceId");
+		if (serviceId == null) {
+			serviceId = "";
+		}
+		
+		service.setAttribute(new Attribute("crsId", id));
+		service.setAttribute(new Attribute("timestamp", convertDateFormat3(new Date().toString())));
+		service.setAttribute(new Attribute("serviceId", serviceId));
+		
+		Element create = new Element("create");
+		
+		Element associatedDelivery = new Element("associatedDelivery");
+		Element consumptionReport = null;
+		consumptionReport = new Element("consumptionReport");
+		consumptionReport.addContent(new Element("reportInterval").setText(params.get("moodReportInterval")));
+		consumptionReport.addContent(new Element("moodUsageDataReportInterval").setText(moodUsageDataReportInterval));
+		associatedDelivery.addContent(consumptionReport);
+		
+		Element schedule = null;
+		for (int i = 0; i < paramList.get(0).size(); i++) {	//schedule start 갯수에 따라 동작
+			schedule = new Element("schedule");
+			schedule.addContent(new Element("index").setText(String.valueOf(i+1)));
+			//time format ex) 2015-04-10T17:24:09.000+09:00 
+			schedule.addContent(new Element("start").setText(convertDateFormatNew(paramList.get(0).get(i))));
+			schedule.addContent(new Element("stop").setText(convertDateFormatNew(paramList.get(1).get(i))));
+			Element contentSet = new Element("contentSet");
+			Element serviceArea = new Element("serviceArea");
+			for (int j = 0; j < bcSaidList.length(); j++) {
+				serviceArea.addContent( new Element("said").setText(((JSONObject)bcSaidList.get(j)).get("said").toString()));
+			}
+			contentSet.addContent(serviceArea);
+			create.addContent(schedule);
+			create.addContent(contentSet);
+			create.addContent(associatedDelivery);
+		}
+		
+		service.addContent(create);
+		request.addContent(service);
+		
+		doc.getRootElement().addContent(request);
+		System.out.println("============================ Mood Create Start ============================");
+		System.out.println(outString(doc));
+		System.out.println("============================ Mood Create End ============================");
+		return outString(doc);
+	}
+
 	public boolean isSuccess(String retStr) throws JDOMException, IOException{
 		Document doc = null;
 		doc = new SAXBuilder().build(new StringReader(retStr));
@@ -209,8 +316,7 @@ public class XmlManager {
 		Element message = new Element("message");
 		if (BMSC_XML_CREATE == mode){
 			message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
-		}
-		else{
+		}else{
 			message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));	
 		}
 		
@@ -218,10 +324,9 @@ public class XmlManager {
 		Document doc = new Document(message);
 		doc.setRootElement(message);
 
-		//common- depth one
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));		//key ??
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));
 		
 		doc.getRootElement().addContent(transaction);
 
@@ -229,10 +334,8 @@ public class XmlManager {
 		Element services = new Element("services");
 		Element service = new Element("service");
 		
-		//common- depth five		
-		
 		Element name = new Element("name");
-		name.setAttribute(new Attribute("lang", "en"));										//??
+		name.setAttribute(new Attribute("lang", "en"));	
 		name.setText(params.get("name"));
 		Element serviceLanguage = new Element("serviceLanguage");
 		serviceLanguage.setText(params.get("serviceLanguage"));
@@ -393,10 +496,22 @@ public class XmlManager {
 				int contentLength = Integer.parseInt(paramList.get(5).get(i));
 				for (int j = i*contentLength; j < contentLength; j++) {	//content 갯수에 따라 동작
 					Element content = new Element("content");
-					content.setAttribute(new Attribute("contentId", paramList.get(8).get(j)));						//??
-					content.setAttribute(new Attribute("contentType", "text/plain"));							//??
-					content.setAttribute(new Attribute("cancelled", "false"));									//??
-					content.setAttribute(new Attribute("changed", "false"));				
+					if(SERVICE_TYPE_CAROUSEL_SINGLE.equals(params.get("serviceType"))) {
+						content.setAttribute(new Attribute("contentType", "text/plain"));
+					}
+					else if(SERVICE_TYPE_CAROUSEL_MULTIPLE.equals(params.get("serviceType")))
+					{
+						content.setAttribute(new Attribute("contentId", String.valueOf(j)));						
+						content.setAttribute(new Attribute("contentType", "text/plain"));							
+						content.setAttribute(new Attribute("cancelled", "false"));			
+					}
+					else
+					{
+						content.setAttribute(new Attribute("contentId", String.valueOf(j)));						
+						content.setAttribute(new Attribute("contentType", "text/plain"));							
+						content.setAttribute(new Attribute("cancelled", "false"));									
+						content.setAttribute(new Attribute("changed", "false"));	
+					}
 					content.addContent(new Element("fileURI").setText(paramList.get(2).get(j)));
 					Element deliveryInfo = new Element("deliveryInfo");
 					//time format ex) 2015-04-10T17:24:09.000+09:00
@@ -581,7 +696,7 @@ public class XmlManager {
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		//SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		try {
-			//sdfFrom.setTimeZone(TimeZone.getTimeZone("GMT"));
+//			sdfFrom.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date dateFrom = sdfFrom.parse(dateTime);
 		    Calendar calFrom = Calendar.getInstance();
 		    calFrom.setTime(dateFrom);
@@ -596,19 +711,34 @@ public class XmlManager {
 		
 	}
 	
-	//2017-02-27T16:00:00.000+09:00
-	private String convertDateFormatNew(String dateTime){
-		String retStr = "";
+	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
+	private String convertDateFormat3(String dateTime){
+		Date dt = new Date();
 		
+		String retStr = "";
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+05:30");
 		try {
-			retStr = dateTime.replace(" ", "T");
-			retStr += ".000+09:00";
+			retStr = sdfTo.format(dt);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
-				
 		return retStr;
-		
+	}
+	
+	//2017-02-27T16:00:00.000+09:00
+	private String convertDateFormatNew(String dateTime){
+		String retStr = "";
+		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+05:30");
+		try {
+//			sdfFrom.setTimeZone(TimeZone.getTimeZone("IST"));
+//			sdfTo.setTimeZone(TimeZone.getTimeZone("GMT"));
+			Date dateFrom = sdfFrom.parse(dateTime);
+		    retStr = sdfTo.format(dateFrom);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return retStr;
 	}
 	
     public static String getFileDate(String format) {
@@ -707,3 +837,4 @@ public class XmlManager {
 	    
 	}
 }
+

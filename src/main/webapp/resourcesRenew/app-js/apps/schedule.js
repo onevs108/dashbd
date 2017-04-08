@@ -61,11 +61,13 @@ $(document).ready(function()
 			$("#addServiceArea").remove();
 			$("#fileUpload_F").remove();
 			addServiceAreaEvent(0);
+			$("#reportType").val("StaR-only");
 		}
 		$("input[name='saidList']").val($("#serviceAreaId").val());
 		$("input[name='bcSaidList']").val($("#serviceAreaId").val());
 		$(":file").filestyle({buttonBefore: true});
 		$(".bootstrap-filestyle > input").css("background-color", "white");
+		$("#receptionReport").change();
 	});
 	
 	$("#serviceMode").on("change", function() {
@@ -109,9 +111,14 @@ $(document).ready(function()
 	});
 	
 	$("#receptionReport").on("change", function() {
+		changePercentage();
 		if(this.checked){
 			$("#offsetTime").prop('disabled', false);
-			$("#reportType").prop('disabled', false);
+			if(!($("#serviceType").val() == "streaming")){
+				$("#reportType").prop('disabled', false);
+			}else{
+				$("#reportType").prop('disabled', true);
+			}
 			$("#samplePercentage").prop('disabled', false);
 			$("#randomTime").prop('disabled', false);
 		}else{
@@ -119,9 +126,7 @@ $(document).ready(function()
 			$("#reportType").prop('disabled', true);
 			$("#samplePercentage").prop('disabled', true);
 			$("#randomTime").prop('disabled', true);
-//			$("#samplePercentage").val("");
 		}
-		changePercentage();
 	});
 	
 	$("#reportClientId").on("change", function() {
@@ -192,6 +197,9 @@ $(document).ready(function()
 		},
 		success : function(result) {
 			outMsgForAjax(result);
+			if(result.resultInfo.resultMsg == "9999"){
+				return;
+			}
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
 			var bmscId= $("#bmscId").val();
@@ -232,6 +240,7 @@ $(document).ready(function()
 				if(data.result == "SUCCESS")
 				{
 					$("#serviceType").removeAttr("disabled");
+					$("#reportType").removeAttr("disabled");
 					$("#frmScheduleReg").submit();
 				}
 				else if(data.result == "bwExceed")
@@ -335,7 +344,109 @@ $(document).ready(function()
        });
 	})
 	
+	detailValidationCheck();
+	
 });
+
+$(window).load(function(){
+//	if($("#serviceType").val() == "streaming"){
+//		$("#receptionReport").click();
+//	}
+})
+
+function detailValidationCheck() {
+	$("#GBR").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("GBR is 1 ~ 7 digits");
+		}
+		return false;
+	});
+	
+	$("#QCI").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("QCI is Integer");
+			return false;
+		}
+		if(!(this.value > 0 && this.value < 10) && !(this.value > 127 && this.value < 255)){
+			this.value = "";
+			alert("please enter Integer(1~9, 128~254)");
+			return false;
+		}
+		return false;
+	});
+	
+	$("#segmentAvailableOffset").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("segmentAvailableOffset is Integer");
+			return false;
+		}
+		if(!(this.value > 0 && this.value < 11)){
+			this.value = "";
+			alert("please enter Integer(1~10)");
+			return false;
+		}
+		return false;
+	});
+	
+	$("#level").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("Level is Integer");
+			return false;
+		}
+		if(!(this.value > 0 && this.value < 16)){
+			this.value = "";
+			alert("please enter Integer(1~15)");
+			return false;
+		}
+		return false;
+	});
+	
+	$("#samplePercentage").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("samplePercentage is Integer");
+			return false;
+		}
+		if(!(this.value > -1 && this.value < 101)){
+			this.value = "";
+			alert("please enter Integer(0~100)");
+			return false;
+		}
+		return false;
+	});
+	
+	$("#offsetTime").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("offsetTime is 1 ~ 7 digits");
+			return false;
+		}
+		return false;
+	});
+	
+	$("#randomTime").blur(function(){
+		if(!checkInteger(this.value)){
+			this.value = "";
+			alert("randomTime is 1 ~ 7 digits");
+			return false;
+		}
+		return false;
+	});
+	
+}
+
+//정수 인지 체크(자리수 제한)
+function checkInteger(agr) {
+	var idReg = /^[0-9]{1,7}$/;
+	if(idReg.test(agr)){
+		return true;
+	}
+	return false;
+}
 
 function setSaidFromFile(saidList) {
 	var saidArray = saidList.split(",");
@@ -347,6 +458,10 @@ function setSaidFromFile(saidList) {
 function addSaidCheckFromFile(said) {
 	if(saidDefault == said) {
 		alert ('this said is default.other said input.');
+		return;
+	}
+	
+	if((","+$("input[name='saidList']").val()+",").indexOf(","+said+",") > -1) {
 		return;
 	}
 	
@@ -936,6 +1051,9 @@ function changePercentage(){
 	if ($("#reportType").val()== 'RAck'){
 		$("#samplePercentage").prop('disabled', true);
 		$("#samplePercentage").val("100");
+	}else if ($("#reportType").val()== 'StaR-all'){
+		$("#samplePercentage").prop('disabled', false);
+//		$("#samplePercentage").val("");
 	}else{
 		$("#samplePercentage").prop('disabled', false);
 //		$("#samplePercentage").val("");
