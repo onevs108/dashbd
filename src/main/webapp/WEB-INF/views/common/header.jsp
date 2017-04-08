@@ -526,7 +526,7 @@
 	function initPassword() {
 		swal({
 		  title: "Are you sure?",
-		  text: "Do you really want to init the " + $("#form-user-id").val() + "'s password?",
+		  text: "Do you really want to reset the " + $("#form-user-id").val() + "'s password?",
 		  type: "warning",
 		  showCancelButton: true,
 		  confirmButtonColor: "#DD6B55",

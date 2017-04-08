@@ -31,13 +31,15 @@ public class ContentServiceImpl implements ContentService {
 	 * userList 리턴
 	 */
 	@Override
-	public List<Contents> getContentList(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit) {
+	public List<Contents> getContentList(String searchType, String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit) {
+		if (searchType == null || searchType.isEmpty()) searchType = null;
 		if (searchColumn == null || searchColumn.isEmpty()) searchColumn = null;
 		if (searchKeyword == null || searchKeyword.isEmpty()) searchKeyword = null;
 		if (sort == null || sort.isEmpty()) sort = null;
 		if (order == null || order.isEmpty()) order = null;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("searchType", searchType);
 		map.put("searchColumn", searchColumn);
 		map.put("searchKeyword", searchKeyword);
 		map.put("operatorId", operatorId);
@@ -64,11 +66,13 @@ public class ContentServiceImpl implements ContentService {
 	 * userListCount 리턴
 	 */
 	@Override
-	public int getContentListCount(String searchColumn, String searchKeyword, Integer operatorId) {
+	public int getContentListCount(String searchType, String searchColumn, String searchKeyword, Integer operatorId) {
+		if (searchType == null || searchType.isEmpty()) searchType = null;
 		if (searchColumn == null || searchColumn.isEmpty()) searchColumn = null;
 		if (searchKeyword == null || searchKeyword.isEmpty()) searchKeyword = null;
 		
 		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("searchType", searchType);
 		map.put("searchColumn", searchColumn);
 		map.put("searchKeyword", searchKeyword);
 		map.put("operatorId", operatorId);
@@ -82,8 +86,8 @@ public class ContentServiceImpl implements ContentService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getContentListToJsonArray(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit) {
-		List<Contents> contentList = getContentList(searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
+	public JSONArray getContentListToJsonArray(String searchType, String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit) {
+		List<Contents> contentList = getContentList(searchType, searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
 		
 		JSONArray jsonArray = new JSONArray();
 		for (Contents content : contentList)

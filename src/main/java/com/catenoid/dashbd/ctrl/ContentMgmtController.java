@@ -85,6 +85,7 @@ public class ContentMgmtController {
 		try {
 			JSONObject requestJson = (JSONObject) jsonParser.parse(body);
 			
+			String searchType = (String) requestJson.get("searchType");
 			String searchOperatorId = (String) requestJson.get("searchOperatorId");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
 			String searchColumn = (String) requestJson.get("searchColumn");
@@ -98,9 +99,9 @@ public class ContentMgmtController {
 				Users user = (Users) session.getAttribute("USER");
 				if (user != null) {
 					Integer operatorId = searchOperatorId == null || searchOperatorId.isEmpty() ? null : Integer.parseInt(searchOperatorId);
-					JSONArray rows = contentServiceImpl.getContentListToJsonArray(searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
+					JSONArray rows = contentServiceImpl.getContentListToJsonArray(searchType, searchColumn, searchKeyword, operatorId, sort, order, offset, limit);
 					jsonResult.put("rows", rows);
-					int total = contentServiceImpl.getContentListCount(searchColumn, searchKeyword, operatorId);
+					int total = contentServiceImpl.getContentListCount(searchType, searchColumn, searchKeyword, operatorId);
 					jsonResult.put("total", total);
 					
 					logger.info("<- [rows = {}], [total = {}]", rows.size(), total);

@@ -44,13 +44,13 @@
 			<div class="row border-bottom white-bg dashboard-header">
 				<div class="session">
 					<h2>SeSM Main</h2>
-					<div class="pull-right">
-						<span>Num Sessions: ${total_session}</span>
-						<span>
-							<span class="onDisp on1"></span><!-- 활성화일때 클래스 on1, on2 -->
-							<span class="onDisp"></span>
-						</span>
-					</div>
+<!-- 					<div class="pull-right"> -->
+<%-- 						<span>Num Sessions: ${total_session}</span> --%>
+<!-- 						<span> -->
+<!-- 							<span class="onDisp on1"></span>활성화일때 클래스 on1, on2 -->
+<!-- 							<span class="onDisp"></span> -->
+<!-- 						</span> -->
+<!-- 					</div> -->
 				</div>
 			</div>
 			<!-- s : wrapper -->
@@ -352,7 +352,7 @@
 				pagination: true,
 				sidePagination: 'server',
 				pageNumber: pageNumber,
-				pageSize: 10,
+				pageSize: 20,
 				search: false,
 				showHeader: true,
 				showColumns: false,

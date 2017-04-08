@@ -95,8 +95,8 @@
 													<form class="form-horizontal">
 														<div class="col-lg-6">
 															<div class="form-group">
-																<label class="col-sm-2 control-label">Select Area</label>
-																<div class="col-sm-6">
+																<label class="col-sm-3 control-label">Select Area</label>
+																<div class="col-sm-5">
 																	<select class="input-sm form-control input-s-sm" id="circleSelect" style="padding: 0px 0px 0px 0px;" <c:if test="${USER.grade ==  9999}">readonly</c:if>> 
 								                                    	<option value="" <c:if test="${USER.grade == 9999}">disabled</c:if>>Area</option>
 								                                		<c:forEach var="circle" items="${circleList}">

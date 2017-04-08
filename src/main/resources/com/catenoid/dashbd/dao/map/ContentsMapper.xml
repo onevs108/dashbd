@@ -14,6 +14,9 @@
 		  <if test="searchColumn.equals('category') and searchKeyword != null">
 		  	  AND category LIKE CONCAT('%', #{searchKeyword}, '%')
 		  </if>
+		  <if test="searchType != null and searchType != ''">
+			  AND type = #{searchType}
+		  </if>
 	</select>
 
 	<select id="selectContentList" resultMap="BaseResultMap" parameterType="Map">
@@ -39,6 +42,9 @@
 					  </if>
 					  <if test="searchColumn.equals('category') and searchKeyword != null">
 					  	  AND category LIKE CONCAT('%', #{searchKeyword}, '%')
+					  </if>
+					  <if test="searchType != null and searchType != ''">
+						  AND type = #{searchType}
 					  </if>
 					  ORDER BY <if test="sort == null">title ASC</if>
 					  		   <if test="sort != null">

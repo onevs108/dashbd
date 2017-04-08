@@ -154,9 +154,10 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 			zoom: zoom
 		});
 		
-		var infowindow = new google.maps.InfoWindow({
-		    content: '<button type="button" class="btn btn-primary4" onclick="settingLatLng()">Use Location</button>'
-		});
+//		var infowindow = new google.maps.InfoWindow({
+//		    content: '<button type="button" class="btn btn-primary4" onclick="settingLatLng()">Use Location</button>',
+//		    maxWidth: 200
+//		});
 		
 		var marker = new google.maps.Marker({
 		    position: {lat: Number(lat), lng: Number(lng)},
@@ -170,7 +171,8 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 		if(modalMarker != undefined) modalMarker.setMap(null);
 		
 		var infowindow = new google.maps.InfoWindow({
-		    content: '<button type="button" class="btn btn-primary4" onclick="settingLatLng()">Use Location</button>'
+		    content: '<button type="button" class="btn btn-primary4" onclick="settingLatLng()">Use Location</button>',
+		    maxHeight: 50
 		});
 		
 		var marker = new google.maps.Marker({

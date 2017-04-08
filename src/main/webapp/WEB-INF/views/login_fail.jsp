@@ -40,12 +40,12 @@
 			});
 		}
 		else if(cause == LOGIN_FAIL_MISMATCH_PASSWORD) {
-			swal({title:"Fail !", text:"Failed!! Incorrect Password!", type:"warning"}, function() {
+			swal({title:"Fail !", text:"Incorrect Password!", type:"warning"}, function() {
 				history.back();	
 			});
 		}
 		else {
-			swal({title:"Fail !", text:"Incorrect account", type:"warning"}, function() {
+			swal({title:"Fail !", text:"Incorrect Account", type:"warning"}, function() {
 				location.href='/dashbd/out';
 			});
 		}

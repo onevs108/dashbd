@@ -1381,8 +1381,9 @@ public class ServiceAreaController {
 				if(user.getGrade() == 9999) param.put("circleId", user.getCircleId());
 				HashMap<String, Object> countBCUC = mapper.selectCountBCUC(param);
 				
-				List<Object> principals = sessionRegistry.getAllPrincipals();
-				mv.addObject("total_session", principals.size());
+				//Session Total Count
+//				List<Object> principals = sessionRegistry.getAllPrincipals();
+//				mv.addObject("total_session", principals.size());
 				
 				int total_user = 0;
 				if(user.getGrade() == 9999) {
@@ -1670,6 +1671,7 @@ public class ServiceAreaController {
 					tempMap.put("fecRatio", rowMap.get("fecRatio"));
 					tempMap.put("deleveryType", rowMap.get("deleveryType"));
 					tempMap.put("viewers", rowMap.get("viewers"));
+					tempMap.put("said", rowMap.get("said"));
 					resultList.add(tempMap);
 				}
 			}

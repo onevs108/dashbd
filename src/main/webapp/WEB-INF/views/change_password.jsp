@@ -30,6 +30,7 @@
     <div class="middle-box text-center loginscreen animated fadeInDown">
         <div>
             <img src="/dashbd/resources/newPublish/img/common/img_logo.png" alt=""><h3>SeSM Change Password</h3>
+            <h5 style="font-weight: 200;">In order to login you must reset the password.<br>  Please enter the new password</h5>
             <form class="m-t" role="form" id="passwordForm" action="javascript:void(0);" method="post" autocomplete="off">
                 <div class="form-group">
                     <input type="hidden" id="userId" name="userId" class="form-control" placeholder="Username" value="${userId}" required>

@@ -4,29 +4,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule Mgmt</title>
-    <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
+	<jsp:include page="../common/head.jsp" />
+<!--     <meta charset="utf-8"> -->
+<!--     <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+<!--     <title>Schedule Mgmt</title> -->
+<!--     <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href="../resourcesRenew/css/style.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
-    <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
-	<link href="../resources/css/custom.css" rel="stylesheet">
+<!--     <link href="../resourcesRenew/css/animate.css" rel="stylesheet"> -->
+<!--     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet"> -->
+<!-- 	<link href="../resources/css/custom.css" rel="stylesheet"> -->
     
-    <!-- Mainly scripts -->
-	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
+<!--     Mainly scripts -->
+<!-- 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script> -->
 	<script src="../resourcesRenew/js/jquery.form.js"></script>
 	<script src="../resourcesRenew/js/jquery-ui-1.10.4.min.js"></script>
 	
-	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
-	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- 	<script src="../resourcesRenew/js/bootstrap.min.js"></script> -->
+<!-- 	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+<!-- 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script> -->
 	<script src="../resourcesRenew/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 	
-	<!-- Custom and plugin javascript -->
+<!-- 	<!-- Custom and plugin javascript -->
 	<script src="../resourcesRenew/app-js/apps/common.js"></script>
 	
-	<script src="../resources/js/common.js"></script>
+<!-- 	<script src="../resources/js/common.js"></script> -->
 	<!--
 	 dash.all.debug.js
 	 dash.all.min.js
@@ -40,9 +41,7 @@
 $(document).ready(function() {
 	getMenuList('CONTENTS_MGMT');
 	
-	
 	$("#btnList").click(function(){
-		
 		document.location = "/dashbd/view/content.do";
 	})
 	
@@ -60,90 +59,11 @@ $(document).ready(function() {
 <div id="wrapper">
 
     <!-- sidebar -->
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-        	<ul class="nav metismenu" id="side-menu">
-             <li class="nav-header">
-					<div class="dropdown profile-element">
-						<a href="/dashbd/resources/main.do"><img src="/dashbd/resources/img/logo_small.png"></a>
-					</div>
-					<div class="logo-element">
-						<img src="/dashbd/resources/img/logo2.png">
-					</div>
-				</li>
-			</ul>
-        </div>
-    </nav><!-- sidebar end -->
+	<jsp:include page="../common/leftTab.jsp" />
 
     <!-- content -->
     <div id="page-wrapper" class="gray-bg">
-
-        <div class="row border-bottom">
-			<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-				<div class="navbar-header" style="padding-bottom: 10px;">
-					<h2 style="margin-left: 15px;"><strong>Contents Mgmt</strong></h2>
-					<span style="margin-left: 15px;">
-						<a href="/dashbd/resources/main.do" style="color: #2f4050;">Home</a> / <strong> Contents Mgmt</strong>
-					</span>
-				</div><!-- end navbar-header -->
-		        
-				<ul class="nav navbar-top-links navbar-right">
-					<li>
-						<a>
-							<i class="fa fa-user"></i><span id="navbar-user-name"></span>
-						</a>
-					</li>
-					<li class="dropdown">
-						<ul class="dropdown-menu dropdown-alerts">
-							<li>
-								<a href="mailbox.html">
-									<div>
-										<i class="fa fa-envelope fa-fw"></i> You have 16 messages
-										<span class="pull-right text-muted small">4 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="profile.html">
-									<div>
-										<i class="fa fa-twitter fa-fw"></i> 3 New Followers
-										<span class="pull-right text-muted small">12 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="grid_options.html">
-									<div>
-										<i class="fa fa-upload fa-fw"></i> Server Rebooted
-										<span class="pull-right text-muted small">4 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<div class="text-center link-block">
-									<a href="notifications.html">
-										<strong>See All Alerts</strong>
-										<i class="fa fa-angle-right"></i>
-									</a>
-								</div>
-							</li>
-						</ul>
-					</li>
-		
-					<li>
-						<a href="/dashbd/out">
-							<i class="fa fa-sign-out"></i> Log out
-						</a>
-					</li>
-					<li>
-						<img src="../resources/img/samsung_small.png">
-					</li>
-				</ul>
-			</nav>
-		</div><!-- end border-bottom -->
+		<c:import url="/resources/header.do"></c:import>
         
 <!--         <div class="row wrapper border-bottom white-bg page-heading"> -->
 <!-- 			<div class="col-lg-12"> -->

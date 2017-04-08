@@ -11,9 +11,9 @@ import com.catenoid.dashbd.dao.model.Users;
 @Service
 public interface ContentService {
 	
-	public List<Contents> getContentList(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit);
-	public int getContentListCount(String searchColumn, String searchKeyword, Integer operatorId);
-	public JSONArray getContentListToJsonArray(String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit);
+	public List<Contents> getContentList(String searchType, String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit);
+	public int getContentListCount(String searchType, String searchColumn, String searchKeyword, Integer operatorId);
+	public JSONArray getContentListToJsonArray(String searchType, String searchColumn, String searchKeyword, Integer operatorId, String sort, String order, long offset, long limit);
 	public Users getUser(Users user);
 	public boolean checkUserId(String userId);
 	public boolean insertUser(Users user);

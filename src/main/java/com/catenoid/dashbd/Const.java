@@ -52,8 +52,8 @@ public class Const {
 	public static final String ROLE_SERVICE_AREA_MGMT 		= "ROLE_SERVICE_AREA_MGMT";
 	public static final String ROLE_SERVICE_AREA_GROUP_MGMT = "ROLE_SERVICE_AREA_GROUP_MGMT";
 	public static final String ROLE_SCHEDULE_MGMT 			= "ROLE_SCHEDULE_MGMT";
-	public static final String ROLE_SERVICE_CLASS_MGMT 		= "ROLE_SERVICE_CLASS_MGMT";
-	public static final String ROLE_SESSION_MONITORING 		= "ROLE_SESSION_MONITORING";
+//	public static final String ROLE_SERVICE_CLASS_MGMT 		= "ROLE_SERVICE_CLASS_MGMT";
+//	public static final String ROLE_SESSION_MONITORING 		= "ROLE_SESSION_MONITORING";
 	public static final String ROLE_SYSTEM_MGMT 			= "ROLE_SYSTEM_MGMT";
 	
 	/**
@@ -80,8 +80,8 @@ public class Const {
 	public static final String MENU_SERVICE_AREA_MGMT		= "SERVICE_AREA_MGMT";
 	public static final String MENU_SERVICE_AREA_GROUP_MGMT	= "SERVICE_AREA_GROUP_MGMT";
 	public static final String MENU_SCHEDULE_MGMT			= "SCHEDULE_MGMT";
-	public static final String MENU_SERVICE_CLASS_MGMT		= "SERVICE_CLASS_MGMT";
-	public static final String MENU_SESSION_MONITORING		= "SESSION_MONITORING";
+//	public static final String MENU_SERVICE_CLASS_MGMT		= "SERVICE_CLASS_MGMT";
+//	public static final String MENU_SESSION_MONITORING		= "SESSION_MONITORING";
 	public static final String MENU_SYSTEM_MGMT				= "SYSTEM_MGMT";
 	public static final String MENU_LOG_MGMT				= "LOG_MGMT";
 	public static final String MENU_SYSTEM_CONF_MGMT		= "SYSTEM_CONF_MGMT";

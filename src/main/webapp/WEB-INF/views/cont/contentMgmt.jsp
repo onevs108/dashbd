@@ -4,45 +4,32 @@
 
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Mgmt</title>
+<!--     <meta charset="utf-8"> -->
+<!--     <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+<!--     <title>Content Mgmt</title> -->
 
-	<link href="/dashbd/resources/newPublish/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/dashbd/resources/newPublish/font-awesome/css/font-awesome.css" rel="stylesheet">
-	<link href="/dashbd/resources/newPublish/css/animate.css" rel="stylesheet">
-	<link href="/dashbd/resources/newPublish/css/style.css" rel="stylesheet">
+<!-- 	<link href="/dashbd/resources/newPublish/css/bootstrap.min.css" rel="stylesheet"> -->
+<!-- 	<link href="/dashbd/resources/newPublish/font-awesome/css/font-awesome.css" rel="stylesheet"> -->
+<!-- 	<link href="/dashbd/resources/newPublish/css/animate.css" rel="stylesheet"> -->
+<!-- 	<link href="/dashbd/resources/newPublish/css/style.css" rel="stylesheet"> -->
 	
-	<!-- Toastr style -->
-	<link href="/dashbd/resources/newPublish/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-	
-	<!-- Time Table -->
-	<link href="/dashbd/resources/newPublish/css/plugins/timetable/timetablejs.css" rel="stylesheet">
-	<link href="/dashbd/resources/newPublish/css/plugins/digitalclock/style.css" rel="stylesheet">
+<!-- 	<!-- Toastr style -->
+<!-- 	<link href="/dashbd/resources/newPublish/css/plugins/toastr/toastr.min.css" rel="stylesheet"> -->
 	
 	<link href="../resources/css/custom.css" rel="stylesheet">
 	
-	<!-- Sweet Alert -->
-	<link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-
-	<script src="../resources/js/jquery-2.1.1.js"></script>
+<!-- 	<!-- Sweet Alert -->
+<!-- 	<link href="/dashbd/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet"> -->
+	<jsp:include page="../common/head.jsp" />
+<!-- 	<script src="../resources/js/jquery-2.1.1.js"></script> -->
 	<script src="../resources/js/jquery.cookie.js"></script>
-	<script src="../resources/js/bootstrap.min.js"></script>
+<!-- 	<script src="../resources/js/bootstrap.min.js"></script> -->
 	<script src="../resources/js/bootstrap-table.js"></script>
-	<script src="../resources/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="../resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-	<script src="../resources/js/common.js"></script>
+<!-- 	<script src="../resources/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
+<!-- 	<script src="../resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script> -->
+<!-- 	<script src="../resources/js/common.js"></script> -->
+	
 	<script src="../resources/js/modules/content-list.js"></script>
-	
-	<script src="/dashbd/resources/newPublish/js/plugins/digitalclock/script.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
-	
-	<script type="text/javascript">
-		$(document).ready(function() {
-			getMenuList('CONTENTS_MGMT');
-			getContentList('${isBack}' == 'true' ? true : false, false);
-		});
-	</script>
 </head>
 
 <body>
@@ -63,16 +50,16 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
-<!--                         <div class="ibox-title"> -->
-<!--                             <h5>User Mgmt</h5> -->
-<!--                             <div class="ibox-tools"> -->
-<!--                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a> -->
-<!--                                 <a class="close-link"><i class="fa fa-times"></i></a> -->
-<!--                             </div> -->
-<!--                         </div> -->
                         <div class="ibox-content">
                             <div class="row" id="search-area">
-                            	<div class="col-sm-3">
+                            	<div class="col-sm-2">
+                                    <select class="input-sm form-control input-s-sm" id="search-type">
+                                    	<option value="">All</option>
+                                		<option value="streaming">Streaming</option>
+                                   		<option value="file">File</option>
+                                    </select>
+                                </div>
+                            	<div class="col-sm-2">
                                     <select class="input-sm form-control input-s-sm" id="search-column">
                                 		<option value="title">Title</option>
                                    		<option value="category">Category</option>
@@ -99,5 +86,11 @@
     </div><!-- content end -->
 </div><!-- wrapper end -->
 
+<script type="text/javascript">
+	$(document).ready(function() {
+		getMenuList('CONTENTS_MGMT');
+		getContentList('${isBack}' == 'true' ? true : false, false);
+	});
+</script>
 </body>
 </html>

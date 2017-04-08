@@ -547,7 +547,7 @@
 	    `created_at` AS `created_at`,
 	    `updated_at` AS `updated_at`
     from permission P
-    where id not in (7, 13)
+    where id not in (7, 8, 13)
   </select>
   
   <select id="selectTownFromCircle" parameterType="String" resultType="com.catenoid.dashbd.dao.model.Circle">

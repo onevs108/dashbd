@@ -1,28 +1,28 @@
 
 $(function() {
 	// button click event in list
-	$('#go-search').click(doSearch);
-	$('#btn-add-user').click(doAdd);
+	$('#go-search').click(doContentSearch);
+	$('#btn-add-user').click(doContentAdd);
 });
 
-function doSearch() {
+function doContentSearch() {
 	$('#table').bootstrapTable('destroy');
 	getContentList(false, true);
 }
 
-function doAdd() {
+function doContentAdd() {
 	location.href = '/dashbd/view/addContent.do';
 }
 
-function doInfo(id) {
+function doContentInfo(id) {
 	location.href = '/dashbd/view/viewContent.do?id=' + id;
 }
 
-function doEdit(id) {
+function doContentEdit(id) {
 	location.href = '/dashbd/view/editContent.do?id=' + id;
 }
 
-function doDelete(id) {
+function doContentDelete(id) {
 	if (confirm('Do you really want to delete ?')) {
 		$.ajax({
 			url: '/dashbd/api/content.do',
@@ -58,10 +58,12 @@ function getContentList(isBack, isSearch) {
 	var searchKeyword = '';
 	if (isBack) {
 		pageNumber = $.cookie('pagaNumber');
+		searchType = $.cookie('searchType');
 		searchOperatorId = $.cookie('searchOperatorId');
 		searchKeyword = $.cookie('searchKeyword');
 		searchColumn = $.cookie('searchColumn');
 		
+		$('#search-type').val(searchType);
 		$('#search-operator-id').val(searchOperatorId);
 		$('#search-column').val(searchColumn);
 		$('#search-keyword').val(searchKeyword);
@@ -77,14 +79,17 @@ function getContentList(isBack, isSearch) {
 			location.href = '#';
 			
 			pageNumber = $.cookie('pagaNumber', (params.offset / params.limit) + 1);
+			var tempSearchType = $('#search-type').val();
 			var tempSearchOperatorId = $('#search-operator-id').val();
 			var tempSearchColumn = $('#search-column').val();
 			var tempSearchKeyword = $('#search-keyword').val();
 			
+			$.cookie('searchType', tempSearchType);
 			$.cookie('searchOperatorId', tempSearchOperatorId);
 			$.cookie('searchColumn', tempSearchColumn);
 			$.cookie('searchKeyword', tempSearchKeyword);
 			
+			params['searchType'] = tempSearchType;
 			params['searchOperatorId'] = tempSearchOperatorId;
 			params['searchColumn'] = tempSearchColumn;
 			params['searchKeyword'] = tempSearchKeyword;
@@ -146,9 +151,9 @@ function getContentList(isBack, isSearch) {
 			sortable: false,
 			formatter: function(value, row, index) {
 				var no = row.no;
-				var html = '<button type="button" onclick="doInfo(\'' + row.id + '\')" class="btn btn-default btn-xs button-info">Info</button> '
-						+ '<button type="button" onclick="doEdit(\'' + row.id + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
-						+ '<button type="button" onclick="doDelete(\'' + row.id + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
+				var html = '<button type="button" onclick="doContentInfo(\'' + row.id + '\')" class="btn btn-default btn-xs button-info">Info</button> '
+						+ '<button type="button" onclick="doContentEdit(\'' + row.id + '\')" class="btn btn-success btn-xs button-edit">Edit</button> '
+						+ '<button type="button" onclick="doContentDelete(\'' + row.id + '\')" class="btn btn-danger btn-xs btn-delete-action button-delete">Delete</button>';
 				return html;
 			}
 		}]
