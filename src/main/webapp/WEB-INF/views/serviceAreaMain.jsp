@@ -16,11 +16,6 @@
 		
 		.circle-item .noHover {
 		}
-		
-		.gm-style-iw {
-		    overflow:hidden!important;
-		    height:206px!important; //for 3 lines of text in the InfoWindow
-		}
 	</style>
 </head>
 <body>

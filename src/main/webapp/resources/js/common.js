@@ -171,8 +171,7 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 		if(modalMarker != undefined) modalMarker.setMap(null);
 		
 		var infowindow = new google.maps.InfoWindow({
-		    content: '<button type="button" class="btn btn-primary4" onclick="settingLatLng()">Use Location</button>',
-		    maxHeight: 50
+		    content: '<button type="button" class="btn btn-success" onclick="settingLatLng()">Use Location</button>'
 		});
 		
 		var marker = new google.maps.Marker({
