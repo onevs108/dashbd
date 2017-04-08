@@ -517,6 +517,7 @@ function initMap() {
 		var infowindow = new google.maps.InfoWindow({ content: contentString
 						, position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
 						, maxWidth: 300});
+		
 		infowindow.open(map, this);
 		tempInfoWindow = infowindow
 	});
