@@ -805,7 +805,7 @@
 	</select>
 	
 	<select id="getCrsInfoFromMapping" parameterType="String" resultType="String">
-		select serverInfo from crs_server_info
+		select CONCAT(id, ',', serverInfo) from crs_server_info
 		where id = (select crs_id from crs_said_mapping where said = #{said})
 	</select>
 	
