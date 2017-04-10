@@ -30,9 +30,9 @@
 				</div>
 			</li>
 			<li>
-				<h3 class="text-center" style="padding-top: 9px;"><div id="headerClock"></div></h3>
+				<h4 class="text-center" style="padding-top: 7px;"><div id="headerClock"></div></h4>
 			</li>
-			<li><a href="/dashbd/out"><i class="fa fa-sign-out"></i>
+			<li><a href="/dashbd/out" style="padding-top: 16px;"><i class="fa fa-sign-out"></i>
 					Log out</a></li>
 		</ul>
 	</nav>

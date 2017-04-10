@@ -115,6 +115,13 @@ function getContentList(isBack, isSearch) {
 			valign: 'middle',
 			sortable: true
 		}, {
+			field: 'type',
+			title: 'Type',
+			width: '11%',
+			align: 'center',
+			valign: 'middle',
+			sortable: true
+		}, {
 			field: 'category',
 			title: 'Category',
 			width: '15%',
@@ -138,7 +145,7 @@ function getContentList(isBack, isSearch) {
 		}, {
 			field: 'description',
 			title: 'Description',
-			width: '31%',
+			width: '20%',
 			align: 'center',
 			valign: 'middle',
 			sortable: true

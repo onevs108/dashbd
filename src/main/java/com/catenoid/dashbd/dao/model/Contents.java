@@ -163,6 +163,7 @@ public class Contents {
     	JSONObject jsonResult = new JSONObject();
     	jsonResult.put("id", id);
     	jsonResult.put("title", title);
+    	jsonResult.put("type", type);
     	jsonResult.put("category", category);
     	jsonResult.put("duration", duration);
     	jsonResult.put("fileFormat", fileFormat);

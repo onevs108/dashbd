@@ -48,7 +48,7 @@
 	<script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
 	<script src="../resourcesRenew/js/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 	
-<!-- 	<!-- ax5ui --> -->
+ 	<!-- ax5ui -->
 <!-- 	<link href="../resourcesRenew/css/plugins/ax5ui/ax5formatter.css" rel="stylesheet"> -->
 <!-- 	<script src="../resourcesRenew/js/plugins/ax5ui/ax5core.js"></script> -->
 <!-- 	<script src="../resourcesRenew/js/plugins/ax5ui/ax5formatter.js"></script> -->

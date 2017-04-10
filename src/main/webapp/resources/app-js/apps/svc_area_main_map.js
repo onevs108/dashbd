@@ -538,23 +538,23 @@ function makeInfoWindow(div, object) {
 	}
 	contentString += '<div class="form-group col-lg-12">';
 	var upperChar = currentZoomLevel.substring(0,1).toUpperCase();
-	contentString += '<label class="col-sm-4 control-label">' + upperChar + currentZoomLevel.substring(1) + '</label>';
+	contentString += '<label class="control-label">' + upperChar + currentZoomLevel.substring(1) + '</label>';
 	var name = '';
 	if(div == 'edit') name = object.name;
-	contentString += '<input type="text" class="col-sm-8" name="name" value="' + name + '">';
+	contentString += '<input type="text" class="form-control" name="name" value="' + name + '">';
 	contentString += '</div>';
 	contentString += '<div class="form-group col-lg-12">';
-	contentString += '<label class="col-sm-4 control-label">Said</label>';
+	contentString += '<label class="control-label">Said</label>';
 	var said = '';
 	if(div == 'edit') said = object.said;
-	contentString += '<input type="text" class="col-sm-8" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + ' onblur="validationCheck(\'number\', this)">';
+	contentString += '<input type="text" class="form-control" name="said" value="' + said + '" ' + (div == "edit"? "readonly" : "") + ' onblur="validationCheck(\'number\', this)">';
 	contentString += '</div>';
 	if(currentZoomLevel != 'circle') {
 		var bandwidth = '';
 		if(div == 'edit') bandwidth = object.bandwidth;
 		contentString += '<div class="form-group col-lg-12">';
-		contentString += '<label class="col-sm-4 control-label">Bandwidth</label>';
-		contentString += '<input type="text" class="col-sm-8" name="bandwidth" value="' + bandwidth + '" onblur="validationCheck(\'number\', this)">';
+		contentString += '<label class="control-label">Bandwidth</label>';
+		contentString += '<input type="text" class="form-control" name="bandwidth" value="' + bandwidth + '" onblur="validationCheck(\'number\', this)">';
 		contentString += '</div>';
 	}
 	var lat,lng;
@@ -574,28 +574,37 @@ function makeInfoWindow(div, object) {
 	
 	if(div == 'edit') {
 		contentString += '<div class="form-group col-lg-12">';
-			contentString += '<div class="row col-sm-10">';
-				contentString += '<div class="col-sm-4">';
-					contentString += '<label class="control-label" style="margin-bottom: 20px;">Latitude</label>';
-					contentString += '<label class="control-label">Longitude</label>';
-				contentString += '</div>';
-				contentString += '<div class="col-sm-8" style="padding-right:0px;padding-left: 26px;">';
-					contentString += '<input type="text" style="padding-left: 15px; margin-bottom: 15px;width:105%" name="lat" value="' + lat + '" readonly>';
-					contentString += '<input type="text" style="padding-left: 15px; width:105%" name="lng" value="' + lng + '" readonly>';
-				contentString += '</div>';
-			contentString += '</div>';
-			contentString += '<div>';
-				contentString += '<button type="button" class="btn btn-success btn-xs button-edit" style="padding:10px; margin-left:10px;" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset<br>Location</button>';
-			contentString += '</div>';
+		contentString += '<label class="control-label">Latitude</label>';
+		contentString += '<button type="button" class="btn btn-success btn-xs button-edit" style="margin-left:10px;" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset Location</button>';
+		contentString += '<input type="text" class="form-control" name="lat" value="' + lat + '" readonly>';
 		contentString += '</div>';
+		contentString += '<div class="form-group col-lg-12">';
+		contentString += '<label class="control-label">Longitude</label>';
+		contentString += '<input type="text" class="form-control" name="lng" value="' + lng + '" readonly>';
+		contentString += '</div>';
+//		contentString += '<div class="form-group col-lg-12">';
+//			contentString += '<div class="row col-sm-10">';
+//				contentString += '<div class="col-sm-4">';
+//					contentString += '<label class="control-label" style="margin-bottom: 20px;">Latitude</label>';
+//					contentString += '<label class="control-label">Longitude</label>';
+//				contentString += '</div>';
+//				contentString += '<div class="col-sm-8" style="padding-right:0px;padding-left: 26px;">';
+//					contentString += '<input type="text" style="padding-left: 15px; margin-bottom: 15px;width:105%" name="lat" value="' + lat + '" readonly>';
+//					contentString += '<input type="text" style="padding-left: 15px; width:105%" name="lng" value="' + lng + '" readonly>';
+//				contentString += '</div>';
+//			contentString += '</div>';
+//			contentString += '<div>';
+//				contentString += '<button type="button" class="btn btn-success btn-xs button-edit" style="padding:10px; margin-left:10px;" onclick="callSetLocationModalMap(this, \'serviceArea\', \'' + currentZoomLevel + '\', ' + lat + ', ' + lng + ')">Reset<br>Location</button>';
+//			contentString += '</div>';
+//		contentString += '</div>';
 	} else {
 		contentString += '<div class="form-group col-lg-12">';
-		contentString += '<label class="col-sm-4 control-label">Latitude</label>';
-		contentString += '<input type="text" class="col-sm-8" name="lat" value="' + lat + '" readonly>';
+		contentString += '<label class="control-label">Latitude</label>';
+		contentString += '<input type="text" class="form-control" name="lat" value="' + lat + '" readonly>';
 		contentString += '</div>';
 		contentString += '<div class="form-group col-lg-12">';
-		contentString += '<label class="col-sm-4 control-label">Longitude</label>';
-		contentString += '<input type="text" class="col-sm-8" name="lng" value="' + lng + '" readonly>';
+		contentString += '<label class="control-label">Longitude</label>';
+		contentString += '<input type="text" class="form-control" name="lng" value="' + lng + '" readonly>';
 		contentString += '</div>';
 	}
 	

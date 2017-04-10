@@ -115,18 +115,13 @@ var lngTarget;
 //위치 선정을 위한 모달 맵 호출
 function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 	if(accessDiv == 'serviceArea') {
-		if($(obj).parents("li").length > 0) {
-			latTarget = $($(obj).parents("li")[0]).find("input[name='lat']");
-			lngTarget =	$($(obj).parents("li")[0]).find("input[name='lng']");
-		} else if($(obj).parents("table").length > 0) {
-			latTarget = $(obj).parents("table").find("tr td input[name='lat']");
-			lngTarget =	$(obj).parents("table").find("tr td input[name='lng']");
-		}
-		
-	} else if (accessDiv == 'hotspotAdd') {
-		latTarget = $(obj).parents("form").find("input[id='latitude']");
-		lngTarget =	$(obj).parents("form").find("input[id='longitude']");
+		latTarget = $($(obj).parents("form")[0]).find("input[name='lat']");
+		lngTarget =	$($(obj).parents("form")[0]).find("input[name='lng']");
 	}
+//	else if (accessDiv == 'hotspotAdd') {
+//		latTarget = $(obj).parents("form").find("input[id='latitude']");
+//		lngTarget =	$(obj).parents("form").find("input[id='longitude']");
+//	}
 	
 	//위도 경도 값이 없을 경우 기본값 셋팅
 	if(lat == "undefined" || lng == "undefined") {
@@ -171,7 +166,7 @@ function callSetLocationModalMap(obj, accessDiv, zoomLevel, lat, lng) {
 		if(modalMarker != undefined) modalMarker.setMap(null);
 		
 		var infowindow = new google.maps.InfoWindow({
-		    content: '<button type="button" class="btn btn-success" onclick="settingLatLng()">Use Location</button>'
+		    content: '<button type="button" class="btn btn-primary" onclick="settingLatLng()">Use This Location</button>'
 		});
 		
 		var marker = new google.maps.Marker({
