@@ -90,7 +90,7 @@ public class XmlManager {
 			
 			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
 			//@ xml send
-			if("MooD".equals(params.get("serviceMode")) && (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)){
+			if("MooD".equals(params.get("serviceMode"))){
 				List<HashMap<String, String>> crsList = new ArrayList<HashMap<String, String>>();
 				for (int i = 0; i < paramList.get(6).size(); i++) {
 					String crsInfo = scheduleMapper.getCrsInfoFromMapping(paramList.get(6).get(i)); //said
@@ -123,7 +123,11 @@ public class XmlManager {
 				while(it.hasNext()){
 					String id = it.next();
 					String crsIp = (String) ((JSONObject)obj.get(id).get(0)).get("ip");
-					reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));				
+					if(BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode){
+						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
+					}else{
+						reqBodyCrs = makeXmlDeleteCRS(params, mode, saidData, paramList, id, obj.get(id));
+					}
 					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + b3InterfefaceURL, "", reqBodyCrs, false);
 				}
 				
@@ -151,6 +155,69 @@ public class XmlManager {
 		return rtvs;
 	}
 	
+	private String makeXmlDeleteCRS(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList, String id, JSONArray bcSaidList) {
+		Element message = new Element("message");
+		message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
+		
+		message.setAttribute(new Attribute("type", "REQUEST"));
+		Document doc = new Document(message);
+		doc.setRootElement(message);
+
+		Element transaction = new Element("transaction");
+		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));
+		
+		doc.getRootElement().addContent(transaction);
+
+		Element request = new Element("request");
+		Element service = new Element("service");
+		
+		String serviceId = params.get("serviceId");
+		if (serviceId == null) {
+			serviceId = "";
+		}
+		
+		service.setAttribute(new Attribute("crsId", id));
+		service.setAttribute(new Attribute("timestamp", convertDateFormat3(new Date().toString())));
+		service.setAttribute(new Attribute("serviceId", serviceId));
+		
+		Element create = new Element("create");
+		
+		Element associatedDelivery = new Element("associatedDelivery");
+		Element consumptionReport = null;
+		consumptionReport = new Element("consumptionReport");
+		consumptionReport.addContent(new Element("reportInterval").setText(params.get("moodReportInterval")));
+		consumptionReport.addContent(new Element("moodUsageDataReportInterval").setText(moodUsageDataReportInterval));
+		associatedDelivery.addContent(consumptionReport);
+		
+		Element schedule = null;
+		for (int i = 0; i < paramList.get(0).size(); i++) {	//schedule start 갯수에 따라 동작
+			schedule = new Element("schedule");
+			schedule.addContent(new Element("index").setText(String.valueOf(i+1)));
+			//time format ex) 2015-04-10T17:24:09.000+09:00 
+			schedule.addContent(new Element("start").setText(convertDateFormatNew(paramList.get(0).get(i))));
+			schedule.addContent(new Element("stop").setText(convertDateFormatNew(paramList.get(1).get(i))));
+			Element contentSet = new Element("contentSet");
+			Element serviceArea = new Element("serviceArea");
+			for (int j = 0; j < bcSaidList.length(); j++) {
+				serviceArea.addContent( new Element("said").setText(((JSONObject)bcSaidList.get(j)).get("said").toString()));
+			}
+			contentSet.addContent(serviceArea);
+			create.addContent(schedule);
+			create.addContent(contentSet);
+			create.addContent(associatedDelivery);
+		}
+		
+		service.addContent(create);
+		request.addContent(service);
+		
+		doc.getRootElement().addContent(request);
+		System.out.println("============================ Mood Create Start ============================");
+		System.out.println(outString(doc));
+		System.out.println("============================ Mood Create End ============================");
+		return outString(doc);
+	}
+
 	private String makeXmlCreateCRS(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList, String id, JSONArray bcSaidList) {
 		Element message = new Element("message");
 		if (BMSC_XML_CREATE == mode){
@@ -177,11 +244,15 @@ public class XmlManager {
 			serviceId = "";
 		}
 		
-		service.setAttribute(new Attribute("crsId", id));
-		service.setAttribute(new Attribute("timestamp", convertDateFormat3(new Date().toString())));
-		service.setAttribute(new Attribute("serviceId", serviceId));
+//		service.setAttribute(new Attribute("crsId", id));
+//		service.setAttribute(new Attribute("timestamp", convertDateFormat3(new Date().toString())));
+//		service.setAttribute(new Attribute("serviceId", serviceId));
 		
 		Element create = new Element("create");
+		
+		create.addContent(new Element("crsid").setText(id));
+		create.addContent(new Element("timestamp").setText(convertDateFormat3(new Date().toString())));
+		create.addContent(new Element("serviceId").setText(serviceId));
 		
 		Element associatedDelivery = new Element("associatedDelivery");
 		Element consumptionReport = null;

@@ -60,11 +60,18 @@
 		
 		var viewMode = "${mode}";
 		$(document).ready(function() {
+			if($("#moodLocation").val() == "") {
+				$("#moodLocation").val("MBMS SAI");
+			}
 			$("#schedule_start").blur(function(){
-				checkScheduleStartTime();
+				if($("#serviceType").val() != "streaming"){
+					checkScheduleStartTime();
+				}
 			});
 			$("#schedule_stop").blur(function(){
-				checkScheduleEndTime();
+				if($("#serviceType").val() != "streaming"){
+					checkScheduleEndTime();
+				}
 			});
 			$("#schedule_start, #schedule_stop").datetimepicker({
 				format:'Y-m-d H:i:s',
@@ -481,13 +488,13 @@
 			                                    	<div class="row">
 			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px">r12mpdURI</label>
 				                                        <div class="col-sm-8">
-				                                        	<input type="text" class="form-control" id="r12mpdURI" name="r12mpdURI" value="${mapContentUrl.r12mpdURI}">
+				                                        	<input type="text" class="form-control" id="r12mpdURI" name="r12mpdURI" value="">
 				                                        </div>
 			                                    	</div>
 			                                    	<div name="bcPattern" class="row">
 			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px">bcBasePattern</label>
 				                                        <div class="col-sm-8">
-				                                        	<input type="text" class="form-control" id="bcBasePattern" name="bcBasePattern" value="${mapSchedule.bcBasePattern}">
+				                                        	<input type="text" class="form-control" id="bcBasePattern" name="bcBasePattern" value="">
 				                                        </div>
 				                                        <button type="button" id="addBcPattern" title="Create new cluster" class="btn btn-primary btn-sm">
 					                                		<i class="fa fa-plus"></i> <span class="bold"></span>
@@ -658,7 +665,7 @@
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Location</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodLocation" name="moodLocation" value=""></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodLocation" name="moodLocation" value="${mapSchedule.moodLocation}"></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-md-3 control-label">Report Client ID</label>

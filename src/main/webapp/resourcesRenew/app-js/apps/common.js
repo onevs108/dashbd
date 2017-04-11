@@ -2,7 +2,7 @@
 		var resultCode = result.resultInfo.resultCode
 		var resultMsg = result.resultInfo.resultMsg
 		var bRet = 1;
-		if (resultCode == 1000) {
+		if (resultCode == 1000 || resultCode == 200) {
 			alert(resultMsg);
 		} else {
 			alert("errorcode="+resultCode+",\n msg="+resultMsg);

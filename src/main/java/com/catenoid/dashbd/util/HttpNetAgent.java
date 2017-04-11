@@ -29,8 +29,8 @@ public class HttpNetAgent {
 	
 	
 	public HttpNetAgent(){
-		this.netTimeoutConn = 3000;					//1초
-		this.netTimeoutSock = 6000;					//3초
+		this.netTimeoutConn = 30000;				//30초
+		this.netTimeoutSock = 60000;				//60초
 	}
 	
 	public HttpNetAgent(String netTimeoutConn, String netTimeoutSock ){

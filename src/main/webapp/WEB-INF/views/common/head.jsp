@@ -31,8 +31,6 @@
 <script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
 <script src="/dashbd/resources/js/common.js"></script>
 <script src="/dashbd/resources/js/plugins/jsTree/jstree.min.js"></script>
-<script src="/dashbd/resources/newPublish/js/plugins/digitalclock/script.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
 
 <!-- Sweet alert -->
 <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>

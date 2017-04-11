@@ -74,13 +74,17 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 	public String makeModityXml(HashMap<String, List<String>> svId, String agentKey) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		Map<String, String> bcParam = new HashMap<String, String>();
+		List<Map<String, String>> contentList = null;
 		Iterator<String> it = svId.keySet().iterator();
 		String tempSvId = it.next();
 		bcParam.put("serviceId", tempSvId);
 		bcParam.put("BCID", mapper.getBcIdFromServiceId(bcParam));
 		Map<String, String> params = mapper.selectBroadcast(bcParam);
 		bcParam.put("id", mapper.getScheduleIdFromBCID(bcParam));
-		List<Map<String, String>> contentList = mapper.selectSchduleContentList(bcParam);
+		if(bcParam.get("BCID") != null){
+			contentList = mapper.selectSchduleContentList(bcParam);
+//			return outString(doc);
+		}
 		Element message = new Element("message");
 		message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));
 		

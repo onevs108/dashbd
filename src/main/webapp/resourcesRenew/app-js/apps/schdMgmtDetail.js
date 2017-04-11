@@ -222,7 +222,6 @@ $(window).load(function() {
 	} else {
 		$($("input[name='radio']")[1]).click();
 	}
-    
 //    ctrl.initialize();
 	loadContentList(1);
 })
@@ -722,7 +721,7 @@ function addSchedule(content_id, g_name, startTime, endTime){
 		dataType : "json",
 		success : function( data ) {
 			alert('Please enter detailed parameters in next screen');
-			var url = $(".fc-time-grid-event")[i].href.split("=")[0]+"="+data.scheduleId+"&BCID=";
+			var url = "schedule.do?id="+data.scheduleId+"&BCID=";
 			location.href = url; 
 		},
 		error : function(request, status, error) {
