@@ -164,7 +164,7 @@
 		AND
 		<choose>
 		<when test="id == null or id == ''">
-			BCID = #{BCID}
+			schedule_id = (select ifnull(id, '') from schedule where BCID = #{BCID})
 		</when>
 		<otherwise>
 			schedule_id = #{id}

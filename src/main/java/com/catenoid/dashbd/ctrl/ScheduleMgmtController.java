@@ -3,12 +3,12 @@ package com.catenoid.dashbd.ctrl;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +29,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +45,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
-import org.xml.sax.InputSource;
 
 import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.BmscMapper;
@@ -56,6 +57,8 @@ import com.catenoid.dashbd.dao.model.Circle;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.XmlManager;
+import com.catenoid.dashbd.util.HttpNetAgent;
+import com.catenoid.dashbd.util.HttpNetAgentException;
 import com.catenoid.dashbd.util.Utils;
 import com.google.gson.Gson;
 
@@ -68,6 +71,12 @@ public class ScheduleMgmtController {
 	
 	@Autowired
 	private SqlSession sqlSession;
+	
+//	private SqlSession sqlSession;
+//	
+//	public void setSqlSession(SqlSession sqlSession) {
+//		this.sqlSession = sqlSession;
+//	}
 	
 	@Autowired
 	private XmlManager xmlManager;
@@ -716,22 +725,65 @@ public class ScheduleMgmtController {
 	}
 	
 	
-	@RequestMapping(value = "view/receviceMoodRequest.do")
+	@RequestMapping(value = "view/receiveMoodRequestAction.do")
 	@ResponseBody
-	public void receviceMoodRequest(@RequestParam HashMap<String,String> param) {
+	public void receviceMoodRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req) throws UnsupportedEncodingException, HttpNetAgentException {
+		String retStr =
+		 //"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<message name=\"MOOD.REPORT\" type=\"REQUEST\">\n" +
+			"   <transaction id=\"363\">\n" +
+			"      <agentKey>dGVzdA</agentKey>\n" +
+			"   </transaction>\n" +
+			"   <request>\n" +
+			"      <moodData>\n" +
+			"         <crsId>1</crsId>\n" +
+			"         <serviceId>madhuri</serviceId>\n" +
+			"         <timestamp>Wed Mar 15 17:17:00 2017</timestamp>\n" +
+			"         <serviceArea>\n" +
+			"            <saId>2</saId>\n" +
+			"            <countUC>0</countUC>\n" +
+			"            <countBC>0</countBC>\n" +
+			"            <countConsumptionType />\n" +
+			"	  	  </serviceArea>\n" +
+			"	  	  <serviceArea>\n" +
+			"            <saId>2</saId>\n" +
+			"            <countUC>0</countUC>\n" +
+			"            <countBC>0</countBC>\n" +
+			"            <countConsumptionType/>\n" +
+			"         </serviceArea>\n" +
+			"      </moodData>\n" +
+			"   </request>\n" +
+			"</message>";
+			String result = new HttpNetAgent().execute("http://127.0.0.1:8080/dashbd/view/receiveMoodRequest.do", "", retStr, false);
+			System.out.println(result); 
+	}
+	
+	/*@RequestMapping(value = "/saveData", , method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Boolean> saveData(@RequestBody String a) throws MyException {
+        return new ResponseEntity<Boolean>(uiRequestProcessor.saveData(a),HttpStatus.OK);
+
+    }*/
+
+	@RequestMapping(value = "view/receiveMoodRequest.do")
+	@ResponseBody
+	public void receiveMoodRequestAction(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String a) {
 		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
-		SAXBuilder builder = new SAXBuilder(); 
+		SAXBuilder builder = new SAXBuilder();
 		
 		try {
-			Document jdomdoc = builder.build(new InputSource(new FileReader("C:/CRS.xml")));	//test XML 파일
+			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(a, "utf-8").getBytes("utf-8"));
+			Document jdomdoc = builder.build(stream);	//test XML 파일
+			System.out.println(outString(jdomdoc));
 			Element message = jdomdoc.getRootElement();
 			Element transaction = (Element) message.getChildren().get(0);
 			Element request = (Element) message.getChildren().get(1);
 			Element moodData = request.getChild("moodData");
 			List<Element> serviceArea = moodData.getChildren("serviceArea");
-			
+			System.out.println("================== Mood Report Insert Start ==================");
 			for (int i = 0; i < serviceArea.size(); i++) {
-				param.put("transaction", transaction.getAttribute("id").getValue());
+				param.put("transaction", "102");
 				param.put("agentKey", transaction.getChild("agentKey").getText());
 				param.put("crsId", moodData.getChild("crsId").getText());
 				param.put("serviceId", moodData.getChild("serviceId").getText());
@@ -741,7 +793,7 @@ public class ScheduleMgmtController {
 				param.put("countBC", serviceArea.get(i).getChild("countBC").getText());
 				scheduleMapper.insertMoodRequest(param);
 			}
-			
+			System.out.println("================== Mood Report Insert Complete ==================");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -749,7 +801,12 @@ public class ScheduleMgmtController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	private String outString(Document doc){
+		XMLOutputter xmlOutput = new XMLOutputter();
+		xmlOutput.setFormat(Format.getPrettyFormat());
+		return xmlOutput.outputString(doc);
 	}
 	
 	@RequestMapping(value = "view/scheduleReg.do")

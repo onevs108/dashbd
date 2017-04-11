@@ -46,9 +46,10 @@
 					  <if test="searchType != null and searchType != ''">
 						  AND type = #{searchType}
 					  </if>
-					  ORDER BY <if test="sort == null">title ASC</if>
+					  ORDER BY <if test="sort == null">type DESC, title ASC</if>
 					  		   <if test="sort != null">
 					  		       <if test="sort == 'title'">title</if>
+					  		       <if test="sort == 'type'">type</if>
 					  		       <if test="sort == 'category'">category</if>
 					  		       <if test="sort == 'duration'">duration</if>
 					  		       <if test="sort == 'fileFormat'">file_format</if>

@@ -202,13 +202,13 @@ $(document).ready(function()
 		},
 		success : function(result) {
 			outMsgForAjax(result);
-			if(result.resultInfo.resultMsg == "9999"){
+			if(result.resultInfo.resultCode != "1000" && result.resultInfo.resultCode != "200"){
 				return;
 			}
 			var tmpServiceAreaId = $("#serviceAreaId").val();
 			var searchDate = $("#searchDate").val();
 			var bmscId= $("#bmscId").val();
-			location.href = "schdMgmtDetail.do";
+			location.href = "schdMgmtDetail.do?bmscId="+bmscId;
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -360,7 +360,7 @@ $(window).load(function(){
 
 function detailValidationCheck() {
 	$("#GBR").blur(function(){
-		if(this.val() != ""){
+		if(this.value != ""){
 			if(!checkInteger9(this.value)){
 				this.value = "";
 				alert("The value of the GBR must be integer.  (0~999999999)");
@@ -370,7 +370,7 @@ function detailValidationCheck() {
 	});
 	
 	$("#QCI").blur(function(){
-		if(this.val() != ""){
+		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
 				alert("QCI is Integer");
@@ -386,7 +386,7 @@ function detailValidationCheck() {
 	});
 	
 	$("#segmentAvailableOffset").blur(function(){
-		if(this.val() != ""){
+		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
 				alert("segmentAvailableOffset is Integer");
@@ -402,7 +402,7 @@ function detailValidationCheck() {
 	});
 	
 	$("#level").blur(function(){
-		if(this.val() != ""){
+		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
 				alert("Level is Integer");
