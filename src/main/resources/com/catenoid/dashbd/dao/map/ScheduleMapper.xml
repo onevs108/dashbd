@@ -809,8 +809,23 @@
 		where id = (select crs_id from crs_said_mapping where said = #{said})
 	</select>
 	
-	<select id="getSendBcSaid" parameterType="java.util.Map" resultType="String">
-		select said from (
+	<select id="checkMoodServiceId" parameterType="java.util.Map" resultType="int">
+		select count(*) from broadcast_info
+		where service = 'streaming' 
+		  and serviceMode = 'MooD'
+		  and serviceId = #{serviceId}
+		  and (now() <![CDATA[ > ]]> schedule_start)
+		  and (now() <![CDATA[ < ]]> schedule_stop)
+	</select>
+	
+	<select id="checkMoodSaId" parameterType="java.util.Map" resultType="int">
+		select count(*) from broadcast_info
+		where serviceId = #{serviceId}
+		  and CONCAT(',', said, ',') REGEXP CONCAT(',', #{saId}, ',')
+	</select>
+	
+	<select id="getSendBcSaid" parameterType="java.util.Map" resultType="HashMap">
+		select said, ntype from (
 			select * from
 			( select serviceId, said, sum(Atype) as aCnt, sum(Btype) as bCnt, ntype
 			 from
@@ -823,7 +838,7 @@
 			  (select serviceId, said,  case when countUC > (select unicast from crs_limit) and countUC > 0 then 'A' else 'B' end as castMode
 			  ,'UC' as ntype
 			from mood_request
-			where insertDate > date_add(now(), interval-1000 minute)
+			where insertDate > date_add(now(), interval-${interval} minute)
 			and (case when countUC = 0 and countBC != 0 then 'BC' when countUC != 0 and countBC = 0 then 'UC' else 'T' end) = 'UC'
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
@@ -842,7 +857,7 @@
 			  (select serviceId, said,  case when countBC <![CDATA[ < ]]> (select unicast from crs_limit) and countBC <![CDATA[ > ]]> 0 then 'A' else 'B' end as castMode
 			  ,'BC' as ntype
 			from mood_request
-			where insertDate <![CDATA[ > ]]>date_add(now(), interval-1000 minute)
+			where insertDate <![CDATA[ > ]]>date_add(now(), interval-${interval} minute)
 			and (case when countUC = 0 and countBC != 0 then 'BC' when countUC != 0 and countBC = 0 then 'UC' else 'T' end) = 'BC'
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
@@ -1074,3 +1089,6 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
+
+
+

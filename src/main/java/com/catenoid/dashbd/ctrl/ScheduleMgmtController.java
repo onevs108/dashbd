@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -383,7 +382,7 @@ public class ScheduleMgmtController {
 				ret = mapper.updateBroadcastInfo(params);
 				logger.info("updateSchedule ret{}", ret);
 
-				//@ xml update �뿰�룞
+				//@ xml update �뿰�룞`
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				
@@ -738,20 +737,14 @@ public class ScheduleMgmtController {
 			"   <request>\n" +
 			"      <moodData>\n" +
 			"         <crsId>1</crsId>\n" +
-			"         <serviceId>madhuri</serviceId>\n" +
-			"         <timestamp>Wed Mar 15 17:17:00 2017</timestamp>\n" +
+			"         <serviceId>mood:202</serviceId>\n" +
+			"         <timestamp>Wed Mar 15 15:17:00 2017</timestamp>\n" +
 			"         <serviceArea>\n" +
-			"            <saId>2</saId>\n" +
+			"            <saId>100</saId>\n" +
 			"            <countUC>0</countUC>\n" +
 			"            <countBC>0</countBC>\n" +
 			"            <countConsumptionType />\n" +
 			"	  	  </serviceArea>\n" +
-			"	  	  <serviceArea>\n" +
-			"            <saId>2</saId>\n" +
-			"            <countUC>0</countUC>\n" +
-			"            <countBC>0</countBC>\n" +
-			"            <countConsumptionType/>\n" +
-			"         </serviceArea>\n" +
 			"      </moodData>\n" +
 			"   </request>\n" +
 			"</message>";
@@ -768,10 +761,10 @@ public class ScheduleMgmtController {
 
 	@RequestMapping(value = "view/receiveMoodRequest.do")
 	@ResponseBody
-	public void receiveMoodRequestAction(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String a) {
+	public String receiveMoodRequestAction(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String a) {
 		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
 		SAXBuilder builder = new SAXBuilder();
-		
+		String returnStr = "";
 		try {
 			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(a, "utf-8").getBytes("utf-8"));
 			Document jdomdoc = builder.build(stream);	//test XML 파일
@@ -782,17 +775,47 @@ public class ScheduleMgmtController {
 			Element moodData = request.getChild("moodData");
 			List<Element> serviceArea = moodData.getChildren("serviceArea");
 			System.out.println("================== Mood Report Insert Start ==================");
+			
+			param.put("transaction", transaction.getAttributeValue("id"));
+			param.put("agentKey", transaction.getChild("agentKey").getText());
+			param.put("crsId", moodData.getChild("crsId").getText());
+			param.put("serviceId", moodData.getChild("serviceId").getText());
+			param.put("timestamp", convertDateFormat(moodData.getChild("timestamp").getText()));
+			
+			int result = scheduleMapper.checkMoodServiceId(param);
+			if(result == 0){
+				param.put("code", "500");
+				param.put("message", "The service identified by ServiceID is not on-air");
+				returnStr = makeMoodReportResponse(param);
+				System.out.println(returnStr);
+				return returnStr;
+			}
+			
 			for (int i = 0; i < serviceArea.size(); i++) {
-				param.put("transaction", "102");
-				param.put("agentKey", transaction.getChild("agentKey").getText());
-				param.put("crsId", moodData.getChild("crsId").getText());
-				param.put("serviceId", moodData.getChild("serviceId").getText());
-				param.put("timestamp", convertDateFormat3(moodData.getChild("timestamp").getText()));	
+				param.put("saId", serviceArea.get(i).getChild("saId").getText());
+				System.out.println("saId ======================== "+param.get("saId"));
+				int count = scheduleMapper.checkMoodSaId(param);
+				System.out.println("count ======================== "+count);
+				if(count == 0){
+					param.put("code", "501");
+					param.put("message", "Service Area ID ("+param.get("saId")+") is not configured to ServiceID ("+param.get("serviceId")+")");
+					returnStr = makeMoodReportResponse(param);
+					System.out.println(returnStr);
+					return returnStr;
+				}
+			}
+			
+			for (int i = 0; i < serviceArea.size(); i++) {
 				param.put("saId", serviceArea.get(i).getChild("saId").getText());
 				param.put("countUC", serviceArea.get(i).getChild("countUC").getText());
 				param.put("countBC", serviceArea.get(i).getChild("countBC").getText());
 				scheduleMapper.insertMoodRequest(param);
+				param.put("code", "200");
+				param.put("message", "Mood report Data is saved successfully");
+				returnStr = makeMoodReportResponse(param);
+				System.out.println(returnStr);
 			}
+			
 			System.out.println("================== Mood Report Insert Complete ==================");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -801,8 +824,9 @@ public class ScheduleMgmtController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return returnStr;
 	}
-	
+
 	private String outString(Document doc){
 		XMLOutputter xmlOutput = new XMLOutputter();
 		xmlOutput.setFormat(Format.getPrettyFormat());
@@ -950,6 +974,7 @@ public class ScheduleMgmtController {
 				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
 				
+				System.out.println("insertContentInfo ===== "+resStr[1]);
 				insertContentInfo(resStr[1], params.get("id"));
 			}else{
 				ret = mapper.updateSchedule(params);
@@ -1032,7 +1057,6 @@ public class ScheduleMgmtController {
 				Element mpd = contentSet.getChild("mpd");
 				param.put("contentId", contentSet.getAttributeValue("contentSetId"));
 				param.put("mpdURI", mpd.getChild("mpdURI").getText());
-				
 				if("MooD".equals(serviceMode)){
 					Element mood = contentSet.getChild("mood");
 					param.put("r12MpdURI", mood.getChild("r12MpdURI").getText());
@@ -1047,6 +1071,13 @@ public class ScheduleMgmtController {
 					}
 					param.put("bcBasePattern", bcBasePatternStr);
 				}
+				System.out.println(serviceType);
+				System.out.println(serviceMode);
+				System.out.println("r12MpdURI ================ "+param.get("r12MpdURI"));
+				System.out.println("bcBasePattern ================ "+param.get("bcBasePattern"));
+				System.out.println(param);
+				param.put("serviceType", serviceType);
+				param.put("serviceMode", serviceMode);
 				mapper.insertScheduleContent(param);
 			}
 			else 
@@ -1067,12 +1098,13 @@ public class ScheduleMgmtController {
 							param.put("contentId", content.get(j).getAttributeValue("contentId"));
 						}
 						param.put("fileURI", child.get(0).getText());
+						param.put("serviceType", serviceType);
+						param.put("serviceMode", serviceMode);
 						mapper.insertScheduleContent(param);
 					}
+					
 				}
 			}
-			param.put("serviceType", serviceType);
-			param.put("serviceMode", serviceMode);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -1229,4 +1261,24 @@ public class ScheduleMgmtController {
 		return retStr;
 	}
 	
+	private String makeMoodReportResponse(HashMap<String, String> param) {
+		String respStr = 
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+			"<message name=\"MOOD.REPORT\" type=\"RESPONSE\">\n" +
+			"  <transaction id=\""+param.get("transaction")+"\">\n" +
+			"    <agentKey>"+param.get("agentKey")+"</agentKey>\n" +
+			"  </transaction>\n" +
+			"  <reply>\n" +
+			"    <moodData>\n" +
+			"      <code>"+param.get("code")+"</code>\n" +
+			"      <message>"+param.get("message")+"</message>\n" +
+			"    </moodData>\n" +
+			"  </reply>\n" +
+			"</message>";
+		return respStr;
+	}
+	
 }
+
+
+

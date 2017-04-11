@@ -85,9 +85,11 @@ public interface ScheduleMapper {
 	String getBcIdFromServiceId(Map<String, String> bcParam);
 	Map<String, String> selectSchduleContentList(String string);
 	List<String> selectMoodServiceId(Map<String, Object> modeLimit);
-	List<String> getSendBcSaid(Map<String, Object> modeLimit);
+	List<HashMap<String, String>> getSendBcSaid(Map<String, Object> modeLimit);
 	String getScheduleIdFromBCID(Map<String, String> bcParam);
 	String getCrsInfo(String tempSvId);
 	String getCrsInfoFromMapping(String string);
+	int checkMoodServiceId(HashMap<String, String> param);
+	int checkMoodSaId(HashMap<String, String> param);
     
 }

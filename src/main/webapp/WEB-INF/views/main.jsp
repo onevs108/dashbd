@@ -260,7 +260,6 @@
 	
 	<script src="js/jquery.cookie.js"></script>
 	<script src="/dashbd/resources/newPublish/js/plugins/digitalclock/script.js"></script>
-	<script src="/dashbd/resources/js/moment.js"></script>
 	
 	<script>
 		$.blockUI();
@@ -911,7 +910,6 @@
 				$(".modal-title").text("Streaming Info");
 // 				var url = "http://dash.edgesuite.net/dash264/TestCases/1c/qualcomm/2/MultiRate.mpd";	샘플동영상 
 				var url = reqUrl;
-				alert(url);
 				var player = dashjs.MediaPlayer().create();
 				player.initialize(document.querySelector("#Video1"), url, true);
 				$("video")[0].play();
