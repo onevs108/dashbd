@@ -59,8 +59,6 @@ public class XmlManager {
 
 	@Autowired
 	private SqlSession sqlSession;
-//	@Value("#{config['b2.server.ipaddress']}")
-//	private String b2serverIpaddress;
 
 	public String[] sendBroadcast(Map<String, String> params, int mode){
 		return sendBroadcast(params, mode, null, null);
@@ -89,19 +87,35 @@ public class XmlManager {
 				reqBody = makeXmlDelete(params);
 			
 			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
+			
 			//@ xml send
 			if("MooD".equals(params.get("serviceMode"))){
 				List<HashMap<String, String>> crsList = new ArrayList<HashMap<String, String>>();
-				for (int i = 0; i < paramList.get(6).size(); i++) {
-					String crsInfo = scheduleMapper.getCrsInfoFromMapping(paramList.get(6).get(i)); //said
-					String[] crsInfoArray = crsInfo.split(",");
-					HashMap<String, String> param = new HashMap<String, String>();
-					param.put("id", crsInfoArray[0]);
-					param.put("ip", crsInfoArray[1]);
-					param.put("said", paramList.get(6).get(i));
-					crsList.add(param);
+				if(BMSC_XML_DELETE == mode)
+				{
+					String[] saidList = params.get("said").split(",");
+					for (int i = 0; i < saidList.length; i++) {
+						String crsInfo = scheduleMapper.getCrsInfoFromMapping(saidList[i]);
+						String[] crsInfoArray = crsInfo.split(",");
+						HashMap<String, String> param = new HashMap<String, String>();
+						param.put("id", crsInfoArray[0]);
+						param.put("ip", crsInfoArray[1]);
+						param.put("said", paramList.get(6).get(i));
+						crsList.add(param);
+					}
 				}
-				
+				else
+				{
+					for (int i = 0; i < paramList.get(6).size(); i++) {
+						String crsInfo = scheduleMapper.getCrsInfoFromMapping(paramList.get(6).get(i)); //said
+						String[] crsInfoArray = crsInfo.split(",");
+						HashMap<String, String> param = new HashMap<String, String>();
+						param.put("id", crsInfoArray[0]);
+						param.put("ip", crsInfoArray[1]);
+						param.put("said", paramList.get(6).get(i));
+						crsList.add(param);
+					}
+				}
 				HashMap<String, JSONArray> obj = new HashMap<String, JSONArray>();
 				Gson gson = new Gson();
 				JSONArray array = null;
@@ -120,19 +134,22 @@ public class XmlManager {
 				}
 				
 				Iterator<String> it = obj.keySet().iterator();
-				while(it.hasNext()){
+				while(it.hasNext()) {
 					String id = it.next();
 					String crsIp = (String) ((JSONObject)obj.get(id).get(0)).get("ip");
-					if(BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode){
-						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
+					String agentKeyCRS = Base64Coder.encode(crsIp);
+					params.put("agentKeyCRS", agentKeyCRS);
+					if(BMSC_XML_DELETE == mode){
+						reqBodyCrs = makeXmlDeleteCRS(params, id);
 					}else{
-						reqBodyCrs = makeXmlDeleteCRS(params, mode, saidData, paramList, id, obj.get(id));
+						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
 					}
 					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + b3InterfefaceURL, "", reqBodyCrs, false);
 				}
 				
 				if(!isSuccess(respBodyCrs)){
-					//CRS 연동 실패 시 로직
+					String deleteStr = makeXmlDelete(params);
+					respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", deleteStr, false);
 				}
 			}
 			
@@ -147,6 +164,7 @@ public class XmlManager {
 			params.put("methodCode", "Fail");
 			params.put("methodMsg", e.getMessage());
 			usersMapper.insertSystemInterFaceLog(params);
+			System.out.println(params);
 			logger.error("", e);
 			respBody = e.getMessage();
 		}
@@ -155,66 +173,28 @@ public class XmlManager {
 		return rtvs;
 	}
 	
-	private String makeXmlDeleteCRS(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList, String id, JSONArray bcSaidList) {
+	private String makeXmlDeleteCRS(Map<String, String> params, String id) {
 		Element message = new Element("message");
-		message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
-		
+		message.setAttribute(new Attribute("name", "SERVICE.DELETE"));
 		message.setAttribute(new Attribute("type", "REQUEST"));
 		Document doc = new Document(message);
 		doc.setRootElement(message);
-
+		
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));
-		
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKeyCRS")));		
 		doc.getRootElement().addContent(transaction);
-
+		
+		
 		Element request = new Element("request");
 		Element service = new Element("service");
-		
-		String serviceId = params.get("serviceId");
-		if (serviceId == null) {
-			serviceId = "";
-		}
-		
-		service.setAttribute(new Attribute("crsId", id));
-		service.setAttribute(new Attribute("timestamp", convertDateFormat3(new Date().toString())));
-		service.setAttribute(new Attribute("serviceId", serviceId));
-		
-		Element create = new Element("create");
-		
-		Element associatedDelivery = new Element("associatedDelivery");
-		Element consumptionReport = null;
-		consumptionReport = new Element("consumptionReport");
-		consumptionReport.addContent(new Element("reportInterval").setText(params.get("moodReportInterval")));
-		consumptionReport.addContent(new Element("moodUsageDataReportInterval").setText(moodUsageDataReportInterval));
-		associatedDelivery.addContent(consumptionReport);
-		
-		Element schedule = null;
-		for (int i = 0; i < paramList.get(0).size(); i++) {	//schedule start 갯수에 따라 동작
-			schedule = new Element("schedule");
-			schedule.addContent(new Element("index").setText(String.valueOf(i+1)));
-			//time format ex) 2015-04-10T17:24:09.000+09:00 
-			schedule.addContent(new Element("start").setText(convertDateFormatNew(paramList.get(0).get(i))));
-			schedule.addContent(new Element("stop").setText(convertDateFormatNew(paramList.get(1).get(i))));
-			Element contentSet = new Element("contentSet");
-			Element serviceArea = new Element("serviceArea");
-			for (int j = 0; j < bcSaidList.length(); j++) {
-				serviceArea.addContent( new Element("said").setText(((JSONObject)bcSaidList.get(j)).get("said").toString()));
-			}
-			contentSet.addContent(serviceArea);
-			create.addContent(schedule);
-			create.addContent(contentSet);
-			create.addContent(associatedDelivery);
-		}
-		
-		service.addContent(create);
+		Element delete = new Element("delete");
+		delete.addContent(new Element("crsId").setText(id));		
+		delete.addContent(new Element("timestamp").setText(convertDateFormat3(new Date().toString())));		
+		delete.addContent(new Element("serviceId").setText(params.get("serviceId")));		
+		service.addContent(delete);
 		request.addContent(service);
-		
 		doc.getRootElement().addContent(request);
-		System.out.println("============================ Mood Create Start ============================");
-		System.out.println(outString(doc));
-		System.out.println("============================ Mood Create End ============================");
 		return outString(doc);
 	}
 
@@ -232,7 +212,7 @@ public class XmlManager {
 
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(params.get("agentKey")));
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKeyCRS")));
 		
 		doc.getRootElement().addContent(transaction);
 
@@ -295,7 +275,7 @@ public class XmlManager {
 		Element message = doc.getRootElement();
 		int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
 		
-		if (resultCode == 1000)
+		if (resultCode == 1000 || resultCode == 200)
 			return true;
 		
 		return false;
@@ -520,9 +500,10 @@ public class XmlManager {
 			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
 			
+			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
+			associatedDelivery.addContent(receptionReport);
 			if ("on".equals(params.get("reportType"))){
-				receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
-				associatedDelivery.addContent(receptionReport);
+				
 			}
 			
 			if ( null != params.get("name") && !"".equals(params.get("name")))
@@ -556,7 +537,7 @@ public class XmlManager {
 		} 
 		
 		Element schedule = null;
-		for (int i = 0; i < paramList.get(0).size(); i++) {	//schedule start 갯수에 따라 동작
+		for (int i = 0; i < paramList.get(0).size(); i++) {		//schedule start 갯수에 따라 동작
 			schedule = new Element("schedule");
 			schedule.setAttribute(new Attribute("index", String.valueOf(i+1)));
 			schedule.setAttribute(new Attribute("cancelled", "false"));
@@ -787,7 +768,7 @@ public class XmlManager {
 		Date dt = new Date();
 		
 		String retStr = "";
-		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+05:30");
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00");
 		try {
 			retStr = sdfTo.format(dt);
 		} catch (Exception e) {
@@ -800,7 +781,7 @@ public class XmlManager {
 	private String convertDateFormatNew(String dateTime){
 		String retStr = "";
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+05:30");
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00");
 		try {
 //			sdfFrom.setTimeZone(TimeZone.getTimeZone("IST"));
 //			sdfTo.setTimeZone(TimeZone.getTimeZone("GMT"));

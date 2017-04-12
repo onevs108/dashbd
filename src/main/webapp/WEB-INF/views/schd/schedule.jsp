@@ -91,6 +91,10 @@
 					$("#receptionReport").prop('checked', true);
 				}
 				
+				if("${mapSchedule.moodReportInterval}" != ""){
+					$("#reportClientId").prop('checked', true);
+				}
+				
 				for (var i = 0; i < contentJson.length; i++) {
 					if(i != 0) {
 						$("button[name='addContent']").click();	

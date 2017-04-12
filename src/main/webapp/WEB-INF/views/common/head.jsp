@@ -34,6 +34,6 @@
 
 <!-- Sweet alert -->
 <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
-
+<script src="/dashbd/resources/js/moment.js"></script>
 
 <title>SeSM</title>

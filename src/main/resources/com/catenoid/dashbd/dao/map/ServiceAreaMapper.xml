@@ -1830,7 +1830,7 @@
 						          , null as emergencyYn
 						          , broad.serviceMode
 						          , CASE WHEN mood.countUC is null THEN 'Unicast'
-						          		 ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+						          		 ELSE IF(mood.countBC = 0, 'Unicast', 'Broadcast') 
 						          	END as deleveryType
 						          , CASE WHEN mood.countUC is null THEN '-'
 						          		 ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
@@ -2259,7 +2259,7 @@
 <!-- 				    , '-' as deleveryType -->
 <!-- 				    , '-' as viewers -->
 					, CASE WHEN mood.countUC is null THEN 'Unicast'
-			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+			          		ELSE IF(mood.countBC = 0, 'Unicast', 'Broadcast') 
 			          END as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
 			          		ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
@@ -2292,7 +2292,7 @@
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 				    , IFNULL(fecRatio, 0) as fecRatio
 					, CASE WHEN mood.countUC is null THEN 'Unicast'
-			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+			          		ELSE IF(mood.countBC = 0, 'Unicast', 'Broadcast') 
 			          END as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
 			          		ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
@@ -2326,7 +2326,7 @@
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
 				    , IFNULL(fecRatio, 0) as fecRatio
 					, CASE WHEN mood.countUC is null THEN 'Unicast'
-			          		ELSE IF(mood.countUC = 0, 'Broadcast', 'Unicast') 
+			          		ELSE IF(mood.countBC = 0, 'Unicast', 'Broadcast') 
 			          END as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
 			          		ELSE IF(mood.countUC = 0, FORMAT(mood.countBC, 0), FORMAT(mood.countUC, 0)) 
@@ -2422,7 +2422,7 @@
 		SELECT circle.circle_name as circleName, mood.serviceId, broad.service_name as serviceName
 		      , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 		      , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr, IFNULL(broad.fecRatio, 0) as fecRatio
-		      , IF(mood.countUC > 0, 'Unicast', 'Broadcast') as deleveryType
+		      , IF(mood.countBC > 0, 'Broadcast', 'Unicast') as deleveryType
 		      , format(IF(mood.countUC > 0, mood.countUC, mood.countBC), ',') as viewers
 			  , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 			  , schedule.id as scheduleId

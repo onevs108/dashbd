@@ -182,8 +182,10 @@ $(document).ready(function()
 			dataType : "json",
 			success : function( data ) {
 				outMsgForAjax(data);
-//				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
-				location.href = "schdMgmt.do";
+				if(result.resultInfo.resultCode != "1000" && result.resultInfo.resultCode != "200"){
+					return;
+				}
+				location.href = "schdMgmtDetail.do?bmscId="+bmscId;
 			},
 			error : function(request, status, error) {
 				alert("request=" +request +",status=" + status + ",error=" + error);
@@ -197,6 +199,8 @@ $(document).ready(function()
 			if (!valadationCheck())
 				return false;
 			if (!confirm('are you sure?')) {
+				$("#serviceType").attr("disabled");
+				$("#reportType").attr("disabled");
 				return false;
 			}
 		},
@@ -426,7 +430,7 @@ function detailValidationCheck() {
 			}
 			if(!(this.value > -1 && this.value < 101)){
 				this.value = "";
-				alert("The value of Sementation Availble Offset must be integer (1~10)");
+				alert("The value of Sementation Availble Offset must be integer (1~100)");
 				return false;
 			}
 			return false;
@@ -465,6 +469,55 @@ function detailValidationCheck() {
 			if(!(this.value > -1 && this.value < 101)){
 				this.value = "";
 				alert("The value of the Ration must be integer (0~100)");
+				return false;
+			}
+			return false;
+		}
+	});
+	
+	$("#moodReportInterval").blur(function(){
+		if(this.value != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("The value of moodReportInterval must be integer (0~9999999)");
+				return false;
+			}
+			return false;
+		}
+	});
+
+	$("#moodOffsetTime").blur(function(){
+		if(this.value != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("The value of moodOffsetTime must be integer (0~9999999)");
+				return false;
+			}
+			return false;
+		}
+	});
+
+	$("#moodRandomTimePeriod").blur(function(){
+		if(this.value != ""){
+			if(!checkInteger7(this.value)){
+				this.value = "";
+				alert("The value of moodRandomTimePeriod must be integer (0~9999999)");
+				return false;
+			}
+			return false;
+		}
+	});
+
+	$("#moodSamplePercentage").blur(function(){
+		if(this.value != ""){
+			if(!checkInteger3(this.value)){
+				this.value = "";
+				alert("The value of moodSamplePercentage is Integer");
+				return false;
+			}
+			if(!(this.value > -1 && this.value < 101)){
+				this.value = "";
+				alert("The value of moodSamplePercentage must be integer (0~100)");
 				return false;
 			}
 			return false;
