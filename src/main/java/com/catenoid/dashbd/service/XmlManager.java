@@ -228,10 +228,6 @@ public class XmlManager {
 			serviceId = "";
 		}
 		
-//		service.setAttribute(new Attribute("crsId", id));
-//		service.setAttribute(new Attribute("timestamp", convertDateFormat3(new Date().toString())));
-//		service.setAttribute(new Attribute("serviceId", serviceId));
-		
 		Element create = new Element("create");
 		
 		create.addContent(new Element("crsid").setText(id));
@@ -518,9 +514,6 @@ public class XmlManager {
 			
 			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
 			associatedDelivery.addContent(receptionReport);
-			if ("on".equals(params.get("reportType"))){
-				
-			}
 			
 			if ( null != params.get("name") && !"".equals(params.get("name")))
 				streaming.addContent(name);
@@ -543,10 +536,6 @@ public class XmlManager {
 					consumptionReport.setAttribute(new Attribute("reportClientId", "false"));
 				}
 				associatedDelivery.addContent(consumptionReport);
-			}
-			
-			if ("on".equals(params.get("receptionReport"))){
-				associatedDelivery.addContent(receptionReport);
 			}
 			
 			serviceType = streaming;
