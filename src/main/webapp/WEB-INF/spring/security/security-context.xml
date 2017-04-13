@@ -24,6 +24,7 @@
 		<intercept-url pattern="/resources/eNBMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_ENB_MGMT')" />
 		<intercept-url pattern="/view/content.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_CONTENTS_MGMT')" />
 		<intercept-url pattern="/view/receiveMoodRequest.do" access="permitAll"/>
+		<intercept-url pattern="/view/receiveTimestampRequest.do" access="permitAll"/>
 		<intercept-url pattern="/view/schdMgmt.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" />
 		<intercept-url pattern="/view/schdMgmtDetail.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" />
 		<intercept-url pattern="/view/schedule.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" />

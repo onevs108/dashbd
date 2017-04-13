@@ -91,5 +91,6 @@ public interface ScheduleMapper {
 	String getCrsInfoFromMapping(String string);
 	int checkMoodServiceId(HashMap<String, String> param);
 	int checkMoodSaId(HashMap<String, String> param);
+	List<HashMap<String, String>> getCurrentMoodService(String crsId);
     
 }

@@ -33,10 +33,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);
 		Map<String, Object> modeLimit = mapper.selectCrsLimit();
-//		List<Map<String, Object>> moodRequestInfo = mapper.selectMoodRequestInfo(modeLimit);
 		List<String> moodServiceId = mapper.selectMoodServiceId(modeLimit);
-//		int uniMax = (Integer) modeLimit.get("unicast");
-//		List<String> removeSaIdList = new ArrayList<String>();
 		List<HashMap<String, List<HashMap<String,String>>>> serviceIdList = new ArrayList<HashMap<String, List<HashMap<String,String>>>>();
 		
 		for (int i = 0; i < moodServiceId.size(); i++) {
@@ -57,7 +54,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 			String[] rtvs = new String[2];
 			String respBody = "SUCCESS";
 			String reqBody = "";
-			String respBodyCrs = "SUCCESS";
 			String reqBodyCrs = "";
 			try {
 				Bmsc bmsc = bmscMapper.selectBmsc(793);
@@ -78,10 +74,11 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 					System.out.println(" ================== (said = "+said+") CRS Mood Update Start ================== ");
 					crsParam.put("said", said);
 					HashMap<String,String> crsInfo = mapper.getCrsInfo(crsParam);
-					reqBodyCrs = makeModityXmlCRS(tempSvId, crsInfo, agentKey, said);
-					respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("url"), "", reqBodyCrs, false);
+					String agentKeyCRS = Base64Coder.encode(crsInfo.get("ip"));
+					reqBodyCrs = makeModityXmlCRS(tempSvId, crsInfo, agentKeyCRS, said);
+					new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
 					System.out.println(" ================== ("+said+") CRS Mood Update End ================== ");
-				} 
+				}
 			} catch (Exception e) {
 				System.out.println(e);
 			}
@@ -92,7 +89,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String makeModityXmlCRS(String tempSvId, HashMap<String,String> crsInfo, String agentKey, String said) {
+	private String makeModityXmlCRS(String tempSvId, HashMap<String,String> crsInfo, String agentKeyCRS, String said) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		Map<String, String> bcParam = new HashMap<String, String>();
 		bcParam.put("serviceId", tempSvId);
@@ -109,7 +106,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 
 		Element transaction = new Element("transaction");
 		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
-		transaction.addContent(new Element("agentKey").setText(params.get("agentKeyCRS")));
+		transaction.addContent(new Element("agentKey").setText(agentKeyCRS));
 		
 		doc.getRootElement().addContent(transaction);
 

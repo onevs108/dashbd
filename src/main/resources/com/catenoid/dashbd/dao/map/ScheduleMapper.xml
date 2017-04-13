@@ -800,12 +800,12 @@
 	</select>
 	
 	<select id="getCrsInfo" parameterType="HashMap" resultType="HashMap">
-		select id, ip, url, moodUsageDataReportInterval from crs_server_info
+		select id, ip, updateUrl, moodUsageDataReportInterval from crs_server_info
 		where id = (select crsId from mood_request where serviceId = #{serviceId} and said = #{said} limit 1)
 	</select>
 	
 	<select id="getCrsInfoFromMapping" parameterType="String" resultType="String">
-		select CONCAT(id, ',', ip, url) from crs_server_info
+		select CONCAT(id, ',', ip, ',', createUrl) from crs_server_info
 		where id = (select crs_id from crs_said_mapping where said = #{said})
 	</select>
 	
@@ -816,6 +816,18 @@
 		  and serviceId = #{serviceId}
 		  and (now() <![CDATA[ > ]]> schedule_start)
 		  and (now() <![CDATA[ < ]]> schedule_stop)
+	</select>
+	
+	<select id="getCurrentMoodService" parameterType="String" resultType="HashMap">
+		select * from 
+		broadcast_info a inner join crs_said_mapping b 
+		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
+		inner join mood_request c on b.said = c.saId and b.crs_id = c.crsId
+		where service = 'streaming' 
+		  and serviceMode = 'MooD'		  
+		  and (now() <![CDATA[ > ]]> schedule_start)
+		  and (now() <![CDATA[ < ]]> schedule_stop)
+		  and b.crs_id = #{crsId}
 	</select>
 	
 	<select id="checkMoodSaId" parameterType="java.util.Map" resultType="int">
@@ -862,7 +874,7 @@
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q
-			where aCnt > 0 and bCnt = 0) T
+			where aCnt = 0 and bCnt > 0) T
 		where serviceId = #{serviceId}
 	</select>
 

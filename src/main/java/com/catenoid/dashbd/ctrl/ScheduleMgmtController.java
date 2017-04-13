@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -726,7 +727,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/receiveMoodRequestAction.do")
 	@ResponseBody
-	public void receviceMoodRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req) throws UnsupportedEncodingException, HttpNetAgentException {
+	public void receiveMoodRequestAction(@RequestParam HashMap<String,String> param, HttpServletRequest req) throws UnsupportedEncodingException, HttpNetAgentException {
 		String retStr =
 		 //"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -752,16 +753,9 @@ public class ScheduleMgmtController {
 			System.out.println(result); 
 	}
 	
-	/*@RequestMapping(value = "/saveData", , method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<Boolean> saveData(@RequestBody String a) throws MyException {
-        return new ResponseEntity<Boolean>(uiRequestProcessor.saveData(a),HttpStatus.OK);
-
-    }*/
-
 	@RequestMapping(value = "view/receiveMoodRequest.do")
 	@ResponseBody
-	public String receiveMoodRequestAction(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String a) {
+	public String receiveMoodRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String a) {
 		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
 		SAXBuilder builder = new SAXBuilder();
 		String returnStr = "";
@@ -817,6 +811,51 @@ public class ScheduleMgmtController {
 			}
 			
 			System.out.println("================== Mood Report Insert Complete ==================");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return returnStr;
+	}
+	
+	@RequestMapping(value = "view/receiveTimestampRequest.do")
+	@ResponseBody
+	public String receiveTimestampRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String a) {
+		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+		SAXBuilder builder = new SAXBuilder();
+		String returnStr = "";
+		try {
+			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(a, "utf-8").getBytes("utf-8"));
+			Document doc = builder.build(stream);	//test XML 파일
+			System.out.println(outString(doc));
+			Element message = doc.getRootElement();
+			Element request = (Element) message.getChildren().get(1);
+			Element service = request.getChild("service");
+			Element timestamp = service.getChild("timestamp");
+			String crsId = timestamp.getChild("crsId").getText();
+			List<HashMap<String, String>> currnetService = scheduleMapper.getCurrentMoodService(crsId);
+			
+			System.out.println("================== Mood Receive Timestamp ==================");
+			for (int i = 0; i < currnetService.size(); i++) {
+				Element timeset = new Element("timeset");
+				Element serviceId = new Element("serviceId").setText(currnetService.get(i).get("serviceId"));
+				Element timestampIn = new Element("timestamp").setText(currnetService.get(i).get("timestamp"));
+				timeset.addContent(serviceId);
+				timeset.addContent(timestampIn);
+				timestamp.addContent(timeset);
+			}
+			Element reply = new Element("reply");
+			
+			service.addContent(timestamp);
+			reply.addContent(service);
+			
+			doc.getRootElement().addContent(reply);
+			System.out.println(outString(doc)); 
+			return outString(doc);
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {

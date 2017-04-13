@@ -100,6 +100,7 @@ public class XmlManager {
 						HashMap<String, String> param = new HashMap<String, String>();
 						param.put("id", crsInfoArray[0]);
 						param.put("ip", crsInfoArray[1]);
+						param.put("createUrl", crsInfoArray[2]);
 						param.put("said", paramList.get(6).get(i));
 						crsList.add(param);
 					}
@@ -112,6 +113,7 @@ public class XmlManager {
 						HashMap<String, String> param = new HashMap<String, String>();
 						param.put("id", crsInfoArray[0]);
 						param.put("ip", crsInfoArray[1]);
+						param.put("createUrl", crsInfoArray[2]);
 						param.put("said", paramList.get(6).get(i));
 						crsList.add(param);
 					}
@@ -137,6 +139,7 @@ public class XmlManager {
 				while(it.hasNext()) {
 					String id = it.next();
 					String crsIp = (String) ((JSONObject)obj.get(id).get(0)).get("ip");
+					String crsUrl = (String) ((JSONObject)obj.get(id).get(0)).get("createUrl");
 					String agentKeyCRS = Base64Coder.encode(crsIp);
 					params.put("agentKeyCRS", agentKeyCRS);
 					if(BMSC_XML_DELETE == mode){
@@ -144,10 +147,10 @@ public class XmlManager {
 					}else{
 						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
 					}
-					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + b3InterfefaceURL, "", reqBodyCrs, false);
+					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
 				}
 				
-				if(!isSuccess(respBodyCrs)){
+				if(!isSuccessCRS(respBodyCrs)){
 					String deleteStr = makeXmlDelete(params);
 					respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", deleteStr, false);
 				}
@@ -274,6 +277,18 @@ public class XmlManager {
 		doc = new SAXBuilder().build(new StringReader(retStr));
 		Element message = doc.getRootElement();
 		int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
+		
+		if (resultCode == 1000 || resultCode == 200)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean isSuccessCRS(String retStr) throws JDOMException, IOException{
+		Document doc = null;
+		doc = new SAXBuilder().build(new StringReader(retStr));
+		Element message = doc.getRootElement();
+		int resultCode = Integer.parseInt(message.getChild("reply").getChild("moodData").getChild("code").getValue());
 		
 		if (resultCode == 1000 || resultCode == 200)
 			return true;
