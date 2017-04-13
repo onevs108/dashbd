@@ -1849,18 +1849,31 @@ public class ServiceController {
 			
 			XmlParaSet reqXml = XmlFormer.toXmlParaSet(req.toString().replaceAll("&", "&amp;"));
 			
+			String mode = reqXml.getAttr("name").substring(reqXml.getAttr("name").indexOf(".")+1).toLowerCase();
+			
+			String message = "";
+			if(mode.equals("create")){
+				message = "service created successfully";
+			}else if(mode.equals("update")){
+				message = "service updated successfully";
+			}else{	//delete
+				message = "service is deleted successfully";
+			}
+			
 			String strXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                    "<message xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" name=\"MOOD.REPORT\" type=\"RESPONSE\">\n" +
-                    "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
-                    "        <agentKey>"+ getPara(reqXml, "transaction").getPara("agentKey").getValue() +"</agentKey>\n" +
-                    "    </transaction>\n" +
-                    "    <reply>\n" +
-                    "        <moodData>\n" +
-                    "            <code>200</code>\n" +
-                    "            <message>Data successfully saved to Dashboard</message>\n" +
-                    "        </moodData>\n" +
-                    "    </reply>\n" +
-                    "</message>";
+	                    "<message name=\"SERVICE."+mode.toUpperCase()+"\" type=\"RESPONSE\">\n" +
+	                    "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
+	                    "        <agentKey>"+ getPara(reqXml, "transaction").getPara("agentKey").getValue() +"</agentKey>\n" +
+	                    "    </transaction>\n" +
+	                    "    <reply>\n" +
+	                    "        <service>\n" +
+	                    "            <"+mode+">\n" +
+	                    "                <code>200</code>\n" +
+	                    "                <message>"+message+"</message>\n" +
+	                    "            </"+mode+">\n" +
+	                    "        </service>\n" +
+	                    "    </reply>\n" +
+	                    "</message>";
 			
 			return new ResponseEntity<String>(strXml, HttpStatus.OK);
 		}

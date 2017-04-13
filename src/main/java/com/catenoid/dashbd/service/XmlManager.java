@@ -101,7 +101,7 @@ public class XmlManager {
 						param.put("id", crsInfoArray[0]);
 						param.put("ip", crsInfoArray[1]);
 						param.put("createUrl", crsInfoArray[2]);
-						param.put("said", paramList.get(6).get(i));
+						param.put("said", saidList[i]);
 						crsList.add(param);
 					}
 				}
@@ -144,10 +144,11 @@ public class XmlManager {
 					params.put("agentKeyCRS", agentKeyCRS);
 					if(BMSC_XML_DELETE == mode){
 						reqBodyCrs = makeXmlDeleteCRS(params, id);
+						respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
 					}else{
 						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
+						respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
 					}
-					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
 				}
 				
 				if(!isSuccessCRS(respBodyCrs)){
@@ -288,7 +289,8 @@ public class XmlManager {
 		Document doc = null;
 		doc = new SAXBuilder().build(new StringReader(retStr));
 		Element message = doc.getRootElement();
-		int resultCode = Integer.parseInt(message.getChild("reply").getChild("moodData").getChild("code").getValue());
+		String mode = message.getAttributeValue("name").substring(message.getAttributeValue("name").indexOf(".")+1).toLowerCase();
+		int resultCode = Integer.parseInt(message.getChild("reply").getChild("service").getChild(mode).getChild("code").getValue());
 		
 		if (resultCode == 1000 || resultCode == 200)
 			return true;
