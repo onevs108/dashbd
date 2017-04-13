@@ -1853,11 +1853,54 @@ public class ServiceController {
                     "<message xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" name=\"MOOD.REPORT\" type=\"RESPONSE\">\n" +
                     "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
                     "        <agentKey>"+ getPara(reqXml, "transaction").getPara("agentKey").getValue() +"</agentKey>\n" +
-                    "        <result>\n" +
-                    "            <code>1000</code>\n" +
-                    "            <message>Mood Report saved successfully</message>\n" +
-                    "        </result>\n" +
                     "    </transaction>\n" +
+                    "    <reply>\n" +
+                    "        <moodData>\n" +
+                    "            <code>200</code>\n" +
+                    "            <message>Data successfully saved to Dashboard</message>\n" +
+                    "        </moodData>\n" +
+                    "    </reply>\n" +
+                    "</message>";
+			
+			return new ResponseEntity<String>(strXml, HttpStatus.OK);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.toString());
+		}		
+		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@RequestMapping(value = "B3interfaceUpdate.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public ResponseEntity<String> B3interfaceUpdate(HttpServletRequest request) {
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			String inputLine;
+			StringBuffer req = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				req.append(inputLine);
+			}
+			in.close();
+			//print request
+			logger.info(req.toString());
+			
+			XmlParaSet reqXml = XmlFormer.toXmlParaSet(req.toString().replaceAll("&", "&amp;"));
+			
+			String strXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                    "<message xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" name=\"MOOD.REPORT\" type=\"RESPONSE\">\n" +
+                    "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
+                    "        <agentKey>"+ getPara(reqXml, "transaction").getPara("agentKey").getValue() +"</agentKey>\n" +
+                    "    </transaction>\n" +
+                    "    <reply>\n" +
+                    "        <service>\n" +
+                    "            <update>\n" +
+                    "                <code>200</code>\n" +
+                    "                <message>service updated successfully</message>\n" +
+                    "            </update>\n" +
+                    "        </service>\n" +
+                    "    </reply>\n" +
                     "</message>";
 			
 			return new ResponseEntity<String>(strXml, HttpStatus.OK);

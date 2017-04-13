@@ -51,21 +51,37 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 				serviceIdList.add(param);
 			}
 		}
+		
 		System.out.println("serviceIdList ================== "+serviceIdList.size()+ " ================== ");
 		for (int i = 0; i < serviceIdList.size(); i++) {
 			String[] rtvs = new String[2];
 			String respBody = "SUCCESS";
 			String reqBody = "";
+			String respBodyCrs = "SUCCESS";
+			String reqBodyCrs = "";
 			try {
-				/*Iterator<String> it = serviceIdList.get(i).keySet().iterator();
-				String tempSvId = it.next();
-				String crsIp = mapper.getCrsInfo(tempSvId);*/
 				Bmsc bmsc = bmscMapper.selectBmsc(793);
-				System.out.println(" ================== Modify Start ================== ");
+				System.out.println(" ================== BMSC Mood Update Start ================== ");
 				String agentKey = Base64Coder.encode(bmsc.getIpaddress()); 
 				reqBody = makeModityXml(serviceIdList.get(i), agentKey);
 				respBody = new HttpNetAgent().execute("http://" + bmsc.getIpaddress() + bmsc.getCircle(), "", reqBody, false);
-				System.out.println(" ================== Modify End ================== ");
+				System.out.println(" ================== BMSC Mood Update End ================== ");
+				
+				
+				HashMap<String,String> crsParam = new HashMap<String, String>(); 
+				Iterator<String> it = serviceIdList.get(i).keySet().iterator();
+				String tempSvId = it.next();
+				crsParam.put("serviceId", tempSvId);
+				List<HashMap<String,String>> crsSaidList = serviceIdList.get(i).get(tempSvId);
+				for (int j = 0; j < crsSaidList.size(); j++) {
+					String said = crsSaidList.get(j).get("said");
+					System.out.println(" ================== (said = "+said+") CRS Mood Update Start ================== ");
+					crsParam.put("said", said);
+					HashMap<String,String> crsInfo = mapper.getCrsInfo(crsParam);
+					reqBodyCrs = makeModityXmlCRS(tempSvId, crsInfo, agentKey, said);
+					respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("url"), "", reqBodyCrs, false);
+					System.out.println(" ================== ("+said+") CRS Mood Update End ================== ");
+				} 
 			} catch (Exception e) {
 				System.out.println(e);
 			}
@@ -73,6 +89,74 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 			rtvs[1] = reqBody;		
 		}
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private String makeModityXmlCRS(String tempSvId, HashMap<String,String> crsInfo, String agentKey, String said) {
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		Map<String, String> bcParam = new HashMap<String, String>();
+		bcParam.put("serviceId", tempSvId);
+		bcParam.put("BCID", mapper.getBcIdFromServiceId(bcParam));
+		Map<String, String> params = mapper.selectBroadcast(bcParam);
+		bcParam.put("id", mapper.getScheduleIdFromBCID(bcParam));
+		
+		Element message = new Element("message");
+		message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));	
+		
+		message.setAttribute(new Attribute("type", "REQUEST"));
+		Document doc = new Document(message);
+		doc.setRootElement(message);
+
+		Element transaction = new Element("transaction");
+		transaction.setAttribute(new Attribute("id", params.get("transactionId")));
+		transaction.addContent(new Element("agentKey").setText(params.get("agentKeyCRS")));
+		
+		doc.getRootElement().addContent(transaction);
+
+		Element request = new Element("request");
+		Element service = new Element("service");
+		
+		String serviceId = params.get("serviceId");
+		if (serviceId == null) {
+			serviceId = "";
+		}
+		
+		Element update = new Element("update");
+		
+		update.addContent(new Element("crsid").setText(String.valueOf(crsInfo.get("id"))));
+		update.addContent(new Element("timestamp").setText(convertDateFormat3(new Date().toString())));
+		update.addContent(new Element("serviceId").setText(serviceId));
+		
+		Element associatedDelivery = new Element("associatedDelivery");
+		Element consumptionReport = null;
+		consumptionReport = new Element("consumptionReport");
+		consumptionReport.addContent(new Element("reportInterval").setText(params.get("moodReportInterval")));
+		consumptionReport.addContent(new Element("moodUsageDataReportInterval").setText(String.valueOf(crsInfo.get("moodUsageDataReportInterval"))));
+		associatedDelivery.addContent(consumptionReport);
+		
+		Element schedule = null;
+		schedule = new Element("schedule");
+		schedule.addContent(new Element("index").setText(String.valueOf(1)));
+		//time format ex) 2015-04-10T17:24:09.000+09:00 
+		schedule.addContent(new Element("start").setText(convertDateFormatNew(params.get("schedule_start"))));
+		schedule.addContent(new Element("stop").setText(convertDateFormatNew(params.get("schedule_stop"))));
+		Element contentSet = new Element("contentSet");
+		Element serviceArea = new Element("serviceArea");
+		
+		serviceArea.addContent(new Element("said").setText(said));
+		contentSet.addContent(serviceArea);
+		update.addContent(schedule);
+		update.addContent(contentSet);
+		update.addContent(associatedDelivery);
+		
+		service.addContent(update);
+		request.addContent(service);
+		
+		doc.getRootElement().addContent(request);
+		System.out.println("============================ Mood Update Start ============================");
+		System.out.println(outString(doc));
+		System.out.println("============================ Mood Update End ============================");
+		return outString(doc);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -263,12 +347,14 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		return outString(doc);
 	}
 	
-	public void setInit(SqlSession ss){
+	//현재 시간 출력
+	private String convertDateFormat3(String dateTime){
+		Date dt = new Date();
 		
-		if (sqlSession != null)
-			return;
-		
-		sqlSession = ss;
+		String retStr = "";
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00");
+		retStr = sdfTo.format(dt);
+		return retStr;
 	}
 	
 	//2017-02-27T16:00:00.000+09:00
@@ -277,8 +363,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00");
 		try {
-//				sdfFrom.setTimeZone(TimeZone.getTimeZone("IST"));
-//				sdfTo.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date dateFrom = sdfFrom.parse(dateTime);
 		    retStr = sdfTo.format(dateFrom);
 		} catch (Exception e) {
@@ -291,33 +375,12 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		xmlOutput.setFormat(Format.getPrettyFormat());
 		return xmlOutput.outputString(doc);
 	}
+
+	public void setInit(SqlSession ss){
+		if (sqlSession != null)
+			return;
+		
+		sqlSession = ss;
+	}
 	
-	/*for (int j = 0; j < moodRequestInfo.size(); j++) {
-		if(moodServiceId.get(i).equals(moodRequestInfo.get(j).get("serviceId").toString())){
-			int bro = (Integer) moodRequestInfo.get(j).get("countBC");
-			//UNI캐스트 일때
-			if(bro == 0) {
-				if(uniMax > (Integer) moodRequestInfo.get(j).get("countUC"))
-				{
-					
-				}
-				else 
-				{
-					saIdList.add(moodRequestInfo.get(j).get("said").toString());
-				}
-			}
-			//BRO캐스트 일때
-			else // if(uni == 0)
-			{
-				if(uniMax > (Integer) moodRequestInfo.get(j).get("countBC")) 
-				{
-					
-				}
-				else 
-				{
-					saIdList.add(moodRequestInfo.get(j).get("said").toString());
-				}
-			}
-		}dffffffffffffasdfs 
-	}*/
 }

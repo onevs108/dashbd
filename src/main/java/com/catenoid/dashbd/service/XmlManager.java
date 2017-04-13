@@ -417,11 +417,10 @@ public class XmlManager {
 		transferConfig.addContent(QoS);
 		transferConfig.addContent(FEC);
 		//schedule 은 배열이 될수도 있음. 일딴 한개만 처리
-		Element receptionReport = null;
+		Element receptionReport = new Element("receptionReport");
 		Element associatedDelivery = new Element("associatedDelivery");
 		
 		if ("on".equals(params.get("receptionReport"))){
-			receptionReport = new Element("receptionReport");
 			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
 			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
@@ -553,13 +552,13 @@ public class XmlManager {
 					}
 					else if(SERVICE_TYPE_CAROUSEL_MULTIPLE.equals(params.get("serviceType")))
 					{
-						content.setAttribute(new Attribute("contentId", String.valueOf(j)));						
+						content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						
 						content.setAttribute(new Attribute("contentType", "text/plain"));							
 						content.setAttribute(new Attribute("cancelled", "false"));			
 					}
 					else
 					{
-						content.setAttribute(new Attribute("contentId", String.valueOf(j)));						
+						content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						
 						content.setAttribute(new Attribute("contentType", "text/plain"));							
 						content.setAttribute(new Attribute("cancelled", "false"));									
 						content.setAttribute(new Attribute("changed", "false"));	

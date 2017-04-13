@@ -738,7 +738,7 @@ public class ScheduleMgmtController {
 			"      <moodData>\n" +
 			"         <crsId>1</crsId>\n" +
 			"         <serviceId>mood:202</serviceId>\n" +
-			"         <timestamp>Wed Mar 15 15:17:00 2017</timestamp>\n" +
+			"         <timestamp>2017-02-27T16:00:00 09:00</timestamp>\n" +
 			"         <serviceArea>\n" +
 			"            <saId>100</saId>\n" +
 			"            <countUC>0</countUC>\n" +

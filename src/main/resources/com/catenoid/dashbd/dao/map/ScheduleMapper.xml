@@ -799,13 +799,13 @@
 		where BCID = #{BCID}
 	</select>
 	
-	<select id="getCrsInfo" parameterType="String" resultType="String">
-		select serverInfo from crs_server_info
-		where id = (select crsId from mood_request where serviceId = #{tempSvId} limit 1)
+	<select id="getCrsInfo" parameterType="HashMap" resultType="HashMap">
+		select id, ip, url, moodUsageDataReportInterval from crs_server_info
+		where id = (select crsId from mood_request where serviceId = #{serviceId} and said = #{said} limit 1)
 	</select>
 	
 	<select id="getCrsInfoFromMapping" parameterType="String" resultType="String">
-		select CONCAT(id, ',', serverInfo) from crs_server_info
+		select CONCAT(id, ',', ip, url) from crs_server_info
 		where id = (select crs_id from crs_said_mapping where said = #{said})
 	</select>
 	
