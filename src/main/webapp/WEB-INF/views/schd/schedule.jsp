@@ -87,7 +87,7 @@
 					$("#FileRepair").prop('checked', true);	
 				}
 				
-				if("${mapSchedule.offsetTime}" != ""){
+				if("${mapSchedule.samplePercentage}" != ""){
 					$("#receptionReport").prop('checked', true);
 				}
 				

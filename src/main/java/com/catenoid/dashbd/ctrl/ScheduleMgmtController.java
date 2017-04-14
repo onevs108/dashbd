@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -402,10 +403,13 @@ public class ScheduleMgmtController {
 
 	@RequestMapping(value = "view/schdMgmtDetail.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req, HttpSession session) throws UnsupportedEncodingException {
+		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
 		Users user = (Users) session.getAttribute("USER");
+		if(user == null){
+			mv.setViewName("redirect:/login.do");
+		}
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
-		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
 		List<Circle> circleList = operatorMapper.selectCircleListNameAll();
 		List<Map<String, String>> scList = mapper.selectServiceClassAll();
 		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
@@ -726,7 +730,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/receiveMoodRequestAction.do")
 	@ResponseBody
-	public void receviceMoodRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req) throws UnsupportedEncodingException, HttpNetAgentException {
+	public void receiveMoodRequestAction(@RequestParam HashMap<String,String> param, HttpServletRequest req) throws UnsupportedEncodingException, HttpNetAgentException {
 		String retStr =
 		 //"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -738,7 +742,7 @@ public class ScheduleMgmtController {
 			"      <moodData>\n" +
 			"         <crsId>1</crsId>\n" +
 			"         <serviceId>mood:202</serviceId>\n" +
-			"         <timestamp>Wed Mar 15 15:17:00 2017</timestamp>\n" +
+			"         <timestamp>2017-02-27T16:00:00 09:00</timestamp>\n" +
 			"         <serviceArea>\n" +
 			"            <saId>100</saId>\n" +
 			"            <countUC>0</countUC>\n" +
@@ -752,21 +756,14 @@ public class ScheduleMgmtController {
 			System.out.println(result); 
 	}
 	
-	/*@RequestMapping(value = "/saveData", , method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<Boolean> saveData(@RequestBody String a) throws MyException {
-        return new ResponseEntity<Boolean>(uiRequestProcessor.saveData(a),HttpStatus.OK);
-
-    }*/
-
 	@RequestMapping(value = "view/receiveMoodRequest.do")
 	@ResponseBody
-	public String receiveMoodRequestAction(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String a) {
+	public String receiveMoodRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String postData) {
 		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
 		SAXBuilder builder = new SAXBuilder();
 		String returnStr = "";
 		try {
-			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(a, "utf-8").getBytes("utf-8"));
+			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(postData, "utf-8").getBytes("utf-8"));
 			Document jdomdoc = builder.build(stream);	//test XML 파일
 			System.out.println(outString(jdomdoc));
 			Element message = jdomdoc.getRootElement();
@@ -826,7 +823,132 @@ public class ScheduleMgmtController {
 		}
 		return returnStr;
 	}
+	
+	@RequestMapping(value = "view/receiveTimestampRequest.do")
+	@ResponseBody
+	public String receiveTimestampRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String postData) {
+		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+		SAXBuilder builder = new SAXBuilder();
+		String returnStr = "";
+		try {
+			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(postData, "utf-8").getBytes("utf-8"));
+			Document doc = builder.build(stream);	//test XML 파일
+			System.out.println(outString(doc));
+			Element message = doc.getRootElement();
+			Element transaction = (Element) message.getChildren().get(0);
+			Element request = (Element) message.getChildren().get(1);
+			Element service = request.getChild("service");
+			Element timestamp = service.getChild("timestamp");
+			String crsId = timestamp.getChild("crsId").getText();
+			List<HashMap<String, String>> currnetService = scheduleMapper.getCurrentMoodService(crsId);
+			
+			System.out.println("================== Mood Receive Timestamp Start ==================");
+			Element messageNew = new Element("message");
+			messageNew.setAttribute(new Attribute("name", "SERVICE.TIMESTAMP"));	
+			messageNew.setAttribute(new Attribute("type", "RESPONSE"));
+			Document docNew = new Document(messageNew);
+			docNew.setRootElement(messageNew);
+			Element timestampNew = new Element("timestamp");
+			Element crsIdNew = new Element("crsId");
+			crsIdNew.setText(crsId);
+			timestampNew.addContent(crsIdNew);
+			for (int i = 0; i < currnetService.size(); i++) {
+				Element timeset = new Element("timeset");
+				Element serviceId = new Element("serviceId").setText(currnetService.get(i).get("serviceId"));
+				Element timestampIn = new Element("timestamp").setText(convertDateFormatNew(String.valueOf(currnetService.get(i).get("timestamp"))));
+				timeset.addContent(serviceId);
+				timeset.addContent(timestampIn);
+				timestampNew.addContent(timeset);
+			}
+			
+			Element transactionNew = new Element("transaction");
+			transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
+			transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));		
+			
+			Element reply = new Element("reply");
+			Element serviceNew = new Element("service");
+			
+			serviceNew.addContent(timestampNew);
+			reply.addContent(serviceNew);
+			
+			docNew.getRootElement().addContent(transactionNew);
+			docNew.getRootElement().addContent(reply);
+			System.out.println(outString(docNew));
+			System.out.println("================== Mood Receive Timestamp End ==================");
+			returnStr = outString(docNew);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return returnStr;
+	}
+	
 
+	@RequestMapping(value = "view/receiveRetrieveRequest.do")
+	@ResponseBody
+	public String receiveRetrieveRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String postData) {
+		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+		SAXBuilder builder = new SAXBuilder();
+		String returnStr = "";
+		try {
+			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(postData, "utf-8").getBytes("utf-8"));
+			Document doc = builder.build(stream);	//test XML 파일
+			System.out.println(outString(doc));
+			Element message = doc.getRootElement();
+			Element transaction = (Element) message.getChildren().get(0);
+			Element request = (Element) message.getChildren().get(1);
+			Element service = request.getChild("service");
+			Element timestamp = service.getChild("timestamp");
+			String crsId = timestamp.getChild("crsId").getText();
+			List<HashMap<String, String>> currnetService = scheduleMapper.getCurrentMoodService(crsId);
+			
+			System.out.println("================== Mood Receive Timestamp Start ==================");
+			Element messageNew = new Element("message");
+			messageNew.setAttribute(new Attribute("name", "SERVICE.TIMESTAMP"));	
+			messageNew.setAttribute(new Attribute("type", "RESPONSE"));
+			Document docNew = new Document(messageNew);
+			docNew.setRootElement(messageNew);
+			Element timestampNew = new Element("timestamp");
+			Element crsIdNew = new Element("crsId");
+			crsIdNew.setText(crsId);
+			timestampNew.addContent(crsIdNew);
+			for (int i = 0; i < currnetService.size(); i++) {
+				Element timeset = new Element("timeset");
+				Element serviceId = new Element("serviceId").setText(currnetService.get(i).get("serviceId"));
+				Element timestampIn = new Element("timestamp").setText(convertDateFormatNew(String.valueOf(currnetService.get(i).get("timestamp"))));
+				timeset.addContent(serviceId);
+				timeset.addContent(timestampIn);
+				timestampNew.addContent(timeset);
+			}
+			
+			Element transactionNew = new Element("transaction");
+			transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
+			transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));		
+			
+			Element reply = new Element("reply");
+			Element serviceNew = new Element("service");
+			
+			serviceNew.addContent(timestampNew);
+			reply.addContent(serviceNew);
+			
+			docNew.getRootElement().addContent(transactionNew);
+			docNew.getRootElement().addContent(reply);
+			System.out.println(outString(docNew));
+			System.out.println("================== Mood Receive Timestamp End ==================");
+			returnStr = outString(docNew);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return returnStr;
+	}
+	
 	private String outString(Document doc){
 		XMLOutputter xmlOutput = new XMLOutputter();
 		xmlOutput.setFormat(Format.getPrettyFormat());
@@ -1240,6 +1362,22 @@ public class ScheduleMgmtController {
 		try {
 			java.util.Date dateFrom = sdfFrom.parse(dateTime);
 			retStr = sdfTo.format(dateFrom);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return retStr;
+	}
+	
+	//2017-02-27T16:00:00.000+09:00
+	private String convertDateFormatNew(String dateTime){
+		String retStr = "";
+		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00");
+		try {
+//				sdfFrom.setTimeZone(TimeZone.getTimeZone("IST"));
+//				sdfTo.setTimeZone(TimeZone.getTimeZone("GMT"));
+			Date dateFrom = sdfFrom.parse(dateTime);
+		    retStr = sdfTo.format(dateFrom);
 		} catch (Exception e) {
 			logger.error("", e);
 		}

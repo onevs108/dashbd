@@ -201,6 +201,7 @@ $(document).ready(function()
 			if (!confirm('are you sure?')) {
 				$("#serviceType").attr("disabled");
 				$("#reportType").attr("disabled");
+				$("#samplePercentage").attr("disabled");
 				return false;
 			}
 		},
@@ -249,6 +250,7 @@ $(document).ready(function()
 				{
 					$("#serviceType").removeAttr("disabled");
 					$("#reportType").removeAttr("disabled");
+					$("#samplePercentage").removeAttr("disabled");
 					$("#frmScheduleReg").submit();
 				}
 				else if(data.result == "bwExceed")

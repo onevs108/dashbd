@@ -100,7 +100,8 @@ public class XmlManager {
 						HashMap<String, String> param = new HashMap<String, String>();
 						param.put("id", crsInfoArray[0]);
 						param.put("ip", crsInfoArray[1]);
-						param.put("said", paramList.get(6).get(i));
+						param.put("createUrl", crsInfoArray[2]);
+						param.put("said", saidList[i]);
 						crsList.add(param);
 					}
 				}
@@ -112,6 +113,7 @@ public class XmlManager {
 						HashMap<String, String> param = new HashMap<String, String>();
 						param.put("id", crsInfoArray[0]);
 						param.put("ip", crsInfoArray[1]);
+						param.put("createUrl", crsInfoArray[2]);
 						param.put("said", paramList.get(6).get(i));
 						crsList.add(param);
 					}
@@ -137,17 +139,19 @@ public class XmlManager {
 				while(it.hasNext()) {
 					String id = it.next();
 					String crsIp = (String) ((JSONObject)obj.get(id).get(0)).get("ip");
+					String crsUrl = (String) ((JSONObject)obj.get(id).get(0)).get("createUrl");
 					String agentKeyCRS = Base64Coder.encode(crsIp);
 					params.put("agentKeyCRS", agentKeyCRS);
 					if(BMSC_XML_DELETE == mode){
 						reqBodyCrs = makeXmlDeleteCRS(params, id);
+						respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
 					}else{
 						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
+						respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
 					}
-					respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + b3InterfefaceURL, "", reqBodyCrs, false);
 				}
 				
-				if(!isSuccess(respBodyCrs)){
+				if(!isSuccessCRS(respBodyCrs)){
 					String deleteStr = makeXmlDelete(params);
 					respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", deleteStr, false);
 				}
@@ -224,10 +228,6 @@ public class XmlManager {
 			serviceId = "";
 		}
 		
-//		service.setAttribute(new Attribute("crsId", id));
-//		service.setAttribute(new Attribute("timestamp", convertDateFormat3(new Date().toString())));
-//		service.setAttribute(new Attribute("serviceId", serviceId));
-		
 		Element create = new Element("create");
 		
 		create.addContent(new Element("crsid").setText(id));
@@ -274,6 +274,19 @@ public class XmlManager {
 		doc = new SAXBuilder().build(new StringReader(retStr));
 		Element message = doc.getRootElement();
 		int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
+		
+		if (resultCode == 1000 || resultCode == 200)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean isSuccessCRS(String retStr) throws JDOMException, IOException{
+		Document doc = null;
+		doc = new SAXBuilder().build(new StringReader(retStr));
+		Element message = doc.getRootElement();
+		String mode = message.getAttributeValue("name").substring(message.getAttributeValue("name").indexOf(".")+1).toLowerCase();
+		int resultCode = Integer.parseInt(message.getChild("reply").getChild("service").getChild(mode).getChild("code").getValue());
 		
 		if (resultCode == 1000 || resultCode == 200)
 			return true;
@@ -417,11 +430,10 @@ public class XmlManager {
 		transferConfig.addContent(QoS);
 		transferConfig.addContent(FEC);
 		//schedule 은 배열이 될수도 있음. 일딴 한개만 처리
-		Element receptionReport = null;
+		Element receptionReport = new Element("receptionReport");
 		Element associatedDelivery = new Element("associatedDelivery");
 		
 		if ("on".equals(params.get("receptionReport"))){
-			receptionReport = new Element("receptionReport");
 			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
 			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
@@ -502,9 +514,6 @@ public class XmlManager {
 			
 			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
 			associatedDelivery.addContent(receptionReport);
-			if ("on".equals(params.get("reportType"))){
-				
-			}
 			
 			if ( null != params.get("name") && !"".equals(params.get("name")))
 				streaming.addContent(name);
@@ -529,10 +538,6 @@ public class XmlManager {
 				associatedDelivery.addContent(consumptionReport);
 			}
 			
-			if ("on".equals(params.get("receptionReport"))){
-				associatedDelivery.addContent(receptionReport);
-			}
-			
 			serviceType = streaming;
 		} 
 		
@@ -553,13 +558,13 @@ public class XmlManager {
 					}
 					else if(SERVICE_TYPE_CAROUSEL_MULTIPLE.equals(params.get("serviceType")))
 					{
-						content.setAttribute(new Attribute("contentId", String.valueOf(j)));						
+						content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						
 						content.setAttribute(new Attribute("contentType", "text/plain"));							
 						content.setAttribute(new Attribute("cancelled", "false"));			
 					}
 					else
 					{
-						content.setAttribute(new Attribute("contentId", String.valueOf(j)));						
+						content.setAttribute(new Attribute("contentId", String.valueOf(j+1)));						
 						content.setAttribute(new Attribute("contentType", "text/plain"));							
 						content.setAttribute(new Attribute("cancelled", "false"));									
 						content.setAttribute(new Attribute("changed", "false"));	
