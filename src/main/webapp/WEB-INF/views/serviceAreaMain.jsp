@@ -14,8 +14,8 @@
 			font-size:14px
 		}
 		
-		.circle-item .noHover {
-		}
+/* 		.circle-item .noHover { */
+/* 		} */
 		
 		#map .gm-style-iw {
 		    overflow:hidden!important;

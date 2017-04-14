@@ -8,9 +8,9 @@
 
 <html>
 <head>
-	<jsp:include page="../common/head.jsp" />
 	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<jsp:include page="../common/head.jsp" />
 	
 	<style>
 		ul{
@@ -24,7 +24,7 @@
 	<jsp:include page="../common/leftTab.jsp" />
 	
 	<div id="page-wrapper" class="gray-bg dashbard-1">
-		<c:import url="/resources/header.do"></c:import>
+		<c:import url="/resources/header.do" />
 		
 		<!-- content body -->
 		<div class="wrapper wrapper-content">

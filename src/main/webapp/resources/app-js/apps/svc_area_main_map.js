@@ -1,5 +1,3 @@
-$.blockUI();
-
 var map;
 var modalMap;
 //var circles = [];
@@ -65,7 +63,7 @@ function tabChange(tabDiv) {
 		$(".circle-map").hide();
 //		$("#treeNode").show();
 //		$(".search-group").show();
-		jsTreeSetting(false);
+//		jsTreeSetting(false);
 	} else if(tabDiv == '2') {
 		$($("ul.nav.nav-tabs")[1]).addClass("active");
 		$($("ul.nav.nav-tabs")[0]).removeClass("active");
@@ -90,6 +88,9 @@ function jsTreeSetting(openAllYn) {
 	    	gruop_id : '',
 	    	searchType : $("#searchType").val(),
 	    	searchInput : $("#search-input").val()
+	    },
+	    beforeSend: function() {
+	    	$.blockUI();
 	    },
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 	    success : function(responseData) {
