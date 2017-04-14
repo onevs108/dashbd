@@ -3142,6 +3142,8 @@ public class ServiceAreaController {
 			
 			int resultCnt = 0;
 			if(proccessDiv.equals("add")) {
+				ServiceAreaMapper serviceAreaMapper = sqlSession.getMapper(ServiceAreaMapper.class);
+				
 				if(circleMapper.checkSAID(param.get("said")) == 0) {
 					if(currentZoomLevel.equals("circle")) {
 						param.put("circleId", param.get("said"));
@@ -3186,6 +3188,11 @@ public class ServiceAreaController {
 										+ " - Add Hotspot (Name:" + param.get("name") + ", SAID:" 
 										+ param.get("said") + ", Bandwidth:" + param.get("bandwidth") + ")");
 					} 
+					
+					//crs_said_mapping 테이블에 기본 crs_mode 데이터를 넣어줘서 메인에 delevery type이 나오도록 함
+					param.put("crs_id", "1");
+					param.put("crs_mode", "Unicast");
+					serviceAreaMapper.insertCrsSaidMapping(param);
 				} 
 				//중복이 존재할 경우 add 프로세스 진행X
 				else {

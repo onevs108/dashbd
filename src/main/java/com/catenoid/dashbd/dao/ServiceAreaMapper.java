@@ -155,4 +155,6 @@ public interface ServiceAreaMapper {
     List<HashMap<String, Object>> getNationalSubSchedule(HashMap<String, Object> searchParam);
     
     HashMap<String, Object> selectCountBCUC(HashMap<String, Object> param);
+    
+    int insertCrsSaidMapping(HashMap<String, String> param);
 }
