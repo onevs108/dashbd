@@ -1837,7 +1837,7 @@
 						          , broad.serviceMode
 						          , crs.crs_mode as deleveryType
 						          , CASE WHEN mood.countUC is null THEN '-'
-						          		 ELSE FORMAT((mood.countUC + mood.countBC), 0) 
+						          		 ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0)
 						          	END as viewers
 						          , broad.said
 						          FROM circle circle
@@ -2264,7 +2264,7 @@
 				    , IFNULL(fecRatio, 0) as fecRatio
 					, crs.crs_mode as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
-			          		ELSE FORMAT((mood.countUC + mood.countBC), 0)
+			          		ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0)
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , broad.said
@@ -2297,7 +2297,7 @@
 				    , IFNULL(fecRatio, 0) as fecRatio
 					, crs.crs_mode as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
-			          		ELSE FORMAT((mood.countUC + mood.countBC), 0) 
+			          		ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0) 
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId, schedule.national_yn as nationalYn 
@@ -2331,7 +2331,7 @@
 				    , IFNULL(fecRatio, 0) as fecRatio
 					, crs.crs_mode as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
-			          		ELSE FORMAT((mood.countUC + mood.countBC), 0)
+			          		ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0)
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId
@@ -2427,7 +2427,7 @@
 		      , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 		      , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr, IFNULL(broad.fecRatio, 0) as fecRatio
 		      , crs.crs_mode as deleveryType
-		      , FORMAT((mood.countUC + mood.countBC), 0) as viewers
+		      , FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0) as viewers
 			  , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 			  , schedule.id as scheduleId
 		FROM mood_request mood
