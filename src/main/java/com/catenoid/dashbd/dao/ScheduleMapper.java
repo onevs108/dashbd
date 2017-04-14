@@ -24,7 +24,6 @@ public interface ScheduleMapper {
 	int updateSchedule(Map map);
 	int updateSchedule4Del(Map map);
 	Map selectBroadcast(Map map);
-	Map selectGBRSum(Map map);
 	/* inbo coding END*/
     int countByExample(ScheduleExample example);
 
@@ -92,5 +91,7 @@ public interface ScheduleMapper {
 	int checkMoodServiceId(HashMap<String, String> param);
 	int checkMoodSaId(HashMap<String, String> param);
 	List<HashMap<String, String>> getCurrentMoodService(String crsId);
+	HashMap<String, String> getMoodRetrieve(HashMap<String, String> reParam);
+	void updateSaidMode(HashMap<String, String> hashMap);
     
 }

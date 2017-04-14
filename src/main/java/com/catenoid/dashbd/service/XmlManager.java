@@ -513,7 +513,9 @@ public class XmlManager {
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
 			
 			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
-			associatedDelivery.addContent(receptionReport);
+			if("on".equals(params.get("receptionReport"))){
+				associatedDelivery.addContent(receptionReport);
+			}
 			
 			if ( null != params.get("name") && !"".equals(params.get("name")))
 				streaming.addContent(name);

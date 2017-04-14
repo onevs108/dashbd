@@ -84,7 +84,7 @@
 					$("#reportType").val("${mapSchedule.reportType}");	
 				}
 				if("${mapSchedule.frOffsetTime}" != ""){
-					$("#FileRepair").prop('checked', true);	
+					$("#FileRepair").prop('checked', true);
 				}
 				
 				if("${mapSchedule.samplePercentage}" != ""){

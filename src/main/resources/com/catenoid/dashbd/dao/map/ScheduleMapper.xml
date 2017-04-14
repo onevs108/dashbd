@@ -357,10 +357,12 @@
 	</select>
 	
 	<select id="getEnableBandwidth" parameterType="java.util.Map" resultType="HashMap">
-		SELECT ifnull(${bandwidth} - sum(gbr), ${bandwidth}) usableBW, ifnull(sum(gbr), 0) usedBW FROM broadcast_info 
+		SELECT ifnull(${bandwidth} - sum(gbr), ${bandwidth}) usableBW, ifnull(sum(gbr), 0) usedBW 
+		FROM broadcast_info a inner join schedule b on a.BCID = b.BCID 
 		where CONCAT(',', said, ',') REGEXP CONCAT(',', #{searchString}, ',')
 		and (now() <![CDATA[ > ]]> schedule_start)
 		and (now() <![CDATA[ < ]]> schedule_stop)
+		and del_yn = 'N'
 	</select>
 	
 	<insert id = "insertMoodRequest" parameterType="HashMap">
@@ -691,20 +693,7 @@
 			updated_at = now() 
 		WHERE id = #{id}
 	</update>
-	
-	<select id="selectGBRSum" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT IFNULL(sum(GBR), '0') as GBRSum FROM 
-		schedule s inner join broadcast_info b
-		ON (s.BCID = b.BCID)
-		WHERE 1=1
-	<![CDATA[
-		AND DATE_FORMAT(now(), '%Y%m%d%H%i%s') > DATE_FORMAT(s.start_date, '%Y%m%d%H%i%s')
-		AND DATE_FORMAT(now(), '%Y%m%d%H%i%s') < DATE_FORMAT(s.end_date, '%Y%m%d%H%i%s')
-	]]>
-		AND service_area_id = #{serviceAreaId} 	
-	
-	</select>
-<!--  inbo 작성 쿼리 끝  -->
+	<!--  inbo 작성 쿼리 끝  -->
 
 	<select id="checkBandwidth" parameterType="java.util.Map" resultType="java.util.Map">
 		select said, bandwidth, type from 
@@ -836,6 +825,19 @@
 		  and CONCAT(',', said, ',') REGEXP CONCAT(',', #{saId}, ',')
 	</select>
 	
+	<select id="getMoodRetrieve" parameterType="HashMap" resultType="HashMap">
+		select * from broadcast_info a inner join crs_server_info b     
+		where serviceId = #{serviceId} and id = #{crsId}
+	</select>
+	
+	<update id="updateSaidMode" parameterType="HashMap">
+		update crs_said_mapping     
+		set crs_mode = 
+		<if test="ntype == 'BC'">'UniCast'</if>
+		<if test="ntype == 'UC'">'Broadcast'</if>
+		where said = #{said}
+	</update>
+	
 	<select id="getSendBcSaid" parameterType="java.util.Map" resultType="HashMap">
 		select said, ntype from (
 			select * from
@@ -846,12 +848,13 @@
 			 case when castMode ='B' then castCnt else 0 end as 'Btype'
 			 from
 			 ( select distinct serviceId, said, castMode, count(castMode) as castCnt, ntype
-			  from
-			  (select serviceId, said,  case when countUC > (select unicast from crs_limit) and countUC > 0 then 'A' else 'B' end as castMode
-			  ,'UC' as ntype
-			from mood_request
-			where insertDate > date_add(now(), interval-${interval} minute)
-			and (case when countUC = 0 and countBC != 0 then 'BC' when countUC != 0 and countBC = 0 then 'UC' else 'T' end) = 'UC'
+			 from
+			 (
+			  	select serviceId, said,  case when countUC <![CDATA[ > ]]> (select unicast from crs_limit) and countUC <![CDATA[ > ]]> 0 then 'A' else 'B' end as castMode,
+			  	'UC' as ntype
+				from mood_request a
+				where insertDate <![CDATA[ > ]]> date_add(now(), interval-${interval} minute)
+				and (select crs_mode from crs_said_mapping where said = a.said) = 'Unicast'
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q
@@ -868,13 +871,13 @@
 			  from
 			  (select serviceId, said,  case when countBC <![CDATA[ < ]]> (select unicast from crs_limit) and countBC <![CDATA[ > ]]> 0 then 'A' else 'B' end as castMode
 			  ,'BC' as ntype
-			from mood_request
+			from mood_request a
 			where insertDate <![CDATA[ > ]]>date_add(now(), interval-${interval} minute)
-			and (case when countUC = 0 and countBC != 0 then 'BC' when countUC != 0 and countBC = 0 then 'UC' else 'T' end) = 'BC'
+			and (select crs_mode from crs_said_mapping where said = a.said) = 'Broadcast'
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q
-			where aCnt = 0 and bCnt > 0) T
+			where aCnt <![CDATA[ > ]]> 0 and bCnt = 0) T
 		where serviceId = #{serviceId}
 	</select>
 

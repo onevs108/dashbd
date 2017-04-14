@@ -52,9 +52,10 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		System.out.println("serviceIdList ================== "+serviceIdList.size()+ " ================== ");
 		for (int i = 0; i < serviceIdList.size(); i++) {
 			String[] rtvs = new String[2];
-			String respBody = "SUCCESS";
 			String reqBody = "";
+			String respBody = "SUCCESS";
 			String reqBodyCrs = "";
+			String respBodyCrs = "";
 			try {
 				Bmsc bmsc = bmscMapper.selectBmsc(793);
 				System.out.println(" ================== BMSC Mood Update Start ================== ");
@@ -62,8 +63,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 				reqBody = makeModityXml(serviceIdList.get(i), agentKey);
 				respBody = new HttpNetAgent().execute("http://" + bmsc.getIpaddress() + bmsc.getCircle(), "", reqBody, false);
 				System.out.println(" ================== BMSC Mood Update End ================== ");
-				
-				
 				HashMap<String,String> crsParam = new HashMap<String, String>(); 
 				Iterator<String> it = serviceIdList.get(i).keySet().iterator();
 				String tempSvId = it.next();
@@ -76,7 +75,8 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 					HashMap<String,String> crsInfo = mapper.getCrsInfo(crsParam);
 					String agentKeyCRS = Base64Coder.encode(crsInfo.get("ip"));
 					reqBodyCrs = makeModityXmlCRS(tempSvId, crsInfo, agentKeyCRS, said);
-					new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
+					respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
+					mapper.updateSaidMode(crsSaidList.get(j));
 					System.out.println(" ================== ("+said+") CRS Mood Update End ================== ");
 				}
 			} catch (Exception e) {

@@ -99,6 +99,7 @@ public class ScheduleMgmtController {
 		Users user = (Users) session.getAttribute("USER");
 		if(user == null){
 			mv.setViewName("redirect:/login.do");
+			return mv;
 		}
 		try
 		{
@@ -407,6 +408,7 @@ public class ScheduleMgmtController {
 		Users user = (Users) session.getAttribute("USER");
 		if(user == null){
 			mv.setViewName("redirect:/login.do");
+			return mv;
 		}
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
@@ -886,12 +888,12 @@ public class ScheduleMgmtController {
 		return returnStr;
 	}
 	
-
 	@RequestMapping(value = "view/receiveRetrieveRequest.do")
 	@ResponseBody
 	public String receiveRetrieveRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String postData) {
 		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
 		SAXBuilder builder = new SAXBuilder();
+		HashMap<String, String> reParam = new HashMap<String, String>();
 		String returnStr = "";
 		try {
 			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(postData, "utf-8").getBytes("utf-8"));
@@ -901,28 +903,40 @@ public class ScheduleMgmtController {
 			Element transaction = (Element) message.getChildren().get(0);
 			Element request = (Element) message.getChildren().get(1);
 			Element service = request.getChild("service");
-			Element timestamp = service.getChild("timestamp");
-			String crsId = timestamp.getChild("crsId").getText();
-			List<HashMap<String, String>> currnetService = scheduleMapper.getCurrentMoodService(crsId);
+			Element retrieve = service.getChild("retrieve");
+			String crsId = retrieve.getChild("crsId").getText();
+			String serviceId = retrieve.getChild("serviceId").getText();
+			reParam.put("crsId", crsId);
+			reParam.put("serviceId", serviceId);
+			HashMap<String, String> retrieveInfo = scheduleMapper.getMoodRetrieve(reParam);
 			
-			System.out.println("================== Mood Receive Timestamp Start ==================");
+			System.out.println("================== Mood Receive Retrieve Start ==================");
 			Element messageNew = new Element("message");
-			messageNew.setAttribute(new Attribute("name", "SERVICE.TIMESTAMP"));	
+			messageNew.setAttribute(new Attribute("name", "SERVICE.RETRIEVE"));	
 			messageNew.setAttribute(new Attribute("type", "RESPONSE"));
 			Document docNew = new Document(messageNew);
 			docNew.setRootElement(messageNew);
-			Element timestampNew = new Element("timestamp");
-			Element crsIdNew = new Element("crsId");
-			crsIdNew.setText(crsId);
-			timestampNew.addContent(crsIdNew);
-			for (int i = 0; i < currnetService.size(); i++) {
-				Element timeset = new Element("timeset");
-				Element serviceId = new Element("serviceId").setText(currnetService.get(i).get("serviceId"));
-				Element timestampIn = new Element("timestamp").setText(convertDateFormatNew(String.valueOf(currnetService.get(i).get("timestamp"))));
-				timeset.addContent(serviceId);
-				timeset.addContent(timestampIn);
-				timestampNew.addContent(timeset);
-			}
+			Element retrieveNew = new Element("retrieve");
+			Element crsIdNew = new Element("crsId").setText(crsId);
+			Element serviceIdNew = new Element("serviceId").setText(serviceId);
+			
+			Element schedule = new Element("schedule");
+			Element index = new Element("index").setText("1");
+			Element start = new Element("start").setText(convertDateFormatNew(String.valueOf(retrieveInfo.get("schedule_start"))));
+			Element stop = new Element("stop").setText(convertDateFormatNew(String.valueOf(retrieveInfo.get("schedule_stop"))));
+			schedule.addContent(index);
+			schedule.addContent(start);
+			schedule.addContent(stop);
+			
+			Element contentSet = new Element("contentSet");
+			Element associatedDelivery = new Element("associatedDelivery");
+			Element consumptionReport = new Element("consumptionReport");
+			Element reportInterval = new Element("reportInterval").setText(retrieveInfo.get("moodReportInterval"));
+			Element moodUsageDataReportInterval = new Element("moodUsageDataReportInterval").setText(String.valueOf(retrieveInfo.get("moodUsageDataReportInterval")));
+			
+			consumptionReport.addContent(reportInterval);
+			consumptionReport.addContent(moodUsageDataReportInterval);
+			associatedDelivery.addContent(consumptionReport);
 			
 			Element transactionNew = new Element("transaction");
 			transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
@@ -931,13 +945,18 @@ public class ScheduleMgmtController {
 			Element reply = new Element("reply");
 			Element serviceNew = new Element("service");
 			
-			serviceNew.addContent(timestampNew);
+			retrieveNew.addContent(crsIdNew);
+			retrieveNew.addContent(serviceIdNew);
+			retrieveNew.addContent(schedule);
+			retrieveNew.addContent(contentSet);
+			retrieveNew.addContent(associatedDelivery);
+			serviceNew.addContent(retrieveNew);
 			reply.addContent(serviceNew);
 			
 			docNew.getRootElement().addContent(transactionNew);
 			docNew.getRootElement().addContent(reply);
 			System.out.println(outString(docNew));
-			System.out.println("================== Mood Receive Timestamp End ==================");
+			System.out.println("================== Mood Receive Retrieve End ==================");
 			returnStr = outString(docNew);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -948,7 +967,7 @@ public class ScheduleMgmtController {
 		}
 		return returnStr;
 	}
-	
+
 	private String outString(Document doc){
 		XMLOutputter xmlOutput = new XMLOutputter();
 		xmlOutput.setFormat(Format.getPrettyFormat());
@@ -1237,15 +1256,6 @@ public class ScheduleMgmtController {
 		
 		return result;
 	}
-	
-	/**
-	 * �뒪耳�以� 硫붿씤�럹�씠吏� > �뒪耳�以� �긽�꽭�럹�씠吏� > broadcast  �긽�꽭�럹�씠吏� > �궘�젣
-	 * bcid媛� �엳�쑝硫�  BMSC�궘�젣 �뿰�룞. �뾾�쑝硫� db留� �궘�젣泥섎━.
-	 * @param params
-	 * @param req
-	 * @param locale
-	 * @return
-	 */
 	
 	@RequestMapping(value = "view/delSchedule.do")
 	@ResponseBody
