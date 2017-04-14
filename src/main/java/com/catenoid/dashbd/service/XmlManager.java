@@ -204,9 +204,12 @@ public class XmlManager {
 
 	private String makeXmlCreateCRS(Map<String, String> params, int mode, List<String> saidData, List<List<String>> paramList, String id, JSONArray bcSaidList) {
 		Element message = new Element("message");
+		String crsMode = "";
 		if (BMSC_XML_CREATE == mode){
+			crsMode = "create";
 			message.setAttribute(new Attribute("name", "SERVICE.CREATE"));
 		}else{
+			crsMode = "update";	
 			message.setAttribute(new Attribute("name", "SERVICE.UPDATE"));	
 		}
 		
@@ -228,7 +231,7 @@ public class XmlManager {
 			serviceId = "";
 		}
 		
-		Element create = new Element("create");
+		Element create = new Element(crsMode);
 		
 		create.addContent(new Element("crsid").setText(id));
 		create.addContent(new Element("timestamp").setText(convertDateFormat3(new Date().toString())));
