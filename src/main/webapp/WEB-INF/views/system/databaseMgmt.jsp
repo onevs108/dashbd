@@ -4,42 +4,15 @@
 
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BM-SC Management</title>
-
-    <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/style.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/animate.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet">
-    <link href="../resourcesRenew/css/custom.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-
-	<script src="js/jquery-2.1.1.js"></script>
-	<script src="js/jquery.cookie.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/bootstrap-table.js"></script>
-	<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-	<script src="/dashbd/resources/app-js/apps/svc_systemDb.js"></script>
-	<script src="js/common.js"></script>
+	<title>SeSM Database Management</title>	
+	<jsp:include page="../common/head.jsp" />
 	
-	<!-- ax5ui -->
-	<link href="../resourcesRenew/css/plugins/ax5ui/ax5formatter.css" rel="stylesheet">
-	<script src="../resourcesRenew/js/plugins/ax5ui/ax5core.js"></script>
-	<script src="../resourcesRenew/js/plugins/ax5ui/ax5formatter.js"></script>
-
-	<script type="text/javascript">
-		$(document).ready(function() {
-			getMenuList('SYSTEM_DB_MGMT');
-			getDatabaseList();
-			if("${autoYN}" == "Y"){
-				$("#autoBackup").prop("checked", true);
-				$("#autoBackup").change();	
-			}
-			$('[data-ax5formatter]').ax5formatter();
-		});
-	</script>
+<!--     <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet"> -->
+<!--     <link href="../resourcesRenew/css/style.css" rel="stylesheet"> -->
+<!--     <link href="../resourcesRenew/css/animate.css" rel="stylesheet"> -->
+<!--     <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet"> -->
+<!--     <link href="../resourcesRenew/css/custom.css" rel="stylesheet"> -->
+<!--     <link href="font-awesome/css/font-awesome.css" rel="stylesheet"> -->
 	
 	<style type="text/css">
 		td {
@@ -64,7 +37,7 @@
 				<div class="col-lg-12">
 	                <div class="ibox float-e-margins">
 	                	<div class="ibox-title">
-							<h5>System Mgmt</h5>
+							<h5>Database Backup</h5>
 						</div>
 	                    <div class="ibox-content">
 	                    	<div class="row" style="padding-top:20px">
@@ -153,6 +126,27 @@
         </div><!-- content body end -->
     </div><!-- content end -->
 </div><!-- wrapper end -->
+
+<script src="js/jquery.cookie.js"></script>
+<script src="/dashbd/resources/app-js/apps/svc_systemDb.js"></script>
+<!-- <script src="js/common.js"></script> -->
+
+<!-- ax5ui -->
+<link href="../resourcesRenew/css/plugins/ax5ui/ax5formatter.css" rel="stylesheet">
+<script src="../resourcesRenew/js/plugins/ax5ui/ax5core.js"></script>
+<script src="../resourcesRenew/js/plugins/ax5ui/ax5formatter.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		getMenuList('SYSTEM_DB_MGMT');
+		getDatabaseList();
+		if("${autoYN}" == "Y"){
+			$("#autoBackup").prop("checked", true);
+			$("#autoBackup").change();	
+		}
+		$('[data-ax5formatter]').ax5formatter();
+	});
+</script>
 
 </body>
 </html>

@@ -122,6 +122,8 @@ public interface ServiceAreaMapper {
     
     List<SystemBroadCastContents> getSystemBCContentsList(HashMap<String, Object> example);
     
+    int deleteSystemDbBackup(HashMap< String, Object > searchParm);
+    
     
     
     List<HashMap<String, Object>> getServiceAreaGroupList(HashMap<String, Object> searchParam);

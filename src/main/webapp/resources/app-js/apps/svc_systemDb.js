@@ -74,6 +74,32 @@ function openRestoreModal(backupId, backupFileName) {
 	}
 }
 
+function deleteRestoreModal(backupId, backupFileName) {
+	if (confirm(backupFileName + ' file will be erased. Do you want to proceed?')) {
+		$.ajax({
+			url: '/dashbd/resources/systemDbDelete.do',
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				backupId: backupId,
+				backupFileName : backupFileName
+			},
+			success: function(data, textStatus, jqXHR) {
+				if(data.result == "-1"){
+					alert(data.reqMsg);
+				}else{
+					alert("Database Delete Success!");
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				alert(errorThrown + textStatus);
+				return false;
+			}
+		});
+	}
+	
+}
+
 function autoBackupChange() {
 	var autoYN = "";
 	if($("#autoBackup").is(":checked")){
@@ -211,6 +237,7 @@ function getDatabaseList() {
 			sortable: false,
 			formatter: function(value, row, index) {
 				var html = '<button type="button" onclick="openRestoreModal(\'' + row.backupId + '\', \'' + row.backupFileName + '\')" class="btn btn-success btn-xs button-edit">Restore DB</button> '
+				html += '<button type="button" onclick="deleteRestoreModal(\'' + row.backupId + '\', \'' + row.backupFileName + '\')" class="btn btn-danger btn-xs button-edit">Delete</button> '
 				return html;
 			}
 		}]

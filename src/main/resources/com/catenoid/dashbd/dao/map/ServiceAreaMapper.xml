@@ -1403,6 +1403,12 @@
 	( #{fileName}, #{filePath}, #{createdId}, now() )
 	</insert>
 	
+	<!-- DB Backup Delete -->
+	<insert id="deleteSystemDbBackup" parameterType="java.util.HashMap">
+	delete database_backup 
+	where backupId = #{backupId}
+	</insert>
+	
 	<select id="getSystemBCContentsList" resultMap="SystemBroadCastContents" parameterType="java.util.HashMap">
 		SELECT
 			rownum, schId, bmscId, bmscName, serviceAreaId, serviceAreaName, contentId, contentName, operatorId, operatorName,

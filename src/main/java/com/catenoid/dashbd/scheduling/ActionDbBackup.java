@@ -11,6 +11,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.catenoid.dashbd.Const;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 
@@ -25,7 +26,7 @@ public class ActionDbBackup {
 	public ActionDbBackup() {
 //		HttpSession session = request.getSession(false);
 		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
-		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		HashMap<String, Object> logMap = new HashMap<String, Object>();
 		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		String newYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)); 
 		String newMonth = String.valueOf(Calendar.getInstance().get(Calendar.MONTH)); 
@@ -72,19 +73,20 @@ public class ActionDbBackup {
 			//String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
 	        String sessionHostNameCnt = sb.toString();
 				
-			syslogMap.put("reqType", "Database Config");
-			syslogMap.put("reqSubType", "systemDbBackup");
-			syslogMap.put("reqUrl", "resources/systemDbBackup.do");
-			syslogMap.put("reqCode", "SUCCESS");
-			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+			logMap.put("reqType", "Database");
+			logMap.put("reqSubType", "DB Backup");
+			logMap.put("reqUrl", "ActionDbBackup()");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", "Admin");
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : Admin" + " - DB Backup(File Name : " + fileName + ", Type : Auto)");
+			usersMapper.insertSystemAjaxLog(logMap);
 	    }catch(Exception e){
-			syslogMap.put("reqType", "Database Config");
-			syslogMap.put("reqSubType", "systemDbBackup");
-			syslogMap.put("reqUrl", "resources/systemDbBackup.do");
-			syslogMap.put("reqCode", "Fail");
-			syslogMap.put("reqMsg", e.toString());
-			usersMapper.insertSystemAjaxLog(syslogMap);
+	    	logMap.put("reqType", "Database Config");
+			logMap.put("reqSubType", "systemDbBackup");
+			logMap.put("reqUrl", "resources/systemDbBackup.do");
+			logMap.put("reqCode", "Fail");
+			logMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(logMap);
 	    }
 		
 	}

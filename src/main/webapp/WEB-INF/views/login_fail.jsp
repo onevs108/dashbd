@@ -46,7 +46,7 @@
 		}
 		else {
 			swal({title:"Fail !", text:"Incorrect Account", type:"warning"}, function() {
-				location.href='/dashbd/out';
+				location.href='/dashbd/login.do';
 			});
 		}
 	});

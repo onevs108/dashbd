@@ -111,6 +111,10 @@ public class SystemController{
 	
 	@Value("#{config['b2.database.restoreprog']}")
 	private String databaseRestoreprog;
+	
+	@Value("#{config['b2.database.delete']}")
+	private String databaseDelete;
+	
 
 	@Autowired
 	private BmscService bmscServiceImpl;
@@ -767,7 +771,7 @@ public class SystemController{
 			syslogMap.put("reqUrl", "resources/systemDbRestore.do");
 			syslogMap.put("reqCode", "SUCCESS");
 			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+//			usersMapper.insertSystemAjaxLog(syslogMap);
 	    }catch(Exception e){
 	    	logger.error("",e);
 			jsonResult.put("result", "-1");
@@ -776,6 +780,66 @@ public class SystemController{
 			syslogMap.put("reqType", "Database Config");
 			syslogMap.put("reqSubType", "systemDbRestore");
 			syslogMap.put("reqUrl", "resources/systemDbRestore.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+	    }
+		
+		logger.info("<- [jsonResult = {}]", jsonResult.toString());
+		return jsonResult.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/resources/systemDbDelete.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8;")
+	@ResponseBody
+	public String systemDbDelete(@RequestParam(value = "backupId", required = true) Integer backupId
+							, @RequestParam(value = "backupFileName", required = true) String backupFileName) {
+		logger.info("-> [backupId = {}]", backupId);
+		logger.info("-> [backupFileName = {}]", backupFileName);
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+
+		String exeDatabaseDelete = String.format("%s %s", databaseDelete, backupFileName);
+		try{
+			Runtime runtime = Runtime.getRuntime();
+			Process process = runtime.exec(exeDatabaseDelete);
+			InputStream is = process.getInputStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			String line;
+			StringBuffer sb = new StringBuffer();
+			while((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+
+            System.out.println("exeDatabaseDelete   >>  " + sb);
+            
+            //system db backup data deelte
+            HashMap<String, Object> searchParam = new HashMap();
+    		searchParam.put("backupId", backupId);
+            mapper.deleteSystemDbBackup(searchParam);
+            
+			//String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
+            String sessionHostNameCnt = sb.toString();
+  			jsonResult.put("result", sessionHostNameCnt);
+  			
+			syslogMap.put("reqType", "Database Backup");
+			syslogMap.put("reqSubType", "systemDbDelete");
+			syslogMap.put("reqUrl", "resources/systemDbDelete.do");
+			syslogMap.put("reqCode", "SUCCESS");
+			syslogMap.put("reqMsg", "");
+//			usersMapper.insertSystemAjaxLog(syslogMap);
+	    }catch(Exception e){
+	    	logger.error("",e);
+			jsonResult.put("result", "-1");
+			jsonResult.put("reqMsg", e.toString());
+			
+			syslogMap.put("reqType", "Database Backup");
+			syslogMap.put("reqSubType", "systemDbDelete");
+			syslogMap.put("reqUrl", "resources/systemDbDelete.do");
 			syslogMap.put("reqCode", "Fail");
 			syslogMap.put("reqMsg", e.toString());
 			usersMapper.insertSystemAjaxLog(syslogMap);
@@ -840,12 +904,14 @@ public class SystemController{
             String sessionHostNameCnt = sb.toString();
   			jsonResult.put("result", sessionHostNameCnt);
   			
-			syslogMap.put("reqType", "Database Config");
-			syslogMap.put("reqSubType", "systemDbBackup");
-			syslogMap.put("reqUrl", "resources/systemDbBackup.do");
-			syslogMap.put("reqCode", "SUCCESS");
-			syslogMap.put("reqMsg", "");
-			usersMapper.insertSystemAjaxLog(syslogMap);
+  			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Database");
+			logMap.put("reqSubType", "DB Backup");
+			logMap.put("reqUrl", "systemDbBackup.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", userOfSession.getUserId());
+			logMap.put("reqMsg", "[" + Const.getLogTime() + "] User ID : " + userOfSession.getUserId() + " - DB Backup(File Name : " + fileName + ", Type : Manual)");
+			usersMapper.insertSystemAjaxLog(logMap);
 	    }catch(Exception e){
 	    	logger.error("",e);
 			jsonResult.put("result", "-1");
@@ -995,7 +1061,7 @@ public class SystemController{
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/api/getSystemLogData.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public void serviceAreaProccess(@RequestParam HashMap<String, Object> param, HttpServletResponse response) {
+	public void getSystemLogData(@RequestParam HashMap<String, Object> param, HttpServletResponse response) {
 		try {
 			JSONObject resultMap = new JSONObject();
 			JSONArray jsonArray1 = new JSONArray();
@@ -1090,27 +1156,14 @@ public class SystemController{
 			for(int i=((hddStrList.size()-(Const.hddLogLine) < 0)? 0 : hddStrList.size()-(Const.hddLogLine)); i < hddStrList.size()-1; i++) {
 				hddObject = new JSONObject();
 				String totalStr = hddStrList.get(i);
+				String[] splitString = totalStr.split("\\s+");
 				
-				List<String> tempArr = new ArrayList<String>();
-				for(int j=0; j < totalStr.length(); j++) {
-					if(j == totalStr.length()-1) break;
-					
-					char tempStr = totalStr.charAt(j);
-					char tempNextStr = totalStr.charAt(j+1);
-					
-					if(!String.valueOf(tempStr).equals(" ") && String.valueOf(tempNextStr).equals(" ")) {
-						tempArr.add(String.valueOf(j+1));
-					} else if(String.valueOf(tempStr).equals(" ") && !String.valueOf(tempNextStr).equals(" ")) {
-						tempArr.add(String.valueOf(j+1));
-					}
-				}
-				
-				hddObject.put("1", totalStr.substring(0, Integer.parseInt(tempArr.get(0))));
-				hddObject.put("2", totalStr.substring(Integer.parseInt(tempArr.get(1)), Integer.parseInt(tempArr.get(2))));
-				hddObject.put("3", totalStr.substring(Integer.parseInt(tempArr.get(3)), Integer.parseInt(tempArr.get(4))));
-				hddObject.put("4", totalStr.substring(Integer.parseInt(tempArr.get(5)), Integer.parseInt(tempArr.get(6))));
-				hddObject.put("5", totalStr.substring(Integer.parseInt(tempArr.get(7)), Integer.parseInt(tempArr.get(8))));
-				hddObject.put("6", totalStr.substring(Integer.parseInt(tempArr.get(9))));
+				hddObject.put("1", splitString[0]);
+				hddObject.put("2", splitString[1]);
+				hddObject.put("3", splitString[2]);
+				hddObject.put("4", splitString[3]);
+				hddObject.put("5", splitString[4]);
+				hddObject.put("6", splitString[5]);
 				
 				jsonArray3.add(hddObject);
 			}
