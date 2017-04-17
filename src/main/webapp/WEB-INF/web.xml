@@ -109,7 +109,7 @@
 	
 	<!-- 분 단위 -->
 	<session-config>
-		<session-timeout>60</session-timeout> <!-- 24시간 : 1440분 -->
+		<session-timeout>1440</session-timeout> <!-- 24시간 : 1440분 -->
 	</session-config>
 <!-- 	<distributable/> -->
 </web-app>
