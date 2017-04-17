@@ -286,7 +286,10 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		contentSet.setAttribute(new Attribute("cancelled", "false"));				
 							
 		Element serviceArea = new Element("serviceArea");
-		serviceArea.addContent( new Element("said").setText(params.get("said")));
+		String[] saidList = params.get("said").split(",");
+		for (int i = 0; i < saidList.length; i++) {
+			serviceArea.addContent( new Element("said").setText(saidList[i]));
+		}
 		
 		Element mpd = new Element("mpd");
 		mpd.setAttribute(new Attribute("changed", "false"));									
@@ -320,7 +323,8 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 			if(svId.get(tempSvId).get(j).get("ntype").equals("UC")){
 				bcServiceArea.addContent(new Element("said").setText(svId.get(tempSvId).get(j).get("said")));
 			}
-		}		
+		}	
+		
 		System.out.println(bcServiceArea.getChildren().size());
 		if(bcServiceArea.getChildren().size() > 0){
 			mood.addContent(bcServiceArea);

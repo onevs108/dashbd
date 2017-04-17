@@ -484,6 +484,11 @@ function detailValidationCheck() {
 				alert("The value of moodReportInterval must be integer (0~9999999)");
 				return false;
 			}
+			if(!(this.value > 29)){
+				this.value = "";
+				alert("The value of the ReportInterval must be more than 30");
+				return false;
+			}
 			return false;
 		}
 	});

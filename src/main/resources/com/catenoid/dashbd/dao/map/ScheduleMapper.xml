@@ -525,7 +525,7 @@
 			<if test="segmentAvailableOffset != null and segmentAvailableOffset !=''" >
 				, segmentAvailableOffset	=#{segmentAvailableOffset}
 			</if>
-			<if test="said != null and said !=''" >
+			<if test="serviceAreaId != null and serviceAreaId !=''" >
 				, said				= #{serviceAreaId}
 			</if>
 			<if test="schedule_start != null and schedule_start !=''" >
@@ -652,6 +652,7 @@
 <!-- 			</if> -->
 			name = #{name},
 			BCID = #{BCID},
+			start_date = str_to_date(#{schedule_start}, '%Y%m%d%H%i%s'),
 			end_date = str_to_date(#{schedule_stop}, '%Y%m%d%H%i%s'),
 			updated_at = now()
 		WHERE id = #{id}
@@ -808,15 +809,16 @@
 	</select>
 	
 	<select id="getCurrentMoodService" parameterType="String" resultType="HashMap">
-		select * from 
+		select a.serviceId, c.timestamp from 
 		broadcast_info a inner join crs_said_mapping b 
 		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
 		inner join mood_request c on b.said = c.saId and b.crs_id = c.crsId
 		where service = 'streaming' 
 		  and serviceMode = 'MooD'		  
-		  and (now() <![CDATA[ > ]]> schedule_start)
-		  and (now() <![CDATA[ < ]]> schedule_stop)
+		  and (now() <![CDATA[ > ]]> a.schedule_start)
+		  and (now() <![CDATA[ < ]]> a.schedule_stop)
 		  and b.crs_id = #{crsId}
+		group by a.serviceId
 	</select>
 	
 	<select id="checkMoodSaId" parameterType="java.util.Map" resultType="int">
@@ -835,6 +837,7 @@
 		set crs_mode = 
 		<if test="ntype == 'BC'">'UniCast'</if>
 		<if test="ntype == 'UC'">'Broadcast'</if>
+		, update_dt = now()
 		where said = #{said}
 	</update>
 	
@@ -850,11 +853,12 @@
 			 ( select distinct serviceId, said, castMode, count(castMode) as castCnt, ntype
 			 from
 			 (
-			  	select serviceId, said,  case when countUC <![CDATA[ > ]]> (select unicast from crs_limit) and countUC <![CDATA[ > ]]> 0 then 'A' else 'B' end as castMode,
+			  	select serviceId, said,  case when countUC <![CDATA[ > ]]> (select unicast from crs_limit) then 'A' else 'B' end as castMode,
 			  	'UC' as ntype
 				from mood_request a
 				where insertDate <![CDATA[ > ]]> date_add(now(), interval-${interval} minute)
 				and (select crs_mode from crs_said_mapping where said = a.said) = 'Unicast'
+				and (select ifnull(update_dt, '1999-12-31') from crs_said_mapping where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q
@@ -869,11 +873,12 @@
 			 from
 			 ( select distinct serviceId, said, castMode, count(castMode) as castCnt, ntype
 			  from
-			  (select serviceId, said,  case when countBC <![CDATA[ < ]]> (select unicast from crs_limit) and countBC <![CDATA[ > ]]> 0 then 'A' else 'B' end as castMode
+			  (select serviceId, said,  case when countBC <![CDATA[ < ]]> (select unicast from crs_limit) then 'A' else 'B' end as castMode
 			  ,'BC' as ntype
 			from mood_request a
 			where insertDate <![CDATA[ > ]]>date_add(now(), interval-${interval} minute)
 			and (select crs_mode from crs_said_mapping where said = a.said) = 'Broadcast'
+			and (select ifnull(update_dt, '1999-12-31') from crs_said_mapping where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q

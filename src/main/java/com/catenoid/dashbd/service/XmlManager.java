@@ -72,6 +72,7 @@ public class XmlManager {
 		String reqBody = "";
 		String reqBodyCrs = "";
 		String respBodyCrs = "";
+		List<String> respBodyCrsList = new ArrayList<String>();
 		String bmscIp = params.get("bmscIp");
 		params.put("methodMode", String.valueOf(mode));
 		String agentKey = Base64Coder.encode(bmscIp);
@@ -87,6 +88,12 @@ public class XmlManager {
 				reqBody = makeXmlDelete(params);
 			
 			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
+			
+			if(!isSuccess(respBody)){
+				rtvs[0] = respBody;
+				rtvs[1] = reqBody;		
+				return rtvs;
+			}
 			
 			//@ xml send
 			if("MooD".equals(params.get("serviceMode"))){
@@ -145,15 +152,21 @@ public class XmlManager {
 					if(BMSC_XML_DELETE == mode){
 						reqBodyCrs = makeXmlDeleteCRS(params, id);
 						respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
-					}else{
+					} else {
 						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
 						respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
+						respBodyCrsList.add(respBodyCrs);
 					}
 				}
 				
-				if(!isSuccessCRS(respBodyCrs)){
-					String deleteStr = makeXmlDelete(params);
-					respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", deleteStr, false);
+				if(BMSC_XML_CREATE == mode) {
+					for (int i = 0; i < respBodyCrsList.size(); i++) {
+						if(!isSuccess(respBodyCrsList.get(i))){
+							String deleteStr = makeXmlDelete(params);
+							respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", deleteStr, false);
+							break;
+						}
+					}
 				}
 			}
 			
@@ -199,6 +212,7 @@ public class XmlManager {
 		service.addContent(delete);
 		request.addContent(service);
 		doc.getRootElement().addContent(request);
+		System.out.println(outString(doc));
 		return outString(doc);
 	}
 
@@ -376,6 +390,7 @@ public class XmlManager {
 		services.addContent(service);
 		parameters.addContent(services);
 		doc.getRootElement().addContent(parameters);
+		System.out.println(outString(doc));
 		return outString(doc);
 	}
 	
@@ -614,13 +629,13 @@ public class XmlManager {
 					mood.addContent(new Element("bcBasePattern").setText(paramList.get(10).get(k)));
 				}
 				
-				if (BMSC_XML_UPDATE == mode){
+				/*if (BMSC_XML_UPDATE == mode){
 					Element bcServiceArea = new Element("bcServiceArea");
 					for (int j = 0; j < paramList.get(9).size(); j++) {
 						bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
 					}
 					mood.addContent(bcServiceArea);
-				}
+				}*/
 				
 				contentSet.addContent(serviceArea);
 				contentSet.addContent(mpd);

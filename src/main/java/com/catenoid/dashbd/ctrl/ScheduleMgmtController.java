@@ -771,51 +771,158 @@ public class ScheduleMgmtController {
 			Element message = jdomdoc.getRootElement();
 			Element transaction = (Element) message.getChildren().get(0);
 			Element request = (Element) message.getChildren().get(1);
-			Element moodData = request.getChild("moodData");
-			List<Element> serviceArea = moodData.getChildren("serviceArea");
-			System.out.println("================== Mood Report Insert Start ==================");
-			
-			param.put("transaction", transaction.getAttributeValue("id"));
-			param.put("agentKey", transaction.getChild("agentKey").getText());
-			param.put("crsId", moodData.getChild("crsId").getText());
-			param.put("serviceId", moodData.getChild("serviceId").getText());
-			param.put("timestamp", convertDateFormat(moodData.getChild("timestamp").getText()));
-			
-			int result = scheduleMapper.checkMoodServiceId(param);
-			if(result == 0){
-				param.put("code", "500");
-				param.put("message", "The service identified by ServiceID is not on-air");
-				returnStr = makeMoodReportResponse(param);
-				System.out.println(returnStr);
-				return returnStr;
+			String name = message.getAttributeValue("name");
+			String reqType = name.substring(name.indexOf(".")+1).toUpperCase();
+			if(reqType.equals("TIMESTAMP"))
+			{
+				Element service = request.getChild("service");
+				Element timestamp = service.getChild("timestamp");
+				String crsId = timestamp.getAttributeValue("crsId");
+				List<HashMap<String, String>> currnetService = scheduleMapper.getCurrentMoodService(crsId);
+				
+				System.out.println("================== Mood Receive Timestamp Start ==================");
+				Element messageNew = new Element("message");
+				messageNew.setAttribute(new Attribute("name", "SERVICE.TIMESTAMP"));	
+				messageNew.setAttribute(new Attribute("type", "RESPONSE"));
+				Document docNew = new Document(messageNew);
+				docNew.setRootElement(messageNew);
+				Element timestampNew = new Element("timestamp");
+				timestampNew.setAttribute(new Attribute("crsId", crsId));
+//				Element crsIdNew = new Element("crsId");
+//				crsIdNew.setText(crsId);
+//				timestampNew.addContent(crsIdNew);
+				for (int i = 0; i < currnetService.size(); i++) {
+					Element timeset = new Element("timeset");
+					Element serviceId = new Element("serviceId").setText(currnetService.get(i).get("serviceId"));
+					Element timestampIn = new Element("timestamp").setText(convertDateFormatNew(String.valueOf(currnetService.get(i).get("timestamp"))));
+					timeset.addContent(serviceId);
+					timeset.addContent(timestampIn);
+					timestampNew.addContent(timeset);
+				}
+				
+				Element transactionNew = new Element("transaction");
+				transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
+				transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));		
+				
+				Element reply = new Element("reply");
+				Element serviceNew = new Element("service");
+				
+				serviceNew.addContent(timestampNew);
+				reply.addContent(serviceNew);
+				
+				docNew.getRootElement().addContent(transactionNew);
+				docNew.getRootElement().addContent(reply);
+				System.out.println(outString(docNew));
+				System.out.println("================== Mood Receive Timestamp End ==================");
+				returnStr = outString(docNew);
 			}
-			
-			for (int i = 0; i < serviceArea.size(); i++) {
-				param.put("saId", serviceArea.get(i).getChild("saId").getText());
-				System.out.println("saId ======================== "+param.get("saId"));
-				int count = scheduleMapper.checkMoodSaId(param);
-				System.out.println("count ======================== "+count);
-				if(count == 0){
-					param.put("code", "501");
-					param.put("message", "Service Area ID ("+param.get("saId")+") is not configured to ServiceID ("+param.get("serviceId")+")");
+			else if(reqType.equals("RETRIEVE")) {
+				HashMap<String, String> reParam = new HashMap<String, String>();
+				Element service = request.getChild("service");
+				Element retrieve = service.getChild("retrieve");
+				String crsId = retrieve.getChild("crsId").getText();
+				String serviceId = retrieve.getChild("serviceId").getText();
+				reParam.put("crsId", crsId);
+				reParam.put("serviceId", serviceId);
+				HashMap<String, String> retrieveInfo = scheduleMapper.getMoodRetrieve(reParam);
+				
+				System.out.println("================== Mood Receive Retrieve Start ==================");
+				Element messageNew = new Element("message");
+				messageNew.setAttribute(new Attribute("name", "SERVICE.RETRIEVE"));	
+				messageNew.setAttribute(new Attribute("type", "RESPONSE"));
+				Document docNew = new Document(messageNew);
+				docNew.setRootElement(messageNew);
+				Element retrieveNew = new Element("retrieve");
+				Element crsIdNew = new Element("crsId").setText(crsId);
+				Element serviceIdNew = new Element("serviceId").setText(serviceId);
+				
+				Element schedule = new Element("schedule");
+				Element index = new Element("index").setText("1");
+				Element start = new Element("start").setText(convertDateFormatNew(String.valueOf(retrieveInfo.get("schedule_start"))));
+				Element stop = new Element("stop").setText(convertDateFormatNew(String.valueOf(retrieveInfo.get("schedule_stop"))));
+				schedule.addContent(index);
+				schedule.addContent(start);
+				schedule.addContent(stop);
+				
+				Element contentSet = new Element("contentSet");
+				Element associatedDelivery = new Element("associatedDelivery");
+				Element consumptionReport = new Element("consumptionReport");
+				Element reportInterval = new Element("reportInterval").setText(retrieveInfo.get("moodReportInterval"));
+				Element moodUsageDataReportInterval = new Element("moodUsageDataReportInterval").setText(String.valueOf(retrieveInfo.get("moodUsageDataReportInterval")));
+				
+				consumptionReport.addContent(reportInterval);
+				consumptionReport.addContent(moodUsageDataReportInterval);
+				associatedDelivery.addContent(consumptionReport);
+				
+				Element transactionNew = new Element("transaction");
+				transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
+				transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));		
+				
+				Element reply = new Element("reply");
+				Element serviceNew = new Element("service");
+				
+				retrieveNew.addContent(crsIdNew);
+				retrieveNew.addContent(serviceIdNew);
+				retrieveNew.addContent(schedule);
+				retrieveNew.addContent(contentSet);
+				retrieveNew.addContent(associatedDelivery);
+				serviceNew.addContent(retrieveNew);
+				reply.addContent(serviceNew);
+				
+				docNew.getRootElement().addContent(transactionNew);
+				docNew.getRootElement().addContent(reply);
+				System.out.println(outString(docNew));
+				System.out.println("================== Mood Receive Retrieve End ==================");
+				returnStr = outString(docNew);
+			}
+			else
+			{
+				Element moodData = request.getChild("moodData");
+				List<Element> serviceArea = moodData.getChildren("serviceArea");
+				System.out.println("================== Mood Report Insert Start ==================");
+				
+				param.put("transaction", transaction.getAttributeValue("id"));
+				param.put("agentKey", transaction.getChild("agentKey").getText());
+				param.put("crsId", moodData.getChild("crsId").getText());
+				param.put("serviceId", moodData.getChild("serviceId").getText());
+				param.put("timestamp", convertDateFormat(moodData.getChild("timestamp").getText()));
+				
+				int result = scheduleMapper.checkMoodServiceId(param);
+				if(result == 0){
+					param.put("code", "500");
+					param.put("message", "The service identified by ServiceID is not on-air");
 					returnStr = makeMoodReportResponse(param);
 					System.out.println(returnStr);
 					return returnStr;
 				}
+				
+				for (int i = 0; i < serviceArea.size(); i++) {
+					param.put("saId", serviceArea.get(i).getChild("saId").getText());
+					System.out.println("saId ======================== "+param.get("saId"));
+					int count = scheduleMapper.checkMoodSaId(param);
+					System.out.println("count ======================== "+count);
+					if(count == 0){
+						param.put("code", "501");
+						param.put("message", "Service Area ID ("+param.get("saId")+") is not configured to ServiceID ("+param.get("serviceId")+")");
+						returnStr = makeMoodReportResponse(param);
+						System.out.println(returnStr);
+						return returnStr;
+					}
+				}
+				
+				for (int i = 0; i < serviceArea.size(); i++) {
+					param.put("saId", serviceArea.get(i).getChild("saId").getText());
+					param.put("countUC", serviceArea.get(i).getChild("countUC").getText());
+					param.put("countBC", serviceArea.get(i).getChild("countBC").getText());
+					scheduleMapper.insertMoodRequest(param);
+					param.put("code", "200");
+					param.put("message", "Mood report Data is saved successfully");
+					returnStr = makeMoodReportResponse(param);
+					System.out.println(returnStr);
+				}
+				
+				System.out.println("================== Mood Report Insert Complete ==================");
 			}
-			
-			for (int i = 0; i < serviceArea.size(); i++) {
-				param.put("saId", serviceArea.get(i).getChild("saId").getText());
-				param.put("countUC", serviceArea.get(i).getChild("countUC").getText());
-				param.put("countBC", serviceArea.get(i).getChild("countBC").getText());
-				scheduleMapper.insertMoodRequest(param);
-				param.put("code", "200");
-				param.put("message", "Mood report Data is saved successfully");
-				returnStr = makeMoodReportResponse(param);
-				System.out.println(returnStr);
-			}
-			
-			System.out.println("================== Mood Report Insert Complete ==================");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -839,45 +946,7 @@ public class ScheduleMgmtController {
 			Element message = doc.getRootElement();
 			Element transaction = (Element) message.getChildren().get(0);
 			Element request = (Element) message.getChildren().get(1);
-			Element service = request.getChild("service");
-			Element timestamp = service.getChild("timestamp");
-			String crsId = timestamp.getChild("crsId").getText();
-			List<HashMap<String, String>> currnetService = scheduleMapper.getCurrentMoodService(crsId);
 			
-			System.out.println("================== Mood Receive Timestamp Start ==================");
-			Element messageNew = new Element("message");
-			messageNew.setAttribute(new Attribute("name", "SERVICE.TIMESTAMP"));	
-			messageNew.setAttribute(new Attribute("type", "RESPONSE"));
-			Document docNew = new Document(messageNew);
-			docNew.setRootElement(messageNew);
-			Element timestampNew = new Element("timestamp");
-			Element crsIdNew = new Element("crsId");
-			crsIdNew.setText(crsId);
-			timestampNew.addContent(crsIdNew);
-			for (int i = 0; i < currnetService.size(); i++) {
-				Element timeset = new Element("timeset");
-				Element serviceId = new Element("serviceId").setText(currnetService.get(i).get("serviceId"));
-				Element timestampIn = new Element("timestamp").setText(convertDateFormatNew(String.valueOf(currnetService.get(i).get("timestamp"))));
-				timeset.addContent(serviceId);
-				timeset.addContent(timestampIn);
-				timestampNew.addContent(timeset);
-			}
-			
-			Element transactionNew = new Element("transaction");
-			transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
-			transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));		
-			
-			Element reply = new Element("reply");
-			Element serviceNew = new Element("service");
-			
-			serviceNew.addContent(timestampNew);
-			reply.addContent(serviceNew);
-			
-			docNew.getRootElement().addContent(transactionNew);
-			docNew.getRootElement().addContent(reply);
-			System.out.println(outString(docNew));
-			System.out.println("================== Mood Receive Timestamp End ==================");
-			returnStr = outString(docNew);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -902,62 +971,7 @@ public class ScheduleMgmtController {
 			Element message = doc.getRootElement();
 			Element transaction = (Element) message.getChildren().get(0);
 			Element request = (Element) message.getChildren().get(1);
-			Element service = request.getChild("service");
-			Element retrieve = service.getChild("retrieve");
-			String crsId = retrieve.getChild("crsId").getText();
-			String serviceId = retrieve.getChild("serviceId").getText();
-			reParam.put("crsId", crsId);
-			reParam.put("serviceId", serviceId);
-			HashMap<String, String> retrieveInfo = scheduleMapper.getMoodRetrieve(reParam);
 			
-			System.out.println("================== Mood Receive Retrieve Start ==================");
-			Element messageNew = new Element("message");
-			messageNew.setAttribute(new Attribute("name", "SERVICE.RETRIEVE"));	
-			messageNew.setAttribute(new Attribute("type", "RESPONSE"));
-			Document docNew = new Document(messageNew);
-			docNew.setRootElement(messageNew);
-			Element retrieveNew = new Element("retrieve");
-			Element crsIdNew = new Element("crsId").setText(crsId);
-			Element serviceIdNew = new Element("serviceId").setText(serviceId);
-			
-			Element schedule = new Element("schedule");
-			Element index = new Element("index").setText("1");
-			Element start = new Element("start").setText(convertDateFormatNew(String.valueOf(retrieveInfo.get("schedule_start"))));
-			Element stop = new Element("stop").setText(convertDateFormatNew(String.valueOf(retrieveInfo.get("schedule_stop"))));
-			schedule.addContent(index);
-			schedule.addContent(start);
-			schedule.addContent(stop);
-			
-			Element contentSet = new Element("contentSet");
-			Element associatedDelivery = new Element("associatedDelivery");
-			Element consumptionReport = new Element("consumptionReport");
-			Element reportInterval = new Element("reportInterval").setText(retrieveInfo.get("moodReportInterval"));
-			Element moodUsageDataReportInterval = new Element("moodUsageDataReportInterval").setText(String.valueOf(retrieveInfo.get("moodUsageDataReportInterval")));
-			
-			consumptionReport.addContent(reportInterval);
-			consumptionReport.addContent(moodUsageDataReportInterval);
-			associatedDelivery.addContent(consumptionReport);
-			
-			Element transactionNew = new Element("transaction");
-			transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
-			transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));		
-			
-			Element reply = new Element("reply");
-			Element serviceNew = new Element("service");
-			
-			retrieveNew.addContent(crsIdNew);
-			retrieveNew.addContent(serviceIdNew);
-			retrieveNew.addContent(schedule);
-			retrieveNew.addContent(contentSet);
-			retrieveNew.addContent(associatedDelivery);
-			serviceNew.addContent(retrieveNew);
-			reply.addContent(serviceNew);
-			
-			docNew.getRootElement().addContent(transactionNew);
-			docNew.getRootElement().addContent(reply);
-			System.out.println(outString(docNew));
-			System.out.println("================== Mood Receive Retrieve End ==================");
-			returnStr = outString(docNew);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {

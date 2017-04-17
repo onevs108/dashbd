@@ -39,10 +39,10 @@
 	</logger>
 	
 	<!-- Query Loggers -->
-    <logger name="jdbc.sqlonly" additivity="false">  
-        <level value="INFO"/>  
-        <appender-ref ref="console-infolog"/>  
-    </logger>
+<!--     <logger name="jdbc.sqlonly" additivity="false">   -->
+<!--         <level value="INFO"/>   -->
+<!--         <appender-ref ref="console-infolog"/>   -->
+<!--     </logger> -->
      
     <!-- <logger name="jdbc.resultsettable" additivity="false">  
         <level value="INFO"/>  
