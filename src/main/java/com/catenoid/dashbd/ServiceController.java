@@ -1864,6 +1864,10 @@ public class ServiceController {
 	                    "<message name=\"SERVICE."+mode.toUpperCase()+"\" type=\"RESPONSE\">\n" +
 	                    "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
 	                    "        <agentKey>"+ getPara(reqXml, "transaction").getPara("agentKey").getValue() +"</agentKey>\n" +
+	                    "        <result>\n" +
+	                    "            <code>200</code>\n" +
+	                    "            <message>"+message+"</message>\n" +
+	                    "        </result>\n" +
 	                    "    </transaction>\n" +
 	                    "    <reply>\n" +
 	                    "        <service>\n" +
