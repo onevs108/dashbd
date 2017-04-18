@@ -93,5 +93,7 @@ public interface ScheduleMapper {
 	List<HashMap<String, String>> getCurrentMoodService(String crsId);
 	HashMap<String, String> getMoodRetrieve(HashMap<String, String> reParam);
 	void updateSaidMode(HashMap<String, String> hashMap);
+	int deleteScheduleContent(HashMap<String, String> param);
+	int deleteScheduleContent(Map<String, String> params);
     
 }

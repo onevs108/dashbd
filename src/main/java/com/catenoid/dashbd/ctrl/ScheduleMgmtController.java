@@ -413,6 +413,13 @@ public class ScheduleMgmtController {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		List<Circle> circleList = operatorMapper.selectCircleListNameAll();
+		if(user.getGrade() == 9999){
+			for (int i = circleList.size()-1; i > -1; i--) {
+				if(Integer.parseInt(user.getCircleId()) != circleList.get(i).getCircle_id()){
+					circleList.remove(i);
+				}
+			}
+		}
 		List<Map<String, String>> scList = mapper.selectServiceClassAll();
 		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
 		int serviceIdIdx = mapper.selectServiceIdIdx();
@@ -1027,17 +1034,25 @@ public class ScheduleMgmtController {
 			tmp="off";
 			params.put("preEmptionCapabiity", tmp);
 		}
-		
 		tmp = params.get("preEmptionVulnerability");
 		if (tmp == null){
 			tmp="off";
 			params.put("preEmptionVulnerability", tmp);
 		}
-		
 		tmp = params.get("reportClientId");
 		if (tmp == null){
 			tmp="off";
 			params.put("reportClientId", tmp);
+		}
+		tmp = params.get("fileRepair");
+		if (tmp == null){
+			tmp="off";
+			params.put("fileRepair", tmp);
+		}
+		tmp = params.get("receptionReport");
+		if (tmp == null){
+			tmp="off";
+			params.put("receptionReport", tmp);
 		}
 		
 		try{
@@ -1131,9 +1146,13 @@ public class ScheduleMgmtController {
 				
 				System.out.println("insertContentInfo ===== "+resStr[1]);
 				insertContentInfo(resStr[1], params.get("id"));
-			}else{
+			} else {
 				ret = mapper.updateSchedule(params);
 				ret = mapper.updateBroadcastInfo(params);
+				int result = mapper.deleteScheduleContent(params);
+				if(result > 0) {
+					insertContentInfo(resStr[1], params.get("id"));
+				}
 			}
             
 			String scheduleType = "Schedule";
@@ -1303,7 +1322,8 @@ public class ScheduleMgmtController {
 				}else if(params.get("type").equals("emergency")){
 					scheduleType = "Emergency Schedule";
 				}
-				
+				int ret = mapper.updateSchedule4Del(params);
+				logger.info("updateSchedule ret{}", ret);
 				Users LogUser = (Users)request.getSession().getAttribute("USER");
 				HashMap<String, Object> logMap = new HashMap<String, Object>();
 				logMap.put("reqType", "Schedule");

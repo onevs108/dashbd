@@ -64,12 +64,12 @@
 				$("#moodLocation").val("MBMS SAI");
 			}
 			$("#schedule_start").blur(function(){
-				if($("#serviceType").val() != "streaming"){
+				if($("#serviceType").val() == "fileDownLoad"){
 					checkScheduleStartTime();
 				}
 			});
 			$("#schedule_stop").blur(function(){
-				if($("#serviceType").val() != "streaming"){
+				if($("#serviceType").val() == "fileDownLoad"){
 					checkScheduleEndTime();
 				}
 			});
@@ -83,15 +83,15 @@
 				if("${mapSchedule.reportType}" != ""){
 					$("#reportType").val("${mapSchedule.reportType}");	
 				}
-				if("${mapSchedule.frOffsetTime}" != ""){
-					$("#FileRepair").prop('checked', true);
+				if("${mapSchedule.fileRepair}" == "on"){
+					$("#fileRepair").prop('checked', true);
 				}
 				
-				if("${mapSchedule.samplePercentage}" != ""){
+				if("${mapSchedule.receptionReport}" == "on"){
 					$("#receptionReport").prop('checked', true);
 				}
 				
-				if("${mapSchedule.moodReportInterval}" != ""){
+				if("${mapSchedule.reportClientId}" == "on"){
 					$("#reportClientId").prop('checked', true);
 				}
 				
@@ -104,16 +104,20 @@
 					$($("input[name='deliveryInfo_start']")[i]).val(contentJson[i].start_time);
 					$($("input[name='deliveryInfo_end']")[i]).val(contentJson[i].end_time);
 				}
-				if(contentJson[0].r12mpdURI != undefined){
-					$($("input[name='r12mpdURI']")[0]).val(contentJson[0].r12mpdURI);
-					var pattern = contentJson[0].bcBasePattern.split(",");
-					for (var i = 0; i < pattern.length; i++) {
-						if(i != 0) {
-							$("#addBcPattern").click();
+				
+				if(contentJson.length > 0) {
+					if(contentJson[0].r12mpdURI != undefined){
+						$($("input[name='r12mpdURI']")[0]).val(contentJson[0].r12mpdURI);
+						var pattern = contentJson[0].bcBasePattern.split(",");
+						for (var i = 0; i < pattern.length; i++) {
+							if(i != 0) {
+								$("#addBcPattern").click();
+							}
+							$($("input[name='bcBasePattern']")[i]).val(pattern[i]);
 						}
-						$($("input[name='bcBasePattern']")[i]).val(pattern[i]);
 					}
 				}
+				
 				$("#serviceMode").val("${mapSchedule.serviceMode}");
 				$("#serviceMode").change();
 				$("#serviceClass").val("${mapSchedule.serviceClass}");
@@ -122,12 +126,21 @@
 				$("#bcSaidList").val("${mapSchedule.bcServiceArea}");
 			}
 			
-			$("#FileRepair").change();
+			$("#fileRepair").change();
 			$("#receptionReport").change();
 			$("#reportClientId").change();
 			
 			$("#searchContentStream").click(searchStreaming);
 		});
+		
+		function checkRequireValue() {
+			$("#serviceType").prop('disabled', true);
+			$("#serviceId").prop('disabled', true);
+			$("#serviceClass").prop('disabled', true);
+			$("#newClass").remove();
+// 			$("#reportType").prop('disabled', true);
+// 			$("#samplePercentage").prop('disabled', true);
+		}
 		
 		function searchStreaming() {
 			$("#type").val("streaming");
@@ -196,7 +209,12 @@
 				$("#schedule_stop").val("");
 			}
 		}
-		
+				
+		$(window).load(function(){
+			if(viewMode == "update") {
+				checkRequireValue();	
+			}
+		})
  	</script>
 
 	<style>
@@ -204,7 +222,10 @@
 	{
 	    list-style-type: none;
 	}
-	</style> 
+	.text-importance {
+		color: red;
+	}
+	</style>
 	
 </head>
 <body>
@@ -279,9 +300,9 @@
                         <div class="row">
                             <form method="get" class="form-horizontal">
                             <div class="form-group">
-						  		<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service Name</label>
+						  		<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service Name</label>
                                     <div class="col-sm-4"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
-                                <label class="col-sm-2 control-label">Language</label>
+                                <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Language</label>
                                     <div class="col-sm-4">
 										<c:if test="${empty mapSchedule.BCID}">
 						                	<select class="input-sm form-control input-s-sm" id="serviceLanguage" name="serviceLanguage">
@@ -298,7 +319,7 @@
                              </div>
                              
                              <div class="form-group">
-                             	<label class="col-sm-2 control-label">Service class</label>
+                             	<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service class</label>
                         	    <div class="col-sm-3">
                         	    	<select type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass'>
                         	    		<c:forEach var="row" items="${serviceClassList}">
@@ -375,11 +396,11 @@
                                                 <div class="form-group"><label class="col-sm-6 control-label"><i class="fa fa-check text-importance"></i> Type</label>
                                                     <div class="col-sm-6">
                                                       <select class="input form-control"  id="fecType" name="fecType">
-                                                                <option value="NoFEC" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> selected</c:if>>NoFEC</option>
-                                                                <option value="Raptor" <c:if test="${mapSchedule.fecType eq 'Raptor'}"> selected</c:if>>Raptor</option>
-                                                                <option value="RaptorQ" <c:if test="${mapSchedule.fecType eq 'RaptorQ'}"> selected</c:if>>RaptorQ</option>
-                                                                <option value="RSLDPC" <c:if test="${mapSchedule.fecType eq 'RSLDPC'}"> selected</c:if>>RSLDPC</option>
-                                                            </select>
+                                                          <option value="NoFEC" <c:if test="${mapSchedule.fecType eq 'NoFEC'}"> selected</c:if>>NoFEC</option>
+                                                          <option value="Raptor" <c:if test="${mapSchedule.fecType eq 'Raptor'}"> selected</c:if>>Raptor</option>
+                                                          <option value="RaptorQ" <c:if test="${mapSchedule.fecType eq 'RaptorQ'}"> selected</c:if>>RaptorQ</option>
+                                                          <option value="RSLDPC" <c:if test="${mapSchedule.fecType eq 'RSLDPC'}"> selected</c:if>>RSLDPC</option>
+                                                      </select>
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-sm-6 control-label"><i class="fa fa-check text-importance"></i> Ratio</label>
@@ -400,7 +421,6 @@
                                 <div id="serviceAreaRow">
                                 	
                                 </div>
-                                
                             </form>
                         </div>
                     </div><!-- end ibox-content -->
@@ -608,8 +628,8 @@
                                        <div class="col-md-9">
                                            <div class="swich m-b-n">
                                                <div class="onoffswitch">
-                                                   <input type="checkbox" class="onoffswitch-checkbox" id="FileRepair" name="FileRepair" <c:if test="${mapSchedule.FileRepair == 'on'}">checked</c:if>>
-                                                   <label class="onoffswitch-label" for="FileRepair">
+                                                   <input type="checkbox" class="onoffswitch-checkbox" id="fileRepair" name="fileRepair" <c:if test="${mapSchedule.fileRepair == 'on'}">checked</c:if>>
+                                                   <label class="onoffswitch-label" for="fileRepair">
                                                        <span class="onoffswitch-inner"></span>
                                                        <span class="onoffswitch-switch"></span>
                                                     </label>
@@ -620,11 +640,11 @@
                                    
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Offset Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frOffsetTime" name="frOffsetTime" value="${mapSchedule.frOffsetTime}" <c:if test="${mapSchedule.FileRepair == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frOffsetTime" name="frOffsetTime" value="${mapSchedule.frOffsetTime}" <c:if test="${mapSchedule.fileRepair == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Random Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frRandomTime" name="frRandomTime" value="${mapSchedule.frRandomTime}" <c:if test="${mapSchedule.FileRepair == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frRandomTime" name="frRandomTime" value="${mapSchedule.frRandomTime}" <c:if test="${mapSchedule.fileRepair == 'off'}">disabled</c:if>></div>
                                    </div>
                                    </div>
                                    <div class="form-group">

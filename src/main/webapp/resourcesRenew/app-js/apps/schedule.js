@@ -20,6 +20,7 @@ $(document).ready(function()
 			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
 			$($("#reportType option")[2]).remove();
+			$("#consumptionReport").hide();
 		}else if($(this).val() == "carouselMultiple"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
@@ -36,6 +37,7 @@ $(document).ready(function()
 			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
 			$($("#reportType option")[2]).remove();
+			$("#consumptionReport").hide();
 		}else if($(this).val() == "carouselSingle"){
 			$("#bcType_fileDownload").show();
 			$("#bcType_streaming").hide();
@@ -52,6 +54,7 @@ $(document).ready(function()
 			$("#fileUpload_F").show();
 			addSearchContentEvent(0);
 			$($("#reportType option")[2]).remove();
+			$("#consumptionReport").hide();
 		}else{
 			$("div[name='bcType_fileDownload']").hide();
 			$("#bcType_fileDownload").hide();
@@ -104,7 +107,7 @@ $(document).ready(function()
 		displayRatio();
 	});
 	
-	$("#FileRepair").on("change", function() {
+	$("#fileRepair").on("change", function() {
 		if(this.checked){
 			$("#frOffsetTime").prop('disabled', false);
 			$("#frRandomTime").prop('disabled', false);
@@ -117,16 +120,16 @@ $(document).ready(function()
 	
 	$("#receptionReport").on("change", function() {
 		changePercentage();
-		if(this.checked){
+		if(this.checked) {
 			$("#offsetTime").prop('disabled', false);
 			if(!($("#serviceType").val() == "streaming")){
 				$("#reportType").prop('disabled', false);
 			}else{
-				$("#reportType").prop('disabled', true);
+//				$("#reportType").prop('disabled', true);
 			}
 			$("#samplePercentage").prop('disabled', false);
 			$("#randomTime").prop('disabled', false);
-		}else{
+		} else {
 			$("#offsetTime").prop('disabled', true);
 			$("#reportType").prop('disabled', true);
 			$("#samplePercentage").prop('disabled', true);
@@ -199,11 +202,9 @@ $(document).ready(function()
 			if (!valadationCheck())
 				return false;
 			if (!confirm('are you sure?')) {
-				$("#serviceType").attr("disabled");
-				$("#reportType").attr("disabled");
-				$("#samplePercentage").attr("disabled");
 				return false;
 			}
+			checkEnabled();
 		},
 		success : function(result) {
 			outMsgForAjax(result);
@@ -248,9 +249,6 @@ $(document).ready(function()
 			success : function( data ) {
 				if(data.result == "SUCCESS")
 				{
-					$("#serviceType").removeAttr("disabled");
-					$("#reportType").removeAttr("disabled");
-					$("#samplePercentage").removeAttr("disabled");
 					$("#frmScheduleReg").submit();
 				}
 				else if(data.result == "bwExceed")
@@ -357,6 +355,14 @@ $(document).ready(function()
 	detailValidationCheck();
 	
 });
+
+function checkEnabled() {
+	$("#serviceType").removeAttr("disabled");
+	$("#serviceId").removeAttr("disabled");
+	$("#serviceClass").removeAttr("disabled");
+	$("#reportType").removeAttr("disabled");
+	$("#samplePercentage").removeAttr("disabled");
+}
 
 $(window).load(function(){
 //	if($("#serviceType").val() == "streaming"){
@@ -1100,14 +1106,25 @@ function valadationCheck(){
 		return false;
 	}
 	
+	if ($("#serviceType").val() == 'streaming' && $("#serviceMode").val() == "MooD"){
+		if(!($("#reportClientId").is(":checked"))){
+			alert("Report Client Id is mandatory when service mode is MooD")
+			return false;
+		}else{
+			if($("#moodReportInterval").val() == "" || $("#moodOffsetTime").val() == "" || $("#moodRandomTime").val() == "" || $("#moodSamplePercentage").val() == ""){
+				alert("Please enter the mandatory value");
+				this.focus();
+				return false;
+			}
+		}
+	}
+	
 	var s_start = $("#schedule_start").val().replace(/[^0-9]/g,'');
 	var s_stop = $("#schedule_stop").val().replace(/[^0-9]/g,'');
 	var d_start = $("#deliveryInfo_start").val().replace(/[^0-9]/g,'');
 	var d_end = $("#deliveryInfo_end").val().replace(/[^0-9]/g,'');
 	
-	//console.log(s_start, '+', s_stop, '+',d_start, '+',d_end, '+');
-	
-	if($("#serviceType").val() != "streaming"){
+	if($("#serviceType").val() == "fileDownload"){
 		if (d_start < s_start ){
 			alert("It can not be 'content start time' over than 'schedule start time' ");
 			return false;
@@ -1121,6 +1138,7 @@ function valadationCheck(){
 	
 	return true;
 }
+
 function validation( from ) {
 	var $form = from;
 	var retFlag = true;
@@ -1159,15 +1177,21 @@ function setDefaultQCI_Level_SegmentAvailableOffset(){
 		$("#segmentAvailableOffset").val(10);
 }
 
-function changePercentage(){
-	if ($("#reportType").val()== 'RAck'){
-		$("#samplePercentage").prop('disabled', true);
-		$("#samplePercentage").val("100");
-	}else if ($("#reportType").val()== 'StaR-all'){
-		$("#samplePercentage").prop('disabled', false);
-//		$("#samplePercentage").val("");
-	}else{
-		$("#samplePercentage").prop('disabled', false);
-//		$("#samplePercentage").val("");
-	}
+function changePercentage() {
+//	if ($("#reportType").val()== 'RAck'){
+//		$("#samplePercentage").prop('disabled', true);
+//		$("#samplePercentage").val("100");
+//	}else if ($("#reportType").val()== 'StaR-all'){
+//		$("#samplePercentage").prop('disabled', false);
+////		$("#samplePercentage").val("");
+//	}else{
+//		$("#samplePercentage").prop('disabled', false);
+////		$("#samplePercentage").val("");
+//	}
 }
+
+
+
+
+
+

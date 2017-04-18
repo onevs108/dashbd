@@ -453,6 +453,7 @@ public class XmlManager {
 		
 		if ("on".equals(params.get("receptionReport"))){
 			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
+			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
 			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
 			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));			
@@ -498,7 +499,7 @@ public class XmlManager {
 				}
 			}
 			
-			if ("on".equals(params.get("FileRepair"))){
+			if ("on".equals(params.get("fileRepair"))){
 				Element fileRepair= null; 
 				fileRepair = new Element("postFileRepair");
 				fileRepair.setAttribute(new Attribute("offsetTime", params.get("frOffsetTime")));
@@ -530,7 +531,6 @@ public class XmlManager {
 			
 			transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
 			
-			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
 			if("on".equals(params.get("receptionReport"))){
 				associatedDelivery.addContent(receptionReport);
 			}
@@ -600,7 +600,7 @@ public class XmlManager {
 					schedule.addContent(content);
 				}
 				serviceType.addContent(schedule);
-				if ("on".equals(params.get("FileRepair")) || "on".equals(params.get("receptionReport"))){
+				if ("on".equals(params.get("fileRepair")) || "on".equals(params.get("receptionReport"))){
 					serviceType.addContent(associatedDelivery);
 				}
 			}

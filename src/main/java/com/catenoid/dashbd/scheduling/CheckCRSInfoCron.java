@@ -226,6 +226,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		if ("on".equals(params.get("receptionReport"))){
 			receptionReport = new Element("receptionReport");
 			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
+			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
 			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
 			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));			
@@ -249,7 +250,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
 		
 		if ("on".equals(params.get("reportType"))){
-			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
 			associatedDelivery.addContent(receptionReport);
 		}
 		

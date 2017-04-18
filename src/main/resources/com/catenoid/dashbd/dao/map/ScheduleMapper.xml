@@ -46,82 +46,82 @@
 	</select>
 	
 	<select id="selectSchdule" parameterType="java.util.Map" resultType="java.util.Map">
-			SELECT ID
-				, service_area_id
-				, service_group_id
-				, national_yn
-				, emergency_yn
-				, NAME
-				, BCID
-				, start_comp 
- 				, end_comp
- 				, (SELECT count(*) FROM schedule 
- 					WHERE del_yn = 'N'
-			    	<if test="serviceAreaId != null and serviceAreaId !=''" >
-						AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
-							<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
-							<if test="type == 'national'">national_yn = 'Y' and emergency_yn is null</if> 
-							<if test="type == 'emergency'">national_yn = 'Y' and emergency_yn = 'Y'</if> 
-					</if>
-					<if test="searchDate != null and searchDate !=''" >
-						AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
-					</if>
-				<![CDATA[
- 					AND start_comp > DATE_FORMAT(start_date, '%H%i%s') 
-					AND start_comp < DATE_FORMAT(end_date, '%H%i%s')
-				]]>
- 				  ) depthPosition
-				, DATE_FORMAT(start_date, '%Y-%m-%dT%H:%i:%s') start_date
-				, DATE_FORMAT(end_date, '%Y-%m-%dT%H:%i:%s') end_date
-				
-				, DATE_FORMAT(start_date , '%Y') start_year 
-				, DATE_FORMAT(start_date , '%m') start_month
-				, DATE_FORMAT(start_date , '%d') start_day
-				, DATE_FORMAT(start_date , '%H') start_hour
-				, DATE_FORMAT(start_date , '%i') start_mins
-				, DATE_FORMAT(end_date , '%Y') end_year 
-				, DATE_FORMAT(end_date , '%m') end_month
-				, DATE_FORMAT(end_date , '%d') end_day
-				, DATE_FORMAT(end_date , '%H') end_hour
-				, DATE_FORMAT(end_date , '%i') end_mins
-				, service
-				, serviceId
-			FROM 
-			(
-			SELECT     
-		         DATE_FORMAT(s.start_date, '%H%i%s') start_comp,     
-		         DATE_FORMAT(s.end_date, '%H%i%s') end_comp,
-		         s.ID,
-		         s.service_area_id,
-				 s.service_group_id,
-				 s.national_yn, 
-				 s.emergency_yn, 
-				 s.NAME,
-				 s.BCID,
-				 s.start_date,
-		         s.end_date,
-		         b.service,
-		         b.serviceId
-		      FROM schedule s left join broadcast_info b on s.BCID = b.BCID 
-		      WHERE
-			 	s.del_yn = 'N'
+		SELECT ID
+			, service_area_id
+			, service_group_id
+			, national_yn
+			, emergency_yn
+			, NAME
+			, BCID
+			, start_comp 
+				, end_comp
+				, (SELECT count(*) FROM schedule 
+					WHERE del_yn = 'N'
 		    	<if test="serviceAreaId != null and serviceAreaId !=''" >
-		    		AND <if test="type == 'area'">instr(CONCAT(',', s.service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
-						<if test="type == 'group'">s.service_group_id = #{serviceAreaId}</if>
-						<if test="type == 'national'">s.national_yn = 'Y' and s.emergency_yn is null </if>
-						<if test="type == 'emergency'">s.national_yn = 'Y' and s.emergency_yn = 'Y' </if> 
+					AND <if test="type == 'area'">instr(CONCAT(',', service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
+						<if test="type == 'group'">service_group_id = #{serviceAreaId}</if>
+						<if test="type == 'national'">national_yn = 'Y' and emergency_yn is null</if> 
+						<if test="type == 'emergency'">national_yn = 'Y' and emergency_yn = 'Y'</if> 
 				</if>
 				<if test="searchDate != null and searchDate !=''" >
-					AND DATE_FORMAT(s.start_date , '%Y-%m-%d') = #{searchDate}
-				</if> 
-				<if test="serviceType != null and serviceType !=''" >
-					AND b.service = #{serviceType}
-				</if> 
-				<if test="serviceClass != null and serviceClass !=''" >
-					AND b.serviceClass = #{serviceClass}
+					AND DATE_FORMAT(start_date , '%Y-%m-%d') = #{searchDate}
 				</if>
-			) x
- 			order by start_date asc
+			<![CDATA[
+					AND start_comp > DATE_FORMAT(start_date, '%H%i%s') 
+				AND start_comp < DATE_FORMAT(end_date, '%H%i%s')
+			]]>
+				  ) depthPosition
+			, DATE_FORMAT(start_date, '%Y-%m-%dT%H:%i:%s') start_date
+			, DATE_FORMAT(end_date, '%Y-%m-%dT%H:%i:%s') end_date
+			
+			, DATE_FORMAT(start_date , '%Y') start_year 
+			, DATE_FORMAT(start_date , '%m') start_month
+			, DATE_FORMAT(start_date , '%d') start_day
+			, DATE_FORMAT(start_date , '%H') start_hour
+			, DATE_FORMAT(start_date , '%i') start_mins
+			, DATE_FORMAT(end_date , '%Y') end_year 
+			, DATE_FORMAT(end_date , '%m') end_month
+			, DATE_FORMAT(end_date , '%d') end_day
+			, DATE_FORMAT(end_date , '%H') end_hour
+			, DATE_FORMAT(end_date , '%i') end_mins
+			, service
+			, serviceId
+		FROM 
+		(
+		SELECT     
+	         DATE_FORMAT(s.start_date, '%H%i%s') start_comp,     
+	         DATE_FORMAT(s.end_date, '%H%i%s') end_comp,
+	         s.ID,
+	         s.service_area_id,
+			 s.service_group_id,
+			 s.national_yn, 
+			 s.emergency_yn, 
+			 s.NAME,
+			 s.BCID,
+			 s.start_date,
+	         s.end_date,
+	         b.service,
+	         b.serviceId
+	      FROM schedule s left join broadcast_info b on s.BCID = b.BCID 
+	      WHERE
+		 	s.del_yn = 'N'
+	    	<if test="serviceAreaId != null and serviceAreaId !=''" >
+	    		AND <if test="type == 'area'">instr(CONCAT(',', s.service_area_id, ','), CONCAT(',',#{serviceAreaId},',')) > 0</if>
+					<if test="type == 'group'">s.service_group_id = #{serviceAreaId}</if>
+					<if test="type == 'national'">s.national_yn = 'Y' and s.emergency_yn is null </if>
+					<if test="type == 'emergency'">s.national_yn = 'Y' and s.emergency_yn = 'Y' </if> 
+			</if>
+			<if test="searchDate != null and searchDate !=''" >
+				AND DATE_FORMAT(s.start_date , '%Y-%m-%d') = #{searchDate}
+			</if> 
+			<if test="serviceType != null and serviceType !=''" >
+				AND b.service = #{serviceType}
+			</if> 
+			<if test="serviceClass != null and serviceClass !=''" >
+				AND b.serviceClass = #{serviceClass}
+			</if>
+		) x
+			order by start_date asc
 	</select>
 	
 	<sql id="schedule_where" >
@@ -230,6 +230,9 @@
 				, b.moodOffsetTime
 				, b.moodRandomTimePeriod
 				, b.moodSamplePercentage
+				, b.fileRepair
+				, b.receptionReport
+				, b.reportClientId
 			FROM schedule s 
 			left join broadcast_info b on s.BCID = b.BCID
 			WHERE 1=1
@@ -446,7 +449,10 @@
 			, moodOffsetTime
 			, moodRandomTimePeriod
 			, moodSamplePercentage
+			, reportClientId
 			</if>
+			, fileRepair
+			, receptionReport
 		) VALUES (#{transactionId}
 			, #{serviceId}
 			, #{serviceType}
@@ -484,7 +490,10 @@
 			, #{moodOffsetTime}
 			, #{moodRandomTimePeriod}
 			, #{moodSamplePercentage}
+			, #{reportClientId}
 			</if>
+			, #{fileRepair}
+			, #{receptionReport}
 		)
 	</insert>
 	
@@ -585,6 +594,15 @@
 			<if test="moodSamplePercentage != null and moodSamplePercentage !=''" >
 				, moodSamplePercentage = #{moodSamplePercentage} 
 			</if>
+			<if test="fileRepair != null and fileRepair !=''" >
+				, fileRepair = #{fileRepair} 
+			</if>
+			<if test="receptionReport != null and receptionReport !=''" >
+				, receptionReport = #{receptionReport} 
+			</if>
+			<if test="reportClientId != null and reportClientId !=''" >
+				, reportClientId = #{reportClientId} 
+			</if>
 		WHERE 1=1
 		AND BCID = #{BCID}
 	</update>
@@ -625,6 +643,9 @@
 			, moodOffsetTime
 			, moodRandomTimePeriod
 			, moodSamplePercentage
+			, fileRepair
+			, receptionReport
+			, reportClientId
 		FROM broadcast_info 
 		WHERE 1=1 AND 
 		<choose>
@@ -664,6 +685,11 @@
 		FROM  schedule 
 		WHERE id =#{id}
 	</insert>
+	
+	<delete id="deleteScheduleContent" parameterType="HashMap">
+		delete from schedule_contents 
+		WHERE schedule_id = #{id}
+	</delete>
 	
 	<insert id="insertScheduleContent" parameterType="java.util.Map">
 		INSERT INTO schedule_contents
