@@ -286,7 +286,7 @@
 	
 	<update id="updateServiceIdIdx">
 		update service_id_idx
-		set id_idx = id_idx + 1
+		set id_idx = ${serviceIdIdx} + 1
 	</update>
 	
 	<select id="checkServiceId" resultType="int">

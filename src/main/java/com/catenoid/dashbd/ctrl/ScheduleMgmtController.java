@@ -1141,7 +1141,9 @@ public class ScheduleMgmtController {
 				}
 				
 				//서비스ID 숫자 증가
-				ret = mapper.updateServiceIdIdx();
+				String svId = params.get("serviceId").toString();
+				params.put("serviceIdIdx", svId.substring(svId.lastIndexOf(":")+1));
+				ret = mapper.updateServiceIdIdx(params);
 				//방송 정보 삽입
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트
