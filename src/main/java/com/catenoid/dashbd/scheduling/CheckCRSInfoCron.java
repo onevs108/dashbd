@@ -42,7 +42,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 			for (int j = 0; j < bcSaIdList.size(); j++) {
 				System.out.println("bcSaIdList ================== "+bcSaIdList.get(j)+ " ================== ");
 			}
-			if(bcSaIdList.size() > 0){
+			if(bcSaIdList.size() > 0) {
 				HashMap<String, List<HashMap<String,String>>> param = new HashMap<String, List<HashMap<String,String>>>();
 				param.put(moodServiceId.get(i), bcSaIdList);
 				serviceIdList.add(param);
@@ -50,32 +50,51 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		}
 		
 		System.out.println("serviceIdList ================== "+serviceIdList.size()+ " ================== ");
+		List<String> sendedServiceId = new ArrayList<String>();
 		for (int i = 0; i < serviceIdList.size(); i++) {
 			String[] rtvs = new String[2];
 			String reqBody = "";
 			String respBody = "SUCCESS";
 			String reqBodyCrs = "";
 			String respBodyCrs = "";
+			boolean passServiceId = false;
 			try {
+				
+				HashMap<String,String> crsParam = new HashMap<String, String>(); 
+				Iterator<String> it = serviceIdList.get(i).keySet().iterator();
+				String tempSvId = it.next();
+				for (int j = 0; j < sendedServiceId.size(); j++) {
+					if(sendedServiceId.get(j).equals(tempSvId)){
+						passServiceId = true;
+					}
+				}
+				if(passServiceId){
+					continue;
+				}
+				crsParam.put("serviceId", tempSvId);
+				List<HashMap<String,String>> crsSaidList = serviceIdList.get(i).get(tempSvId);
+				
 				Bmsc bmsc = bmscMapper.selectBmsc(793);
 				System.out.println(" ================== BMSC Mood Update Start ================== ");
 				String agentKey = Base64Coder.encode(bmsc.getIpaddress()); 
 				reqBody = makeModityXml(serviceIdList.get(i), agentKey);
 				respBody = new HttpNetAgent().execute("http://" + bmsc.getIpaddress() + bmsc.getCircle(), "", reqBody, false);
 				System.out.println(" ================== BMSC Mood Update End ================== ");
-				HashMap<String,String> crsParam = new HashMap<String, String>(); 
-				Iterator<String> it = serviceIdList.get(i).keySet().iterator();
-				String tempSvId = it.next();
-				crsParam.put("serviceId", tempSvId);
-				List<HashMap<String,String>> crsSaidList = serviceIdList.get(i).get(tempSvId);
-				for (int j = 0; j < crsSaidList.size(); j++) {
+				for (int j = 0; j < crsSaidList.size(); j++) {					
 					String said = crsSaidList.get(j).get("said");
 					System.out.println(" ================== (said = "+said+") CRS Mood Update Start ================== ");
 					crsParam.put("said", said);
 					HashMap<String,String> crsInfo = mapper.getCrsInfo(crsParam);
+					crsParam.put("crsId", String.valueOf(crsInfo.get("id")));
 					String agentKeyCRS = Base64Coder.encode(crsInfo.get("ip"));
 					reqBodyCrs = makeModityXmlCRS(tempSvId, crsInfo, agentKeyCRS, said);
 					respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
+					List<HashMap<String,String>> otherCRS = mapper.getCurrentMoodServiceOthers(crsParam);
+					for (int k = 0; k < otherCRS.size(); k++) {
+						reqBodyCrs = makeModityXmlCRS(otherCRS.get(k).get("serviceId"), crsInfo, agentKeyCRS, said);
+						respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
+						sendedServiceId.add(otherCRS.get(k).get("serviceId"));
+					}
 					mapper.updateSaidMode(crsSaidList.get(j));
 					System.out.println(" ================== ("+said+") CRS Mood Update End ================== ");
 				}

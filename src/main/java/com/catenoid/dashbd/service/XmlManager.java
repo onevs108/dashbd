@@ -452,9 +452,9 @@ public class XmlManager {
 		Element associatedDelivery = new Element("associatedDelivery");
 		
 		if ("on".equals(params.get("receptionReport"))){
+			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
 			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
-			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
 			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));			
 		}

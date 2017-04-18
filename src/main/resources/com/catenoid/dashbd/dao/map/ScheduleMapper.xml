@@ -847,6 +847,20 @@
 		group by a.serviceId
 	</select>
 	
+	<select id="getCurrentMoodServiceOthers" parameterType="HashMap" resultType="HashMap">
+		select a.serviceId, c.timestamp from 
+		broadcast_info a inner join crs_said_mapping b 
+		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
+		inner join mood_request c on b.said = c.saId and b.crs_id = c.crsId
+		where service = 'streaming' 
+		  and serviceMode = 'MooD'		  
+		  and (now() <![CDATA[ > ]]> a.schedule_start)
+		  and (now() <![CDATA[ < ]]> a.schedule_stop)
+		  and b.crs_id = #{crsId}
+		  and a.serviceId != #{serviceId}
+		group by a.serviceId
+	</select>
+	
 	<select id="checkMoodSaId" parameterType="java.util.Map" resultType="int">
 		select count(*) from broadcast_info
 		where serviceId = #{serviceId}
@@ -861,7 +875,7 @@
 	<update id="updateSaidMode" parameterType="HashMap">
 		update crs_said_mapping     
 		set crs_mode = 
-		<if test="ntype == 'BC'">'UniCast'</if>
+		<if test="ntype == 'BC'">'Unicast'</if>
 		<if test="ntype == 'UC'">'Broadcast'</if>
 		, update_dt = now()
 		where said = #{said}
