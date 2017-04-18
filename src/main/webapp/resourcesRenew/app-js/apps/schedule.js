@@ -185,7 +185,7 @@ $(document).ready(function()
 			dataType : "json",
 			success : function( data ) {
 				outMsgForAjax(data);
-				if(result.resultInfo.resultCode != "1000" && result.resultInfo.resultCode != "200"){
+				if(data.resultInfo.resultCode != "1000" && data.resultInfo.resultCode != "200"){
 					return;
 				}
 				location.href = "schdMgmtDetail.do?bmscId="+bmscId;
@@ -199,12 +199,7 @@ $(document).ready(function()
 	$("#frmScheduleReg").ajaxForm({
 		dataType : "json",
 		beforeSubmit : function(data, frm, opt) {
-			if (!valadationCheck())
-				return false;
-			if (!confirm('are you sure?')) {
-				return false;
-			}
-			checkEnabled();
+			
 		},
 		success : function(result) {
 			outMsgForAjax(result);
@@ -249,6 +244,12 @@ $(document).ready(function()
 			success : function( data ) {
 				if(data.result == "SUCCESS")
 				{
+					if (!valadationCheck())
+						return false;
+					if (!confirm('are you sure?')) {
+						return false;
+					}
+					checkEnabled();
 					$("#frmScheduleReg").submit();
 				}
 				else if(data.result == "bwExceed")

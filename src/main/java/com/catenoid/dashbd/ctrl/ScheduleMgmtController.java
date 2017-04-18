@@ -384,13 +384,12 @@ public class ScheduleMgmtController {
 				ret = mapper.updateBroadcastInfo(params);
 				logger.info("updateSchedule ret{}", ret);
 
-				//@ xml update �뿰�룞`
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				
 				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
 				retValue = parseRes(resStr[0]);
-				//@ check return XML success
+				
 				if (!xmlManager.isSuccess(resStr[0]))
 					return makeRetMsg(retValue.get("code"), retValue.get("message"));
 			}
@@ -444,6 +443,10 @@ public class ScheduleMgmtController {
 	public ModelAndView schedule(@RequestParam Map< String, String > params, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView("schd/schedule");
 		Users user = (Users) session.getAttribute("USER");
+		if(user == null){
+			mv.setViewName("redirect:/login.do");
+			return mv;
+		}
 		String mode = "update";
 		String type = "area";
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -1085,7 +1088,7 @@ public class ScheduleMgmtController {
 				params.put("serviceAreaId", said);
 				saidList.add(said);
 //				paramList.add(6, saidList);
-			}else{
+			} else {
 				if(params.get("serviceType").equals("streaming"))
 				{
 					for (int i = 0; i < saidList.size(); i++) {

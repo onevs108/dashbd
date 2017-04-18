@@ -173,70 +173,70 @@
 	</select>
 	
 	<select id="selectSchduleTime" parameterType="java.util.Map" resultType="java.util.Map">
-			SELECT id
-				, bmscId as bmscId
-				, service_area_id as serviceAreaId
-				, service_group_id as serviceGroupId
-				, ifnull(national_yn, '') as nationalYN
-				, ifnull(emergency_yn, '') as emergencyYN
-				, content_id as contentId
-				, name
-				, s.BCID
-				, DATE_FORMAT(start_date, '%Y-%m-%d') searchDate
-				, DATE_FORMAT(start_date, '%Y-%m-%d %H:%i:%s') start_date
-				, DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') end_date
-				, DATE_FORMAT(start_date , '%H') start_hour
-				, DATE_FORMAT(start_date , '%i') start_mins
-				, DATE_FORMAT(start_date , '%s') start_second
-				, DATE_FORMAT(end_date , '%H') end_hour
-				, DATE_FORMAT(end_date , '%i') end_mins
-				, DATE_FORMAT(end_date , '%s') end_second
-				, b.transactionId
-				, b.serviceId
-				, b.service
-				, b.service_name
-				, b.serviceClass
-				, b.language
-				, b.GBR
-				, b.QCI
-				, b.level
-				, b.preEmptionCapabiity
-				, b.preEmptionVulnerability
-				, b.fecType
-				, b.fecRatio
-				, b.said
-				, b.segmentAvailableOffset 
-				, DATE_FORMAT(DATE_ADD(start_date, INTERVAL -15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_start
-				, DATE_FORMAT(DATE_ADD(end_date, INTERVAL 15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_end
-				, DATE_FORMAT(schedule_start, '%Y-%m-%d %H:%i:%s') schedule_start
-				, DATE_FORMAT(schedule_stop, '%Y-%m-%d %H:%i:%s') schedule_stop
-				, b.frOffsetTime
-				, b.frRandomTime
-				, b.reportType
-				, b.offsetTime
-				, b.randomTime
-				, b.fileURI
-				, DATE_FORMAT(deliveryInfo_start, '%Y-%m-%d %H:%i:%s') deliveryInfo_start
-				, DATE_FORMAT(deliveryInfo_end, '%Y-%m-%d %H:%i:%s') deliveryInfo_end
-				, b.mpdURI
-				, b.samplePercentage
-				, b.retrieve_interval
-				, (select title from contents where id = s.content_id) content_name
-				, b.serviceMode
-				, b.bcServiceArea
-				, b.moodLocation
-				, b.moodReportClientId
-				, b.moodReportInterval
-				, b.moodOffsetTime
-				, b.moodRandomTimePeriod
-				, b.moodSamplePercentage
-				, b.fileRepair
-				, b.receptionReport
-				, b.reportClientId
-			FROM schedule s 
-			left join broadcast_info b on s.BCID = b.BCID
-			WHERE 1=1
-			AND id = #{id}
+		SELECT id
+			, bmscId as bmscId
+			, service_area_id as serviceAreaId
+			, service_group_id as serviceGroupId
+			, ifnull(national_yn, '') as nationalYN
+			, ifnull(emergency_yn, '') as emergencyYN
+			, content_id as contentId
+			, name
+			, s.BCID
+			, DATE_FORMAT(start_date, '%Y-%m-%d') searchDate
+			, DATE_FORMAT(start_date, '%Y-%m-%d %H:%i:%s') start_date
+			, DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') end_date
+			, DATE_FORMAT(start_date , '%H') start_hour
+			, DATE_FORMAT(start_date , '%i') start_mins
+			, DATE_FORMAT(start_date , '%s') start_second
+			, DATE_FORMAT(end_date , '%H') end_hour
+			, DATE_FORMAT(end_date , '%i') end_mins
+			, DATE_FORMAT(end_date , '%s') end_second
+			, b.transactionId
+			, b.serviceId
+			, b.service
+			, b.service_name
+			, b.serviceClass
+			, b.language
+			, b.GBR
+			, b.QCI
+			, b.level
+			, b.preEmptionCapabiity
+			, b.preEmptionVulnerability
+			, b.fecType
+			, b.fecRatio
+			, b.said
+			, b.segmentAvailableOffset 
+			, DATE_FORMAT(DATE_ADD(start_date, INTERVAL -15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_start
+			, DATE_FORMAT(DATE_ADD(end_date, INTERVAL 15 SECOND) , '%Y-%m-%d %H:%i:%s') temp_end
+			, DATE_FORMAT(schedule_start, '%Y-%m-%d %H:%i:%s') schedule_start
+			, DATE_FORMAT(schedule_stop, '%Y-%m-%d %H:%i:%s') schedule_stop
+			, b.frOffsetTime
+			, b.frRandomTime
+			, b.reportType
+			, b.offsetTime
+			, b.randomTime
+			, b.fileURI
+			, DATE_FORMAT(deliveryInfo_start, '%Y-%m-%d %H:%i:%s') deliveryInfo_start
+			, DATE_FORMAT(deliveryInfo_end, '%Y-%m-%d %H:%i:%s') deliveryInfo_end
+			, b.mpdURI
+			, b.samplePercentage
+			, b.retrieve_interval
+			, (select title from contents where id = s.content_id) content_name
+			, b.serviceMode
+			, b.bcServiceArea
+			, b.moodLocation
+			, b.moodReportClientId
+			, b.moodReportInterval
+			, b.moodOffsetTime
+			, b.moodRandomTimePeriod
+			, b.moodSamplePercentage
+			, b.fileRepair
+			, b.receptionReport
+			, b.reportClientId
+		FROM schedule s 
+		left join broadcast_info b on s.BCID = b.BCID
+		WHERE 1=1
+		AND id = #{id}
 	</select>
 	
 	<select id="selectServiceIdList" parameterType="java.util.Map" resultType="java.util.Map">
@@ -585,8 +585,8 @@
 			<if test="moodReportInterval != null and moodReportInterval !=''" >
 				, moodReportInterval = #{moodReportInterval} 
 			</if>
-			<if test="moodReportInterval != null and moodReportInterval !=''" >
-				, moodReportInterval = #{moodReportInterval} 
+			<if test="moodOffsetTime != null and moodOffsetTime !=''" >
+				, moodOffsetTime = #{moodOffsetTime} 
 			</if>
 			<if test="moodRandomTimePeriod != null and moodRandomTimePeriod !=''" >
 				, moodRandomTimePeriod = #{moodRandomTimePeriod} 
