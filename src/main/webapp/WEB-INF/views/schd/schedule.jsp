@@ -457,7 +457,7 @@
 			                                    	<div class="row">
 					                                	<label class="col-sm-2 control-label">Service Area</label>
 					                                    <div class="col-sm-6">
-					                                    	<input type="text" class="form-control" id="saidList" name="saidList" placeholder="${mapSchedule.serviceAreaId}" style="height: 75px;background-color: white;">
+					                                    	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: white;">
 					                                    </div>
 					                                    <c:if test="${empty mapSchedule.BCID and type == 'area'}">
 					                                    	<div class="row">
@@ -529,7 +529,7 @@
 			                                    	<div class="row">
 					                                	<label class="col-sm-2 control-label">bcServiceArea</label>
 					                                    <div class="col-sm-6">
-					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;" readonly>
+					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;background-color: white;" readonly>
 					                                    </div>
 					                                    <c:if test="${empty mapSchedule.BCID and type == 'area'}">
 				                                    	<div class="row">
@@ -540,7 +540,7 @@
 						                                    	<button type="button" id="bcSaidAdd" name="bcSaidAdd" class="btn btn-block btn-default">Add</button>
 						                                    </div>
 						                                    <div class="col-sm-4">
-						                                        <button type="button" id="bcMapAdd" name="bcMapAdd" class="btn btn-block btn-default">Add bcServiceArea with Map</button>
+						                                        <button type="button" id="bcMapAdd" name="bcMapAdd" class="btn btn-block btn-default" style="display: none;">Add bcServiceArea with Map</button>
 						                                    </div>
 												        </div>
 												        </c:if>
@@ -789,7 +789,7 @@
 	                    	<div class="row">
 	                  	<label class="col-sm-2 control-label">Service Area</label>
 	                      <div class="col-sm-6">
-	                      	<input type="text" class="form-control" id="saidList" name="saidList" placeholder="${mapSchedule.serviceAreaId}" style="height: 75px;background-color: gainsboro;">
+	                      	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: gainsboro;">
 	                      </div>
 	                      <c:if test="${empty mapSchedule.BCID}">
 	                      	<div class="row">
@@ -892,7 +892,7 @@
 	<div class="row" id="addServiceArea">
 		<label class="col-sm-2 control-label">Service Area</label>
 		<div class="col-sm-6">
-			<input type="text" class="form-control" id="saidList" name="saidList" placeholder="${mapSchedule.serviceAreaId}" style="height: 75px;">
+			<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;">
 		</div>
 		<c:if test="${empty mapSchedule.BCID and type == 'area'}">
 			<div class="row">

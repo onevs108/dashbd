@@ -421,7 +421,7 @@ public class ScheduleMgmtController {
 		}
 		List<Map<String, String>> scList = mapper.selectServiceClassAll();
 		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
-		int serviceIdIdx = mapper.selectServiceIdIdx();
+//		int serviceIdIdx = mapper.selectServiceIdIdx();
 		mv.addObject("serviceAreaId", params.get("serviceAreaId")); 
 		mv.addObject("bmscId", bmscId);
 		mv.addObject("searchDate", Utils.getFileDate("yyyy-MM-dd"));
@@ -432,7 +432,7 @@ public class ScheduleMgmtController {
 		mv.addObject("circleList", circleList);
 		mv.addObject("scList", scList);
 		mv.addObject("serviceIdList", serviceIdList);
-		mv.addObject("serviceIdIdx", serviceIdIdx);
+//		mv.addObject("serviceIdIdx", serviceIdIdx);
 		return mv;
 	}
 	
@@ -458,7 +458,7 @@ public class ScheduleMgmtController {
 		List<Circle> circleList = operatorMapper.selectCircleListAll();
 		List<Map<String, String>> serviceClassList = mapper.selectServiceClassAll();
 		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
-		int serviceIdIdx = mapper.selectServiceIdIdx();
+//		int serviceIdIdx = mapper.selectServiceIdIdx();
 		
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
 			mode = "new";
@@ -489,7 +489,7 @@ public class ScheduleMgmtController {
 		mv.addObject("contentList", str);
 		mv.addObject("serviceClassList", serviceClassList);
 		mv.addObject("serviceIdList", serviceIdList);
-		mv.addObject("serviceIdIdx", serviceIdIdx);
+//		mv.addObject("serviceIdIdx", serviceIdIdx);
 		mv.addObject("mapContentUrl", mapContentUrl);
 		mv.addObject("mapSchedule", mapSchedule);
 		mv.addObject("userGrade", user.getGrade());
@@ -550,7 +550,8 @@ public class ScheduleMgmtController {
 		int check = mapper.selectServiceId(params);
 		if(check == 0){
 			int result = mapper.insertServiceId(params);
-			if(result == 1) {
+			result += mapper.insertServiceIdIdx(params);
+			if(result == 2) {
 				List<Map<String, String>> serviceClassList = mapper.selectServiceIdList(params);
 				Gson gson = new Gson();
 				String str = gson.toJson(serviceClassList);
@@ -588,6 +589,18 @@ public class ScheduleMgmtController {
 		
 		jsonResult.put("rows", json);
 		jsonResult.put("total", mapper.selectServiceClassCount(params));
+		
+		return jsonResult.toString();
+	}
+	
+	@RequestMapping( value = "/view/getServiceIdIdx.do", method = { RequestMethod.GET, RequestMethod.POST } )
+	@ResponseBody
+	public String getServiceIdIdx(@RequestParam HashMap<String, Object> params, HttpServletRequest req) {
+		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+		
+		JSONObject jsonResult = new JSONObject();
+		int result = mapper.getServiceIdIdx(params);
+		jsonResult.put("idx", result);
 		
 		return jsonResult.toString();
 	}
@@ -660,7 +673,10 @@ public class ScheduleMgmtController {
 		JSONObject jsonResult = new JSONObject();
 		
 		if(params.get("type").equals("edit")){
+			String serviceId = mapper.selectServiceIdName(params);
+			params.put("beforeServiceId", serviceId);
 			mapper.editServiceId(params);
+			mapper.editServiceIdIdx(params);
 		}else{
 			mapper.deleteServiceId(params);
 		}
@@ -1143,6 +1159,7 @@ public class ScheduleMgmtController {
 				//서비스ID 숫자 증가
 				String svId = params.get("serviceId").toString();
 				params.put("serviceIdIdx", svId.substring(svId.lastIndexOf(":")+1));
+				params.put("serviceIdFormat", svId.substring(0, svId.lastIndexOf(":")));
 				ret = mapper.updateServiceIdIdx(params);
 				//방송 정보 삽입
 				ret = mapper.insertBroadcastInfo(params);

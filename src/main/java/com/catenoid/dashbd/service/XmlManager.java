@@ -629,13 +629,11 @@ public class XmlManager {
 					mood.addContent(new Element("bcBasePattern").setText(paramList.get(10).get(k)));
 				}
 				
-				/*if (BMSC_XML_UPDATE == mode){
-					Element bcServiceArea = new Element("bcServiceArea");
-					for (int j = 0; j < paramList.get(9).size(); j++) {
-						bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
-					}
-					mood.addContent(bcServiceArea);
-				}*/
+				Element bcServiceArea = new Element("bcServiceArea");
+				for (int j = 0; j < paramList.get(9).size(); j++) {
+					bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
+				}
+				mood.addContent(bcServiceArea);
 				
 				contentSet.addContent(serviceArea);
 				contentSet.addContent(mpd);
@@ -646,7 +644,7 @@ public class XmlManager {
 				serviceType.addContent(contentSet);
 				if ("MooD".equals(params.get("serviceMode")) || "on".equals(params.get("receptionReport"))){
 					serviceType.addContent(associatedDelivery);
-				} 
+				}
 			}
 		}
 		

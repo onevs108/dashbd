@@ -273,6 +273,21 @@
 		)
 	</insert> 
 	
+	<insert id="insertServiceIdIdx" parameterType="java.util.Map">
+		insert into service_id_idx(
+			id_format, id_idx	
+		)
+		values(
+			#{idName}, 1
+		)
+	</insert> 
+	
+	<select id="getServiceIdIdx" parameterType="java.util.Map" resultType="int">
+		select id_idx 
+		from service_id_idx
+		where id_format = #{serviceId} 
+	</select> 
+	
 	<select id="selectServiceIdAll" resultType="java.util.Map">
 		select *
 		from service_id
@@ -284,9 +299,10 @@
 		from service_id_idx
 	</select>
 	
-	<update id="updateServiceIdIdx">
+	<update id="updateServiceIdIdx" parameterType="java.util.Map">
 		update service_id_idx
 		set id_idx = ${serviceIdIdx} + 1
+		where id_format = #{serviceIdFormat}
 	</update>
 	
 	<select id="checkServiceId" resultType="int">
@@ -295,10 +311,22 @@
 		where serviceId = #{serviceId}
 	</select>
 	
+	<select id="selectServiceIdName" parameterType="java.util.Map" resultType="String">
+		select id_name
+		from service_id 
+		where id = #{id}
+	</select>
+	
 	<update id="editServiceId" parameterType="java.util.Map">
 		update service_id
 		set id_name = #{idName}, description = #{description} 
 		where id = #{id}
+	</update>
+	
+	<update id="editServiceIdIdx" parameterType="java.util.Map">
+		update service_id_idx
+		set id_format = #{idName}, id_idx = 1 
+		where id_format = #{beforeServiceId}
 	</update>
 	
 	<delete id="deleteServiceId" parameterType="java.util.Map">
@@ -835,10 +863,10 @@
 	</select>
 	
 	<select id="getCurrentMoodService" parameterType="String" resultType="HashMap">
-		select a.serviceId, c.timestamp from 
+		select a.serviceId, max(c.timestamp) from 
 		broadcast_info a inner join crs_said_mapping b 
 		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
-		inner join mood_request c on b.said = c.saId and b.crs_id = c.crsId
+		inner join mood_request c on a.serviceId = c.serviceId and b.crs_id = c.crsId
 		where service = 'streaming' 
 		  and serviceMode = 'MooD'		  
 		  and (now() <![CDATA[ > ]]> a.schedule_start)
@@ -848,10 +876,10 @@
 	</select>
 	
 	<select id="getCurrentMoodServiceOthers" parameterType="HashMap" resultType="HashMap">
-		select a.serviceId, c.timestamp from 
+		select a.serviceId, max(c.timestamp) from 
 		broadcast_info a inner join crs_said_mapping b 
 		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
-		inner join mood_request c on b.said = c.saId and b.crs_id = c.crsId
+		inner join mood_request c on a.serviceId = c.serviceId and b.crs_id = c.crsId
 		where service = 'streaming' 
 		  and serviceMode = 'MooD'		  
 		  and (now() <![CDATA[ > ]]> a.schedule_start)

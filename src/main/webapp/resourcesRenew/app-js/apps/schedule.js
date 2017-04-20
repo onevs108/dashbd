@@ -72,7 +72,6 @@ $(document).ready(function()
 			$("#reportType").val("StaR-only");
 		}
 		$("input[name='saidList']").val($("#serviceAreaId").val());
-		$("input[name='bcSaidList']").val($("#serviceAreaId").val());
 		$(":file").filestyle({buttonBefore: true});
 		$(".bootstrap-filestyle > input").css("background-color", "white");
 		$("#receptionReport").change();
@@ -88,7 +87,7 @@ $(document).ready(function()
 		else if($(this).val() == "MooD")	//Mood 일 때
 		{
 			$("#moodArea").show();
-			$("#bcServiceArea").hide();
+			$("#bcServiceArea").show();
 			$("#consumptionReport").show();
 		}
 		else
@@ -274,49 +273,28 @@ $(document).ready(function()
 	});
 	
 	$("button[name='bcSaidAdd']").click(function(e) {
-		
 		var bcSaid = $("input[name='bcSaid']").val();
 		var bcSaidDefault = $("input[name='saidDefault']").val();
 
 		if (bcSaid == ""){
 			alert ('please enter the said.');
 			return;
-		}
+		} 
 		
-		if (bcSaidDefault == bcSaid){
-			alert ('this bcSaid is default.other bcSaid input.');
-			return;
-		}
-		//  bcS
-		$.ajax({
-			type : "POST",
-			url : "checkExistSaid.do",
-			dataType : "json",
-			data : {said: bcSaid},
-			async : false,
-			success : function( data ) {
-				if(data.result == "SUCCESS")
-				{
-					var saidListValue = "";
-					if($("input[name='bcSaidList']").val() == ""){
-						saidListValue = bcSaid;
-					}else{
-						saidListValue = $("input[name='bcSaidList']").val()+","+bcSaid;
-					}
-					$("input[name='bcSaidList']").val(saidListValue);
-					
-					$("input[name='bcSaid']").val("");
-				}else{
-					swal({
-		                title: "Warn !",
-		                text: "SAID-"+bcSaid+" is not exist" 
-		            });
-				}
-			},
-			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
+		var saidArray = $("input[name='saidList']").val().split(",");
+		if(saidArray.indexOf(bcSaid) > -1){
+			var saidListValue = "";
+			if($("input[name='bcSaidList']").val() == ""){
+				saidListValue = bcSaid;
+			}else{
+				saidListValue = $("input[name='bcSaidList']").val()+","+bcSaid;
 			}
-		});
+			$("input[name='bcSaidList']").val(saidListValue);
+			
+			$("input[name='bcSaid']").val("");
+		} else {
+			alert("BcSaid must belong to defined ServiceArea above");
+		}
 	});
 	
 	$("button[name='bcMapAdd']").click(function(){
@@ -352,6 +330,10 @@ $(document).ready(function()
            }
        });
 	})
+	
+	$("input[name='saidList']").on("change", function(){
+		$("input[name='bcSaidList']").val("");
+	});
 	
 	detailValidationCheck();
 	
@@ -575,15 +557,15 @@ function setSaidFromFile(saidList) {
 }
 
 function addSaidCheckFromFile(said) {
-	if(saidDefault == said) {
-		alert ('this said is default.other said input.');
-		return;
-	}
-	
 	if((","+$("input[name='saidList']").val()+",").indexOf(","+said+",") > -1) {
 		return;
 	}
 	
+	var saidArray = $("input[name='saidList']").val().split(",");
+	if(saidArray.indexOf(said) > -1) {
+		alert("said is already exist");
+		return;
+	}
 	$.ajax({
 		type : "POST",
 		url : "checkExistSaid.do",
@@ -602,6 +584,7 @@ function addSaidCheckFromFile(said) {
 				$("input[name='saidList']").val(saidListValue);
 				
 				$("input[name='said']").val("");
+				$("input[name='bcSaidList']").val("");
 			}else{
 				swal({
 	                title: "Warn !",
@@ -933,6 +916,7 @@ function setServiceIdView() {
 				html += "<option value='"+data.rows[i].id_name+"'>"+data.rows[i].id_name+"</option>";
 			}
 			$("#selectServiceId").html(html);
+			$("#serviceId_M").val($("#selectServiceId").val()+":1");
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -1032,11 +1016,11 @@ function addServiceAreaEvent(idx){
 			return;
 		}
 		
-		if (saidDefault == said){
-			alert ('this said is default.other said input.');
+		var saidArray = $("input[name='saidList']").val().split(",");
+		if(saidArray.indexOf(said) > -1){
+			alert("said is already exist");
 			return;
 		}
-		
 		$.ajax({
 			type : "POST",
 			url : "checkExistSaid.do",
@@ -1055,6 +1039,7 @@ function addServiceAreaEvent(idx){
 					$($("input[name='saidList']")[idx]).val(saidListValue);
 					
 					$($("input[name='said']")[idx]).val("");
+					$("input[name='bcSaidList']").val("");
 				}else{
 					swal({
 		                title: "Warn !",

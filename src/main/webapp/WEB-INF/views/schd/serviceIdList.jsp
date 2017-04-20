@@ -79,11 +79,24 @@
 
 	$(document).ready(function(){
 		getServiceIdList();
-		$("#serviceId_M").val($("#selectServiceId").val()+":"+$("#idIdx").val());
+		setSelectServiceId();
 	});
 	
 	function setSelectServiceId() {
-		$("#serviceId_M").val($("#selectServiceId").val()+":"+$("#idIdx").val());
+		var idx = 1;
+		$.ajax({
+			type : "POST",
+			url : "getServiceIdIdx.do",
+			data : {serviceId: $("#selectServiceId").val()},
+			dataType : "json",
+			success : function( data ) {
+				idx = data.idx;
+				$("#serviceId_M").val($("#selectServiceId").val()+":"+idx);
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
 	}
 	
 	function setServiceId() {
