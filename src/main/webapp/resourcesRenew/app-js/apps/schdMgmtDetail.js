@@ -1,4 +1,5 @@
 var content_id = "";
+var contentsType = "";
 var gTitle = "";
 var gDuration = "";
 var g_name = "";
@@ -223,7 +224,7 @@ $(window).load(function() {
 		$($("input[name='radio']")[1]).click();
 	}
 //    ctrl.initialize();
-	loadContentList(1);
+	loadContentList(1, 'file');
 })
 	
 var ctrl = {
@@ -266,10 +267,17 @@ var ctrl = {
 	}
 };
 	
-function loadContentList(page){
+function searchContents() {
+	if(event.keyCode == 13){
+		loadContentList(1, $("#contentsType").val());
+	}
+}
+
+function loadContentList(page, contentsType){
 	var param = {
 			title : $("#form-title").val(),
-			category : $("#form-category").val(),
+//			category : $("#form-category").val(),
+			type : contentsType,
 			page : page
 		};
 	$.ajax({
@@ -278,6 +286,7 @@ function loadContentList(page){
 		data : param,
 		dataType : "json",
 		success : function( data ) {
+			$("#contentsType").val(contentsType);
 			getContents(data.contents, page);
 		},
 		error : function(request, status, error) {
@@ -327,6 +336,7 @@ function getContents(data, page){
 		var title = data[i].title;
 		var category = data[i].category;
 		var duration = data[i].duration;
+		var contentsType = data[i].type;
 		var path = data[i].path;
 		duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
 		
@@ -341,6 +351,7 @@ function getContents(data, page){
 		$div.attr("data-id", id);
 		$div.attr("data-title", title);
 		$div.attr("data-duration", duration);
+		$div.attr("data-type", contentsType);
 		
 		$div.append($div1);
 		$list.append( $div );
@@ -493,23 +504,18 @@ function setTimeTable(data){
 		selectable: false,
 		selectHelper: true,
 		select: function(start, end) {
-			//console.log('select');
-			//var ret = confirm('Do you want to add a new schedule?');
-			//if (ret) {
-			//	location.href='/dashbd/view/schedule.do';
-			//}
+			
 		},
 		editable: true,
 		eventLimit: true, // allow "more" link when too many events
 		events: events,
-		drop: function(event, dayDelta, minuteDelta,allDay,revertFunc) {
+		drop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
 			content_id = $(this).attr("data-id");
 			gTitle = $(this).attr("data-title");
 			gDuration = $(this).attr("data-duration");
-			
+			contentsType = $(this).attr("data-type");
 			$(this).remove();
 		},
-		
 		eventReceive: function(event) { // called when a proper external event is dropped
 			g_name = event.title;
 			var startTime = event.start.format();
@@ -526,17 +532,10 @@ function setTimeTable(data){
 				alert("The start time has already passed")
 				location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 			}else{
-				addSchedule(content_id, gTitle, startTime, endTime);
+				addSchedule(content_id, gTitle, startTime, endTime, contentsType);
 			}
-			
-//			var b = $('#calendar').fullCalendar('getDate');
-//		 	var searchDate = b.format('YYYY-MM-DD');
-//			
-//			var title = encodeURI($("#form-title").val());
-//			var category =  encodeURI($("#form-category").val());
-//			location.href = "schdMgmtDetail.do?bmscId=" + tmpbmscId + "&serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 		},
-		eventDrop: function(event) { // called when an event (already on the calendar) is moved
+		eventDrop: function(event) {
 			var ret = confirm("It's going to update. are you sure??");
 			if (ret){
 				if(getTimeDiff(event.start.format(), currentTime)){
@@ -584,12 +583,6 @@ function setTimeTable(data){
 		, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
 			console.log('eventAfterRender..', event);
 		}
-		/*
-		
-		, eventRender: function(event, element) {
-			console.log('eventRender', event, element);
-	    }
-		*/
 		, viewRender: function(view, element){
 			var now4compare = replaceAll4Day(moment().format());
 			var viewDay4compare = replaceAll4Day(view.start.format());
@@ -599,14 +592,10 @@ function setTimeTable(data){
 			}else{
 				setTimeline(view, "week");
 			}
-//			setInterval(function () {
-//		        setTimeline(view);
-//			}, 5000);
 		}
 	});
 	
 	 var fbg = $('#calendar').find('.fc-button-group');
-	 //fbg.append('<div id="calendarTrash" style="float: right; padding-top: 5px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"></span></div>');
 	 fbg.append('<div id="calendarTrash" style="float: right; padding-top: 2px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>');
 }
 
@@ -703,7 +692,7 @@ function deleteSchedule(url){
 	});
 }
 	
-function addSchedule(content_id, g_name, startTime, endTime){
+function addSchedule(content_id, g_name, startTime, endTime, contentsType){
 	var param = {
 			serviceAreaId : g_ServiceAreaId,
 			bmscId : $("#bmscId").val(),
@@ -721,7 +710,7 @@ function addSchedule(content_id, g_name, startTime, endTime){
 		dataType : "json",
 		success : function( data ) {
 			alert('Please enter detailed parameters in next screen');
-			var url = "schedule.do?id="+data.scheduleId+"&BCID=";
+			var url = "schedule.do?id="+data.scheduleId+"&BCID="+"&contentsType="+contentsType;
 			location.href = url; 
 		},
 		error : function(request, status, error) {

@@ -62,7 +62,7 @@
 	
 	
 	<select id="selectContents" parameterType="java.util.Map" resultType="java.util.Map">
-		SELECT cid, title, category, duration , url,
+		SELECT cid, type, title, category, duration , url,
 				(select path from contents_images where cid = content_id and type = 'thumbnail' order by id desc limit 1) path
 				, (select count(*) from contents
 							WHERE 1=1
@@ -72,10 +72,13 @@
 					<if test="category != null and category !=''" >
 						AND category like concat('%',#{category} , '%')
 					</if>
+					<if test="type != null and type !=''" >
+						AND type = #{type}
+					</if>
 					)as totalCount 
 		FROM 
 		(
-			select id cid, title, category, duration, url
+			select id cid, type, title, category, duration, url
 			from contents
 		) x
 		WHERE 1=1
@@ -84,6 +87,9 @@
 		</if>
 		<if test="category != null and category !=''" >
 			AND category like concat('%',#{category} , '%')
+		</if>
+		<if test="type != null and type !=''" >
+			AND type = #{type}
 		</if>
 		limit #{page}, #{perPage}
 	</select>
@@ -92,7 +98,7 @@
 		SELECT count(*)
 		FROM 
 		(
-			select id cid, title, category, duration, url
+			select id cid, type, title, category, duration, url
 			from contents
 		) x
 		WHERE 1=1
@@ -101,6 +107,9 @@
 		</if>
 		<if test="category != null and category !=''" >
 			AND category like concat('%',#{category} , '%')
+		</if>
+		<if test="type != null and type !=''" >
+			AND type = #{type}
 		</if>
 	</select>
 	

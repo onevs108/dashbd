@@ -57,8 +57,8 @@
 	<script>
 		var serviceType = "${mapSchedule.service}";
 		var contentJson = ${contentList};
-		
 		var viewMode = "${mode}";
+		var contentsType = "${contentsType}";
 		$(document).ready(function() {
 			if($("#moodLocation").val() == "") {
 				$("#moodLocation").val("MBMS SAI");
@@ -300,9 +300,9 @@
                         <div class="row">
                             <form method="get" class="form-horizontal">
                             <div class="form-group">
-						  		<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service Name</label>
+						  		<label class="col-sm-2 control-label">Service Name</label>
                                     <div class="col-sm-4"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
-                                <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Language</label>
+                                <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service lang</label>
                                     <div class="col-sm-4">
 										<c:if test="${empty mapSchedule.BCID}">
 						                	<select class="input-sm form-control input-s-sm" id="serviceLanguage" name="serviceLanguage">

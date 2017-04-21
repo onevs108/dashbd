@@ -116,14 +116,12 @@ public class ContentMgmtController {
 		return jsonResult.toString();
 	}
 	
-	
 	@RequestMapping( value = "/view/getContents.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public Map< String, Object > getContents( @RequestParam Map< String, Object > params,
 	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ContentsMapper mapper = sqlSession.getMapper(ContentsMapper.class);
-		//params.put("serviceId", "3048");
 		String page = (String)params.get("page");
 		Integer perPage = 5; 
 		
@@ -134,15 +132,14 @@ public class ContentMgmtController {
 		params.put("perPage", perPage);
 		
 		List<Map> list = mapper.selectContents(params);
-		
         
         Map< String, Object > returnMap = new HashMap< String, Object >();
-        returnMap.put( "resultCode", "1000" );
-        returnMap.put( "resultMsg", "SUCCESS");
+        returnMap.put("resultCode", "1000");
+        returnMap.put("resultMsg", "SUCCESS");
         
         Map< String, Object > resultMap = new HashMap< String, Object >();
-        resultMap.put( "resultInfo", returnMap );
-        resultMap.put( "contents", list );
+        resultMap.put("resultInfo", returnMap);
+        resultMap.put("contents", list);
         
 		return (Map<String, Object>) resultMap;
 	}

@@ -489,7 +489,7 @@ public class ScheduleMgmtController {
 		mv.addObject("contentList", str);
 		mv.addObject("serviceClassList", serviceClassList);
 		mv.addObject("serviceIdList", serviceIdList);
-//		mv.addObject("serviceIdIdx", serviceIdIdx);
+		mv.addObject("contentsType", params.get("contentsType"));
 		mv.addObject("mapContentUrl", mapContentUrl);
 		mv.addObject("mapSchedule", mapSchedule);
 		mv.addObject("userGrade", user.getGrade());
@@ -1364,6 +1364,41 @@ public class ScheduleMgmtController {
 			//@ update delete flag 
 			int ret = mapper.updateSchedule4Del(params);
 			logger.info("updateSchedule ret{}", ret);
+			
+			return makeRetMsg("1000", "OK");
+			
+		}catch(Exception e){
+			logger.error("", e);
+			return makeRetMsg("9999", e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value = "view/delScheduleSeSM.do")
+	@ResponseBody
+	public Map< String, Object > delScheduleSeSM(@RequestParam Map< String, String > params, HttpServletRequest request, Locale locale ) {
+		try{
+			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+			
+			String scheduleType = "Schedule";
+			if(params.get("type").equals("national")){
+				scheduleType = "National Schedule";
+			}else if(params.get("type").equals("emergency")){
+				scheduleType = "Emergency Schedule";
+			}
+			int ret = mapper.updateSchedule4Del(params);
+			logger.info("updateSchedule ret{}", ret);
+			Users LogUser = (Users)request.getSession().getAttribute("USER");
+			HashMap<String, Object> logMap = new HashMap<String, Object>();
+			logMap.put("reqType", "Schedule");
+			logMap.put("reqSubType", "Delete Schedule");
+			logMap.put("reqUrl", "delSchedule.do");
+			logMap.put("reqCode", "SUCCESS");
+			logMap.put("targetId", LogUser.getUserId());
+			logMap.put(
+					"reqMsg", "[" + Const.getLogTime() + "] User ID : " + LogUser.getUserId()
+					+ " - "+scheduleType+" Deleted(Schedule ID : "+ params.get("id")+")");
+			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
+			logMapper.insertSystemAjaxLog(logMap);
 			
 			return makeRetMsg("1000", "OK");
 			

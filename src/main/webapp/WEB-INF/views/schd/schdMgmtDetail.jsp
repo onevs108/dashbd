@@ -110,6 +110,7 @@
             <input type="hidden" id="category" name="category" value="${category}"/>
             <input type="hidden" id="title" name="title" value="${title}"/>
             <input type="hidden" id="type" name="type" value="${type}"/>
+            <input type="hidden" id="contentsType" name="ContentsType" value="file"/>
             
             <div class="col-lg-12">
                     <div class="ibox float-e-margins ibox-title">
@@ -178,45 +179,34 @@
 						</div>
                         <div class="ibox-content">
                         <form method="get" class="form-horizontal">
+                        	<input type="text" style="display: none;">	<!-- form submit 방지용 -->
                             <div class="row">
                                 <div class="col-sm-8" id="epg-table">
-									<div style = "width:100%;"id="calendar"></div>
+									<div style="width:100%;" id="calendar"></div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <div class="form-group" style="margin-bottom: 5px;">
-                                        <label class="col-md-4 control-label">Category</label>
-                                        <!--div class="col-md-8">
-                                            <select class="form-control input-sm">
-                                                <option value="">?</option>
-                                            </select>
-                                        </div-->
-                                        <div class="col-md-8"><input type="text" id="form-category" class="form-control input-sm" value="${category}"></div>
-                                    </div>
-                                    <div class="form-group">
+                                	<div class="tabs-container">
+										<ul class="nav nav-tabs">
+										    <li class="active"><a href="#tab-1" data-toggle="tab" onclick="loadContentList(1, 'file')">FileDownload</a></li>
+										    <li><a href="#tab-2" data-toggle="tab" onclick="loadContentList(1, 'streaming')">Streaming</a></li>
+										</ul>
+									</div>
+                                    <div class="form-group" style="margin: 10px 20px -10px -40px;">
                                         <label class="col-md-4 control-label">Title</label>
-                                        <div class="col-md-8"><input type="text" id="form-title" class="form-control input-sm" value="${title}"></div>
+                                        <div class="col-md-8"><input type="text" id="form-title" class="form-control input-sm" value="${title}" onkeyup="searchContents()"></div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="col-md-8 col-sm-offset-4">
-                                        	<button class="btn btn-block btn-primary" type="button" id="go-search">Search</button>
-                                       	</div>
-                                    </div>
-                                    
                                     <div class="hr-line-dashed"></div>
                                     <div class="search-list" style="display:none">
-                                        <div id='external-events'>
-                                        </div>
+                                        <div id='external-events'></div>
                                     </div>
                                     <div id='paging'></div>
                                 </div>
                             </div>
-                            </form>
+                        </form>
                         </div>
                     </div>
                 </div>
-                
             </div>
-			
         </div><!-- content body end -->
     </div><!-- content end -->
 

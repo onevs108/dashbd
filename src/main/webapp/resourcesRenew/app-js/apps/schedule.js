@@ -137,17 +137,15 @@ $(document).ready(function()
 	});
 	
 	$("#reportClientId").on("change", function() {
-		if(this.checked){
-			$("#moodReportInterval").prop('disabled', false);
-			$("#moodOffsetTime").prop('disabled', false);
-			$("#moodRandomTimePeriod").prop('disabled', false);
-			$("#moodSamplePercentage").prop('disabled', false);
-		}else{
-			$("#moodReportInterval").prop('disabled', true);
-			$("#moodOffsetTime").prop('disabled', true);
-			$("#moodRandomTimePeriod").prop('disabled', true);
-			$("#moodSamplePercentage").prop('disabled', true);
-		}
+		$("#reportClientId").prop("checked", true);
+//		if(this.checked){
+//			$("#moodReportInterval").prop('disabled', false);
+//			$("#moodOffsetTime").prop('disabled', false);
+//			$("#moodRandomTimePeriod").prop('disabled', false);
+//			$("#moodSamplePercentage").prop('disabled', false);
+//		}else{
+//			$("#reportClientId").prop("checked", true);
+//		}
 	});
 	
 	var saidListDiv = $('#saidListDiv');
@@ -164,12 +162,9 @@ $(document).ready(function()
 	});
 		
 	$("#btnDelete").click(function() {
-		if (!confirm("It will be deleted. do you want this??"))
+		if (!confirm("It will be deleted. do you want this??")){
 			return;
-		var tmpServiceAreaId = $("#serviceAreaId").val();
-		var searchDate = $("#searchDate").val();
-		var bmscId= $("#bmscId").val();
-		
+		}
 		var param = {
 				id : $("#id").val(),
 				BCID : $("#BCID").val(),
@@ -184,7 +179,13 @@ $(document).ready(function()
 			dataType : "json",
 			success : function( data ) {
 				outMsgForAjax(data);
-				if(data.resultInfo.resultCode != "1000" && data.resultInfo.resultCode != "200"){
+				var resultCode = data.resultInfo.resultCode;
+				if(resultCode == "6011") {
+					if(confirm("Do you want to delete this schedule in SeSM?")){
+						deleteSchedule(param);
+					}
+				}
+				if(resultCode != "1000" && data.resultCode != "200"){
 					return;
 				}
 				location.href = "schdMgmtDetail.do?bmscId="+bmscId;
@@ -339,6 +340,24 @@ $(document).ready(function()
 	
 });
 
+function deleteSchedule(param) {
+	$.ajax({
+		type : "POST",
+		url : "delScheduleSeSM.do",
+		data : param,
+		dataType : "json",
+		success : function( data ) {
+			var resultCode = data.resultInfo.resultCode;
+			if(resultCode == "1000"){
+				location.href = "schdMgmtDetail.do?bmscId="+bmscId;
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
+		}
+	});
+}
+
 function checkEnabled() {
 	$("#serviceType").removeAttr("disabled");
 	$("#serviceId").removeAttr("disabled");
@@ -347,11 +366,15 @@ function checkEnabled() {
 	$("#samplePercentage").removeAttr("disabled");
 }
 
-$(window).load(function(){
-//	if($("#serviceType").val() == "streaming"){
-//		$("#receptionReport").click();
-//	}
-})
+$(window).load(function() {
+	if(contentsType == "streaming"){
+		$("#serviceType").val("streaming");
+		$("#serviceType").change();
+		$("#serviceType").prop("disabled", true);
+	}else{
+		$($("#serviceType option")[1]).remove();
+	}
+});
 
 function detailValidationCheck() {
 	$("#GBR").blur(function(){
@@ -1072,6 +1095,7 @@ function addContentRemoveEvent(){
 			return;
 		}
 		$($($("div[name='content']")[ctIdx]).find(".schedule-list")[idx]).remove();
+		$("input[name='contentLength']").val($($("div[name='content']")[ctIdx]).find(".close-content").length);
 	});
 }
 
