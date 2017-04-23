@@ -86,6 +86,7 @@
 			, DATE_FORMAT(end_date , '%i') end_mins
 			, service
 			, serviceId
+			, contentsType
 		FROM 
 		(
 		SELECT     
@@ -101,7 +102,8 @@
 			 s.start_date,
 	         s.end_date,
 	         b.service,
-	         b.serviceId
+	         b.serviceId,
+	         (select type from contents where id = s.content_id) as contentsType
 	      FROM schedule s left join broadcast_info b on s.BCID = b.BCID 
 	      WHERE
 		 	s.del_yn = 'N'
@@ -196,6 +198,7 @@
 			, b.service
 			, b.service_name
 			, b.serviceClass
+			, b.serviceNameLanguage
 			, b.language
 			, b.GBR
 			, b.QCI
@@ -445,6 +448,7 @@
 			, service
 			, service_name
 			, serviceClass
+			, serviceNameLanguage
 			, language
 			, GBR
 			, QCI
@@ -486,6 +490,7 @@
 			, #{serviceType}
 			, #{name}
 			, #{serviceClass}
+			, #{serviceNameLanguage}
 			, #{serviceLanguage}
 			, #{GBR}
 			, #{QCI}
@@ -535,6 +540,9 @@
 			<if test="serviceClass != null and serviceClass !=''" >
 				, serviceClass 		= #{serviceClass}
 			</if>
+			<if test="serviceNameLanguage != null and serviceNameLanguage !=''" >
+				, serviceNameLanguage			= #{serviceNameLanguage}
+			</if>	 
 			<if test="serviceLanguage != null and serviceLanguage !=''" >
 				, language			= #{serviceLanguage}
 			</if>	 
@@ -642,6 +650,7 @@
 			, service_name 		as name
 			, transactionId		
 			, serviceClass 			 
+			, serviceNameLanguage 
 			, language			as serviceLanguage 
 			, GBR	
 			, QCI	

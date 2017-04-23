@@ -187,8 +187,8 @@
                                 <div class="col-sm-4">
                                 	<div class="tabs-container">
 										<ul class="nav nav-tabs">
-										    <li class="active"><a href="#tab-1" data-toggle="tab" onclick="loadContentList(1, 'file')">FileDownload</a></li>
-										    <li><a href="#tab-2" data-toggle="tab" onclick="loadContentList(1, 'streaming')">Streaming</a></li>
+										    <li class="active"><a id="tab1" href="#tab-1" data-toggle="tab" onclick="loadContentList(1, 'file')">FileDownload</a></li>
+										    <li><a id="tab2" href="#tab-2" data-toggle="tab" onclick="loadContentList(1, 'streaming')">Streaming</a></li>
 										</ul>
 									</div>
                                     <div class="form-group" style="margin: 10px 20px -10px -40px;">

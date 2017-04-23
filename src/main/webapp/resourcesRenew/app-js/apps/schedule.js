@@ -800,18 +800,6 @@ function getServiceIdList() {
 				return html;
 			}
 		}, {
-			field: 'description',
-			title: 'Description',
-			width: '40%',
-			align: 'center',
-			valign: 'middle',
-			sortable: false,
-			visible: true,
-			formatter: function(value, row, index) {
-				var html = '<input type="text" id="description'+row.id+'" class="form-control" value="'+value+'">';
-				return html;
-			}
-		}, {
 			field: 'id',
 			title: 'command',
 			width: '20%',

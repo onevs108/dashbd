@@ -421,7 +421,6 @@ public class ScheduleMgmtController {
 		}
 		List<Map<String, String>> scList = mapper.selectServiceClassAll();
 		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
-//		int serviceIdIdx = mapper.selectServiceIdIdx();
 		mv.addObject("serviceAreaId", params.get("serviceAreaId")); 
 		mv.addObject("bmscId", bmscId);
 		mv.addObject("searchDate", Utils.getFileDate("yyyy-MM-dd"));
@@ -432,7 +431,7 @@ public class ScheduleMgmtController {
 		mv.addObject("circleList", circleList);
 		mv.addObject("scList", scList);
 		mv.addObject("serviceIdList", serviceIdList);
-//		mv.addObject("serviceIdIdx", serviceIdIdx);
+		mv.addObject("userGrade", user.getGrade());
 		return mv;
 	}
 	
@@ -1156,11 +1155,11 @@ public class ScheduleMgmtController {
 					params.put("bcServiceArea", bcSaidListString);
 				}
 				
-				//서비스ID 숫자 증가
-				String svId = params.get("serviceId").toString();
-				params.put("serviceIdIdx", svId.substring(svId.lastIndexOf(":")+1));
-				params.put("serviceIdFormat", svId.substring(0, svId.lastIndexOf(":")));
-				ret = mapper.updateServiceIdIdx(params);
+//				//서비스ID 숫자 증가
+//				String svId = params.get("serviceId").toString();
+//				params.put("serviceIdIdx", svId.substring(svId.lastIndexOf(":")+1));
+//				params.put("serviceIdFormat", svId.substring(0, svId.lastIndexOf(":")));
+//				ret = mapper.updateServiceIdIdx(params);
 				//방송 정보 삽입
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트

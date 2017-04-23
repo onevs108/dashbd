@@ -137,6 +137,7 @@
 			$("#serviceType").prop('disabled', true);
 			$("#serviceId").prop('disabled', true);
 			$("#serviceClass").prop('disabled', true);
+			$("#newId").remove();
 			$("#newClass").remove();
 // 			$("#reportType").prop('disabled', true);
 // 			$("#samplePercentage").prop('disabled', true);
@@ -211,7 +212,7 @@
 		}
 				
 		$(window).load(function(){
-			if(viewMode == "update") {
+			if(viewMode == "update" && "${mapSchedule.BCID}" != null && "${mapSchedule.BCID}" != '' ){
 				checkRequireValue();	
 			}
 		})
@@ -301,25 +302,40 @@
                             <form method="get" class="form-horizontal">
                             <div class="form-group">
 						  		<label class="col-sm-2 control-label">Service Name</label>
-                                    <div class="col-sm-4"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
-                                <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service lang</label>
-                                    <div class="col-sm-4">
-										<c:if test="${empty mapSchedule.BCID}">
-						                	<select class="input-sm form-control input-s-sm" id="serviceLanguage" name="serviceLanguage">
-			                    		</c:if>
-		                        		<c:if test="${not empty mapSchedule.BCID}">
-		                        			<input type="hidden" id=serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}">
-		                        			<select class="input-sm form-control input-s-sm" disabled>            	
-		                        		</c:if>
-	                        	    	    <option value="en"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
-	                        	    	    <option value="kr">kr</option>
-	                        	    	    <option value="fr">fr</option>
-	                                    </select>
-                                    </div>
+                                <div class="col-sm-4"><input type="text" class="form-control" id="name" name="name" alt='service name' value="${mapSchedule.service_name}"></div>
                              </div>
-                             
+                            <div class="form-group">
+						  		<label class="col-sm-2 control-label" style="font-size : 12px;"><i class="fa fa-check text-importance"></i>Service Name Lang</label>
+                                <div class="col-sm-4">
+									<c:if test="${empty mapSchedule.BCID}">
+					                	<select class="input-sm form-control input-s-sm" id="serviceNameLanguage" name="serviceNameLanguage">
+		                    		</c:if>
+	                        		<c:if test="${not empty mapSchedule.BCID}">
+	                        			<input type="hidden" id=serviceNameLanguage" name="serviceNameLanguage" value="${mapSchedule.serviceNameLanguage}">
+	                        			<select class="input-sm form-control input-s-sm" disabled>
+	                        		</c:if>
+                        	    	    <option value="en"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
+                        	    	    <option value="kr">kr</option>
+                        	    	    <option value="fr">fr</option>
+                                    </select>
+                                </div>
+                                <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service Lang</label>
+                                <div class="col-sm-4">
+									<c:if test="${empty mapSchedule.BCID}">
+					                	<select class="input-sm form-control input-s-sm" id="serviceLanguage" name="serviceLanguage">
+		                    		</c:if>
+	                        		<c:if test="${not empty mapSchedule.BCID}">
+	                        			<input type="hidden" id=serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}">
+	                        			<select class="input-sm form-control input-s-sm" disabled>            	
+	                        		</c:if>
+                        	    	    <option value="en"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
+                        	    	    <option value="kr">kr</option>
+                        	    	    <option value="fr">fr</option>
+                                    </select>
+                                </div>
+                             </div>
                              <div class="form-group">
-                             	<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service class</label>
+                             	<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service Class</label>
                         	    <div class="col-sm-3">
                         	    	<select type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass'>
                         	    		<c:forEach var="row" items="${serviceClassList}">
@@ -332,10 +348,13 @@
                        	    			<button id="newClass" type="button" class="btn btn-block btn-default btn-sm">New</button>
                         	    	</c:if>
                         	    </div>
-                             	<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service id</label>
-                                <div class="col-sm-4">
-                                    <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}" onclick="openServiceIdModal()">
+                             	<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i> Service Id</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" id="serviceId" name="serviceId" required="required" value="${mapSchedule.serviceId}">
                                 </div>
+                                <div class="col-sm-1">
+                   	    			<button id="newId" type="button" class="btn btn-block btn-default btn-sm" onclick="openServiceIdModal()">Select</button>
+                        	    </div>
                              </div>
                                 <div class="hr-line-dashed" style="margin-top:-10px; padding-bottom:15px;"></div>
                                 <div class="form-group"><label class="col-sm-2 control-label">Transfer Config</label>

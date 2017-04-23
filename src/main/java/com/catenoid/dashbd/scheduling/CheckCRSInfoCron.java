@@ -34,16 +34,16 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		BmscMapper bmscMapper = sqlSession.getMapper(BmscMapper.class);
 		Map<String, Object> modeLimit = mapper.selectCrsLimit();
 		List<String> moodServiceId = mapper.selectMoodServiceId(modeLimit);
-		List<HashMap<String, List<HashMap<String,String>>>> serviceIdList = new ArrayList<HashMap<String, List<HashMap<String,String>>>>();
+		List<HashMap<String, List<HashMap<String, String>>>> serviceIdList = new ArrayList<HashMap<String, List<HashMap<String, String>>>>();
 		
 		for (int i = 0; i < moodServiceId.size(); i++) {
 			modeLimit.put("serviceId", moodServiceId.get(i));
-			List<HashMap<String,String>> bcSaIdList = mapper.getSendBcSaid(modeLimit);
+			List<HashMap<String, String>> bcSaIdList = mapper.getSendBcSaid(modeLimit);
 			for (int j = 0; j < bcSaIdList.size(); j++) {
 				System.out.println("bcSaIdList ================== "+bcSaIdList.get(j)+ " ================== ");
 			}
 			if(bcSaIdList.size() > 0) {
-				HashMap<String, List<HashMap<String,String>>> param = new HashMap<String, List<HashMap<String,String>>>();
+				HashMap<String, List<HashMap<String, String>>> param = new HashMap<String, List<HashMap<String, String>>>();
 				param.put(moodServiceId.get(i), bcSaIdList);
 				serviceIdList.add(param);
 			}
@@ -59,8 +59,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 			String respBodyCrs = "";
 			boolean passServiceId = false;
 			try {
-				
-				HashMap<String,String> crsParam = new HashMap<String, String>(); 
+				HashMap<String, String> crsParam = new HashMap<String, String>();
 				Iterator<String> it = serviceIdList.get(i).keySet().iterator();
 				String tempSvId = it.next();
 				for (int j = 0; j < sendedServiceId.size(); j++) {
@@ -72,7 +71,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 					continue;
 				}
 				crsParam.put("serviceId", tempSvId);
-				List<HashMap<String,String>> crsSaidList = serviceIdList.get(i).get(tempSvId);
+				List<HashMap<String, String>> crsSaidList = serviceIdList.get(i).get(tempSvId);
 				
 				Bmsc bmsc = bmscMapper.selectBmsc(793);
 				System.out.println(" ================== BMSC Mood Update Start ================== ");
@@ -84,12 +83,12 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 					String said = crsSaidList.get(j).get("said");
 					System.out.println(" ================== (said = "+said+") CRS Mood Update Start ================== ");
 					crsParam.put("said", said);
-					HashMap<String,String> crsInfo = mapper.getCrsInfo(crsParam);
+					HashMap<String, String> crsInfo = mapper.getCrsInfo(crsParam);
 					crsParam.put("crsId", String.valueOf(crsInfo.get("id")));
 					String agentKeyCRS = Base64Coder.encode(crsInfo.get("ip"));
 					reqBodyCrs = makeModityXmlCRS(tempSvId, crsInfo, agentKeyCRS, said);
 					respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
-					List<HashMap<String,String>> otherCRS = mapper.getCurrentMoodServiceOthers(crsParam);
+					List<HashMap<String, String>> otherCRS = mapper.getCurrentMoodServiceOthers(crsParam);
 					for (int k = 0; k < otherCRS.size(); k++) {
 						reqBodyCrs = makeModityXmlCRS(otherCRS.get(k).get("serviceId"), crsInfo, agentKeyCRS, said);
 						respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
@@ -108,7 +107,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String makeModityXmlCRS(String tempSvId, HashMap<String,String> crsInfo, String agentKeyCRS, String said) {
+	private String makeModityXmlCRS(String tempSvId, HashMap<String, String> crsInfo, String agentKeyCRS, String said) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		Map<String, String> bcParam = new HashMap<String, String>();
 		bcParam.put("serviceId", tempSvId);
@@ -176,7 +175,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public String makeModityXml(HashMap<String, List<HashMap<String,String>>> svId, String agentKey) {
+	public String makeModityXml(HashMap<String, List<HashMap<String, String>>> svId, String agentKey) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		Map<String, String> bcParam = new HashMap<String, String>();
 		List<Map<String, String>> contentList = null;
@@ -208,7 +207,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		Element service = new Element("service");
 		
 		Element name = new Element("name");
-		name.setAttribute(new Attribute("lang", "en"));										//??
+		name.setAttribute(new Attribute("lang", params.get("serviceNameLanguage")));										//??
 		name.setText(params.get("name"));
 		Element serviceLanguage = new Element("serviceLanguage");
 		serviceLanguage.setText(params.get("serviceLanguage"));

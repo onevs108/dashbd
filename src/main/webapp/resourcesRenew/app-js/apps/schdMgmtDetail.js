@@ -223,10 +223,9 @@ $(window).load(function() {
 	} else {
 		$($("input[name='radio']")[1]).click();
 	}
-//    ctrl.initialize();
-	loadContentList(1, 'file');
-})
-	
+    $("#tab2").click();
+});
+
 var ctrl = {
 	initialize : function() {
 		var type = $("input[name='radio']:checked").val();
@@ -338,13 +337,20 @@ function getContents(data, page){
 		var duration = data[i].duration;
 		var contentsType = data[i].type;
 		var path = data[i].path;
-		duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
+		var hourExtra = 0;
+		if(duration >= 86400){
+			hourExtra = parseInt(duration / 86400) * 24;
+			duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
+			duration = (parseInt(duration.substring(0,2)) + hourExtra) + duration.substring(2);
+		}else{
+			duration = (new Date(parseInt(duration) * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
+		}
 		
 		$div1.attr("class","feed-element");
 		$div1.attr("style","padding-bottom: 0px")
 		$div1.append("<a href='#' class='pull-left'><img alt='image' class='img-circle' src='"+ path + "'></a>");
 		$div2.attr("class","media-body");
-		$div2.append("<strong>[" + category +"]</strong> " + title + "<br/><small class='pull-right'><span class='text-danger'> Running Time </span>" + duration + "</small>" );
+		$div2.append("<strong>[" + category +"]</strong> " + title + "<br/><small class='pull-right'><span class='text-danger'> Running Time </span>" + duration + "(sec)</small>" );
 		
 		$div1.append($div2);
 		$div.attr("class","fc-event");
@@ -429,25 +435,31 @@ function setTimeTable(data){
 	var contents = data.contents;
 	var events = [];
 	var schedule;
-	var now = moment(); 
-	var clrBackPassSchd = '#dddddd'		,clrTxtPassSchd 	= '#787A7C'		,clrBrdPassSchd = '#bbbbbb';
-	var clrBackPassSchdBMSC='#888888'	,clrTxtPassSchdBMSC	= '#787A7C'	,clrBrdPassSchdBMSC	= '#bbbbbb';
+	var now = moment();
 	
-	var clrBackCurrSchd = '#23C6C8'		,clrTxtCurrSchd 	= '#ecf0f1'		,clrBrdCurrSchd = '#318E8F';
-	var clrBackCurrSchdBMSC='#22893E'	,clrTxtCurrSchdBMSC	= '#ecf0f1'	,clrBrdCurrSchdBMSC	= '#024B16';
+	var clrBackPassSchd 	= '#F06464'	,clrTxtPassSchd 	= '#ECF0F1'	,clrBrdPassSchd 	= '#318E8F';
+	var clrBackPassSchdBMSC	= '#8c8c8c'	,clrTxtPassSchdBMSC	= '#ECF0F1'	,clrBrdPassSchdBMSC	= '#318E8F';
 	
-	var clrBackNextSchd = '#FFEEB7'		,clrTxtNextSchd 	= '#787A7C'		,clrBrdNextSchd = '#B5B317';
-	var clrBackNextSchdBMSC='#FFD340'	,clrTxtNextSchdBMSC	= '#787A7C'	,clrBrdNextSchdBMSC	= '#B5B317';
+	var clrBackCurrSchd 	= '#F06464'	,clrTxtCurrSchd 	= '#ECF0F1'	,clrBrdCurrSchd 	= '#318E8F';
+	var clrBackCurrSchdBMSC	= '#32AAFF'	,clrTxtCurrSchdBMSC	= '#ECF0F1'	,clrBrdCurrSchdBMSC	= '#318E8F';
 	
-	for ( var i = 0; i < contents.length; i++) {
+	var clrBackNextSchd 	= '#F06464'	,clrTxtNextSchd 	= '#ECF0F1'	,clrBrdNextSchd 	= '#318E8F';
+	var clrBackNextSchdBMSC	= '#32AAFF'	,clrTxtNextSchdBMSC	= '#ECF0F1'	,clrBrdNextSchdBMSC	= '#318E8F';
+	
+	for (var i = 0; i < contents.length; i++) {
 		var id = contents[i].ID;
 		var name = contents[i].NAME;
 		var broadcast_info_id = contents[i].BCID;
-		if (typeof broadcast_info_id == 'undefined')
+		if (typeof broadcast_info_id == 'undefined'){
 			broadcast_info_id = '';
+		}
 		var start_date = contents[i].start_date;
 		var end_date = contents[i].end_date;
-		var url = "schedule.do?id=" + id + "&BCID=" + broadcast_info_id;
+		var serviceType = contents[i].contentsType;
+		var url = "schedule.do?id=" + id + "&BCID=" + broadcast_info_id + "&contentsType="+serviceType;
+		if(userGrade == 9999 && (contents[i].national_yn == "Y" || contents[i].emergency_yn == "Y")){
+			url = "#";
+		}
 		var now4compare = replaceAll4Time(now.format());
 		var start4compare = replaceAll4Time(start_date);
 		var end4compare = replaceAll4Time(end_date);
@@ -463,9 +475,7 @@ function setTimeTable(data){
 				//현재
 				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchd, textColor: clrTxtCurrSchd, borderColor:clrBrdCurrSchd, serviceId:serviceId};
 			}
-				
 		}else{
-			
 			if (now4compare < start4compare ){
 				//미래
 				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackNextSchdBMSC, textColor: clrTxtNextSchdBMSC, borderColor:clrBrdNextSchdBMSC, serviceId:serviceId};
@@ -476,11 +486,7 @@ function setTimeTable(data){
 				//현재
 				schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:clrBackCurrSchdBMSC, textColor: clrTxtCurrSchdBMSC, borderColor:clrBrdCurrSchdBMSC, serviceId:serviceId};
 			}
-			
-			//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#23C6C8", textColor: "#ecf0f1", borderColor:"#1AB394"};
 		}
-		
-		//schedule = {start: start_date, end: end_date, title: name, url : url, backgroundColor:"#eeeeee"};
 		events.push( schedule );
 	}
 	$("#calendar").fullCalendar('destroy');
@@ -558,7 +564,10 @@ function setTimeTable(data){
 				location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+ searchDate + "&title=" + title + "&category=" + category + "&type=" + $("#type").val();
 		}
 		, eventDragStop: function( event, jsEvent, ui, view ) { 
-			
+			if(event.url == "#"){
+				alert("You don't have permission");
+				return;
+			}
 			var trashEl = jQuery('#calendarTrash');
 		    var ofs = trashEl.offset();
 
@@ -567,17 +576,12 @@ function setTimeTable(data){
 		    var y1 = ofs.top;
 		    var y2 = ofs.top + trashEl.outerHeight(true);
 
-		    if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
-		        jsEvent.pageY>= y1 && jsEvent.pageY <= y2) {
-		    	
-		        //alert('SIII');
+		    if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 && jsEvent.pageY>= y1 && jsEvent.pageY <= y2) {
 		    	deleteSchedule(event.url);
-		    	//alert(Boolean(ret) + ',' + ret);
 		    	if ( g_delRetrun == 1)
 		    		$('#calendar').fullCalendar('removeEvents', event._id);
 		    	else
 		    		alert(bRet);
-		    	
 		    }
 	    }
 		, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
@@ -586,7 +590,6 @@ function setTimeTable(data){
 		, viewRender: function(view, element){
 			var now4compare = replaceAll4Day(moment().format());
 			var viewDay4compare = replaceAll4Day(view.start.format());
-			// console.log(now4compare , viewDay4compare);
 			if (now4compare == viewDay4compare){
 				setTimeline(view, "day");
 			}else{
@@ -595,8 +598,30 @@ function setTimeTable(data){
 		}
 	});
 	
-	 var fbg = $('#calendar').find('.fc-button-group');
-	 fbg.append('<div id="calendarTrash" style="float: right; padding-top: 2px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>');
+	var fbg = $('#calendar').find('.fc-button-group');
+	fbg.append('<div id="calendarTrash" style="float: right; padding-top: 2px; padding-right: 5px; padding-left: 5px;"><span class="ui-icon ui-icon-trash"><img src="../resourcesRenew/img/trash.png"/></span></div>');
+	setEventTitle(contents);
+}
+
+function setEventTitle(contents) {
+	for (var i = 0; i < $(".fc-time-grid-event").length; i++) {
+		for (var j = 0; j < contents.length; j++) {
+			if(contents[j].ID == $(".fc-time-grid-event")[i].href.split("&")[0].split("=")[1]){
+				if($($(".fc-time-grid-event")[i]).children().text().indexOf("(-)") > -1){
+					$($(".fc-time-grid-event")[i]).css("background-color", "#3CAEFF");
+				}
+				var serviceName = contents[j].NAME;
+				var serviceType = contents[j].service;
+				var serviceId = contents[j].serviceId;
+				if(serviceType == undefined) {
+					$(".fc-time-grid-event")[i].title = "serviceName : " + contents[j].NAME
+				}else{
+					$(".fc-time-grid-event")[i].title = "serviceName : " + contents[j].NAME +"\nserviceType : "+contents[j].service +"\nService ID : "+contents[j].serviceId;
+				}
+				break;
+			}
+		}
+	}
 }
 
 function setTimeline(calView, mode) {
@@ -665,7 +690,7 @@ function deleteSchedule(url){
 	}
 	
 	var id = url.substring(url.indexOf("=")  + 1, url.indexOf("&BCID"));
-	var BCID = url.substring(url.indexOf("&BCID=") + 6);
+	var BCID = url.substring(url.indexOf("&BCID=") + 6, url.lastIndexOf("&"));
 	
 	if (typeof BCID == 'undefined')
 		BCID = "";

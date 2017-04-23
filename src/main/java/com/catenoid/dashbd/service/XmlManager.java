@@ -417,7 +417,7 @@ public class XmlManager {
 		Element service = new Element("service");
 		
 		Element name = new Element("name");
-		name.setAttribute(new Attribute("lang", "en"));	
+		name.setAttribute(new Attribute("lang", params.get("serviceNameLanguage")));	
 		name.setText(params.get("name"));
 		Element serviceLanguage = new Element("serviceLanguage");
 		serviceLanguage.setText(params.get("serviceLanguage"));
