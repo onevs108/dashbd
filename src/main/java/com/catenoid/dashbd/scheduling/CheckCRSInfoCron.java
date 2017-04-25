@@ -37,7 +37,10 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		List<HashMap<String, List<HashMap<String, String>>>> serviceIdList = new ArrayList<HashMap<String, List<HashMap<String, String>>>>();
 		
 		for (int i = 0; i < moodServiceId.size(); i++) {
+			HashMap<String, String> threshold = mapper.getThreashold(moodServiceId.get(i));
 			modeLimit.put("serviceId", moodServiceId.get(i));
+			modeLimit.put("UCThreshold", threshold.get("UCThreshold"));
+			modeLimit.put("BCThreshold", threshold.get("BCThreshold"));
 			List<HashMap<String, String>> bcSaIdList = mapper.getSendBcSaid(modeLimit);
 			for (int j = 0; j < bcSaIdList.size(); j++) {
 				System.out.println("bcSaIdList ================== "+bcSaIdList.get(j)+ " ================== ");

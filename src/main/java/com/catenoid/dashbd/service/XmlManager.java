@@ -43,6 +43,7 @@ public class XmlManager {
 	public final int BMSC_XML_CREATE = 2; 
 	public final int BMSC_XML_UPDATE = 3;
 	public final int BMSC_XML_DELETE = 4;
+	public final int BMSC_XML_ABORT = 5;
 	public final String SERVICE_TYPE_FILE_DOWNLOAD = "fileDownload";
 	public final String SERVICE_TYPE_STREAMING = "streaming";
 	public final String SERVICE_TYPE_CAROUSEL_MULTIPLE = "carouselMultiple";
@@ -85,7 +86,7 @@ public class XmlManager {
 			else if (BMSC_XML_CREATE == mode || BMSC_XML_UPDATE == mode)
 				reqBody = makeXmlCreate(params, mode, saidData, paramList);
 			else
-				reqBody = makeXmlDelete(params);
+				reqBody = makeXmlDelete(params, mode);
 			
 			respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", reqBody, false);
 			
@@ -98,7 +99,7 @@ public class XmlManager {
 			//@ xml send
 			if("MooD".equals(params.get("serviceMode"))){
 				List<HashMap<String, String>> crsList = new ArrayList<HashMap<String, String>>();
-				if(BMSC_XML_DELETE == mode)
+				if(BMSC_XML_DELETE == mode || BMSC_XML_ABORT == mode)
 				{
 					String[] saidList = params.get("said").split(",");
 					for (int i = 0; i < saidList.length; i++) {
@@ -149,8 +150,8 @@ public class XmlManager {
 					String crsUrl = (String) ((JSONObject)obj.get(id).get(0)).get("createUrl");
 					String agentKeyCRS = Base64Coder.encode(crsIp);
 					params.put("agentKeyCRS", agentKeyCRS);
-					if(BMSC_XML_DELETE == mode){
-						reqBodyCrs = makeXmlDeleteCRS(params, id);
+					if(BMSC_XML_DELETE == mode || BMSC_XML_ABORT == mode){
+						reqBodyCrs = makeXmlDeleteCRS(params, id, mode);
 						respBodyCrs = new HttpNetAgent().execute("http://" + crsIp + crsUrl, "", reqBodyCrs, false);
 					} else {
 						reqBodyCrs = makeXmlCreateCRS(params, mode, saidData, paramList, id, obj.get(id));
@@ -162,7 +163,7 @@ public class XmlManager {
 				if(BMSC_XML_CREATE == mode) {
 					for (int i = 0; i < respBodyCrsList.size(); i++) {
 						if(!isSuccess(respBodyCrsList.get(i))){
-							String deleteStr = makeXmlDelete(params);
+							String deleteStr = makeXmlDelete(params, mode);
 							respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", deleteStr, false);
 							break;
 						}
@@ -190,9 +191,13 @@ public class XmlManager {
 		return rtvs;
 	}
 	
-	private String makeXmlDeleteCRS(Map<String, String> params, String id) {
+	private String makeXmlDeleteCRS(Map<String, String> params, String id, int mode) {
+		String messageMode = "SERVICE.DELETE";
 		Element message = new Element("message");
-		message.setAttribute(new Attribute("name", "SERVICE.DELETE"));
+		if(mode == 5){
+			messageMode = "SERVICE.ABORT";
+		}
+		message.setAttribute(new Attribute("name", messageMode));
 		message.setAttribute(new Attribute("type", "REQUEST"));
 		Document doc = new Document(message);
 		doc.setRootElement(message);
@@ -370,9 +375,13 @@ public class XmlManager {
 		return outString(doc);
 	}
 	
-	public String makeXmlDelete(Map<String, String> params){
+	public String makeXmlDelete(Map<String, String> params, int mode){
+		String messageMode = "SERVICE.DELETE";
 		Element message = new Element("message");
-		message.setAttribute(new Attribute("name", "SERVICE.ABORT"));
+		if(mode == 5){
+			messageMode = "SERVICE.ABORT";
+		}
+		message.setAttribute(new Attribute("name", messageMode));
 		message.setAttribute(new Attribute("type", "REQUEST"));
 		Document doc = new Document(message);
 		doc.setRootElement(message);
@@ -633,7 +642,9 @@ public class XmlManager {
 				for (int j = 0; j < paramList.get(9).size(); j++) {
 					bcServiceArea.addContent(new Element("said").setText(paramList.get(9).get(j)));
 				}
-				mood.addContent(bcServiceArea);
+				if(bcServiceArea.getChildren().size() > 0){
+					mood.addContent(bcServiceArea);
+				}
 				
 				contentSet.addContent(serviceArea);
 				contentSet.addContent(mpd);

@@ -159,6 +159,7 @@
 				DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') end_time,  
 				r12mpdURI,
 				bcBasePattern,
+				(select duration from contents where contents.id = content_id) duration,
 				created_at,
 				updated_at 
 		FROM schedule_contents
@@ -225,6 +226,7 @@
 			, b.samplePercentage
 			, b.retrieve_interval
 			, (select title from contents where id = s.content_id) content_name
+			, (select duration from contents where id = s.content_id) duration
 			, b.serviceMode
 			, b.bcServiceArea
 			, b.moodLocation
@@ -233,6 +235,12 @@
 			, b.moodOffsetTime
 			, b.moodRandomTimePeriod
 			, b.moodSamplePercentage
+			, b.moodRandomTimePeriod
+			, b.moodSamplePercentage
+			, b.moodRandomTimePeriod
+			, b.moodSamplePercentage
+			, b.UCThreshold
+			, b.BCThreshold
 			, b.fileRepair
 			, b.receptionReport
 			, b.reportClientId
@@ -310,8 +318,9 @@
 	
 	<select id="checkServiceId" resultType="int">
 		select count(*)
-		from broadcast_info
+		from broadcast_info a inner join schedule s on a.BCID = s.BCID
 		where serviceId = #{serviceId}
+	    and s.del_yn = 'N'
 	</select>
 	
 	<select id="selectServiceIdName" parameterType="java.util.Map" resultType="String">
@@ -482,6 +491,8 @@
 			, moodRandomTimePeriod
 			, moodSamplePercentage
 			, reportClientId
+			, UCThreshold
+			, BCThreshold
 			</if>
 			, fileRepair
 			, receptionReport
@@ -524,6 +535,8 @@
 			, #{moodRandomTimePeriod}
 			, #{moodSamplePercentage}
 			, #{reportClientId}
+			, #{UCThreshold}
+			, #{BCThreshold}
 			</if>
 			, #{fileRepair}
 			, #{receptionReport}
@@ -630,6 +643,12 @@
 			<if test="moodSamplePercentage != null and moodSamplePercentage !=''" >
 				, moodSamplePercentage = #{moodSamplePercentage} 
 			</if>
+			<if test="UCThreshold != null and UCThreshold !=''" >
+				, UCThreshold = #{UCThreshold} 
+			</if>
+			<if test="BCThreshold != null and BCThreshold !=''" >
+				, BCThreshold = #{BCThreshold} 
+			</if>
 			<if test="fileRepair != null and fileRepair !=''" >
 				, fileRepair = #{fileRepair} 
 			</if>
@@ -680,6 +699,8 @@
 			, moodOffsetTime
 			, moodRandomTimePeriod
 			, moodSamplePercentage
+			, UCThreshold
+			, BCThreshold
 			, fileRepair
 			, receptionReport
 			, reportClientId
@@ -876,11 +897,13 @@
 		broadcast_info a inner join crs_said_mapping b 
 		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
 		inner join mood_request c on a.serviceId = c.serviceId and b.crs_id = c.crsId
+		inner join schedule s on s.BCID = a.BCID
 		where service = 'streaming' 
 		  and serviceMode = 'MooD'		  
 		  and (now() <![CDATA[ > ]]> a.schedule_start)
 		  and (now() <![CDATA[ < ]]> a.schedule_stop)
 		  and b.crs_id = #{crsId}
+		  and s.del_yn = 'N'
 		group by a.serviceId
 	</select>
 	
@@ -889,12 +912,14 @@
 		broadcast_info a inner join crs_said_mapping b 
 		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
 		inner join mood_request c on a.serviceId = c.serviceId and b.crs_id = c.crsId
+		inner join schedule s on s.BCID = a.BCID
 		where service = 'streaming' 
 		  and serviceMode = 'MooD'		  
 		  and (now() <![CDATA[ > ]]> a.schedule_start)
 		  and (now() <![CDATA[ < ]]> a.schedule_stop)
 		  and b.crs_id = #{crsId}
 		  and a.serviceId != #{serviceId}
+		  and s.del_yn = 'N'
 		group by a.serviceId
 	</select>
 	
@@ -902,6 +927,11 @@
 		select count(*) from broadcast_info
 		where serviceId = #{serviceId}
 		  and CONCAT(',', said, ',') REGEXP CONCAT(',', #{saId}, ',')
+	</select>
+	
+	<select id="getThreashold" parameterType="java.util.Map" resultType="java.util.Map">
+		select UCThreshold, BCThreshold from broadcast_info
+		where serviceId = #{serviceId}
 	</select>
 	
 	<select id="getMoodRetrieve" parameterType="HashMap" resultType="HashMap">
@@ -930,7 +960,7 @@
 			 ( select distinct serviceId, said, castMode, count(castMode) as castCnt, ntype
 			 from
 			 (
-			  	select serviceId, said,  case when countUC <![CDATA[ > ]]> (select unicast from crs_limit) then 'A' else 'B' end as castMode,
+			  	select serviceId, said,  case when countUC <![CDATA[ > ]]> ${UCThreshold} then 'A' else 'B' end as castMode,
 			  	'UC' as ntype
 				from mood_request a
 				where insertDate <![CDATA[ > ]]> date_add(now(), interval-${interval} minute)
@@ -950,7 +980,7 @@
 			 from
 			 ( select distinct serviceId, said, castMode, count(castMode) as castCnt, ntype
 			  from
-			  (select serviceId, said,  case when countBC <![CDATA[ < ]]> (select unicast from crs_limit) then 'A' else 'B' end as castMode
+			  (select serviceId, said,  case when countBC <![CDATA[ < ]]> ${BCThreshold} then 'A' else 'B' end as castMode
 			  ,'BC' as ntype
 			from mood_request a
 			where insertDate <![CDATA[ > ]]>date_add(now(), interval-${interval} minute)

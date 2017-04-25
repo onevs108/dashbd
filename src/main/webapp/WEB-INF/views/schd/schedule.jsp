@@ -56,10 +56,11 @@
 	<!-- Page-Level Scripts -->
 	<script>
 		var serviceType = "${mapSchedule.service}";
-		var contentJson = ${contentList};
+		var contentJson = ${contentListJson};
 		var viewMode = "${mode}";
 		var contentsType = "${contentsType}";
 		$(document).ready(function() {
+			getMenuList('SCHEDULE_MGMT');
 			if($("#moodLocation").val() == "") {
 				$("#moodLocation").val("MBMS SAI");
 			}
@@ -67,16 +68,25 @@
 				if($("#serviceType").val() == "fileDownLoad"){
 					checkScheduleStartTime();
 				}
+				scheduleTimeSync(this);
 			});
-			$("#schedule_stop").blur(function(){
+			$($("input[name='deliveryInfo_start']")[0]).blur(function(){
 				if($("#serviceType").val() == "fileDownLoad"){
 					checkScheduleEndTime();
 				}
+				scheduleTimeSync(this);
+				return false;
 			});
-			$("#schedule_start, #schedule_stop").datetimepicker({
+			$($("input[name='deliveryInfo_end']")[0]).blur(function(){
+				if($("#serviceType").val() == "fileDownLoad"){
+					checkScheduleEndTime();
+				}
+				scheduleTimeSync(this);
+				return false;
+			});
+			$("#schedule_start, input[name='deliveryInfo_start'], input[name='deliveryInfo_end']").datetimepicker({
 				format:'Y-m-d H:i:s',
 			});
-			getMenuList('SCHEDULE_MGMT');
 			$("button[name='addSchedule']").hide();
 			
 			if(viewMode == "update") {
@@ -103,6 +113,7 @@
 					$($("input[name='fileURI']")[i]).val(contentJson[i].url);
 					$($("input[name='deliveryInfo_start']")[i]).val(contentJson[i].start_time);
 					$($("input[name='deliveryInfo_end']")[i]).val(contentJson[i].end_time);
+					$($("input[name='duration']")[i]).val(contentJson[i].duration);
 				}
 				
 				if(contentJson.length > 0) {
@@ -125,6 +136,10 @@
 				$("#fileUpload_F").remove();
 				$("#bcSaidList").val("${mapSchedule.bcServiceArea}");
 			}
+			else
+			{
+				scheduleTimeSync($("#schedule_start")[0]);
+			}
 			
 			$("#fileRepair").change();
 			$("#receptionReport").change();
@@ -137,10 +152,19 @@
 			$("#serviceType").prop('disabled', true);
 			$("#serviceId").prop('disabled', true);
 			$("#serviceClass").prop('disabled', true);
+			var now = getTimeStamp();
+			if(now >= $("#schedule_start").val()) {	 //시작 시간이 지난 경우
+				$("#serviceMode").prop('disabled', true);
+				$("#GBR").prop('disabled', true);
+				$("#QCI").prop('disabled', true);
+				$("#fecType").prop('disabled', true);
+				$("#fecRatio").prop('disabled', true);
+				$("#segmentAvailableOffset").prop('disabled', true);
+				$("#mpdURI").prop('disabled', true);
+				$("#searchContentStream").remove();
+			}
 			$("#newId").remove();
 			$("#newClass").remove();
-// 			$("#reportType").prop('disabled', true);
-// 			$("#samplePercentage").prop('disabled', true);
 		}
 		
 		function searchStreaming() {
@@ -176,6 +200,7 @@
 		}
 		
 		function addFileContent(e) {
+			var deliveryIdx = $("input[name='deliveryInfo_start']").length;
 			var ctIdx = $("button[name='addContent']").index(e);					//스케쥴 갯수(index)
 			var content = $($("div[name='content']")[ctIdx]).children().last();
 			$(content).after(content.clone());
@@ -186,6 +211,24 @@
 			$($("#contentLength")[ctIdx]).val($($("div[name='content']")[ctIdx]).children().length);
 			addContentRemoveEvent();
 			addSearchContentEvent($($("#contentLength")[ctIdx]).val()-1);
+			
+			$("input[name='deliveryInfo_start'], input[name='deliveryInfo_end']").datetimepicker({
+				format:'Y-m-d H:i:s',
+			});
+			$($("input[name='deliveryInfo_start']")[deliveryIdx]).blur(function(){
+				if($("#serviceType").val() == "fileDownLoad"){
+					checkScheduleEndTime();
+				}
+				scheduleTimeSync($(lastContent).find("input[name='deliveryInfo_start']")[0]);
+				return false;
+			});
+			$($("input[name='deliveryInfo_end']")[deliveryIdx]).blur(function(){
+				if($("#serviceType").val() == "fileDownLoad"){
+					checkScheduleEndTime();
+				}
+				scheduleTimeSync($(lastContent).find("input[name='deliveryInfo_end']")[0]);
+				return false;
+			});
 		}
 		
 		function removePattern(e) {
@@ -314,9 +357,9 @@
 	                        			<input type="hidden" id=serviceNameLanguage" name="serviceNameLanguage" value="${mapSchedule.serviceNameLanguage}">
 	                        			<select class="input-sm form-control input-s-sm" disabled>
 	                        		</c:if>
-                        	    	    <option value="en"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
-                        	    	    <option value="kr">kr</option>
-                        	    	    <option value="fr">fr</option>
+                        	    	    <option value="EN"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>EN</option>
+                        	    	    <option value="KR">KR</option>
+                        	    	    <option value="FR">FR</option>
                                     </select>
                                 </div>
                                 <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service Lang</label>
@@ -328,9 +371,9 @@
 	                        			<input type="hidden" id=serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}">
 	                        			<select class="input-sm form-control input-s-sm" disabled>            	
 	                        		</c:if>
-                        	    	    <option value="en"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>en</option>
-                        	    	    <option value="kr">kr</option>
-                        	    	    <option value="fr">fr</option>
+                        	    	    <option value="EN"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>EN</option>
+                        	    	    <option value="KR">KR</option>
+                        	    	    <option value="FR">FR</option>
                                     </select>
                                 </div>
                              </div>
@@ -456,7 +499,7 @@
 	                                    <label class="col-sm-1 control-label">Start</label>
 	                                        <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.schedule_start}"></div>
 	                                    <label class="col-sm-1 control-label">Stop</label>
-	                                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.schedule_stop}"></div>
+	                                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.schedule_stop}" readonly></div>
 	                                </div>
 	                                <div class="col-sm-1">
 	                                    <div class="form-group">
@@ -478,7 +521,7 @@
 					                                    <div class="col-sm-6">
 					                                    	<input type="text" class="form-control" id="saidList" name="saidList" style="height: 75px;background-color: white;">
 					                                    </div>
-					                                    <c:if test="${empty mapSchedule.BCID and type == 'area'}">
+					                                    <c:if test="${type == 'area'}">
 					                                    	<div class="row">
 					                                    		<div class="col-sm-2">
 							                                    	<input type="text" class="form-control" id="said" name="said" required="required" value="">
@@ -550,7 +593,7 @@
 					                                    <div class="col-sm-6">
 					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;background-color: white;" readonly>
 					                                    </div>
-					                                    <c:if test="${empty mapSchedule.BCID and type == 'area'}">
+					                                    <c:if test="${type == 'area'}">
 				                                    	<div class="row">
 				                                    		<div class="col-sm-2">
 						                                    	<input type="text" class="form-control" id="bcSaid" name="bcSaid" value="">
@@ -563,8 +606,18 @@
 						                                    </div>
 												        </div>
 												        </c:if>
-					                                </div>
+					                                </div> 
 			                                    </div>
+			                                </div>
+			                                <div class="row" style="margin-left: -9%;"> 
+	                                    		<label class="col-sm-2 control-label col-sm-offset-2">UC Threshold</label>
+		                                        <div class="col-sm-2">
+		                                        	<input type="text" class="form-control" id="UCThreshold" name="UCThreshold" value="${mapSchedule.UCThreshold}">
+		                                        </div>
+	                                    		<label class="col-sm-2 control-label">BC Threshold</label>
+		                                        <div class="col-sm-2">
+		                                        	<input type="text" class="form-control" id="BCThreshold" name="BCThreshold" value="${mapSchedule.BCThreshold}">
+		                                        </div>
 			                                </div>
 			                            </div>
 			                        </div>
@@ -594,7 +647,7 @@
                                                         <label class="col-md-2 control-label">File URI</label>
                                                         <div class="col-md-9">
 	                                                        <input type="hidden" name="contentId" value="${mapSchedule.contentId}">
-	                                                        <input type="hidden" name="duration" value="">
+	                                                        <input type="hidden" name="duration" value="${mapSchedule.duration}">
 	                                                        <c:if test="${empty mapSchedule.BCID}">
 	                                                         	<input type="text" class="form-control input-sm m-b-xs" id="fileURI" name="fileURI" value="${mapContentUrl.url}">
 	                                                        </c:if>
@@ -746,16 +799,15 @@
 	                        	<div class="col-sm-5"></div>
 	                        	<div class="col-sm-">
 		                        	<c:if test="${empty mapSchedule.BCID}">
-		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="margin-left:10px;margin-top:10px">OK
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnOK" style="width:90px;margin-left:10px;margin-top:10px">OK
 		                        	</c:if>
 		                        	<c:if test="${not empty mapSchedule.BCID}">
-		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnUPDATE" style="margin-left:10px;margin-top:10px">UPDATE            	
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnUPDATE" style="width:90px;margin-left:10px;margin-top:10px">UPDATE            	
 		                        	</c:if>            	
 		                        	</button>
-		                        	
-		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnDelete" name="btnDelete" style="margin-left:10px;margin-top:10px">Delete</button>
-		                        	
-		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="margin-left:10px;margin-top:10px">Cancel</button>
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnDelete" name="btnDelete" style="width:90px;margin-left:10px;margin-top:10px">Delete</button>
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnAbort" name="btnAbort" style="width:90px;margin-left:10px;margin-top:10px">Abort</button>
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="width:90px;margin-left:10px;margin-top:10px">Cancel</button>
 	                        	</div>
 						    </div>
                         </div>

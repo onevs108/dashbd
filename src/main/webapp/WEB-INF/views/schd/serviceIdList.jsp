@@ -95,23 +95,8 @@
 	
 	function setServiceId() {
 		$("#serviceId").val($("#selectServiceId").val());
+		$("#serviceId").focus();
 		$("#serviceIdList").modal('hide');
-		/* $.ajax({
-			type : "POST",
-			url : "checkServiceId.do",
-			data : {serviceId: $("#serviceId_M").val()},
-			success : function( data ) {
-				if(data == "SUCCESS") {
-					$("#serviceId").val($("#serviceId_M").val());
-					$("#serviceIdList").modal('hide');
-				}else{
-					alert("serviceId is already exist!");
-				}
-			},
-			error : function(request, status, error) {
-				alert("request=" +request +",status=" + status + ",error=" + error);
-			}
-		}); */
 	}
 	
 </script>

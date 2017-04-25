@@ -485,7 +485,7 @@ public class ScheduleMgmtController {
 		mv.addObject("type", type);
 		mv.addObject("mode", mode);
 		mv.addObject("circleList", circleList);
-		mv.addObject("contentList", str);
+		mv.addObject("contentListJson", str);
 		mv.addObject("serviceClassList", serviceClassList);
 		mv.addObject("serviceIdList", serviceIdList);
 		mv.addObject("contentsType", params.get("contentsType"));
@@ -1331,7 +1331,11 @@ public class ScheduleMgmtController {
 				mapBroadcast.put("serviceType", params.get("serviceType"));
 				
 				//@ xmlMake & Send, recv
-				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_DELETE);
+				int deleteType = 4;
+				if(params.get("deleteType").equals("btnAbort")){
+					deleteType = xmlManager.BMSC_XML_ABORT;
+				}
+				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, deleteType);
 				retValue = parseRes(resStr[0]);
 				//@ check return XML success
 				if (!xmlManager.isSuccess(resStr[0]))
@@ -1406,6 +1410,59 @@ public class ScheduleMgmtController {
 			return makeRetMsg("9999", e.getMessage());
 		}
 	}
+	
+	/*@RequestMapping(value = "view/changeServiceMode.do")
+	@ResponseBody
+	public Map< String, Object > changeServiceMode(@RequestParam Map< String, String > params, HttpServletRequest request, Locale locale ) {
+		try{
+			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
+			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
+			CheckCRSInfoCron crsCron = new CheckCRSInfoCron();
+			String[] rtvs = new String[2];
+			String reqBody = "";
+			String respBody = "SUCCESS";
+			String reqBodyCrs = "";
+			String respBodyCrs = "";
+			String serviceId = params.get("serviceId");
+			HashMap<String, String> saidParam = new HashMap<String, String>(); 
+			saidParam.put("said", params.get("said"));
+			List<String> sendedServiceId = new ArrayList<String>();
+			try {
+				HashMap<String, String> crsParam = new HashMap<String, String>();
+				crsParam.put("serviceId", serviceId);
+				
+				Bmsc bmsc = mapperBmsc.selectBmsc(793);
+				System.out.println(" ================== BMSC Mood Update Start ================== ");
+				String agentKey = Base64Coder.encode(bmsc.getIpaddress()); 
+				reqBody = crsCron.makeModityXml(serviceId, agentKey);
+				respBody = new HttpNetAgent().execute("http://" + bmsc.getIpaddress() + bmsc.getCircle(), "", reqBody, false);
+				System.out.println(" ================== BMSC Mood Update End ================== ");
+				System.out.println(" ================== (said = "+saidParam.get("said")+") CRS Mood Update Start ================== ");
+				crsParam.put("said", saidParam.get("said"));
+				HashMap<String, String> crsInfo = mapper.getCrsInfo(crsParam);
+				crsParam.put("crsId", String.valueOf(crsInfo.get("id")));
+				String agentKeyCRS = Base64Coder.encode(crsInfo.get("ip"));
+				reqBodyCrs = makeModityXmlCRS(serviceId, crsInfo, agentKeyCRS, saidParam.get("said"));
+				respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
+				List<HashMap<String, String>> otherCRS = mapper.getCurrentMoodServiceOthers(crsParam);
+				for (int k = 0; k < otherCRS.size(); k++) {
+					reqBodyCrs = makeModityXmlCRS(otherCRS.get(k).get("serviceId"), crsInfo, agentKeyCRS, saidParam.get("said"));
+					respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
+					sendedServiceId.add(otherCRS.get(k).get("serviceId"));
+				}
+				mapper.updateSaidMode(saidParam);
+				System.out.println(" ================== ("+saidParam.get("said")+") CRS Mood Update End ================== ");
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+			rtvs[0] = respBody;
+			rtvs[1] = reqBody;
+			
+		}catch(Exception e){ 
+			logger.error("", e);
+			return makeRetMsg("9999", e.getMessage());
+		}
+	}*/
 	
 	private String convertMysqlDateFormat(String dateTime, boolean add30Secons){
 		if (dateTime == null)

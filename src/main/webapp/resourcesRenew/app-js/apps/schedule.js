@@ -155,13 +155,16 @@ $(document).ready(function()
 	});
 		
 	$("#btnCancel").click(function() {
+		/*
 		var tmpServiceAreaId = $("#serviceAreaId").val();
 		var searchDate = $("#searchDate").val();
 		var bmscId= $("#bmscId").val();
 		location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
+		*/
+		history.back();
 	});
 		
-	$("#btnDelete").click(function() {
+	$("#btnDelete, #btnAbort").click(function() {
 		if (!confirm("It will be deleted. do you want this??")){
 			return;
 		}
@@ -170,7 +173,8 @@ $(document).ready(function()
 				BCID : $("#BCID").val(),
 				bmscId : $("#bmscId").val(),
 				type : $("#type").val(),
-				serviceType : $( "input[name='serviceType']" ).val()
+				serviceType : $( "input[name='serviceType']" ).val(),
+				deleteType : this.id
 			};
 		$.ajax({
 			type : "POST",
@@ -362,6 +366,13 @@ function checkEnabled() {
 	$("#serviceType").removeAttr("disabled");
 	$("#serviceId").removeAttr("disabled");
 	$("#serviceClass").removeAttr("disabled");
+	$("#serviceMode").removeAttr("disabled");
+	$("#GBR").removeAttr("disabled");
+	$("#QCI").removeAttr("disabled");
+	$("#fecType").removeAttr("disabled");
+	$("#fecRatio").removeAttr("disabled");
+	$("#segmentAvailableOffset").removeAttr("disabled");
+	$("#mpdURI").removeAttr("disabled");
 	$("#reportType").removeAttr("disabled");
 	$("#samplePercentage").removeAttr("disabled");
 }
@@ -377,6 +388,44 @@ $(window).load(function() {
 });
 
 function detailValidationCheck() {
+	$("#serviceId").blur(function(){
+		$.ajax({
+			type : "POST",
+			url : "checkServiceId.do",
+			data : {serviceId: $("#serviceId").val()},
+			success : function( data ) {
+				if(data != "SUCCESS") {
+					alert("serviceId is already exist!");
+					$("#serviceId").val("");
+					return false;
+				}
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	});
+	
+	$("#UCThreshold").blur(function(){
+		if(this.value != ""){
+			if(!checkInteger9(this.value)){
+				this.value = "";
+				alert("The value of the UC Threshold must be integer.  (0~999999999)");
+			}
+			return false;
+		}
+	});
+	
+	$("#BCThreshold").blur(function(){
+		if(this.value != ""){
+			if(!checkInteger9(this.value)){
+				this.value = "";
+				alert("The value of the BC Threshold must be integer.  (0~999999999)");
+			}
+			return false;
+		}
+	});
+	
 	$("#GBR").blur(function(){
 		if(this.value != ""){
 			if(!checkInteger9(this.value)){
@@ -953,7 +1002,67 @@ function setServiceClassView() {
 	});
 }
 
-function setContentInfo(cid, url, duration){
+function scheduleTimeSync(e) {
+	var scheduleStart = $("#schedule_start").val();
+	var scheduleStop = "";
+	if(e.id == "schedule_start")
+	{
+		for (var i = 0; i < $("input[name='deliveryInfo_start']").length; i++) {
+			if(i == 0){
+				$($("input[name='deliveryInfo_start']")[i]).val(getTimeAddSecond(scheduleStart, 15));
+				$($("input[name='deliveryInfo_end']")[i]).val(getTimeAddSecond($($("input[name='deliveryInfo_start']")[i]).val(), Number($($("input[name='duration']")[i]).val())));
+			}else{
+				$($("input[name='deliveryInfo_start']")[i]).val(getTimeAddSecond($($("input[name='deliveryInfo_end']")[i-1]).val(), 15));
+				$($("input[name='deliveryInfo_end']")[i]).val(getTimeAddSecond($($("input[name='deliveryInfo_start']")[i]).val(), Number($($("input[name='duration']")[i]).val())));
+			}
+			if(i == $("input[name='deliveryInfo_start']").length-1){
+				scheduleStop = getTimeAddSecond($($("input[name='deliveryInfo_end']")[i]).val(), 15);
+			}
+		}
+		$("#schedule_stop").val(scheduleStop);
+	}
+	else
+	{
+		if(e.id == "deliveryInfo_end")
+		{
+			var idx = $("input[name='deliveryInfo_end']").index(e);
+			if(idx == 0){
+				$("#schedule_start").val(getTimeAddSecond($("input[name='deliveryInfo_end']")[0].value, Number(-(Number($($("input[name='duration']")[0]).val()) + 15))));
+				scheduleTimeSync($("#schedule_start")[0]);
+			}else{
+				for (var i = idx; i > -1; i--) {
+					if(i == 0){
+						$("#schedule_start").val(getTimeAddSecond($("input[name='deliveryInfo_end']")[0].value, Number(-(Number($($("input[name='duration']")[0]).val()) + 15))));
+						scheduleTimeSync($("#schedule_start")[0]);
+					}
+					$("input[name='deliveryInfo_start']")[i].value = getTimeAddSecond($("input[name='deliveryInfo_end']")[i].value, -(Number($($("input[name='duration']")[i]).val())));
+					$($("input[name='deliveryInfo_end']")[i-1]).val(getTimeAddSecond($("input[name='deliveryInfo_start']")[i].value, -15));
+				}
+			}
+		}
+		else
+		{
+			var idx = $("input[name='deliveryInfo_start']").index(e);
+			if(idx == 0){
+				$("#schedule_start").val(getTimeAddSecond($("input[name='deliveryInfo_start']")[0].value, -15));
+				scheduleTimeSync($("#schedule_start")[0]);
+			}else{
+				for (var i = idx; i > 0; i--) {
+					$("input[name='deliveryInfo_end']")[i-1].value = getTimeAddSecond($("input[name='deliveryInfo_start']")[i].value, -15);
+					$($("input[name='deliveryInfo_start']")[i-1]).val(getTimeAddSecond($("input[name='deliveryInfo_end']")[i-1].value, Number(-$($("input[name='duration']")[i-1]).val())));
+					if((i-1) == 0){
+						$("#schedule_start").val(getTimeAddSecond($("input[name='deliveryInfo_start']")[i-1].value, -15));
+						scheduleTimeSync($("#schedule_start")[0]);
+					}
+				}
+			}
+		}
+		
+	}
+	return false;
+}
+
+function setContentInfo(cid, url, duration) {
 	var idx = $("#idx").val();
 	var type = $("#type").val();
 	if(type == "streaming") {
@@ -1092,6 +1201,20 @@ function valadationCheck(){
 		alert("Please enter the Service Id");
 		$("#serviceId").focus();
 		return;
+	}
+	
+	if($("#serviceMode").val() == "MooD"){
+		if($("#UCThreshold").val() == ""){
+			alert("Please enter the UC Threshold");
+			$("#UCThreshold").focus();
+			return;
+		}
+		
+		if($("#BCThreshold").val() == ""){
+			alert("Please enter the BC Threshold");
+			$("#BCThreshold").focus();
+			return;
+		}
 	}
 	
 	if ($("#fecType").val()== 'Raptor' && $("#fecRatio").val() == '0'){

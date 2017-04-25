@@ -101,5 +101,6 @@ public interface ScheduleMapper {
 	int getServiceIdIdx(HashMap<String, Object> params);
 	String selectServiceIdName(HashMap<String, Object> params);
 	void editServiceIdIdx(HashMap<String, Object> params);
+	HashMap<String, String> getThreashold(String string);
     
 }
