@@ -207,6 +207,7 @@
                     </div>
                 </div>
             </div>
+            <jsp:include page="deleteAbortModal.jsp"/>
         </div><!-- content body end -->
     </div><!-- content end -->
 

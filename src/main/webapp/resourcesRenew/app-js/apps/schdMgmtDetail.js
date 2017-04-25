@@ -554,10 +554,6 @@ function setTimeTable(data){
 
 		    if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 && jsEvent.pageY>= y1 && jsEvent.pageY <= y2) {
 		    	deleteSchedule(event.url);
-		    	if ( g_delRetrun == 1)
-		    		$('#calendar').fullCalendar('removeEvents', event._id);
-		    	else
-		    		alert(bRet);
 		    }
 	    }
 		, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
@@ -665,6 +661,11 @@ function deleteSchedule(url){
 		return;
 	}
 	
+	$("#url").val(url);
+	$("#deleteAbortModal").modal();
+}
+	
+function deleteAction(url, deleteType) {
 	var id = url.substring(url.indexOf("=")  + 1, url.indexOf("&BCID"));
 	var BCID = url.substring(url.indexOf("&BCID=") + 6, url.lastIndexOf("&"));
 	
@@ -675,7 +676,8 @@ function deleteSchedule(url){
 			id : id,
 			BCID : BCID,
 			type : $("#type").val(),
-			bmscId : $("#bmscId").val()
+			bmscId : $("#bmscId").val(),
+			deleteType : deleteType
 	};
 	$.ajax({
 		type : "POST",
@@ -685,6 +687,12 @@ function deleteSchedule(url){
 		async: false,
 		success : function( data ) {
 			g_delRetrun = outMsgForAjax(data);
+			$("#deleteAbortModal").modal('hide');
+			if ( g_delRetrun == 1){
+				$('#calendar').fullCalendar('removeEvents', event._id);
+			}else{
+				alert(bRet);
+			}
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
@@ -692,7 +700,7 @@ function deleteSchedule(url){
 		}
 	});
 }
-	
+
 function addSchedule(content_id, g_name, startTime, endTime, contentsType){
 	var param = {
 			serviceAreaId : g_ServiceAreaId,

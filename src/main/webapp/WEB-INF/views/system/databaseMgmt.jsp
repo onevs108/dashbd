@@ -7,13 +7,6 @@
 	<title>SeSM Database Management</title>	
 	<jsp:include page="../common/head.jsp" />
 	
-<!--     <link href="../resourcesRenew/css/bootstrap.min.css" rel="stylesheet"> -->
-<!--     <link href="../resourcesRenew/css/style.css" rel="stylesheet"> -->
-<!--     <link href="../resourcesRenew/css/animate.css" rel="stylesheet"> -->
-<!--     <link href="../resourcesRenew/css/plugins/toastr/toastr.min.css" rel="stylesheet"> -->
-<!--     <link href="../resourcesRenew/css/custom.css" rel="stylesheet"> -->
-<!--     <link href="font-awesome/css/font-awesome.css" rel="stylesheet"> -->
-	
 	<style type="text/css">
 		td {
 			font-size: 13px;
@@ -57,7 +50,7 @@
 	                    		<span id="backupSchedule" style="display: none;">
 		                    		<label class="col-lg-2" style="width: 12.5%">Every day at :</label>
 		                    		<div class="col-lg-2" style="margin-top: -7px;">
-		                                <input type="text" class="form-control" id="backupTime" name="backupTime" value="${backupTime}" placeholder="hh:mi:ss" data-ax5formatter="time">
+		                                <input type="text" class="form-control" id="backupTime" name="backupTime" value="${backupTime}" placeholder="hh:mi" data-ax5formatter-custom="01">
 	                                </div>
 	                                <div class="col-lg-2" style="margin-top: -5px;">
 		                                <button type="button" class="btn btn-primary btn-sm" onclick="setBackupTime();">
@@ -67,55 +60,19 @@
                                 </span>
 	                    	</div>
 	                    	<div class="row" style="padding-top:20px">
-					            <!-- <div class="col-lg-4">
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="status">Year</label>
-										<div class="col-sm-9">
-											<select name="status" id="yearContent" class="form-control">
-												<option value="">--ALL--</option>
-				                                <script>
-													var myDate = new Date();
-													var year = myDate.getFullYear();
-													for(var i = 2016; i < year+5; i++){
-													 	$("#yearContent").append('<option value="'+i+'">'+i+'</option>');
-													}
-												</script>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-4">
-									<div class="form-group">
-										<label class="col-sm-5 control-label" for="status">Month</label>
-										<div class="col-sm-7">
-											<select name="status" id="monthContent" class="form-control">
-												<option value="">--ALL--</option>
-				                                <script>
-													var myDate = new Date();
-													var year = myDate.getFullYear();
-													for(var i = 1; i < 13; i++){
-														if(i < 10){
-														 	$("#monthContent").append('<option value="0'+i+'">'+i+'</option>');
-														}else{
-														 	$("#monthContent").append('<option value="'+i+'">'+i+'</option>');
-														}
-													}
-												</script>
-											</select>
-										</div>
-									</div>
-								</div> -->
 								<div class="col-lg-4">
 	                                <h3>Backup List</h3>
 	                            </div>
 	                            <div class="col-lg-4 col-md-offset-4">
-	                                <button type="button" class="btn btn-primary pull-right" onclick="openBackupModal();">
-										Database Backup Now
+	                                <button type="button" class="btn btn-danger pull-right" onclick="deleteSelectedFile();">
+										Delete Selected File
+	                                </button>
+	                                <button type="button" class="btn btn-primary pull-left" onclick="openBackupModal();">
+										Backup Now
 	                                </button>
 	                            </div>
 	                        </div>
 	                    	<div class="hr-line-dashed"></div>
-	                    
 							<div class="table-responsive">
                             	<table class="table table-bordered" id="table"></table>
                             </div>
@@ -144,7 +101,25 @@
 			$("#autoBackup").prop("checked", true);
 			$("#autoBackup").change();	
 		}
-		$('[data-ax5formatter]').ax5formatter();
+		$('[data-ax5formatter-custom="01"]').ax5formatter({
+	        pattern: "custom",
+	        getEnterableKeyCodes: function(obj){
+	        	return jQuery.extend(
+                    ax5.ui.formatter.formatter.ctrlKeys,
+                    ax5.ui.formatter.formatter.numKeys
+                );
+	        },
+	        getPatternValue: function (obj) {
+	        	if(obj.value.length > 2){
+	        		obj.value = obj.value.replace(obj.value.substr(2,1), ":");	//3번째 자리 replace
+	        		obj.value = obj.value.substr(0,5);							//5자리 String 으로 만들기
+	        	}
+	        	if(obj.value.length < 3 && obj.value.indexOf(":") > -1){
+	        		obj.value = "";
+	        	}
+        		return obj.value;
+	        }
+	    });
 	});
 </script>
 

@@ -805,8 +805,8 @@
 		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnUPDATE" style="width:90px;margin-left:10px;margin-top:10px">UPDATE            	
 		                        	</c:if>            	
 		                        	</button>
-		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnDelete" name="btnDelete" style="width:90px;margin-left:10px;margin-top:10px">Delete</button>
 		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnAbort" name="btnAbort" style="width:90px;margin-left:10px;margin-top:10px">Abort</button>
+		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnDelete" name="btnDelete" style="width:90px;margin-left:10px;margin-top:10px">Delete</button>
 		                        	<button class="col-sm-2 btn btn-success" type="button" id="btnCancel" name="btnCancel" style="width:90px;margin-left:10px;margin-top:10px">Cancel</button>
 	                        	</div>
 						    </div>

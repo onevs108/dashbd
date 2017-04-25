@@ -647,4 +647,9 @@
 	set backup_time = #{backupTime}
   </update>
   
+  <delete id="deleteBackup" parameterType="HashMap">
+	delete from database_backup
+	where id in (${deleteList})
+  </delete>
+  
 </mapper>

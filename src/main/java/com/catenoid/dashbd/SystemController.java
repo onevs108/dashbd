@@ -24,7 +24,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.quartz.CronTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.catenoid.dashbd.dao.ServiceAreaMapper;
 import com.catenoid.dashbd.dao.UsersMapper;
 import com.catenoid.dashbd.dao.model.Bmsc;
-import com.catenoid.dashbd.dao.model.Log;
 import com.catenoid.dashbd.dao.model.Operator;
 import com.catenoid.dashbd.dao.model.OperatorSearchParam;
 import com.catenoid.dashbd.dao.model.ServiceAreaPermissionAp;
@@ -53,7 +51,6 @@ import com.catenoid.dashbd.dao.model.SystemDatabaseBackup;
 import com.catenoid.dashbd.dao.model.SystemIncomingLog;
 import com.catenoid.dashbd.dao.model.Users;
 import com.catenoid.dashbd.service.BmscService;
-import com.google.gson.Gson;
 
 /**
  * Handles requests for the application home page.
@@ -637,6 +634,40 @@ public class SystemController{
 			return "FAIL";
 		}
 		return "SUCCESS";
+	}
+	
+	@RequestMapping(value = "/resources/deleteBackup.do", method = RequestMethod.POST, produces="text/plain;charset=UTF-8")
+	@ResponseBody
+	public String deleteBackup(@RequestParam String deleteList) {
+		UsersMapper usersMapper = sqlSession.getMapper(UsersMapper.class);
+		Map<String, Object> syslogMap = new HashMap<String, Object>();
+		Map<String, String> backupParam = new HashMap<String, String>();
+		String returnStr = "SUCCESS";
+		int result = 0;
+		backupParam.put("deleteList", deleteList);
+		try {
+			result = usersMapper.deleteBackup(backupParam);
+			if(result == 0){
+				returnStr = "FAIL";
+			}else{
+				syslogMap.put("reqType", "Database Config");
+				syslogMap.put("reqSubType", "getBmscMgmt");
+				syslogMap.put("reqUrl", "resources/systemDbMgmt.do");
+				syslogMap.put("reqCode", "SUCCESS");
+				syslogMap.put("reqMsg", "");
+				usersMapper.insertSystemAjaxLog(syslogMap);
+			}
+		} catch (Exception e) {
+			returnStr = "FAIL";
+			e.printStackTrace();
+			syslogMap.put("reqType", "Database Config");
+			syslogMap.put("reqSubType", "systemDbMgmt");
+			syslogMap.put("reqUrl", "resources/systemDbMgmt.do");
+			syslogMap.put("reqCode", "Fail");
+			syslogMap.put("reqMsg", e.toString());
+			usersMapper.insertSystemAjaxLog(syslogMap);
+		}
+		return returnStr;
 	}
 	
 	@SuppressWarnings("unchecked")

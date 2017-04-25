@@ -20,10 +20,10 @@ function openBackupModal() {
 	var newMonth = nowDate.getMonth()+1;
 	var newDate = nowDate.getDate();
 
-	if(newMonth.toString.length == "1"){
+	if(newMonth.toString().length == 1){
 		newMonth = "0"+newMonth;
 	}
-	if(newDate.toString.length == "1"){
+	if(newDate.toString().length == 1){
 		newDate = "0"+newDate;
 	}
 	var fileName = "backup-"+newYear+"-"+newMonth+"-"+newDate+"-"+nowDate.getHours()+""+nowDate.getMinutes()+".dump";
@@ -156,6 +156,40 @@ function setBackupTime() {
 	});
 }
 
+function deleteSelectedFile() {
+	if(!confirm('Selected data will be deleted.\nDo you want to continue?')){
+		return;
+	}
+	var checkedObj = $("input[name='commandCheck']:checked");
+	var checkedStr = "";
+	for (var i = 0; i < checkedObj.length; i++) {
+		if(i == checkedObj.length - 1){
+			checkedStr += checkedObj[i].id;
+		}else{
+			checkedStr += checkedObj[i].id + ",";
+		}
+	}
+	$.ajax({
+		url: '/dashbd/resources/deleteBackup.do',
+		method: 'POST',
+		data: {
+			deleteList: checkedStr
+		},
+		success: function(data, textStatus, jqXHR) {
+			if(data == "SUCCESS"){
+				alert("Selected Backup File is deleted!");
+				location.reload();
+			}else{
+				alert("Delete Fail!");
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert(errorThrown + textStatus);
+			return false;
+		}
+	});
+}
+
 function getDatabaseList() {
 	$('#table').bootstrapTable('destroy');
 	var table = $('#table').bootstrapTable({
@@ -237,7 +271,7 @@ function getDatabaseList() {
 			sortable: false,
 			formatter: function(value, row, index) {
 				var html = '<button type="button" onclick="openRestoreModal(\'' + row.backupId + '\', \'' + row.backupFileName + '\')" class="btn btn-success btn-xs button-edit">Restore DB</button> '
-				html += '<button type="button" onclick="deleteRestoreModal(\'' + row.backupId + '\', \'' + row.backupFileName + '\')" class="btn btn-danger btn-xs button-edit">Delete</button> '
+				html += '<input type="checkbox" id="'+ row.backupId +'" name="commandCheck" style="vertical-align: middle;margin-top: 0px;">'
 				return html;
 			}
 		}]

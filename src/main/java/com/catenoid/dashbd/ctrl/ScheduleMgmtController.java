@@ -361,7 +361,7 @@ public class ScheduleMgmtController {
 		
 		logger.info("modifyScheduleTime param{}", params);
 		HashMap<String, String> retValue = new HashMap<String, String>();
-		try{
+		try {
 			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
 			Bmsc bmsc = mapperBmsc.selectBmsc(Integer.parseInt(params.get("bmscId")));
 			
@@ -374,7 +374,7 @@ public class ScheduleMgmtController {
 			int ret = mapper.modifyScheduleTime(params);
 			logger.info("modifyScheduleTime ret{}", ret);
 			
-			if (params.get("BCID") != null && !"".equals(params.get("BCID"))){
+			if (params.get("BCID") != null && !"".equals(params.get("BCID"))) {
 				//@ update broadcast_info
 				params.put("transactionId", makeTransId());
 				params.put("schedule_start", startTime);
@@ -405,16 +405,16 @@ public class ScheduleMgmtController {
 	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
 		Users user = (Users) session.getAttribute("USER");
-		if(user == null){
+		if(user == null) {
 			mv.setViewName("redirect:/login.do");
 			return mv;
 		}
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		OperatorMapper operatorMapper = sqlSession.getMapper(OperatorMapper.class);
 		List<Circle> circleList = operatorMapper.selectCircleListNameAll();
-		if(user.getGrade() == 9999){
+		if(user.getGrade() == 9999) {
 			for (int i = circleList.size()-1; i > -1; i--) {
-				if(Integer.parseInt(user.getCircleId()) != circleList.get(i).getCircle_id()){
+				if(Integer.parseInt(user.getCircleId()) != circleList.get(i).getCircle_id()) {
 					circleList.remove(i);
 				}
 			}
