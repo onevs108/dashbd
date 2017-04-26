@@ -1398,9 +1398,9 @@
 	<!-- DB Backup log 생성 -->
 	<insert id="insertSystemDbBackup" parameterType="java.util.HashMap">
 	insert into database_backup 
-	( backup_file_name, backup_file_path, backup_created_id, backup_created_at )
+	( backup_file_name, backup_file_path, backup_created_id, backup_created_at, backup_type )
 	values
-	( #{fileName}, #{filePath}, #{createdId}, now() )
+	( #{fileName}, #{filePath}, #{createdId}, now(), #{backupType} )
 	</insert>
 	
 	<!-- DB Backup Delete -->

@@ -19,14 +19,21 @@ function openBackupModal() {
 	var newYear = nowDate.getFullYear();
 	var newMonth = nowDate.getMonth()+1;
 	var newDate = nowDate.getDate();
-
+	var newHours = nowDate.getHours();
+	var newMinutes = nowDate.getMinutes();
 	if(newMonth.toString().length == 1){
 		newMonth = "0"+newMonth;
 	}
 	if(newDate.toString().length == 1){
 		newDate = "0"+newDate;
 	}
-	var fileName = "backup-"+newYear+"-"+newMonth+"-"+newDate+"-"+nowDate.getHours()+""+nowDate.getMinutes()+".dump";
+	if(nowDate.getHours().toString().length == 1){
+		newHours = "0"+nowDate.getHours();
+	}
+	if(nowDate.getMinutes().toString().length == 1){
+		newMinutes = "0"+nowDate.getMinutes();
+	}
+	var fileName = "backup-"+newYear+"-"+newMonth+"-"+newDate+"-"+newHours+""+newMinutes+".dump";
 	if (confirm('All data will be backuped up in the '+ fileName +' File?')) {
 		$.ajax({
 			url: '/dashbd/resources/systemDbBackup.do',
@@ -35,12 +42,22 @@ function openBackupModal() {
 			data: {
 				fileName: fileName
 			},
+			beforeSend: function() {
+		    	$.blockUI();
+		    },
 			success: function(data, textStatus, jqXHR) {
-				if(data.result == "-1"){
+				if(data.result == "-1")
+				{
 					alert(data.reqMsg);
-				}else{
-					alert("Database Backup Success.!");
 				}
+				else
+				{
+					alert("Database Backup Success.!");
+					location.reload();
+				}
+			},
+			complete: function(data, textStatus, jqXHR) {
+				$.unblockUI();
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert(errorThrown + textStatus);

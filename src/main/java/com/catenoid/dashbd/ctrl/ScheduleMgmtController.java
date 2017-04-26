@@ -1164,6 +1164,21 @@ public class ScheduleMgmtController {
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트
 				ret = mapper.updateSchedule(params);
+				if(params.get("serviceMode").equals("MooD")){
+					HashMap<String, String> moodParam = new HashMap<String, String>();
+					moodParam.put("serviceId", params.get("serviceId"));
+					for (int i = 0; i < bcSaidList.size(); i++) {
+						moodParam.put("said", bcSaidList.get(i));
+						moodParam.put("mode", "BC");
+						mapper.insertMoodService(moodParam);
+						saidList.remove(bcSaidList.get(i));
+					}
+					for (int i = 0; i < saidList.size(); i++) {
+						moodParam.put("said", saidList.get(i));
+						moodParam.put("mode", "UC");
+						mapper.insertMoodService(moodParam);
+					}
+				}
 				
 				System.out.println("insertContentInfo ===== "+resStr[1]);
 				insertContentInfo(resStr[1], params.get("id"));

@@ -864,8 +864,8 @@
 	</select>
 	
 	<select id="getBcIdFromServiceId" parameterType="java.util.Map" resultType="String">
-		select BCID from broadcast_info
-		where serviceId = #{serviceId}
+		select a.BCID from broadcast_info a inner join schedule b on a.BCID = b.BCID and b.del_yn = 'N'
+		where a.serviceId = #{serviceId}
 	</select>
 	
 	<select id="getScheduleIdFromBCID" parameterType="java.util.Map" resultType="String">
@@ -930,7 +930,8 @@
 	</select>
 	
 	<select id="getThreashold" parameterType="java.util.Map" resultType="java.util.Map">
-		select UCThreshold, BCThreshold from broadcast_info
+		select UCThreshold, BCThreshold from broadcast_info a 	      	
+	      	inner join schedule b on a.BCID = b.BCID and b.del_yn = 'N'
 		where serviceId = #{serviceId}
 	</select>
 	
@@ -940,13 +941,25 @@
 	</select>
 	
 	<update id="updateSaidMode" parameterType="HashMap">
-		update crs_said_mapping     
-		set crs_mode = 
-		<if test="ntype == 'BC'">'Unicast'</if>
-		<if test="ntype == 'UC'">'Broadcast'</if>
+		update mood_service     
+		set mode = 
+		<if test="ntype == 'BC'">'UC'</if>
+		<if test="ntype == 'UC'">'BC'</if>
 		, update_dt = now()
-		where said = #{said}
+		where serviceId = #{serviceId}
+		and said = #{said}
 	</update>
+	
+	<insert id="insertMoodService" parameterType="HashMap">
+		insert mood_service
+		(
+			serviceId, said, mode, update_dt
+		)
+		values
+		(
+			#{serviceId}, #{said}, #{mode}, now()
+		)
+	</insert>
 	
 	<select id="getSendBcSaid" parameterType="java.util.Map" resultType="HashMap">
 		select said, ntype from (
@@ -964,12 +977,12 @@
 			  	'UC' as ntype
 				from mood_request a
 				where insertDate <![CDATA[ > ]]> date_add(now(), interval-${interval} minute)
-				and (select crs_mode from crs_said_mapping where said = a.said) = 'Unicast'
-				and (select ifnull(update_dt, '1999-12-31') from crs_said_mapping where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
+				and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'UC'
+				and (select ifnull(update_dt, '1999-12-31') from mood_service where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q
-			where aCnt > 0 and bCnt = 0
+			where aCnt <![CDATA[ > ]]> 0
 			union all
 			select * from
 			( select serviceId, said, sum(Atype) as aCnt, sum(Btype) as bCnt, ntype
@@ -984,12 +997,12 @@
 			  ,'BC' as ntype
 			from mood_request a
 			where insertDate <![CDATA[ > ]]>date_add(now(), interval-${interval} minute)
-			and (select crs_mode from crs_said_mapping where said = a.said) = 'Broadcast'
-			and (select ifnull(update_dt, '1999-12-31') from crs_said_mapping where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
+			and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'BC'
+			and (select ifnull(update_dt, '1999-12-31') from mood_service where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q
-			where aCnt <![CDATA[ > ]]> 0 and bCnt = 0) T
+			where aCnt <![CDATA[ > ]]> 0) T
 		where serviceId = #{serviceId}
 	</select>
 

@@ -55,7 +55,7 @@
 	
 	<bean id="dbBackupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	    <property name="jobDetail" ref="dbBackupCron"/>
-	    <property name="cronExpression" value="0/30 * * * * ?"/>	<!-- 매 30초마다 (for test)  -->
+	    <property name="cronExpression" value="0/25 * * * * ?"/>	<!-- 매 25초마다 (for test)  -->
 	</bean>
 	
 	<bean id="checkCRSInfoTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

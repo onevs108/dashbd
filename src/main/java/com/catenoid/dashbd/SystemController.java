@@ -916,8 +916,6 @@ public class SystemController{
   			searchParam.put("filePath", filePath);
   			searchParam.put("createdId", userOfSession.getUserId());
 
-  			int rst = mapper.insertSystemDbBackup(searchParam);
-  			
 			Runtime runtime = Runtime.getRuntime();
 			Process process = runtime.exec(exeDatabaseBackup);
 			InputStream is = process.getInputStream();
@@ -930,6 +928,8 @@ public class SystemController{
 			}
 
             System.out.println("exeDatabaseBackup   >>  " + sb);
+            
+            int rst = mapper.insertSystemDbBackup(searchParam);
             
 			//String sessionHostNameCnt = sb.substring(RETURN_SHELL.length());
             String sessionHostNameCnt = sb.toString();

@@ -1,8 +1,11 @@
 package com.catenoid.dashbd.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 
 public class Utils {
 	
@@ -27,4 +30,16 @@ public class Utils {
 		cal.setTime(date);
 		return new SimpleDateFormat(format).format(cal.getTime());
 	}
+	
+	public String getProperyValue(String key) {
+		InputStream pis = getClass().getResourceAsStream("/config.properties");
+		Properties props = new Properties();
+		try {
+			props.load(pis);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return (String) props.get(key);
+	}
+	
 }
