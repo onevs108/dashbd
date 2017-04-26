@@ -966,8 +966,8 @@
 		
 		function changeDeleveryType(row) { 
 			swal({
-				  title: "",
-				  text: "Are you sure?",
+				  title: "Are you sure?",
+				  text: "Service mode will be changed to Unicast/Broadcast.  Continue?",
 				  type: "warning",
 				  showCancelButton: true,
 				  confirmButtonColor: "#DD6B55",
