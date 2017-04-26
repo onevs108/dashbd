@@ -903,8 +903,6 @@ public class XmlManager {
 		System.out.println(new XmlManager().convertDateFormat("20151223201100"));
 		
 		
-		
-		
 //		String tt = "";
 //		try {
 //			tt = new XmlManager().tmpRespRETRIEVE_Body();

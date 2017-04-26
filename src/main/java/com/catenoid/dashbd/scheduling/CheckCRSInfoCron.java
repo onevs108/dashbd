@@ -111,7 +111,7 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String makeModityXmlCRS(String tempSvId, HashMap<String, String> crsInfo, String agentKeyCRS, String said) {
+	public String makeModityXmlCRS(String tempSvId, HashMap<String, String> crsInfo, String agentKeyCRS, String said) {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		Map<String, String> bcParam = new HashMap<String, String>();
 		bcParam.put("serviceId", tempSvId);
