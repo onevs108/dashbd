@@ -2427,7 +2427,7 @@
 	</select>
 	
 	<select id="getNationalSubSchedule" parameterType="HashMap" resultType="HashMap">
-		SELECT circle.circle_name as circleName, mood.serviceId, broad.service_name as serviceName
+		SELECT circle.circle_id as circleId, circle.circle_name as circleName, mood.serviceId, broad.service_name as serviceName
 		      , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 		      , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr, broad.fecRatio
 		      , ms.mode as deleveryType

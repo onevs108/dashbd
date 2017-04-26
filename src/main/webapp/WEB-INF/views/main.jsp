@@ -542,7 +542,15 @@
 					width: '10%',
 					align: 'left',
 					valign: 'middle',
-					sortable: true
+					sortable: true,
+					formatter: function(value, row, index) {
+						if(value != undefined && value != '') {
+							var html='<a href="javascript:void(0);" onclick="changeDeleveryType(' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + value + '</a>';
+						}
+						else var html = '-';
+						
+						return html;
+					}
 				}, {
 					field: 'viewers',
 					title: '#of Viewers',
@@ -617,7 +625,7 @@
 							tableHtml += '<td>' + row.scheduleStop + '</td>';
 							tableHtml += '<td>' + row.gbr + '</td>';
 							tableHtml += '<td>' + (row.fecRatio != undefined && row.fecRatio != ''? row.fecRatio + '%' : '-') + '</td>';
-							tableHtml += '<td>' + row.deleveryType + '</td>';
+							tableHtml += '<td>' + (row.deleveryType != undefined && row.deleveryType != ''? '<a href="javascript:void(0);" onclick="changeDeleveryType(' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.deleveryType + '</a>' : '-') + '</td>';
 							tableHtml += '<td>' + row.viewers + '</td>';
 							tableHtml += '</tr>';
 				        }
@@ -685,7 +693,7 @@
 							tableHtml += '<td>' + row.scheduleStop + '</td>';
 							tableHtml += '<td>' + row.gbr + '</td>';
 							tableHtml += '<td>' + (row.fecRatio != undefined && row.fecRatio != ''? row.fecRatio + '%' : '-') + '</td>';
-							tableHtml += '<td>' + row.deleveryType + '</td>';
+							tableHtml += '<td>' + (row.deleveryType != undefined && row.deleveryType != ''? '<a href="javascript:void(0);" onclick="changeDeleveryType(' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.deleveryType + '</a>' : '-') + '</td>';
 							tableHtml += '<td>' + row.viewers + '</td>';
 							tableHtml += '</tr>';
 				        }
@@ -954,6 +962,60 @@
 			}
 			
 			location.href = '/dashbd/view/schedule.do?id=' + scheduleId + "&contentsType=" + contentType;
+		}
+		
+		function changeDeleveryType(row) { 
+			swal({
+				  title: "",
+				  text: "Are you sure?",
+				  type: "warning",
+				  showCancelButton: true,
+				  confirmButtonColor: "#DD6B55",
+				  confirmButtonText: "Yes",
+				  closeOnConfirm: false
+				},
+				function(){
+					var said;
+					if(row.circleId != undefined) {
+						said = row.circleId;
+					} else if(row.cityId != undefined) {
+						said = row.cityId;
+					} else if(row.hotspotId != undefined) {
+						said = row.hotspotId;
+					}
+					
+					var param = {
+						serviceId : row.serviceId, 
+						said : said,
+						mode : row.deleveryType
+					}
+					
+					$.ajax({
+					    url : "/dashbd/view/changeServiceMode.do",
+					    type: "POST",
+					    data : param,
+					    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+					    success : function(responseData) {
+					        $("#ajax").remove();
+				        	if(responseData.resultInfo.resultCode == 'S') {
+				        		swal({title:"Success !", text:"Success", type:"success"}, function() {
+				        			searchRegionalSchedule(false);	
+				        		});
+				        	} else {
+				        		swal({
+					                title: "Fail !",
+					                text: "Error"
+					            });
+				        	}
+					    },
+				        error : function(xhr, status, error) {
+				        	swal({
+				                title: "Fail !",
+				                text: "Error"
+				            });
+				        }
+					});
+				});
 		}
 	</script>
 </body>
