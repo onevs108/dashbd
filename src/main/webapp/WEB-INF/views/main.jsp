@@ -470,14 +470,14 @@
 							if($("#circleId").val() == '') {
 								//Emergency_schedule
 								if(row.emergencyYn == 'Y') {
-									var html='<a href="javascript:void(0);" style="color:#ed5565;" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';	
+									var html='<a href="javascript:void(0);" style="color:#ed5565;" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + value + '</a>';	
 								} 
 								//National Schedule
 								else {
-									var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';
+									var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + value + '</a>';
 								}
 							} else if($("#circleId").val() != '' && row.circleName != 'national') {
-								var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + value + '</a>';
+								var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + value + '</a>';
 							} else {
 								var html = value;
 							}
@@ -531,8 +531,8 @@
 					valign: 'middle',
 					sortable: true,
 					formatter: function(value, row, index) {
-						if(value != undefined) var html = value + '%'
-						else var html = '';
+						if(value != undefined && value != '') var html = value + '%'
+						else var html = '-';
 						
 						return html;
 					}
@@ -610,13 +610,13 @@
 							
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
 							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.fileURI + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.serviceId + '</a></td>'; 						
-							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + row.serviceName + '</a></td>';
+							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + row.serviceName + '</a></td>';
 							tableHtml += '<td>' + row.service + '</td>';
 // 							tableHtml += '<td>' + row.scheduleType + '</td>';
 							tableHtml += '<td>' + row.scheduleStart + '</td>';
 							tableHtml += '<td>' + row.scheduleStop + '</td>';
 							tableHtml += '<td>' + row.gbr + '</td>';
-							tableHtml += '<td>' + row.fecRatio + '%</td>';
+							tableHtml += '<td>' + (row.fecRatio != undefined && row.fecRatio != ''? row.fecRatio + '%' : '-') + '</td>';
 							tableHtml += '<td>' + row.deleveryType + '</td>';
 							tableHtml += '<td>' + row.viewers + '</td>';
 							tableHtml += '</tr>';
@@ -678,13 +678,13 @@
 							tableHtml += '<td>' + row.circleName + "</td>"
 							var onair = row.onAirYn == 'Y'? 'onair' : '';
 							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.fileURI + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.serviceId + '</a></td>'; 						
-							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\')">' + row.serviceName + '</a></td>';
+							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + row.serviceName + '</a></td>';
 							tableHtml += '<td>' + row.service + '</td>';
 // 							tableHtml += '<td>' + row.scheduleType + '</td>';
 							tableHtml += '<td>' + row.scheduleStart + '</td>';
 							tableHtml += '<td>' + row.scheduleStop + '</td>';
 							tableHtml += '<td>' + row.gbr + '</td>';
-							tableHtml += '<td>' + row.fecRatio + '%</td>';
+							tableHtml += '<td>' + (row.fecRatio != undefined && row.fecRatio != ''? row.fecRatio + '%' : '-') + '</td>';
 							tableHtml += '<td>' + row.deleveryType + '</td>';
 							tableHtml += '<td>' + row.viewers + '</td>';
 							tableHtml += '</tr>';
@@ -948,8 +948,12 @@
 			$("#serviceModal").modal('show');		
 		}
 		
-		function moveScheduleDetail(scheduleId) {
-			location.href = '/dashbd/view/schedule.do?id=' + scheduleId;
+		function moveScheduleDetail(scheduleId, contentType) {
+			if(contentType != 'streaming') {
+				contentType = 'file';
+			}
+			
+			location.href = '/dashbd/view/schedule.do?id=' + scheduleId + "&contentsType=" + contentType;
 		}
 	</script>
 </body>

@@ -652,4 +652,10 @@
 	where id in (${deleteList})
   </delete>
   
+  <update id="resetUserPasswordCnt" parameterType="HashMap">
+  	UPDATE users
+	SET fail_cnt = 0
+	WHERE user_id = #{userId}
+  </update>
+  
 </mapper>
