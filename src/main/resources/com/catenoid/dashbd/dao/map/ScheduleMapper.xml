@@ -943,8 +943,8 @@
 	<update id="updateSaidMode" parameterType="HashMap">
 		update mood_service     
 		set mode = 
-		<if test="ntype == 'BC'">'UC'</if>
-		<if test="ntype == 'UC'">'BC'</if>
+		<if test="ntype == 'Broadcast'">'Unicast'</if>
+		<if test="ntype == 'Unicast'">'Broadcast'</if>
 		, update_dt = now()
 		where serviceId = #{serviceId}
 		and said = #{said}
@@ -977,7 +977,7 @@
 			  	'UC' as ntype
 				from mood_request a
 				where insertDate <![CDATA[ > ]]> date_add(now(), interval-${interval} minute)
-				and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'UC'
+				and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'Unicast'
 				and (select ifnull(update_dt, '1999-12-31') from mood_service where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
@@ -997,7 +997,7 @@
 			  ,'BC' as ntype
 			from mood_request a
 			where insertDate <![CDATA[ > ]]>date_add(now(), interval-${interval} minute)
-			and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'BC'
+			and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'Broadcast'
 			and (select ifnull(update_dt, '1999-12-31') from mood_service where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H

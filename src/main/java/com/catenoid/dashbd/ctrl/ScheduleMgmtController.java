@@ -958,10 +958,9 @@ public class ScheduleMgmtController {
 		return returnStr;
 	}
 	
-	@RequestMapping(value = "view/receiveTimestampRequest.do")
+	@RequestMapping(value = "view/receiveHeartbeat.do")
 	@ResponseBody
-	public String receiveTimestampRequest(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String postData) {
-		ScheduleMapper scheduleMapper = sqlSession.getMapper(ScheduleMapper.class);
+	public String receiveHeartbeat(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String postData) {
 		SAXBuilder builder = new SAXBuilder();
 		String returnStr = "";
 		try {
@@ -970,8 +969,27 @@ public class ScheduleMgmtController {
 			System.out.println(outString(doc));
 			Element message = doc.getRootElement();
 			Element transaction = (Element) message.getChildren().get(0);
-			Element request = (Element) message.getChildren().get(1);
 			
+			System.out.println("================== Heartbeat Start ==================");
+			Element messageNew = new Element("message");
+			messageNew.setAttribute(new Attribute("name", "HEARTBEAT.CHECK"));	
+			messageNew.setAttribute(new Attribute("type", "RESPONSE"));
+			Document docNew = new Document(messageNew);
+			docNew.setRootElement(messageNew);
+			Element resultNew = new Element("result");
+			Element codeNew = new Element("code");
+			Element message2New = new Element("message");
+			resultNew.addContent(codeNew.setText("100"));
+			resultNew.addContent(message2New.setText("OK"));
+			
+			Element transactionNew = new Element("transaction");
+			transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
+			transactionNew.addContent(resultNew);		
+			
+			docNew.getRootElement().addContent(transactionNew);
+			System.out.println(outString(docNew));
+			System.out.println("================== Heartbeat End ==================");
+			returnStr = outString(docNew);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JDOMException e) {
@@ -1169,13 +1187,13 @@ public class ScheduleMgmtController {
 					moodParam.put("serviceId", params.get("serviceId"));
 					for (int i = 0; i < bcSaidList.size(); i++) {
 						moodParam.put("said", bcSaidList.get(i));
-						moodParam.put("mode", "BC");
+						moodParam.put("mode", "Broadcast");
 						mapper.insertMoodService(moodParam);
 						saidList.remove(bcSaidList.get(i));
 					}
 					for (int i = 0; i < saidList.size(); i++) {
 						moodParam.put("said", saidList.get(i));
-						moodParam.put("mode", "UC");
+						moodParam.put("mode", "Unicast");
 						mapper.insertMoodService(moodParam);
 					}
 				}

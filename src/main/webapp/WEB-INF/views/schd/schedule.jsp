@@ -574,7 +574,7 @@
 			                                    	<div class="row">
 			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 25px">r12mpdURI</label>
 				                                        <div class="col-sm-8">
-				                                        	<input type="text" class="form-control" id="r12mpdURI" name="r12mpdURI" value="">
+				                                        	<input type="text" class="form-control" id="r12mpdURI" name="r12mpdURI" value="${mapContentUrl.url}">
 				                                        </div>
 			                                    	</div>
 			                                    	<div name="bcPattern" class="row">
@@ -593,7 +593,7 @@
 					                                    <div class="col-sm-6">
 					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;background-color: white;" readonly>
 					                                    </div>
-					                                    <c:if test="${type == 'area'}">
+<%-- 					                                    <c:if test="${type == 'area'}"> --%>
 				                                    	<div class="row">
 				                                    		<div class="col-sm-2">
 						                                    	<input type="text" class="form-control" id="bcSaid" name="bcSaid" value="">
@@ -605,7 +605,7 @@
 						                                        <button type="button" id="bcMapAdd" name="bcMapAdd" class="btn btn-block btn-default" style="display: none;">Add bcServiceArea with Map</button>
 						                                    </div>
 												        </div>
-												        </c:if>
+<%-- 												        </c:if> --%>
 					                                </div> 
 			                                    </div>
 			                                </div>
