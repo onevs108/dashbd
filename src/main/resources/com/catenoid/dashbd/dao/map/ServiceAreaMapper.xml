@@ -1830,14 +1830,14 @@
 						          , broad.fileURI, broad.serviceClass
 						          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 						          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-						          , IFNULL(fecRatio, 0) as fecRatio
+						          , fecRatio
 						          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 						          , schedule.id as scheduleId
 						          , null as emergencyYn
 						          , broad.serviceMode
-						          , crs.crs_mode as deleveryType
+						          , ms.mode as deleveryType
 						          , CASE WHEN mood.countUC is null THEN '-'
-						          		 ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0)
+						          		 ELSE FORMAT(IF(ms.mode = 'Unicast', mood.countUC, mood.countBC), 0)
 						          	END as viewers
 						          , broad.said
 						          FROM circle circle
@@ -1854,8 +1854,9 @@
 									  WHERE serviceId = broad.serviceId
 									  GROUP BY serviceId, said
 								  )
-								  INNER JOIN crs_said_mapping crs
-								  ON circle.circle_id = crs.said
+								  LEFT JOIN mood_service ms
+								  ON circle.circle_id = ms.said
+								  AND broad.serviceId = ms.serviceId
                                   WHERE schedule.del_yn = 'N'
                                     AND schedule.national_yn is null
 						      ) circle
@@ -1873,7 +1874,7 @@
 							          , broad.fileURI, broad.serviceClass
 							          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 							          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-							          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+							          , '-' as deleveryType, fecRatio
 							          , '-' as viewers
 							          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 							          , schedule.id as scheduleId		
@@ -2097,7 +2098,7 @@
 				          , broad.fileURI, broad.serviceClass
 				          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				          , '-' as deleveryType, fecRatio
 				          , '-' as viewers
 				          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				          , schedule.id as scheduleId
@@ -2123,7 +2124,7 @@
 				          , broad.fileURI, broad.serviceClass
 				          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				          , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				          , '-' as deleveryType, IFNULL(fecRatio, 0) as fecRatio
+				          , '-' as deleveryType, fecRatio
 				          , '-' as viewers
 				          , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				          , schedule.id as scheduleId				 
@@ -2261,10 +2262,10 @@
 				    , broad.serviceId, broad.service_name as serviceName, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , IFNULL(fecRatio, 0) as fecRatio
-					, crs.crs_mode as deleveryType
+				    , fecRatio
+					, ms.mode as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
-			          		ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0)
+			          		ELSE FORMAT(IF(ms.mode = 'Unicast', mood.countUC, mood.countBC), 0)
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , broad.said
@@ -2280,8 +2281,9 @@
 					  WHERE serviceId = broad.serviceId
 					  GROUP BY serviceId, said
 				  )
-				  INNER JOIN crs_said_mapping crs
-				  ON city.city_id = crs.said
+				  LEFT JOIN mood_service ms
+				  ON city.city_id = ms.said
+				  AND broad.serviceId = ms.serviceId
 				  <if test="cityListStr != '' and cityListStr != null">
 				  	WHERE city.city_id IN (${cityListStr})
 				  </if>
@@ -2294,10 +2296,10 @@
 					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , IFNULL(fecRatio, 0) as fecRatio
-					, crs.crs_mode as deleveryType
+				    , fecRatio
+					, ms.mode as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
-			          		ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0) 
+			          		ELSE FORMAT(IF(ms.mode = 'Unicast', mood.countUC, mood.countBC), 0) 
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId, schedule.national_yn as nationalYn 
@@ -2316,8 +2318,9 @@
 					  WHERE serviceId = broad.serviceId
 					  GROUP BY serviceId, said
 				  )
-				INNER JOIN crs_said_mapping crs
-				ON hotspot.hotspot_id = crs.said
+				LEFT JOIN mood_service ms
+				ON hotspot.hotspot_id = ms.said
+				AND broad.serviceId = ms.serviceId
 				WHERE hotspot.city_id = #{psaid}
 				<if test="hotspotListStr != '' and hotspotListStr != null">
 					AND hotspot.hotspot_id IN (${hotspotListStr})
@@ -2328,10 +2331,10 @@
 					, broad.fileURI, broad.serviceClass
 				    , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
 				    , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr
-				    , IFNULL(fecRatio, 0) as fecRatio
-					, crs.crs_mode as deleveryType
+				    , fecRatio
+					, ms.mode as deleveryType
 			        , CASE WHEN mood.countUC is null THEN '-'
-			          		ELSE FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0)
+			          		ELSE FORMAT(IF(ms.mode = 'Unicast', mood.countUC, mood.countBC), 0)
 			          END as viewers
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId
@@ -2353,8 +2356,9 @@
 					  WHERE serviceId = broad.serviceId
 					  GROUP BY serviceId, said
 				  )
-				INNER JOIN crs_said_mapping crs
-				ON hotspot.hotspot_id = crs.said
+				LEFT JOIN mood_service ms
+				ON hotspot.hotspot_id = ms.said
+				AND broad.serviceId = ms.serviceId
 				WHERE city.circle_id = #{psaid}
 				<if test="hotspotListStr != '' and hotspotListStr != null">
 					AND hotspot.hotspot_id IN (${hotspotListStr})
@@ -2425,9 +2429,9 @@
 	<select id="getNationalSubSchedule" parameterType="HashMap" resultType="HashMap">
 		SELECT circle.circle_name as circleName, mood.serviceId, broad.service_name as serviceName
 		      , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
-		      , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr, IFNULL(broad.fecRatio, 0) as fecRatio
-		      , crs.crs_mode as deleveryType
-		      , FORMAT(IF(crs.crs_mode = 'Unicast', mood.countUC, mood.countBC), 0) as viewers
+		      , date_format(broad.schedule_stop, '%Y-%m-%d %T') as scheduleStop, broad.GBR as gbr, broad.fecRatio
+		      , ms.mode as deleveryType
+		      , FORMAT(IF(ms.mode = 'Unicast', mood.countUC, mood.countBC), 0) as viewers
 			  , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 			  , schedule.id as scheduleId
 		FROM mood_request mood
@@ -2437,8 +2441,9 @@
 		ON mood.said = circle.circle_id
 		INNER JOIN schedule schedule
 		ON broad.BCID = schedule.BCID
-		INNER JOIN crs_said_mapping crs
-		ON circle.circle_id = crs.said
+		LEFT JOIN mood_service ms
+		ON circle.circle_id = ms.said
+		AND broad.serviceId = ms.serviceId
 		WHERE mood.serviceId = #{serviceId}
 		AND (mood.serviceId, mood.said, mood.insertDate) IN (
 		  SELECT serviceId, said, MAX(insertDate) as insertDate

@@ -78,5 +78,6 @@ public interface UsersMapper {
 	int updateBackupTime(String backupTime);
 
 	int deleteBackup(Map<String, String> backupParam);
-
+	
+	int resetUserPasswordCnt(HashMap<String, Object> param);
 }

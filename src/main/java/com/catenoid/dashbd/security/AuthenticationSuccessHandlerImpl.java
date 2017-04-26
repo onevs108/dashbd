@@ -93,6 +93,9 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
 			UsersMapper logMapper = sqlSession.getMapper(UsersMapper.class);
 			logMapper.insertSystemAjaxLog(logMap);
 			
+			logMap.put("userId", LogUser.getUserId());
+			logMapper.resetUserPasswordCnt(logMap);
+			
 			response.sendRedirect("/dashbd/resources/main.do");
 //		}
 //		else { // 부여된 권한이 없는 경우
