@@ -1447,7 +1447,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/changeServiceMode.do")
 	@ResponseBody
-	public void changeServiceMode(HttpServletRequest request, Locale locale ) {
+	public Map<String, Object> changeServiceMode(HttpServletRequest request, Locale locale ) {
 		try{
 			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -1488,13 +1488,16 @@ public class ScheduleMgmtController {
 				System.out.println(" ================== ("+saidParam.get("said")+") CRS Mood Update End ================== ");
 			} catch (Exception e) {
 				e.printStackTrace();
+				return makeRetMsg("N", "FAIL");
 			}
 			rtvs[0] = respBody;
 			rtvs[1] = reqBody;
 			
 		}catch(Exception e){ 
 			logger.error("", e);
+			return makeRetMsg("N", "FAIL");
 		}
+		return makeRetMsg("S", "OK");
 	}
 	
 	private String convertMysqlDateFormat(String dateTime, boolean add30Secons){
