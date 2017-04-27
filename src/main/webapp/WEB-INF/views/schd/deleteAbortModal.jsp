@@ -32,10 +32,16 @@
 
 	$(document).ready(function(){
 		$("#btnAbort").click(function(){
-			deleteAction($("#url").val(), "Abort");
+			if(!confirm("It will be aborted. do you want this??")){
+    			return;
+    		}
+			deleteAction($("#url").val(), "btnAbort");
 		});
 		$("#btnDelete").click(function(){
-			deleteAction($("#url").val(), "Delete");
+			if(!confirm("It will be deleted. do you want this??")){
+    			return;
+    		}
+			deleteAction($("#url").val(), "btnDelete");
 		});
 		$("#btnCancel").click(function(){
 			$("#deleteAbortModal").modal('hide');

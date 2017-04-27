@@ -20,7 +20,7 @@
 		                	<div class="ibox">
 		                		<div class="row">
 			                        <div class="ibox-title">
-			                            <h5>serviceId List</h5>
+			                            <h5>Service ID Mgmt</h5>
 			                            <i class="fa fa-times" style="cursor:pointer;float: right;" onclick="closeIdModal()"></i>
 			                        </div>
 		                        </div>
@@ -73,7 +73,7 @@
 
 	$(document).ready(function(){
 		getServiceIdList();
-		setSelectServiceId();
+// 		setSelectServiceId();
 	});
 	
 	function setSelectServiceId() {
