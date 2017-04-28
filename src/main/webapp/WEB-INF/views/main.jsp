@@ -41,9 +41,9 @@
 		<div id="page-wrapper" class="gray-bg dashbard-1" style="min-height: 1014px;">
 <%-- 			<jsp:include page="common/header.jsp" />	 --%>
 			<c:import url="/resources/header.do"></c:import>
-			<div class="row border-bottom white-bg dashboard-header">
-				<div class="session">
-					<h2>SeSM Main</h2>
+<!-- 			<div class="row border-bottom white-bg dashboard-header"> -->
+<!-- 				<div class="session"> -->
+<!-- 					<h2>SeSM Main</h2> -->
 <!-- 					<div class="pull-right"> -->
 <%-- 						<span>Num Sessions: ${total_session}</span> --%>
 <!-- 						<span> -->
@@ -51,8 +51,8 @@
 <!-- 							<span class="onDisp"></span> -->
 <!-- 						</span> -->
 <!-- 					</div> -->
-				</div>
-			</div>
+<!-- 				</div> -->
+<!-- 			</div> -->
 			<!-- s : wrapper -->
 			<div class="wrapper wrapper-content">
 				<div class="main-sch">
@@ -966,8 +966,8 @@
 		
 		function changeDeleveryType(row) { 
 			swal({
-				  title: "",
-				  text: "Are you sure?",
+				  title: "Are you sure?",
+				  text: "Service mode will be changed to Unicast/Broadcast.  Continue?",
 				  type: "warning",
 				  showCancelButton: true,
 				  confirmButtonColor: "#DD6B55",
@@ -1017,6 +1017,12 @@
 					});
 				});
 		}
+		
+		//auto refresh
+		(function(){
+		    function refreshTable() {$('#table').bootstrapTable('refresh', {silent: true});}
+		    setInterval(refreshTable, 10000);
+		})()
 	</script>
 </body>
 </html>
