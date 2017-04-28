@@ -9,7 +9,7 @@
 		style="margin-bottom: 0;">
 		<a href="#" class="btn btn-w-m btn-link" style="padding-top: 18px;"><i class="fa fa-rss"></i> <u onclick="javascript:showServiceAreaBandwidth()">Service Area Bandwidth</u></a>
 		<div class="navbar-header">
-			<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"> <i class="fa fa-bars"></i></a> <span class="navbar-form-custom">SeSM (<c:choose><c:when test="${USER.gradeName != null}">${USER.gradeName}</c:when><c:otherwise>Administrator Group</c:otherwise></c:choose>)</span>
+			<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"> <i class="fa fa-bars"></i></a> <span class="navbar-form-custom">SeSM</span>
 		</div>
 		<ul class="nav navbar-top-links navbar-right">
 			<li>
@@ -18,10 +18,10 @@
 						<span class="block m-t-xs" style="padding: 14px 10px 14px 15px;">
 							<c:choose>
 								<c:when test="${USER.grade == 13}">
-									<strong class="font-bold">${USER.lastName} ${USER.firstName} (${USER.department})</strong>
+									<strong class="font-bold">${USER.userId} (${USER.gradeName})</strong>
 								</c:when>
 								<c:otherwise>
-									<strong class="font-bold" style="cursor: pointer;" onclick="doEdit('${USER.userId}', true)">${USER.lastName} ${USER.firstName} (${USER.department})</strong>
+									<strong class="font-bold" style="cursor: pointer;" onclick="doEdit('${USER.userId}', true)">${USER.userId} (${USER.gradeName})</strong>
 								</c:otherwise>
 							</c:choose>
 						</span>

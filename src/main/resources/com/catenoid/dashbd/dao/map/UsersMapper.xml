@@ -279,7 +279,7 @@
     <include refid="Base_Column_List" />
     , (select circle.circle_id from operator operator inner join circle circle on operator.circle_name = circle.circle_name where operator.id = users.operator_id) AS circle_id
     , (select circle_name from operator where id = users.operator_id) AS circle_name
-    , (select name from grade where id = users.grade) AS grade_name
+	, IF(users.grade='9999', (select town_name from operator where id = users.operator_id), (select name from grade where id = users.grade)) AS grade_name    	
     from users
     where user_id = #{userId}
   </select>
