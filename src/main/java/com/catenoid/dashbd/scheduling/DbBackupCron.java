@@ -43,14 +43,20 @@ public class DbBackupCron extends QuartzJobBean{
 			String newYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)); 
 			String newMonth = String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1); 
 			String newDay = String.valueOf(Calendar.getInstance().get(Calendar.DATE)); 
-			newHour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR)); 
-			newMinute = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE)); 
+			newHour = String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)); 
+			newMinute = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
 			String filePath = "";
 			if(newMonth.length() == 1){
 				newMonth = "0"+newMonth;
 			}
 			if(newDay.length() == 1){
 				newDay = "0"+newDay;
+			}
+			if(newHour.length() == 1){
+				newHour = "0"+newHour;
+			}
+			if(newMinute.length() == 1){
+				newMinute = "0"+newMinute;
 			}
 			filePath = "/dashbd/backup/"+newYear+"/"+newMonth+"/"+newDay;
 			String fileName = "backup-"+newYear+"-"+newMonth+"-"+newDay+"-"+newHour+""+newMinute+".dump";

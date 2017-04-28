@@ -184,7 +184,7 @@ $(document).ready(function()
 			success : function( data ) {
 				outMsgForAjax(data);
 				var resultCode = data.resultInfo.resultCode;
-				if(resultCode == "6011") {
+				if(resultCode == "6011" || resultCode == "8410") {
 					if(confirm("Do you want to delete this schedule in SeSM?")){
 						deleteSchedule(param);
 					}
@@ -314,28 +314,6 @@ $(document).ready(function()
 	$("#serviceType").change();
 	$("#serviceMode").change();
 	
-	$("#uploadFile").click(function(){
-		var fileName = $(".bootstrap-filestyle > input").val();
-		var startIdx = fileName.indexOf(".")+1;
-		var fileType = fileName.substring(startIdx).toLowerCase();
-		if(fileType != "txt"){
-			alert("please upload .txt file");
-			return;
-		}
-		var form = $("#uploadFileForm")[0];
-        var formData = new FormData(form);
-        $.ajax({
-           url: 'saidUpload.do',
-           processData: false,
-           contentType: false,
-           data: formData,
-           type: 'POST',
-           success: function(data){
-               setSaidFromFile(data.result);
-           }
-       });
-	})
-	
 	$("input[name='saidList']").on("change", function(){
 		$("input[name='bcSaidList']").val("");
 	});
@@ -343,6 +321,28 @@ $(document).ready(function()
 	detailValidationCheck();
 	
 });
+
+function addSaidFromFile() {
+	var fileName = $(".bootstrap-filestyle > input").val();
+	var startIdx = fileName.indexOf(".")+1;
+	var fileType = fileName.substring(startIdx).toLowerCase();
+	if(fileType != "txt"){
+		alert("please upload .txt file");
+		return;
+	}
+	var form = $("#uploadFileForm")[0];
+    var formData = new FormData(form);
+    $.ajax({
+       url: 'saidUpload.do',
+       processData: false,
+       contentType: false,
+       data: formData,
+       type: 'POST',
+       success: function(data){
+           setSaidFromFile(data.result);
+       }
+   });
+}
 
 function deleteSchedule(param) {
 	$.ajax({
@@ -1193,6 +1193,7 @@ function addContentRemoveEvent(){
 		}
 		$($($("div[name='content']")[ctIdx]).find(".schedule-list")[idx]).remove();
 		$("input[name='contentLength']").val($($("div[name='content']")[ctIdx]).find(".close-content").length);
+		scheduleTimeSync($("#schedule_start")[0]);
 	});
 }
 

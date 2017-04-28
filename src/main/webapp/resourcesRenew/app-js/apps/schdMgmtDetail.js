@@ -553,7 +553,17 @@ function setTimeTable(data){
 		    var y2 = ofs.top + trashEl.outerHeight(true);
 
 		    if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 && jsEvent.pageY>= y1 && jsEvent.pageY <= y2) {
-		    	deleteSchedule(event.url);
+		    	var BCID = event.url.substring(event.url.indexOf("&BCID=") + 6, event.url.lastIndexOf("&"));
+		    	if(BCID.length > 0) {
+		    		deleteSchedule(event.url);
+		    	}else{
+		    		if(!confirm("It will be deleted. do you want this??")){
+		    			g_delRetrun = 0;
+		    			return;
+		    		}
+		    		deleteAction(event.url, "Delete")
+					$('#calendar').fullCalendar('removeEvents', event._id);
+		    	}
 		    }
 	    }
 		, eventAfterRenderfunction: function(event) { // called when an event (already on the calendar) is moved
@@ -582,13 +592,18 @@ function setEventTitle(contents) {
 				if($($(".fc-time-grid-event")[i]).children().text().indexOf("(-)") > -1){
 					$($(".fc-time-grid-event")[i]).css("background-color", "#3CAEFF");
 				}
+				var serviceTime = contents[j].start_date.split("T")[1] +" ~ "+ contents[j].end_date.split("T")[1];
 				var serviceName = contents[j].NAME;
 				var serviceType = contents[j].service;
 				var serviceId = contents[j].serviceId;
+				var serviceMode = contents[j].serviceMode;
 				if(serviceType == undefined) {
-					$(".fc-time-grid-event")[i].title = "serviceName : " + contents[j].NAME
+					$(".fc-time-grid-event")[i].title = "serviceTime : " + serviceTime + "\nserviceName : " + contents[j].NAME
 				}else{
-					$(".fc-time-grid-event")[i].title = "serviceName : " + contents[j].NAME +"\nserviceType : "+contents[j].service +"\nService ID : "+contents[j].serviceId;
+					$(".fc-time-grid-event")[i].title = "serviceTime : " + serviceTime + "\nserviceName : " + contents[j].NAME +"\nserviceType : "+contents[j].service +"\nserviceId : "+contents[j].serviceId;
+				}
+				if(serviceType == "streaming"){
+					$(".fc-time-grid-event")[i].title += "\nserviceMode : " + serviceMode;
 				}
 				break;
 			}
@@ -656,10 +671,10 @@ function modifySchedule(url, startTime, endTime) {
 }
 
 function deleteSchedule(url){
-	if (!confirm("It will be deleted. do you want this??")){
-		g_delRetrun = 0;
-		return;
-	}
+//	if (!confirm("It will be deleted. do you want this??")){
+//		g_delRetrun = 0;
+//		return;
+//	}
 	
 	$("#url").val(url);
 	$("#deleteAbortModal").modal();
@@ -687,16 +702,44 @@ function deleteAction(url, deleteType) {
 		async: false,
 		success : function( data ) {
 			g_delRetrun = outMsgForAjax(data);
+			var resultCode = data.resultInfo.resultCode;
+			if(resultCode == "6011" || resultCode == "8410") {
+				if(confirm("Do you want to delete this schedule in SeSM?")){
+					deleteScheduleSeSM(param);
+				}
+			}
+			if(resultCode != "1000" && data.resultCode != "200"){
+				return;
+			}
 			$("#deleteAbortModal").modal('hide');
-			if ( g_delRetrun == 1){
+			location.reload();
+			/*if ( g_delRetrun == 1){
 				$('#calendar').fullCalendar('removeEvents', event._id);
 			}else{
 				alert(bRet);
-			}
+			}*/
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
 			g_delRetrun = 0;
+		}
+	});
+}
+
+function deleteScheduleSeSM(param) {
+	$.ajax({
+		type : "POST",
+		url : "delScheduleSeSM.do",
+		data : param,
+		dataType : "json",
+		success : function( data ) {
+			var resultCode = data.resultInfo.resultCode;
+			if(resultCode == "1000"){
+				location.href = "schdMgmtDetail.do?bmscId="+bmscId;
+			}
+		},
+		error : function(request, status, error) {
+			alert("request=" +request +",status=" + status + ",error=" + error);
 		}
 	});
 }

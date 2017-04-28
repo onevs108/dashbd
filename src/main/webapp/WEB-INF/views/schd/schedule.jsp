@@ -254,6 +254,14 @@
 			}
 		}
 				
+		function dateValidation(e) {
+			console.log(event.keyCode)
+			if(!((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode == 8 || event.keyCode == 46 || (event.keyCode >= 37 && event.keyCode <= 40))){
+				e.value = e.value;
+				return; 
+			}
+		}
+		
 		$(window).load(function(){
 			if(viewMode == "update" && "${mapSchedule.BCID}" != null && "${mapSchedule.BCID}" != '' ){
 				checkRequireValue();	
@@ -494,12 +502,12 @@
                                 </a>
                             </div>
                             <div class="row">
-	                            <div class="form-group"><label class="col-sm-2 control-label">Schedule</label>
+	                            <div class="form-group"><label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Schedule</label>
 	                                <div class="col-sm-8">
 	                                    <label class="col-sm-1 control-label">Start</label>
-	                                        <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.schedule_start}"></div>
+	                                        <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" onkeydown="dateValidation(this)" value="${mapSchedule.schedule_start}"></div>
 	                                    <label class="col-sm-1 control-label">Stop</label>
-	                                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.schedule_stop}" readonly></div>
+	                                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" onkeydown="dateValidation(this)" value="${mapSchedule.schedule_stop}" readonly></div>
 	                                </div>
 	                                <div class="col-sm-1">
 	                                    <div class="form-group">
@@ -513,7 +521,7 @@
 <!-- 	                                <div class="hr-line-dashed"></div> -->
 			                        <div name="bcType_streaming2" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'FileDownload'}">style="display:none"</c:if>>
 			                            <div class="form-group">
-			                            	<label class="col-sm-3 control-label" style="margin-top: 15px;width: 18%;">ContentSet</label>
+			                            	<label class="col-sm-3 control-label" style="margin-top: 15px;width: 18%;"><i class="fa fa-check text-importance"></i>ContentSet</label>
 			                                <div class="col-sm-8" style="margin-top: 15px;">
 			                                    <div class="form-group">
 			                                    	<div class="row">
@@ -544,7 +552,7 @@
 					                                    	</form>
 					                                    </div>
 				                                        <div class="col-sm-4"> 
-					                                    	<button type="button" id="uploadFile" name="uploadFile" onclick="" class="btn btn-block btn-default">Upload File</button>
+					                                    	<button type="button" id="uploadFile" name="uploadFile" onclick="addSaidFromFile()" class="btn btn-block btn-default">Upload File</button>
 					                                    </div>
 			                                    	</div>
 			                                    </div>
@@ -591,7 +599,7 @@
 			                                    	<div class="row">
 					                                	<label class="col-sm-2 control-label">bcServiceArea</label>
 					                                    <div class="col-sm-6">
-					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;background-color: white;" readonly>
+					                                    	<input type="text" class="form-control" id="bcSaidList" name="bcSaidList" placeholder="" style="height: 75px;background-color: gainsboro;background-color: white;">
 					                                    </div>
 <%-- 					                                    <c:if test="${type == 'area'}"> --%>
 				                                    	<div class="row">
@@ -660,18 +668,18 @@
 	                                                        <label class="col-md-2 control-label">Start</label>
 	                                                        <div class="col-md-4">
 	                                                        <c:if test="${empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.start_date}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" onkeydown="dateValidation(this)" value="${mapSchedule.start_date}"></div>
 	                                                        </c:if>
 	                                                        <c:if test="${not empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.deliveryInfo_start}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" onkeydown="dateValidation(this)" value="${mapSchedule.deliveryInfo_start}"></div>
 	                                                        </c:if>
 	                                                        <label class="col-md-2 control-label">Stop</label>
 	                                                        <div class="col-md-4">
 	                                                        <c:if test="${empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.end_date}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" onkeydown="dateValidation(this)" value="${mapSchedule.end_date}"></div>
 	                                                        </c:if>
 	                                                        <c:if test="${not empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.deliveryInfo_end}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" onkeydown="dateValidation(this)" value="${mapSchedule.deliveryInfo_end}"></div>
 	                                                        </c:if>
                                                         </div>
                                                         <!-- 
@@ -778,19 +786,19 @@
                                        </div>
                                    </div>
                                    <div class="form-group">
-                                       <label class="col-sm-3 control-label">Report Interval</label>
+                                       <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Report Interval</label>
                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodReportInterval" name="moodReportInterval" value="${mapSchedule.moodReportInterval}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
-                                       <label class="col-sm-3 control-label">Offset Time</label>
+                                       <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Offset Time</label>
                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodOffsetTime" name="moodOffsetTime" value="${mapSchedule.moodOffsetTime}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
-                                       <label class="col-sm-3 control-label">Random Time Period</label>
+                                       <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Random Time Period</label>
                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodRandomTimePeriod" name="moodRandomTimePeriod" value="${mapSchedule.moodRandomTimePeriod}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
-                                       <label class="col-sm-3 control-label">Sample Percentage</label>
+                                       <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Sample Percentage</label>
                                        <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodSamplePercentage" name="moodSamplePercentage" value="${mapSchedule.moodSamplePercentage}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                             	</div>
@@ -987,7 +995,7 @@
 	  			</form>
 	 		</div>
 	    	<div class="col-sm-4"> 
-	  			<button type="button" id="uploadFile" name="uploadFile" onclick="" class="btn btn-block btn-default" style="margin-left: -5px;">Upload File</button>
+	  			<button type="button" id="uploadFile" name="uploadFile" onclick="addSaidFromFile()" class="btn btn-block btn-default" style="margin-left: -5px;">Upload File</button>
 	  		</div>
 		</div>
 	</div>

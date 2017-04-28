@@ -86,6 +86,7 @@
 			, DATE_FORMAT(end_date , '%i') end_mins
 			, service
 			, serviceId
+			, serviceMode
 			, contentsType
 		FROM 
 		(
@@ -103,6 +104,7 @@
 	         s.end_date,
 	         b.service,
 	         b.serviceId,
+	         b.serviceMode,
 	         (select type from contents where id = s.content_id) as contentsType
 	      FROM schedule s left join broadcast_info b on s.BCID = b.BCID 
 	      WHERE
@@ -595,6 +597,12 @@
 			<if test="reportType != null and reportType !=''" >
 				, reportType		= #{reportType}
 			</if>
+			<if test="frOffsetTime != null and frOffsetTime !=''" >
+				, frOffsetTime		= #{frOffsetTime}
+			</if>
+			<if test="frRandomTime != null and frRandomTime !=''" >
+				, frRandomTime		= #{frRandomTime}
+			</if>
 			<if test="offsetTime != null and offsetTime !=''" >
 				, offsetTime		= #{offsetTime}
 			</if>
@@ -753,8 +761,10 @@
 		INSERT INTO schedule_contents
 		(
 			schedule_id, content_id, cancelled, changed, 
-			<if test="fileURI != null">url,</if><if test="mpdURI != null">mpd,</if>
-			<if test="startTime != null">start_time,</if><if test="endTime != null">end_time,</if> 
+			<if test="fileURI != null">url,</if>
+			<if test="mpdURI != null">mpd,</if>
+			<if test="startTime != null">start_time,</if>
+			<if test="endTime != null">end_time,</if> 
 			<if test="serviceType == 'streaming' and serviceMode != 'BC'">
 				r12mpdURI, bcBasePattern,
 			</if>
@@ -763,8 +773,10 @@
 		values
 		(
 			${scheduleId}, ${contentId}, 0, 0,
-			<if test="fileURI != null">#{fileURI},</if><if test="mpdURI != null">#{mpdURI},</if>
-			<if test="startTime != null">#{startTime},</if><if test="endTime != null">#{endTime},</if> 
+			<if test="fileURI != null">#{fileURI},</if>
+			<if test="mpdURI != null">#{mpdURI},</if>
+			<if test="startTime != null">#{startTime},</if>
+			<if test="endTime != null">#{endTime},</if> 
 			<if test="serviceType == 'streaming' and serviceMode != 'BC'">
 				#{r12MpdURI}, #{bcBasePattern},
 			</if>
@@ -943,8 +955,8 @@
 	<update id="updateSaidMode" parameterType="HashMap">
 		update mood_service     
 		set mode = 
-		<if test="ntype == 'Broadcast'">'Unicast'</if>
-		<if test="ntype == 'Unicast'">'Broadcast'</if>
+		<if test="ntype == 'BC'">'Unicast'</if>
+		<if test="ntype == 'UC'">'Broadcast'</if>
 		, update_dt = now()
 		where serviceId = #{serviceId}
 		and said = #{said}

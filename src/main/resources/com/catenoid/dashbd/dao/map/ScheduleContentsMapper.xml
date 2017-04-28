@@ -143,7 +143,7 @@
   </select>
   <select id="selectBandwidthCheckScheduleContents" resultMap="BaseResultMap" parameterType="com.catenoid.dashbd.dao.model.ScheduleContents" >
   	select 	t1.schedule_id, content_id, cancelled, changed, start_time, end_time, type as content_type, title, category, director, actors, content_provider, file_format, age_restriction,
-  			description, url, duration, bitrate, t1.created_at, t1.updated_at
+  			description, t1.url, duration, bitrate, t1.created_at, t1.updated_at
   	from 	schedule_contents t1, contents t2, schedule t3, service_area_schedule t4  	
   	where t1.content_id 		= t2.id
   	and	  t1.schedule_id		= t3.id
@@ -158,13 +158,13 @@
   	order by start_time asc
   </select>  
   <select id="selectScheduleContentsByScheduleId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-  	select 	schedule_id, content_id, cancelled, changed, start_time, end_time, url, type as content_type, duration
+  	select 	schedule_id, content_id, cancelled, changed, start_time, end_time, t1.url, type as content_type, duration
   	from 	schedule_contents t1, contents t2
   	where	t1.content_id	= t2.id
   	and		t1.schedule_id 	= #{id,jdbcType=INTEGER}  	
   </select>
   <select id="selectScheduleContentsByContentId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-  	select 	schedule_id, content_id, title, cancelled, changed, start_time, end_time, url, type as content_type, duration
+  	select 	schedule_id, content_id, title, cancelled, changed, start_time, end_time, t1.url, type as content_type, duration
   	from 	schedule_contents t1, contents t2
   	where	t1.content_id	= t2.id
   	and		t1.content_id 	= #{id,jdbcType=INTEGER}  	
