@@ -86,7 +86,7 @@
 				return false;
 			});
 			$("#schedule_start, input[name='deliveryInfo_start'], input[name='deliveryInfo_end']").datetimepicker({
-				format:'Y-m-d H:i:s',
+				format: 'Y-m-d H:i:s'
 			});
 			$("button[name='addSchedule']").hide();
 			
@@ -561,6 +561,7 @@
 			                                    <div class="form-group">
 			                                    	<div class="row">
 			                                    		<input type="hidden" id="contentSetId" name="contentSetId" value="${mapSchedule.contentId}">
+			                                    		<input type="hidden" id="duration" name="duration" value="${mapSchedule.duration}">
 			                                    		<label class="col-sm-2 pull-left" style="padding:7px 0 0 35px">mpd</label>
 				                                        <div class="col-sm-8">
 				                                        <c:if test="${empty mapSchedule.BCID}">

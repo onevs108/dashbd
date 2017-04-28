@@ -483,6 +483,7 @@ function setTimeTable(data){
 			   week:  "YYYY MMMM",
 			   day: 'YYYY-MM-DD dddd'
 			},
+		timeFormat: 'HH:mm',
 		selectable: false,
 		selectHelper: true,
 		select: function(start, end) {

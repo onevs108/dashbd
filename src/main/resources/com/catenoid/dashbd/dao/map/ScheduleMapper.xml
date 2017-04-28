@@ -869,7 +869,7 @@
 		select serviceId from mood_request
 		where insertDate > date_add(now(), interval-${interval} minute)
 		group by serviceId
-		order by id desc 
+		order by id desc
 	</select>
 	
 	<select id="selectCrsLimit" resultType="java.util.Map">

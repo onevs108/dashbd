@@ -144,14 +144,6 @@ $(document).ready(function()
 	
 	$("#reportClientId").on("change", function() {
 		$("#reportClientId").prop("checked", true);
-//		if(this.checked){
-//			$("#moodReportInterval").prop('disabled', false);
-//			$("#moodOffsetTime").prop('disabled', false);
-//			$("#moodRandomTimePeriod").prop('disabled', false);
-//			$("#moodSamplePercentage").prop('disabled', false);
-//		}else{
-//			$("#reportClientId").prop("checked", true);
-//		}
 	});
 	
 	var saidListDiv = $('#saidListDiv');
@@ -161,12 +153,6 @@ $(document).ready(function()
 	});
 		
 	$("#btnCancel").click(function() {
-		/*
-		var tmpServiceAreaId = $("#serviceAreaId").val();
-		var searchDate = $("#searchDate").val();
-		var bmscId= $("#bmscId").val();
-		location.href = "schdMgmtDetail.do?serviceAreaId=" + tmpServiceAreaId + "&searchDate="+searchDate+"&bmscId="+bmscId+"&type="+$("#type").val();
-		*/
 		history.back();
 	});
 		
@@ -392,6 +378,7 @@ $(window).load(function() {
 		$("#serviceType").val("streaming");
 		$("#serviceType").change();
 		$("#serviceType").prop("disabled", true);
+		$($("input[name='duration']")[0]).remove();
 	}else{
 		$($("#serviceType option")[1]).remove();
 	}
