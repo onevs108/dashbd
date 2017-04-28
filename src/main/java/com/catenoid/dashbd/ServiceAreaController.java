@@ -1386,29 +1386,31 @@ public class ServiceAreaController {
 //				mv.addObject("total_session", principals.size());
 				
 				int total_user = 0;
-				if(user.getGrade() == 9999) {
+//				if(user.getGrade() == 9999) {
 					//자신의 Area 전체를 셀 경우 사용
 //					total_user = userServiceImpl.getUserListCount("", "", user.getGrade(), user.getCircleName());
 					
 					//자신이 속한 Operator 안의 user수만 셀 경우 상용
-					param.put("targetDiv", "operator");
-					param.put("operatorId", user.getOperatorId());
-					List<Users> userList = operatorServiceImpl.selectMemberList(param);
-					total_user = userList.size();
-				} else if(user.getGrade() == 13) {
-					total_user = userServiceImpl.getUserListCount("", "", null, null);
-				} else {
-					total_user = userServiceImpl.getUserListCount("", "", user.getGrade(), null);
-				}
+//					param.put("targetDiv", "operator");
+//					param.put("operatorId", user.getOperatorId());
+//					List<Users> userList = operatorServiceImpl.selectMemberList(param);
+//					total_user = userList.size();
+//				} else if(user.getGrade() == 13) {
+//					total_user = userServiceImpl.getUserListCount("", "", null, null);
+//				} else {
+//					total_user = userServiceImpl.getUserListCount("", "", user.getGrade(), null);
+//				}
 				
-				mv.addObject("total_user", total_user);
+//				mv.addObject("total_user", total_user);
 				
 				if(countBCUC != null) {
 					mv.addObject("count_uc", countBCUC.get("countUC"));
 					mv.addObject("count_bc", countBCUC.get("countBC"));
+					mv.addObject("total_user", countBCUC.get("totalUser"));
 				} else {
 					mv.addObject("count_uc", "0");
 					mv.addObject("count_bc", "0");
+					mv.addObject("total_user", "0");
 				}
 				
 				Calendar calendar = Calendar.getInstance();

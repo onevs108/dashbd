@@ -2455,7 +2455,7 @@
 	</select>
 	
 	<select id="selectCountBCUC" resultType="HashMap">
-		SELECT FORMAT(SUM(countUC), 0) AS countUC, FORMAT(SUM(countBC), 0) AS countBC
+		SELECT FORMAT(SUM(countUC), 0) AS countUC, FORMAT(SUM(countBC), 0) AS countBC, FORMAT((SUM(countUC) + SUM(countBC)), 0) AS totalUser
 		FROM broadcast_info broad
 		INNER JOIN mood_request mood
 		ON broad.serviceId = mood.serviceId
