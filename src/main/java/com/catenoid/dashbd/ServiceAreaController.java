@@ -1661,6 +1661,7 @@ public class ServiceAreaController {
 				for(Circle circle : circleList) {
 					HashMap<String, Object> tempMap = new HashMap<String, Object>();
 					tempMap.put("circleName", circle.getCircle_name());
+					tempMap.put("scheduleId", rowMap.get("scheduleId"));
 					tempMap.put("onAirYn", rowMap.get("onAirYn"));
 					tempMap.put("service", rowMap.get("service"));
 					tempMap.put("serviceId", rowMap.get("serviceId"));
