@@ -643,7 +643,7 @@ function setTimeline(calView, mode) {
 function modifySchedule(url, startTime, endTime) {
 	
 	var id = url.substring(url.indexOf("=")  + 1, url.indexOf("&BCID"));
-	var BCID = url.substring(url.indexOf("&BCID=") + 6);
+	var BCID = url.substring(url.indexOf("&BCID=") + 6, url.lastIndexOf("&"));
 	
 	if (typeof BCID == 'undefined')
 		BCID = "";
@@ -662,7 +662,8 @@ function modifySchedule(url, startTime, endTime) {
 		data : param,
 		dataType : "json",
 		success : function( data ) {
-			console.log('Success to modify schedule');
+			outMsgForAjax(data);
+			var resultCode = data.resultInfo.resultCode;
 		},
 		error : function(request, status, error) {
 			alert("error for update Time:request=" +request +",status=" + status + ",error=" + error);

@@ -674,6 +674,7 @@
 		SELECT 
 			BCID
 			, serviceId
+			, service
 			, service_name 		as name
 			, transactionId		
 			, serviceClass 			 
@@ -990,7 +991,7 @@
 				from mood_request a
 				where insertDate <![CDATA[ > ]]> date_add(now(), interval-${interval} minute)
 				and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'Unicast'
-				and (select ifnull(update_dt, '1999-12-31') from mood_service where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
+				and (select ifnull(update_dt, '1999-12-31') from mood_service where serviceId = #{serviceId} and said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q
@@ -1010,7 +1011,7 @@
 			from mood_request a
 			where insertDate <![CDATA[ > ]]>date_add(now(), interval-${interval} minute)
 			and (select mode from mood_service where serviceId = #{serviceId} and said = a.said) = 'Broadcast'
-			and (select ifnull(update_dt, '1999-12-31') from mood_service where said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
+			and (select ifnull(update_dt, '1999-12-31') from mood_service where serviceId = #{serviceId} and said = a.said) <![CDATA[ < ]]> date_add(now(), interval-${interval} minute)
 			 ) K
 			  group by serviceId, said, castMode, ntype ) T ) H
 			  group by serviceId, said, ntype ) Q

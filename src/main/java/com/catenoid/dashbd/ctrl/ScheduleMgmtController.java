@@ -359,9 +359,11 @@ public class ScheduleMgmtController {
 	@ResponseBody
 	public Map< String, Object > modifyScheduleTime( @RequestParam Map< String, String > params,
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
-		
-		logger.info("modifyScheduleTime param{}", params);
+
 		HashMap<String, String> retValue = new HashMap<String, String>();
+		List<List<String>> paramList = new ArrayList<List<String>>();
+		List<String> saidData = new ArrayList<String>();
+		
 		try {
 			BmscMapper mapperBmsc = sqlSession.getMapper(BmscMapper.class);
 			Bmsc bmsc = mapperBmsc.selectBmsc(Integer.parseInt(params.get("bmscId")));
@@ -386,19 +388,61 @@ public class ScheduleMgmtController {
 				logger.info("updateSchedule ret{}", ret);
 
 				Map<String, String> mapBroadcast = mapper.selectBroadcast(params);
+				List<Map<String, String>> contentList = mapper.selectSchduleContentList(params);
+				List<String> schedule_start = new ArrayList<String>();
+				List<String> schedule_stop = new ArrayList<String>();
+				List<String> fileURI = new ArrayList<String>();
+				List<String> saidList = new ArrayList<String>();
+				List<String> bcSaidList = new ArrayList<String>();
+				List<String> contentLength = new ArrayList<String>();
+				List<String> contentId = new ArrayList<String>();
+				List<String> deliveryInfo_start = new ArrayList<String>();
+				List<String> deliveryInfo_end = new ArrayList<String>();
+				List<String> mpdURI = new ArrayList<String>();
+				List<String> bcBasePattern = new ArrayList<String>();
+				schedule_start.add(convertDateFormat3(mapBroadcast.get("schedule_start")));
+				schedule_stop.add(convertDateFormat3(mapBroadcast.get("schedule_stop")));
+				String[] saidArray = mapBroadcast.get("said").split(",");
+				for (int i = 0; i < saidArray.length; i++) {
+					saidList.add(saidArray[i]);
+				}
+				bcSaidList.add(mapBroadcast.get("bcSaidList"));
+				contentLength.add(String.valueOf(contentList.size()));			
+				for (int i = 0; i < contentList.size(); i++) {
+					contentId.add(String.valueOf(contentList.get(i).get("content_id")));
+					deliveryInfo_start.add(contentList.get(i).get("start_time"));
+					deliveryInfo_end.add(contentList.get(i).get("end_time"));
+					fileURI.add(contentList.get(i).get("url"));
+					mpdURI.add(contentList.get(i).get("mpd"));
+					bcBasePattern.add(contentList.get(i).get("bcBasePattern"));
+				}
+				paramList.add(schedule_start);		//0
+				paramList.add(schedule_stop);		//1
+				paramList.add(fileURI);				//2
+				paramList.add(deliveryInfo_start);	//3
+				paramList.add(deliveryInfo_end);	//4
+				paramList.add(contentLength);		//5
+				paramList.add(saidList);			//6
+				paramList.add(mpdURI);				//7
+				paramList.add(contentId);			//8
+				paramList.add(bcSaidList);			//9
+				paramList.add(bcBasePattern);		//10
+				mapBroadcast.put("serviceType", mapBroadcast.get("service"));
+				mapBroadcast.put("contentSetId", String.valueOf(contentList.get(0).get("content_id")));
+				mapBroadcast.put("r12mpdURI", contentList.get(0).get("r12mpdURI"));
 				mapBroadcast.put("bmscIp", bmsc.getIpaddress());
 				
-				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE);
+				String[] resStr = xmlManager.sendBroadcast(mapBroadcast, xmlManager.BMSC_XML_UPDATE, saidData, paramList);
 				retValue = parseRes(resStr[0]);
 				
 				if (!xmlManager.isSuccess(resStr[0]))
 					return makeRetMsg(retValue.get("code"), retValue.get("message"));
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			logger.error("", e);
 			return makeRetMsg("9999", e.getMessage());
 		}
-		return makeRetMsg(retValue.get("code"), retValue.get("message"));
+		return makeRetMsg("1000", "OK");
 	}
 	
 
@@ -1592,13 +1636,13 @@ public class ScheduleMgmtController {
 	
 	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
 	private String convertDateFormat3(String dateTime){
-		@SuppressWarnings("deprecation")
-		Date dt = new Date(dateTime);
-		
 		String retStr = "";
+		
+		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			retStr = sdfTo.format(dt);
+			Date dateFrom = sdfFrom.parse(dateTime);
+			retStr = sdfTo.format(dateFrom);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
