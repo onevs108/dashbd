@@ -27,7 +27,7 @@ import com.catenoid.dashbd.util.HttpNetAgent;
 public class CheckCRSInfoCron extends QuartzJobBean{
 	
 	private SqlSession sqlSession;
-	
+
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -107,7 +107,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 			rtvs[0] = respBody;
 			rtvs[1] = reqBody;		
 		}
-		
 	}
 	
 	@SuppressWarnings("unchecked")
