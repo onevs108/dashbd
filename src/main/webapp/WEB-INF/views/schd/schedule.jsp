@@ -69,6 +69,7 @@
 					checkScheduleStartTime();
 				}
 				scheduleTimeSync(this);
+				return false;
 			});
 			$($("input[name='deliveryInfo_start']")[0]).blur(function(){
 				if($("#serviceType").val() == "fileDownLoad"){

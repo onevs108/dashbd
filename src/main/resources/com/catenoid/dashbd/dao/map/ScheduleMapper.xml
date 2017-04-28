@@ -956,8 +956,8 @@
 	<update id="updateSaidMode" parameterType="HashMap">
 		update mood_service     
 		set mode = 
-		<if test="ntype == 'BC'">'Unicast'</if>
-		<if test="ntype == 'UC'">'Broadcast'</if>
+		<if test="ntype == 'BC' or ntype == 'Broadcast'">'Unicast'</if>
+		<if test="ntype == 'UC' or ntype == 'Unicast'">'Broadcast'</if>
 		, update_dt = now()
 		where serviceId = #{serviceId}
 		and said = #{said}
