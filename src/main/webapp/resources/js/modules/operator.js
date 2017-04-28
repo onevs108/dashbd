@@ -396,7 +396,10 @@ function getOperatorList() {
 			width: '30%',
 			align: 'center',
 			valign: 'middle',
-			sortable: true
+			sortable: true,
+			formatter: function(value, row, index) {
+				return '<span title="' + row.permissionStr + '">' + value + '</span>';
+			}
 		}, {
 			field: 'description',
 			title: 'Description',

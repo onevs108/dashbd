@@ -105,6 +105,12 @@ function treeInit(data) {
 	})
 	.bind('before_open.jstree', function(evt, data) {
 		$(".jstree-icon.jstree-themeicon").remove();
+		
+		var tempNode = $("#treeNode li#" + data.node.id);
+		if(tempNode.hasClass("root")) {
+			$($("#treeNode li#" + data.node.id).find(".jstree-icon.jstree-checkbox")[0]).remove();
+			$($("#treeNode li#" + data.node.id).find(".jstree-icon.jstree-checkbox")[1]).remove();
+		}
 	})
 	.jstree({"checkbox" : {
 	      "keep_selected_style" : false,

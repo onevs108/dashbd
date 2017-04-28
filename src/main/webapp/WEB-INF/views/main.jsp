@@ -493,7 +493,16 @@
 					width: '10%',
 					align: 'left',
 					valign: 'middle',
-					sortable: true
+					sortable: true,
+					formatter: function(value, row, index) {
+						if(value == 'streaming') {
+	 						var html = value + '(' + row.serviceMode + ')';	
+						} else {
+							var html = value;
+						}
+						 						
+						return html;
+					}
 				}, {
 					field: 'scheduleType',
 					title: 'Schedule Type',
@@ -619,7 +628,7 @@
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
 							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.fileURI + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.serviceId + '</a></td>'; 						
 							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + row.serviceName + '</a></td>';
-							tableHtml += '<td>' + row.service + '</td>';
+							tableHtml += '<td>' + ((row.service == 'streaming')? row.service + "(" + row.serviceMode + ")" : row.service) + '</td>';
 // 							tableHtml += '<td>' + row.scheduleType + '</td>';
 							tableHtml += '<td>' + row.scheduleStart + '</td>';
 							tableHtml += '<td>' + row.scheduleStop + '</td>';
@@ -687,7 +696,7 @@
 							var onair = row.onAirYn == 'Y'? 'onair' : '';
 							tableHtml += '<td><i class="ondisp ' + onair + '"></i> <a style="cursor: pointer;" onclick="callDetailLayerPopup(\'' + row.onAirYn + '\', \'' + row.service + '\', \'' + row.fileURI + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')">' + row.serviceId + '</a></td>'; 						
 							tableHtml += '<td><a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + row.serviceName + '</a></td>';
-							tableHtml += '<td>' + row.service + '</td>';
+							tableHtml += '<td>' + ((row.service == 'streaming')? row.service + "(" + row.serviceMode + ")" : row.service) + '</td>';
 // 							tableHtml += '<td>' + row.scheduleType + '</td>';
 							tableHtml += '<td>' + row.scheduleStart + '</td>';
 							tableHtml += '<td>' + row.scheduleStop + '</td>';

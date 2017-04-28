@@ -2231,11 +2231,12 @@
 				      , city.onAirYn
 				      , hotspot.scheduleId
 				      , hotspot.nationalYn
+				      , hotspot.serviceMode
 				      , city.said
 				FROM (
-				    SELECT circle_id, city_id, city_name, max(layerDiv) as layerDiv, schedule.id as scheduleId, schedule.national_yn as nationalYn
+				    SELECT circle_id, city_id, city_name, max(layerDiv) as layerDiv, schedule.id as scheduleId, schedule.national_yn as nationalYn, t.serviceMode
 				    FROM (
-				    	SELECT city.circle_id, city.city_id, city.city_name, 'city' as layerDiv, broad.bcid
+				    	SELECT city.circle_id, city.city_id, city.city_name, 'city' as layerDiv, broad.bcid, broad.serviceMode
 			            FROM city city
 			            INNER JOIN (<include refid="Reginal_Schedule_Divide" />) broad
 			            ON city.city_id = broad.said
@@ -2243,7 +2244,7 @@
 							AND city.city_id IN (${cityListStr})
 						</if>
 				    	UNION ALL
-				        SELECT city.circle_id, city.city_id, city.city_name, 'hotspot' as layerDiv, broad.bcid
+				        SELECT city.circle_id, city.city_id, city.city_name, 'hotspot' as layerDiv, broad.bcid, broad.serviceMode
 				        FROM city city
 				        INNER JOIN hotspot hotspot
 				        ON city.city_id = hotspot.city_id
@@ -2304,6 +2305,7 @@
 				    , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
 				    , schedule.id as scheduleId, schedule.national_yn as nationalYn 
 				    , broad.said
+				    , broad.serviceMode
 				FROM (<include refid="Reginal_Schedule_Divide" />) broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said
@@ -2340,6 +2342,7 @@
 				    , schedule.id as scheduleId
 				    , schedule.national_yn as nationalYn
 				    , broad.said
+				    , broad.serviceMode
 				FROM (<include refid="Reginal_Schedule_Divide" />) broad
 				INNER JOIN hotspot hotspot
 				ON hotspot.hotspot_id = broad.said
@@ -2433,7 +2436,7 @@
 		      , ms.mode as deleveryType
 		      , FORMAT(IF(ms.mode = 'Unicast', mood.countUC, mood.countBC), 0) as viewers
 			  , IF(now() between broad.schedule_start and broad.schedule_stop, 'Y', 'N') as onAirYn
-			  , schedule.id as scheduleId
+			  , schedule.id as scheduleId, broad.serviceMode
 		FROM mood_request mood
 		INNER JOIN broadcast_info broad
 		ON mood.serviceId = broad.serviceId

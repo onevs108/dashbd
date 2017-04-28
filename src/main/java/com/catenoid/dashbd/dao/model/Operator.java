@@ -22,6 +22,8 @@ public class Operator {
     private Date updatedAt;
     
     private Integer totalCount;
+    
+    private String permissionStr;
 
     public String getCircleName() {
 		return circleName;
@@ -95,6 +97,7 @@ public class Operator {
 		jsonResult.put("name", name);
 		jsonResult.put("description", description);
 		jsonResult.put("permission", permission);
+		jsonResult.put("permissionStr", permissionStr);
 		jsonResult.put("createdAt", Utils.getFormatDateTime(createdAt, "yyyy-MM-dd HH:mm:ss"));
 		jsonResult.put("updatedAt", Utils.getFormatDateTime(updatedAt, "yyyy-MM-dd HH:mm:ss"));
 		return jsonResult;
@@ -103,6 +106,14 @@ public class Operator {
 	@Override
 	public String toString() {
 		return "Operator [id=" + id + ", circleName=" + circleName + ", name=" + name + ", description=" + description + ", permission=" + permission + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + "]";
+				+ ", updatedAt=" + updatedAt + ", permissionStr=" + permissionStr + "]";
+	}
+
+	public String getPermissionStr() {
+		return permissionStr;
+	}
+
+	public void setPermissionStr(String permissionStr) {
+		this.permissionStr = permissionStr;
 	}
 }

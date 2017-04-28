@@ -287,7 +287,17 @@
 			description,
 			permission,
 			created_at AS createdAt,
-			updated_at AS updatedAt
+			updated_at AS updatedAt,
+			IFNULL((
+				SELECT group_concat(per.name)
+				FROM
+				(SELECT *, CONCAT(',', permission, ',') as imsi
+				 FROM grade) temp
+				 LEFT JOIN permission per
+				 ON temp.imsi LIKE CONCAT('%,', per.id, ',%')
+				 WHERE temp.id = R.id
+				 GROUP BY temp.id
+			), 'No Menu') AS permissionStr
 		FROM ( SELECT
 				   @ROWNUM := @ROWNUM + 1 AS rownum,
 				   id, name, description, permission, created_at, updated_at
