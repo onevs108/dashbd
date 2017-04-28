@@ -246,11 +246,12 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		
 		if ("on".equals(params.get("receptionReport"))){
 			receptionReport = new Element("receptionReport");
+			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
 			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
-			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
-			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));			
+			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));
+			associatedDelivery.addContent(receptionReport);
 		}
 		
 		String serviceId = params.get("serviceId");
@@ -269,10 +270,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 		streaming.setAttribute(new Attribute("serviceMode", params.get("serviceMode")));
 		
 		transferConfig.addContent(new Element("SegmentAvailableOffset").setText(params.get("segmentAvailableOffset")));
-		
-		if ("on".equals(params.get("reportType"))){
-			associatedDelivery.addContent(receptionReport);
-		}
 		
 		if ( null != params.get("name") && !"".equals(params.get("name")))
 			streaming.addContent(name);
