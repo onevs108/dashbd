@@ -4,15 +4,7 @@
 	<div class="modal-dialog" role="document" style="margin: 10% 0% 0% 30%">
 	<div class="modal-content" style="width: 600px;">
 	<div id="wrapper" class="sub01">
-
 		<div class="wrapper wrapper-content">
-			<!--
-			 You need to include this script on any page that has a Google Map.
-			 When using Google Maps on your own site you MUST signup for your own API key at:
-			 https://developers.google.com/maps/documentation/javascript/tutorial#api_key
-			 After your sign up replace the key in the URL below..
-			-->
-<!-- 			<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQTpXj82d8UpCi97wzo_nKXL7nYrd4G70"></script> -->
 			<div class="circleTown">
 				<div class="row">
 	                <div class="col-md-12">
@@ -20,11 +12,11 @@
 		                	<div class="ibox">
 		                		<div class="row">
 			                        <div class="ibox-title">
-			                            <h5>Service ID Mgmt</h5>
-			                            <i class="fa fa-times" style="cursor:pointer;float: right;" onclick="closeIdModal()"></i>
+			                            <h4>Service ID Mgmt<i class="fa fa-times" style="cursor:pointer;float: right;" onclick="closeIdModal()"></i></h4>
 			                        </div>
 		                        </div>
 		                        <hr style="margin-top: 0px;">
+<!-- 		                        <label>Select Service Id</label> -->
 		                        <div class="row">
 									<input type="hidden" id="idIdx" value="${serviceIdIdx}">
 	                                <div class="col-md-8"><!-- col-md-offset-2 -->
@@ -38,7 +30,8 @@
 	                                	<button type="button" id="btnOK_M" class="btn btn-block btn-primary btn-sm" onclick="setServiceId()">OK</button>
 	                                </div>
 				                </div>
-				                <br>
+				                <hr style="margin-top: 10px;">
+<!-- 				                <label>Select Service Id</label> -->
 		                        <div id="idFirst" class="row">
 	                                <div class="col-md-8">
 	                                	<input type="text" id="idName" class="form-control input-sm" placeholder="Service Id" value="">
@@ -73,7 +66,6 @@
 
 	$(document).ready(function(){
 		getServiceIdList();
-// 		setSelectServiceId();
 	});
 	
 	function setSelectServiceId() {

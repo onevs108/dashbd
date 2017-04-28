@@ -75,6 +75,7 @@ $(document).ready(function()
 		$(":file").filestyle({buttonBefore: true});
 		$(".bootstrap-filestyle > input").css("background-color", "white");
 		$("#receptionReport").change();
+		$("#reportType").change();
 	});
 	
 	$("#serviceMode").on("change", function() {
@@ -123,16 +124,21 @@ $(document).ready(function()
 			$("#offsetTime").prop('disabled', false);
 			if(!($("#serviceType").val() == "streaming")){
 				$("#reportType").prop('disabled', false);
-			}else{
-//				$("#reportType").prop('disabled', true);
 			}
-			$("#samplePercentage").prop('disabled', false);
 			$("#randomTime").prop('disabled', false);
 		} else {
 			$("#offsetTime").prop('disabled', true);
 			$("#reportType").prop('disabled', true);
 			$("#samplePercentage").prop('disabled', true);
 			$("#randomTime").prop('disabled', true);
+		}
+	});
+	
+	$("#reportType").on("change", function() {
+		if($("#reportType").val() == "RAck"){
+			$("#samplePercentage").prop('disabled', true);
+		}else{
+			$("#samplePercentage").prop('disabled', false);
 		}
 	});
 	
@@ -184,7 +190,11 @@ $(document).ready(function()
 			success : function( data ) {
 				outMsgForAjax(data);
 				var resultCode = data.resultInfo.resultCode;
-				if(resultCode == "6011" || resultCode == "8410") {
+				if(resultCode == "8410") {
+					alert("This schedule can be deleted after the end time of the schedule");
+					return;
+				}
+				if(resultCode == "6011") {
 					if(confirm("Do you want to delete this schedule in SeSM?")){
 						deleteSchedule(param);
 					}
@@ -440,7 +450,7 @@ function detailValidationCheck() {
 		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
-				alert("QCI is Integer");
+				alert("please enter Integer(1~9, 128~254)");
 				return false;
 			}
 			if(!(this.value > 0 && this.value < 10) && !(this.value > 127 && this.value < 255)){
@@ -456,7 +466,7 @@ function detailValidationCheck() {
 		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
-				alert("segmentAvailableOffset is Integer");
+				alert("please enter Integer(1~10)");
 				return false;
 			}
 			if(!(this.value > 0 && this.value < 11)){
@@ -472,7 +482,7 @@ function detailValidationCheck() {
 		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
-				alert("Level is Integer");
+				alert("please enter Integer(1~15)");
 				return false;
 			}
 			if(!(this.value > 0 && this.value < 16)){
@@ -488,7 +498,7 @@ function detailValidationCheck() {
 		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
-				alert("The value of SamplePercentage is Integer");
+				alert("The value of Sementation Availble Offset must be integer (1~100)");
 				return false;
 			}
 			if(!(this.value > -1 && this.value < 101)){
@@ -526,7 +536,7 @@ function detailValidationCheck() {
 		if(this.value != ""){
 			if(!checkInteger3(this.value)){
 				this.value = "";
-				alert("The value of FecRatio is Integer");
+				alert("The value of the Ration must be integer (0~100)");
 				return false;
 			}
 			if(!(this.value > -1 && this.value < 101)){
@@ -542,12 +552,12 @@ function detailValidationCheck() {
 		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";
-				alert("The value of moodReportInterval must be integer (0~9999999)");
+				alert("The value of the ReportInterval must integer (30 ~ 100)");
 				return false;
 			}
 			if(!(this.value > 29)){
 				this.value = "";
-				alert("The value of the ReportInterval must be more than 30");
+				alert("The value of the ReportInterval must be integer (30 ~ 100)");
 				return false;
 			}
 			return false;
@@ -580,7 +590,7 @@ function detailValidationCheck() {
 		if(this.value != ""){
 			if(!checkInteger3(this.value)){
 				this.value = "";
-				alert("The value of moodSamplePercentage is Integer");
+				alert("The value of moodSamplePercentage must be integer (0~100)");
 				return false;
 			}
 			if(!(this.value > -1 && this.value < 101)){

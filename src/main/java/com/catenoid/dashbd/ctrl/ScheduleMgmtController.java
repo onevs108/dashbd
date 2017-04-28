@@ -605,7 +605,6 @@ public class ScheduleMgmtController {
 		return jsonResult.toString();
 	}
 	
-	
 	@RequestMapping( value = "/view/selectServiceClassAll.do", method = { RequestMethod.GET, RequestMethod.POST } )
 	@ResponseBody
 	public String selectServiceClassAll(HttpServletRequest req) {
@@ -1250,11 +1249,11 @@ public class ScheduleMgmtController {
 	
 	public HashMap<String, String> parseRes(String retStr) throws JDOMException, IOException{
 		HashMap<String, String> retValue = new HashMap<String, String>(); 
-		Document doc = null;
-		doc = new SAXBuilder().build(new StringReader(retStr));
+		Document doc = new SAXBuilder().build(new StringReader(retStr));
 		Element message = doc.getRootElement();
-		retValue.put("code", message.getChild("transaction").getChild("result").getChild("code").getValue());
-		retValue.put("message", message.getChild("transaction").getChild("result").getChild("message").getValue());
+		Element result = message.getChild("transaction").getChild("result");
+		retValue.put("code", result.getChild("code").getValue());
+		retValue.put("message", result.getChild("message").getValue());
 		
 		return retValue;
 	}

@@ -1817,7 +1817,7 @@ public class ServiceController {
                     "<message name=\"SERVICE.CREATE\" type=\"RESPONSE\">\n" +
                     "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
                     "        <result>\n" +
-                    "            <code>1000</code>\n" +
+                    "            <code>8410</code>\n" +
                     "            <message>OK</message>\n" +
                     "        </result>\n" +
                     "    </transaction>\n" +

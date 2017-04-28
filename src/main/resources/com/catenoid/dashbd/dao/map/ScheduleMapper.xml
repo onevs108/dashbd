@@ -156,12 +156,12 @@
 				cancelled, 
 				changed,   
 				url,
-				mpd,       
+				mpd,
 				DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') start_time,
 				DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s') end_time,  
 				r12mpdURI,
 				bcBasePattern,
-				(select duration from contents where contents.id = content_id) duration,
+				(SELECT time_to_sec(timediff(end_time, start_time))) duration,
 				created_at,
 				updated_at 
 		FROM schedule_contents

@@ -463,7 +463,9 @@ public class XmlManager {
 		if ("on".equals(params.get("receptionReport"))){
 			receptionReport.setAttribute(new Attribute("cancelled", "false"));
 			receptionReport.setAttribute(new Attribute("reportType", params.get("reportType")));
-			receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
+			if(!params.get("reportType").equals("RAck")){
+				receptionReport.setAttribute(new Attribute("samplePercentage", params.get("samplePercentage")));
+			}
 			receptionReport.setAttribute(new Attribute("offsetTime", params.get("offsetTime")));
 			receptionReport.setAttribute(new Attribute("randomTime", params.get("randomTime")));			
 		}
@@ -670,98 +672,97 @@ public class XmlManager {
 	}
 	
 	public String testMaking(){
+		Element message = new Element("message");
+		Document doc = new Document(message);
+		doc.setRootElement(message);
 
-			Element message = new Element("message");
-			Document doc = new Document(message);
-			doc.setRootElement(message);
+		Element transaction = new Element("transaction");
+		transaction.setAttribute(new Attribute("id", "1"));
+		transaction.addContent(new Element("agentKey").setText("agentKey"));
+		
+		doc.getRootElement().addContent(transaction);
 
-			Element transaction = new Element("transaction");
-			transaction.setAttribute(new Attribute("id", "1"));
-			transaction.addContent(new Element("agentKey").setText("agentKey"));
-			
-			doc.getRootElement().addContent(transaction);
+		Element parameters = new Element("parameters");
+		Element services = new Element("services");
+		Element service = new Element("service");
+		service.setAttribute(new Attribute("serviceType", "fileDownload"));
+		
+		Element fileDownload = new Element("fileDownload");
+		fileDownload.setAttribute(new Attribute("serviceId", "urn:3gpp:filedownload-0410172238-1"));
+		
+		Element name = new Element("name");
+		name.setAttribute(new Attribute("id", "1"));
+		name.setText("test");
+		Element serviceLanguage = new Element("serviceLanguage");
+		serviceLanguage.setText("EN");
+		
+		Element transferConfig = new Element("transferConfig");
+		Element QoS = new Element("QoS");
+		QoS.addContent( new Element("GBR").setText("3000000"));
+		QoS.addContent( new Element("QCI").setText("149"));
+		
+		Element ARP = new Element("ARP");
+		ARP.addContent( new Element("level").setText("9"));
+		ARP.addContent( new Element("preEmptionCapability").setText("0"));
+		ARP.addContent( new Element("preEmptionVulnerability").setText("0"));
+		QoS.addContent(ARP);
+		
+		Element FEC = new Element("FEC");
+		FEC.addContent( new Element("fecType").setText("NoFEC"));
+		FEC.addContent( new Element("fecRatio").setText("0"));
 
-			Element parameters = new Element("parameters");
-			Element services = new Element("services");
-			Element service = new Element("service");
-			service.setAttribute(new Attribute("serviceType", "fileDownload"));
-			
-			Element fileDownload = new Element("fileDownload");
-			fileDownload.setAttribute(new Attribute("serviceId", "urn:3gpp:filedownload-0410172238-1"));
-			
-			Element name = new Element("name");
-			name.setAttribute(new Attribute("id", "1"));
-			name.setText("test");
-			Element serviceLanguage = new Element("serviceLanguage");
-			serviceLanguage.setText("EN");
-			
-			Element transferConfig = new Element("transferConfig");
-			Element QoS = new Element("QoS");
-			QoS.addContent( new Element("GBR").setText("3000000"));
-			QoS.addContent( new Element("QCI").setText("149"));
-			
-			Element ARP = new Element("ARP");
-			ARP.addContent( new Element("level").setText("9"));
-			ARP.addContent( new Element("preEmptionCapability").setText("0"));
-			ARP.addContent( new Element("preEmptionVulnerability").setText("0"));
-			QoS.addContent(ARP);
-			
-			Element FEC = new Element("FEC");
-			FEC.addContent( new Element("fecType").setText("NoFEC"));
-			FEC.addContent( new Element("fecRatio").setText("0"));
-
-			transferConfig.addContent(QoS);
-			transferConfig.addContent(FEC);
-			
-			Element serviceArea = new Element("serviceArea");
-			serviceArea.addContent( new Element("said").setText("10000"));
-			
-			Element schedule = new Element("schedule");
-			schedule.setAttribute(new Attribute("index", "1"));
-			schedule.setAttribute(new Attribute("cancelled", "false"));
-			schedule.setAttribute(new Attribute("start", "2015-04-10T17:24:09.000+09:00"));
-			schedule.setAttribute(new Attribute("stop", "2015-04-10T17:39:09.000+09:00"));
-			
-			Element content = new Element("content");
-			content.setAttribute(new Attribute("contentId", "1"));
-			content.setAttribute(new Attribute("contentType", "text/plain"));
-			content.setAttribute(new Attribute("cancelled", "false"));
-			content.setAttribute(new Attribute("changed", "false"));
-			content.addContent( new Element("fileURI").setText("http://192.168.1.115:8088/data/100M-RQ.txt"));
-			Element deliveryInfo = new Element("deliveryInfo");
-			deliveryInfo.setAttribute(new Attribute("start", "2015-04-10T17:24:09.000+09:00"));
-			deliveryInfo.setAttribute(new Attribute("stop", "2015-04-10T17:39:09.000+09:00"));
-			content.addContent(deliveryInfo);
-			schedule.addContent(content);
-			Element associatedDelivery = new Element("associatedDelivery");
-			Element fileRepair = new Element("fileRepair");
-			fileRepair.setAttribute(new Attribute("offsetTime", "5"));
-			fileRepair.setAttribute(new Attribute("randomTime", "300"));
-			fileRepair.setAttribute(new Attribute("cancelled", "false"));
-			
-			Element receptionReport = new Element("receptionReport");
-			receptionReport.setAttribute(new Attribute("reportType", "RAck"));
-			receptionReport.setAttribute(new Attribute("cancelled", "false"));
-			receptionReport.setAttribute(new Attribute("offsetTime", "305"));
-			receptionReport.setAttribute(new Attribute("randomTime", "300"));
-			
-			associatedDelivery.addContent(fileRepair);
-			associatedDelivery.addContent(receptionReport);
-			
-			fileDownload.addContent(name);
-			fileDownload.addContent(serviceLanguage);
-			fileDownload.addContent(transferConfig);
-			fileDownload.addContent(serviceArea);
-			fileDownload.addContent(schedule);
-			fileDownload.addContent(associatedDelivery);
-			
-			service.addContent(fileDownload);
-			
-			services.addContent(service);
-			parameters.addContent(services);
-			
-			doc.getRootElement().addContent(parameters);
-			return outString(doc);
+		transferConfig.addContent(QoS);
+		transferConfig.addContent(FEC);
+		
+		Element serviceArea = new Element("serviceArea");
+		serviceArea.addContent( new Element("said").setText("10000"));
+		
+		Element schedule = new Element("schedule");
+		schedule.setAttribute(new Attribute("index", "1"));
+		schedule.setAttribute(new Attribute("cancelled", "false"));
+		schedule.setAttribute(new Attribute("start", "2015-04-10T17:24:09.000+09:00"));
+		schedule.setAttribute(new Attribute("stop", "2015-04-10T17:39:09.000+09:00"));
+		
+		Element content = new Element("content");
+		content.setAttribute(new Attribute("contentId", "1"));
+		content.setAttribute(new Attribute("contentType", "text/plain"));
+		content.setAttribute(new Attribute("cancelled", "false"));
+		content.setAttribute(new Attribute("changed", "false"));
+		content.addContent( new Element("fileURI").setText("http://192.168.1.115:8088/data/100M-RQ.txt"));
+		Element deliveryInfo = new Element("deliveryInfo");
+		deliveryInfo.setAttribute(new Attribute("start", "2015-04-10T17:24:09.000+09:00"));
+		deliveryInfo.setAttribute(new Attribute("stop", "2015-04-10T17:39:09.000+09:00"));
+		content.addContent(deliveryInfo);
+		schedule.addContent(content);
+		Element associatedDelivery = new Element("associatedDelivery");
+		Element fileRepair = new Element("fileRepair");
+		fileRepair.setAttribute(new Attribute("offsetTime", "5"));
+		fileRepair.setAttribute(new Attribute("randomTime", "300"));
+		fileRepair.setAttribute(new Attribute("cancelled", "false"));
+		
+		Element receptionReport = new Element("receptionReport");
+		receptionReport.setAttribute(new Attribute("reportType", "RAck"));
+		receptionReport.setAttribute(new Attribute("cancelled", "false"));
+		receptionReport.setAttribute(new Attribute("offsetTime", "305"));
+		receptionReport.setAttribute(new Attribute("randomTime", "300"));
+		
+		associatedDelivery.addContent(fileRepair);
+		associatedDelivery.addContent(receptionReport);
+		
+		fileDownload.addContent(name);
+		fileDownload.addContent(serviceLanguage);
+		fileDownload.addContent(transferConfig);
+		fileDownload.addContent(serviceArea);
+		fileDownload.addContent(schedule);
+		fileDownload.addContent(associatedDelivery);
+		
+		service.addContent(fileDownload);
+		
+		services.addContent(service);
+		parameters.addContent(services);
+		
+		doc.getRootElement().addContent(parameters);
+		return outString(doc);
 	}
 	
 	private String outString(Document doc){
@@ -772,7 +773,6 @@ public class XmlManager {
 	
 
 	private String convertDateFormat(String dateTime){
-		
 		if (dateTime == null)
 			return null;
 		
@@ -780,13 +780,10 @@ public class XmlManager {
 		
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyyMMddHHmmss");
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		//SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		try {
-//			sdfFrom.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date dateFrom = sdfFrom.parse(dateTime);
 		    Calendar calFrom = Calendar.getInstance();
 		    calFrom.setTime(dateFrom);
-		    //calFrom.add(Calendar.HOUR, -9);
 		    retStr = sdfTo.format(calFrom.getTime());
 		    
 		} catch (ParseException e) {
@@ -794,7 +791,6 @@ public class XmlManager {
 		}
 				
 		return retStr;
-		
 	}
 	
 	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
@@ -817,8 +813,6 @@ public class XmlManager {
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00");
 		try {
-//			sdfFrom.setTimeZone(TimeZone.getTimeZone("IST"));
-//			sdfTo.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date dateFrom = sdfFrom.parse(dateTime);
 		    retStr = sdfTo.format(dateFrom);
 		} catch (Exception e) {
@@ -838,87 +832,68 @@ public class XmlManager {
     public String tmpRespRETRIEVE_Body(){
     	String retStr =
 			  //  "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-			    "	<message name=\"SERVICE.RETRIEVE\" type=\"RESPONSE\">\n" + 
-			    "	<transaction id=\"2\">\n" +
-			    "	<result>\n" +
-			    "		<code>100</code>\n" +
-			    "		<message>OK</message>\n" +
-			    "	</result>\n" +
-			    "	</transaction>\n" +
-			    "	<parameters>\n" +
-			    "    <services>\n" +
-			    "        <service serviceType=\"fileDownload\">\n" +
-			    "            <fileDownload serviceId=\"ricky_urn:3gpp:download_multi150\">\n" +
-			    "                <name lang=\"EN\">test</name>\n" +
-			    "                <serviceLanguage>EN</serviceLanguage>\n" +
-				"				<transferConfig>\n" +
-			    "                   <QoS>\n" +
-			    "                       <GBR>2048576</GBR>\n" +
-			    "                       <QCI>1</QCI>\n" +
-			    "                       <ARP>\n" +
-			    "                           <preEmptionCapability>1</preEmptionCapability>\n" +
-			    "                           <preEmptionVulnerability>1</preEmptionVulnerability>\n" +
-			    "                       </ARP>\n" +
-			    "                   </QoS>\n" +
-			    "                   <FEC>\n" +
-			    "                       <fecType>NoFEC</fecType>\n" +
-			    "                       <fecRatio>0</fecRatio>\n" +
-			    "                   </FEC>\n" +
-			    "               </transferConfig>\n" +
-			    "               <serviceArea>\n" +
-			    "                   <said>1005</said>\n" +
-			    "               </serviceArea>            \n" +      
-			    "               <schedule index=\"1\" cancelled=\"false\" start=\"2015-04-09T10:48:27.000+09:00\" stop=\"2015-04-09T12:08:27.000+09:00\">\n" +
-			    "                   <content contentId=\"1\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +                            
-			    "                    <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
-			    "                       <deliveryInfo start=\"2015-04-09T10:48:27.000+09:00\" end=\"2015-04-09T11:08:27.000+09:00\"/>\n" +
-			    "                   </content> \n" +
-			    "                   <content contentId=\"2\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +
-			    "                       <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
-			    "                       <deliveryInfo start=\"2015-04-09T11:58:27.000+09:00\" end=\"2015-04-09T12:08:27.000+09:00\"/>\n" +
-			    "                   </content>\n" +
-			    "               </schedule>\n" +
-			    "               <schedule index=\"2\" cancelled=\"true\" start=\"2015-04-09T12:38:27.000+09:00\" stop=\"2015-04-09T12:58:27.000+09:00\">\n" +
-			    "                   <content contentId=\"1\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">                            \n" +
-			    "                   <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
-			    "                       <deliveryInfo start=\"2015-04-09T12:38:27.000+09:00\" end=\"2015-04-09T12:48:27.000+09:00\"/>\n" +
-			    "                   </content> \n" +
-			    "                   <content contentId=\"2\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +
-			    "                       <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
-			    "                       <deliveryInfo start=\"2015-04-09T12:48:27.000+09:00\" end=\"2015-04-09T12:58:27.000+09:00\"/>\n" +
-			    "                   </content>\n" +
-			    "               </schedule>\n" +
-			    "           </fileDownload>\n" +
-			    "       </service>\n" +
-			    "   </services>\n" +
-			    "</parameters>\n" +
-			    "</message>";
+		    "	<message name=\"SERVICE.RETRIEVE\" type=\"RESPONSE\">\n" + 
+		    "	<transaction id=\"2\">\n" +
+		    "	<result>\n" +
+		    "		<code>100</code>\n" +
+		    "		<message>OK</message>\n" +
+		    "	</result>\n" +
+		    "	</transaction>\n" +
+		    "	<parameters>\n" +
+		    "    <services>\n" +
+		    "        <service serviceType=\"fileDownload\">\n" +
+		    "            <fileDownload serviceId=\"ricky_urn:3gpp:download_multi150\">\n" +
+		    "                <name lang=\"EN\">test</name>\n" +
+		    "                <serviceLanguage>EN</serviceLanguage>\n" +
+			"				<transferConfig>\n" +
+		    "                   <QoS>\n" +
+		    "                       <GBR>2048576</GBR>\n" +
+		    "                       <QCI>1</QCI>\n" +
+		    "                       <ARP>\n" +
+		    "                           <preEmptionCapability>1</preEmptionCapability>\n" +
+		    "                           <preEmptionVulnerability>1</preEmptionVulnerability>\n" +
+		    "                       </ARP>\n" +
+		    "                   </QoS>\n" +
+		    "                   <FEC>\n" +
+		    "                       <fecType>NoFEC</fecType>\n" +
+		    "                       <fecRatio>0</fecRatio>\n" +
+		    "                   </FEC>\n" +
+		    "               </transferConfig>\n" +
+		    "               <serviceArea>\n" +
+		    "                   <said>1005</said>\n" +
+		    "               </serviceArea>            \n" +      
+		    "               <schedule index=\"1\" cancelled=\"false\" start=\"2015-04-09T10:48:27.000+09:00\" stop=\"2015-04-09T12:08:27.000+09:00\">\n" +
+		    "                   <content contentId=\"1\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +                            
+		    "                    <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+		    "                       <deliveryInfo start=\"2015-04-09T10:48:27.000+09:00\" end=\"2015-04-09T11:08:27.000+09:00\"/>\n" +
+		    "                   </content> \n" +
+		    "                   <content contentId=\"2\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +
+		    "                       <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+		    "                       <deliveryInfo start=\"2015-04-09T11:58:27.000+09:00\" end=\"2015-04-09T12:08:27.000+09:00\"/>\n" +
+		    "                   </content>\n" +
+		    "               </schedule>\n" +
+		    "               <schedule index=\"2\" cancelled=\"true\" start=\"2015-04-09T12:38:27.000+09:00\" stop=\"2015-04-09T12:58:27.000+09:00\">\n" +
+		    "                   <content contentId=\"1\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">                            \n" +
+		    "                   <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+		    "                       <deliveryInfo start=\"2015-04-09T12:38:27.000+09:00\" end=\"2015-04-09T12:48:27.000+09:00\"/>\n" +
+		    "                   </content> \n" +
+		    "                   <content contentId=\"2\" contentType=\"text/plain\" cancelled=\"false\" changed=\"false\">\n" +
+		    "                       <fileURI>http://192.168.1.89:8088/data/100M-RQ.txt</fileURI>\n" +
+		    "                       <deliveryInfo start=\"2015-04-09T12:48:27.000+09:00\" end=\"2015-04-09T12:58:27.000+09:00\"/>\n" +
+		    "                   </content>\n" +
+		    "               </schedule>\n" +
+		    "           </fileDownload>\n" +
+		    "       </service>\n" +
+		    "   </services>\n" +
+		    "</parameters>\n" +
+		    "</message>";
 	
     	return retStr;
     }
+    
 	public static void main( String[] args ) {
-		//System.out.println(new XmlManager().testMaking());
-
-		//System.out.println(getFileDate("YYYYMMdd"));
 		System.out.println(new XmlManager().convertDateFormat("20151223201100"));
-		
-		
-//		String tt = "";
-//		try {
-//			tt = new XmlManager().tmpRespRETRIEVE_Body();
-//			Map<String, String> mapRet = new XmlManager().paringRetrieve(tt);
-//			System.out.println(mapRet);
-//		} catch (JDOMException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.out.println(tt);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.out.println(tt);
-//		}
-		
-	    
 	}
+	
 }
 

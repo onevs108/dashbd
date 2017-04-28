@@ -152,9 +152,9 @@
 			$("#serviceType").prop('disabled', true);
 			$("#serviceId").prop('disabled', true);
 			$("#serviceClass").prop('disabled', true);
+			$("#serviceMode").prop('disabled', true);
 			var now = getTimeStamp();
 			if(now >= $("#schedule_start").val()) {	 //시작 시간이 지난 경우
-				$("#serviceMode").prop('disabled', true);
 				$("#GBR").prop('disabled', true);
 				$("#QCI").prop('disabled', true);
 				$("#fecType").prop('disabled', true);
@@ -333,7 +333,7 @@
                             <div id="interval" style="display: none; margin-right: 35px;">
 	                            <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Retrieve Interval</label>
 	                       	    <div class="col-sm-3">
-	                       	    	<input type="text" class="form-control" id="retrieveInterval" name="retrieveInterval" alt='retrieveInterval' value="${mapSchedule.retrieve_interval}">
+	                       	    	<input type="text" class="form-control" id="retrieveInterval" name="retrieveInterval" placeholder="sec" alt='retrieveInterval' value="${mapSchedule.retrieve_interval}">
 	                       	    </div>
                        	    </div>
                        	    <div id="serviceModeArea" style="display: none; margin-right: 35px;">
@@ -386,9 +386,10 @@
                                 </div>
                              </div>
                              <div class="form-group">
-                             	<label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service Class</label>
+                             	<label class="col-sm-2 control-label">Service Class</label>
                         	    <div class="col-sm-3">
                         	    	<select type="text" class="form-control" id="serviceClass" name="serviceClass" alt='serviceClass'>
+                        	    		<option value=""></option>
                         	    		<c:forEach var="row" items="${serviceClassList}">
                         	    			<option value="${row.class_name}">${row.class_name}</option>
                         	    		</c:forEach>
@@ -479,7 +480,7 @@
                                                 </div>
                                                 <div class="form-group" id="bcType_streaming" <c:if test="${empty mapSchedule.service || mapSchedule.service == 'fileDownload'}">style="display:none"</c:if>>
                                                 	<label class="col-sm-6" style="padding-bottom:6px"><i class="fa fa-check text-importance"></i> Segmentation Available Offset</label>
-                                                    <div class="col-sm-6"><input type="text" class="form-control" id="segmentAvailableOffset" name="segmentAvailableOffset" value="${mapSchedule.segmentAvailableOffset}"></div>
+                                                    <div class="col-sm-6"><input type="text" class="form-control" id="segmentAvailableOffset" name="segmentAvailableOffset" placeholder="sec" value="${mapSchedule.segmentAvailableOffset}"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -720,11 +721,11 @@
                                    
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Offset Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frOffsetTime" name="frOffsetTime" value="${mapSchedule.frOffsetTime}" <c:if test="${mapSchedule.fileRepair == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frOffsetTime" name="frOffsetTime" placeholder="sec" value="${mapSchedule.frOffsetTime}" <c:if test="${mapSchedule.fileRepair == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Random Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frRandomTime" name="frRandomTime" value="${mapSchedule.frRandomTime}" <c:if test="${mapSchedule.fileRepair == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="frRandomTime" name="frRandomTime" placeholder="sec" value="${mapSchedule.frRandomTime}" <c:if test="${mapSchedule.fileRepair == 'off'}">disabled</c:if>></div>
                                    </div>
                                    </div>
                                    <div class="form-group">
@@ -756,11 +757,11 @@
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Offset Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="offsetTime" name="offsetTime" value="${mapSchedule.offsetTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="offsetTime" name="offsetTime" placeholder="sec" value="${mapSchedule.offsetTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Random Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime" value="${mapSchedule.randomTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="randomTime" name="randomTime" placeholder="sec" value="${mapSchedule.randomTime}" <c:if test="${mapSchedule.receptionReport == 'off'}">disabled</c:if>></div>
                                    </div>
                             	</div>
                             	<div id="consumptionReport" class="well">
@@ -787,15 +788,15 @@
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Report Interval</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodReportInterval" name="moodReportInterval" value="${mapSchedule.moodReportInterval}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodReportInterval" name="moodReportInterval" placeholder="sec" value="${mapSchedule.moodReportInterval}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Offset Time</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodOffsetTime" name="moodOffsetTime" value="${mapSchedule.moodOffsetTime}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodOffsetTime" name="moodOffsetTime" placeholder="sec" value="${mapSchedule.moodOffsetTime}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Random Time Period</label>
-                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodRandomTimePeriod" name="moodRandomTimePeriod" value="${mapSchedule.moodRandomTimePeriod}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
+                                       <div class="col-sm-9"><input type="text" class="form-control input-sm" id="moodRandomTimePeriod" name="moodRandomTimePeriod" placeholder="sec" value="${mapSchedule.moodRandomTimePeriod}" <c:if test="${mapSchedule.reportClientId == 'off'}">disabled</c:if>></div>
                                    </div>
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label"><i class="fa fa-check text-importance"></i>Sample Percentage</label>

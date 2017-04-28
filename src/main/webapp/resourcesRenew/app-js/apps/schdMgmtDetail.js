@@ -703,7 +703,11 @@ function deleteAction(url, deleteType) {
 		success : function( data ) {
 			g_delRetrun = outMsgForAjax(data);
 			var resultCode = data.resultInfo.resultCode;
-			if(resultCode == "6011" || resultCode == "8410") {
+			if(resultCode == "8410") {
+				alert("This schedule can be deleted after the end time of the schedule");
+				return;
+			}
+			if(resultCode == "6011") {
 				if(confirm("Do you want to delete this schedule in SeSM?")){
 					deleteScheduleSeSM(param);
 				}
@@ -711,13 +715,15 @@ function deleteAction(url, deleteType) {
 			if(resultCode != "1000" && data.resultCode != "200"){
 				return;
 			}
-			$("#deleteAbortModal").modal('hide');
 			location.reload();
 			/*if ( g_delRetrun == 1){
 				$('#calendar').fullCalendar('removeEvents', event._id);
 			}else{
 				alert(bRet);
 			}*/
+		},
+		complete : function( data ) {
+			$("#deleteAbortModal").modal('hide');
 		},
 		error : function(request, status, error) {
 			alert("request=" +request +",status=" + status + ",error=" + error);
