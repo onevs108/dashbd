@@ -49,9 +49,9 @@
 	<script src="../resourcesRenew/js/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 	
  	<!-- ax5ui -->
-<!-- 	<link href="../resourcesRenew/css/plugins/ax5ui/ax5formatter.css" rel="stylesheet"> -->
-<!-- 	<script src="../resourcesRenew/js/plugins/ax5ui/ax5core.js"></script> -->
-<!-- 	<script src="../resourcesRenew/js/plugins/ax5ui/ax5formatter.js"></script> -->
+	<link href="../resourcesRenew/css/plugins/ax5ui/ax5formatter.css" rel="stylesheet">
+	<script src="../resourcesRenew/js/plugins/ax5ui/ax5core.js"></script>
+	<script src="../resourcesRenew/js/plugins/ax5ui/ax5formatter.js"></script>
 	
 	<!-- Page-Level Scripts -->
 	<script>
@@ -147,7 +147,30 @@
 			$("#reportClientId").change();
 			
 			$("#searchContentStream").click(searchStreaming);
+			addCustomFormat();
 		});
+		
+		function addCustomFormat() {
+			$('[data-ax5formatter-custom="01"]').ax5formatter({
+		        pattern: "custom",
+		        getEnterableKeyCodes: function(obj){
+		        	return jQuery.extend(
+	                    ax5.ui.formatter.formatter.ctrlKeys,
+	                    ax5.ui.formatter.formatter.numKeys
+	                );
+		        },
+		        getPatternValue: function (obj) {
+		        	/* if(obj.value.length > 2){
+		        		obj.value = obj.value.replace(obj.value.substr(2,1), ":");	//3번째 자리 replace
+		        		obj.value = obj.value.substr(0,5);							//5자리 String 으로 만들기
+		        	}
+		        	if(obj.value.length < 3 && obj.value.indexOf(":") > -1){
+		        		obj.value = "";
+		        	} */
+	        		return obj.value;
+		        }
+		    });
+		}
 		
 		function checkRequireValue() {
 			$("#serviceType").prop('disabled', true);
@@ -198,6 +221,7 @@
 				$("div[name='bcType_fileDownload']").hide();
 				addServiceAreaEvent($("div[name='bcType_streaming2']").length-1);
 			}
+			addCustomFormat();
 		}
 		
 		function addFileContent(e) {
@@ -230,6 +254,7 @@
 				scheduleTimeSync($(lastContent).find("input[name='deliveryInfo_end']")[0]);
 				return false;
 			});
+			addCustomFormat();
 		}
 		
 		function removePattern(e) {
@@ -255,13 +280,13 @@
 			}
 		}
 				
-		function dateValidation(e) {
+		/* function dateValidation(e) {
 			console.log(event.keyCode)
 			if(!((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode == 8 || event.keyCode == 46 || (event.keyCode >= 37 && event.keyCode <= 40))){
-				e.value = e.value;
+				e.value = e.value; 
 				return; 
 			}
-		}
+		} */
 		
 		$(window).load(function(){
 			if(viewMode == "update" && "${mapSchedule.BCID}" != null && "${mapSchedule.BCID}" != '' ){
@@ -507,9 +532,9 @@
 	                            <div class="form-group"><label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Schedule</label>
 	                                <div class="col-sm-8">
 	                                    <label class="col-sm-1 control-label">Start</label>
-	                                        <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" onkeydown="dateValidation(this)" value="${mapSchedule.schedule_start}"></div>
+	                                        <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" data-ax5formatter-custom="01" value="${mapSchedule.schedule_start}"></div>
 	                                    <label class="col-sm-1 control-label">Stop</label>
-	                                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" onkeydown="dateValidation(this)" value="${mapSchedule.schedule_stop}" readonly></div>
+	                                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" data-ax5formatter-custom="01" value="${mapSchedule.schedule_stop}" readonly></div>
 	                                </div>
 	                                <div class="col-sm-1">
 	                                    <div class="form-group">
@@ -671,18 +696,18 @@
 	                                                        <label class="col-md-2 control-label">Start</label>
 	                                                        <div class="col-md-4">
 	                                                        <c:if test="${empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" onkeydown="dateValidation(this)" value="${mapSchedule.start_date}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" data-ax5formatter-custom="01" value="${mapSchedule.start_date}"></div>
 	                                                        </c:if>
 	                                                        <c:if test="${not empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" onkeydown="dateValidation(this)" value="${mapSchedule.deliveryInfo_start}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" data-ax5formatter-custom="01" value="${mapSchedule.deliveryInfo_start}"></div>
 	                                                        </c:if>
 	                                                        <label class="col-md-2 control-label">Stop</label>
 	                                                        <div class="col-md-4">
 	                                                        <c:if test="${empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" onkeydown="dateValidation(this)" value="${mapSchedule.end_date}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" data-ax5formatter-custom="01" value="${mapSchedule.end_date}"></div>
 	                                                        </c:if>
 	                                                        <c:if test="${not empty mapSchedule.BCID}">
-	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" onkeydown="dateValidation(this)" value="${mapSchedule.deliveryInfo_end}"></div>
+	                                                        	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" data-ax5formatter-custom="01" value="${mapSchedule.deliveryInfo_end}"></div>
 	                                                        </c:if>
                                                         </div>
                                                         <!-- 
@@ -851,9 +876,9 @@
         <div class="form-group"><label class="col-sm-2 control-label">Schedule</label>
             <div class="col-sm-8">
                 <label class="col-sm-1 control-label">Start</label>
-                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" value="${mapSchedule.schedule_start}"></div>
+                    <div class="col-sm-5"><input type="text" class="form-control" id="schedule_start" name="schedule_start" data-ax5formatter-custom="01" value="${mapSchedule.schedule_start}"></div>
                 <label class="col-sm-1 control-label">Stop</label>
-                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" value="${mapSchedule.schedule_stop}"></div>
+                <div class="col-sm-5"><input type="text" class="form-control" id="schedule_stop" name="schedule_stop" data-ax5formatter-custom="01" value="${mapSchedule.schedule_stop}"></div>
             </div>
             <div class="col-sm-1">
                 <div class="form-group">
@@ -939,19 +964,19 @@
                                    <label class="col-md-2 control-label">Start</label>
                                    <div class="col-md-4">
                                    <c:if test="${empty mapSchedule.BCID}">
-                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.start_date}"></div>
+                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" data-ax5formatter-custom="01" value="${mapSchedule.start_date}"></div>
                                    </c:if>
                                    <c:if test="${not empty mapSchedule.BCID}">
-                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" value="${mapSchedule.deliveryInfo_start}"></div>
+                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_start" name="deliveryInfo_start" data-ax5formatter-custom="01" value="${mapSchedule.deliveryInfo_start}"></div>
                                    </c:if>
                                    	
                                    <label class="col-md-2 control-label">Stop</label>
                                    <div class="col-md-4">
                                    <c:if test="${empty mapSchedule.BCID}">
-                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.end_date}"></div>
+                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" data-ax5formatter-custom="01" value="${mapSchedule.end_date}"></div>
                                    </c:if>
                                    <c:if test="${not empty mapSchedule.BCID}">
-                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" value="${mapSchedule.deliveryInfo_end}"></div>
+                                   	<input type="text" class="form-control input-sm m-b-sm" id="deliveryInfo_end" name="deliveryInfo_end" data-ax5formatter-custom="01" value="${mapSchedule.deliveryInfo_end}"></div>
                                    </c:if>
 									</div>
                                    <!-- 

@@ -1827,8 +1827,7 @@ public class ServiceController {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e.toString());
-		}		
+		}
 		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
