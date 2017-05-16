@@ -30,7 +30,7 @@
 			});
 		}
 		else if (cause == LOGIN_FAIL_CREDENTIALS_EXPIRED) {
-			swal({title:"Fail !", text:"Your Account has been reset! Please change your password!", type:"warning"}, function() {
+			swal({title:"", text:"Your Account has been reset! Please change your password!", type:"warning"}, function() {
 				$("#initForm").submit();
 			});
 		}

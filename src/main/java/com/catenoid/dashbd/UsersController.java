@@ -375,7 +375,7 @@ public class UsersController {
 		
 		try {
 			String userId = request.getParameter("userId");
-			String initPassword = "9999";
+			String initPassword = request.getParameter("tempPass");
 			
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			param.put("userId", userId);

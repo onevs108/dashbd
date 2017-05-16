@@ -536,6 +536,10 @@ function detailValidationCheck() {
 	});
 	
 	$("#moodReportInterval").blur(function(){
+		var range = moodInterval*60/2;
+		if(this.value >= range){
+			alert("The value of the ReportInterval must be less than Threshold Range - "+range);
+		}
 		if(this.value != ""){
 			if(!checkInteger7(this.value)){
 				this.value = "";

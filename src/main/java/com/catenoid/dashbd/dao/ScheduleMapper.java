@@ -103,5 +103,7 @@ public interface ScheduleMapper {
 	void editServiceIdIdx(HashMap<String, Object> params);
 	HashMap<String, String> getThreashold(String string);
 	void insertMoodService(Map<String, String> params);
+	List<HashMap<String, String>> getTimeStampMoodService(String crsId);
+	int getMoodInterval();
     
 }

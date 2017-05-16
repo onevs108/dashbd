@@ -1026,11 +1026,46 @@
 					});
 				});
 		}
+	
+		function setScrollLocation() {
+			var strCook = document.cookie;//저장된 쿠키 값을 받아온다.
+			var intS = strCook.indexOf("!~");
+			var intE = strCook.indexOf("~!");
+			var strPos = strCook.substring(intS+2, intE);//스크롤 위치를 구한다.
+			document.body.scrollTop = strPos;//스크롤 위치를 적용시킨다.
+		}
 		
 		//auto refresh
 		(function(){
-		    function refreshTable() {$('#table').bootstrapTable('refresh', {silent: true});}
-		    setInterval(refreshTable, 10000);
+		    function refreshTable() {
+		    	//$.cookie('pagaNumber') -- 현재 페이징
+		    	var intY = document.body.scrollTop;
+				document.cookie = "yPos=!~"+intY+"~!";
+		    	var idx = [];
+		    	var nameArray = [];
+		    	var nameIdx = 0;
+		    	for (var i = 0; i < $("tr[name]").length; i++) {
+		    		var name = $("tr[name]")[i].getAttribute("name");
+		    		idx[i] = name.substr(name.length-1,1);
+		    		if($($($("tr[name]")[i])[0]).find("tbody").length > 1){
+		    			nameArray[nameIdx] = "sub"+ idx[i];
+		    			nameIdx++;
+		    		}
+				}
+		    	$('#table').bootstrapTable('refresh', {silent: true});
+		    	setTimeout(function(){
+					for (var j = 0; j < idx.length; j++) {
+						$($("tr[data-index]")[Number(idx[j])]).find("span").click();
+		    		}
+				}, 300);
+		    	setTimeout(function(){
+		    		for (var k = 0; k < nameArray.length; k++) {
+		    			$("tr[name='"+nameArray[k]+"']").find("span").click();
+		    		}
+		    		setScrollLocation();
+				}, 500);
+		    }
+		    setInterval(refreshTable, 20000);
 		})()
 	</script>
 </body>

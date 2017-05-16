@@ -59,6 +59,7 @@
 		var contentJson = ${contentListJson};
 		var viewMode = "${mode}";
 		var contentsType = "${contentsType}";
+		var moodInterval = "${moodInterval}";
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
 			if($("#moodLocation").val() == "") {

@@ -86,7 +86,7 @@
 							</div>
 							<div class="col-lg-6">
 <%-- 								<c:if test="${USER.grade == 13}"> --%>
-									<button type="button" id="init-password-btn" onclick="javascript:initPassword();" class="btn btn-primary">Reset Password</button>
+									<button type="button" id="init-password-btn" onclick="javascript:openResetModal();" class="btn btn-primary">Reset Password</button>
 <%-- 								</c:if> --%>
 							</div>
 						</div>
@@ -189,6 +189,25 @@
 		</div>
 	</div>
 	<jsp:include page="serviceAreaBandwidth.jsp" />
+</div>
+<div class="modal" id="myModal2" aria-hidden="true" style="display: none; z-index: 1060;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title2">Reset Password</h4>
+			</div>
+			<div class="modal-body">
+            	Please enter Temporary Password
+            	<div>
+					<input type="text" placeholder="Temporary Password" class="form-control" id="tempPass" name="tempPass">
+				</div>
+            </div>
+            <div class="modal-footer">
+				<button type="button" id="addBtn" onclick="javascript:initPassword();" class="btn btn-primary">Edit</button>
+				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- e : POPUP - Add Operator -->
 
@@ -523,6 +542,10 @@
 		}, 200);
 	}
 	
+	function openResetModal() {
+		$("#myModal2").modal('show');
+	}
+	
 	function initPassword() {
 		swal({
 		  title: "Are you sure?",
@@ -539,11 +562,13 @@
 				method: 'POST',
 				dataType: 'json',
 				data: {
-					userId: $("#form-user-id").val()
+					userId: $("#form-user-id").val(),
+					tempPass: $("#tempPass").val()
 				},
 				success: function(data, textStatus, jqXHR) {
 					if (data.resultCode == 'S') { // 성공
 						swal({title:"Success !", text:"Success", type:"success"}, function() {
+							$("#myModal2").modal("hide");
 							$("#myModal").modal("hide");
 						});
 					}

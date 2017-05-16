@@ -95,7 +95,7 @@ public class ScheduleMgmtController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/view/schdMgmt.do")
-	public ModelAndView schdMgmt(@RequestParam Map< String, Object > params, HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
+	public ModelAndView schdMgmt(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
 		Users user = (Users) session.getAttribute("USER");
 		if(user == null){
@@ -175,7 +175,7 @@ public class ScheduleMgmtController {
 	 */
 	@RequestMapping( value = "/view/getSchedule.do")
 	@ResponseBody
-	public Map< String, Object > getSchedule( @RequestParam Map< String, Object > params,
+	public Map<String, Object> getSchedule( @RequestParam Map<String, Object> params,
 	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -183,7 +183,7 @@ public class ScheduleMgmtController {
 		int maxPosition = mapper.selectSchduleMaxPosition(params);
 		List<Map> list = mapper.selectSchdule(params);
 		
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+		int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (hour < 4)
         	hour = 0;
         else if (hour < 12)
@@ -193,15 +193,15 @@ public class ScheduleMgmtController {
         else
         	hour = 14;
         
-        Map< String, Object > returnMap = new HashMap< String, Object >();
-        returnMap.put( "resultCode", "1000" );
-        returnMap.put( "resultMsg", "SUCCESS");
+        Map<String, Object> returnMap = new HashMap<String, Object>();
+        returnMap.put("resultCode", "1000");
+        returnMap.put("resultMsg", "SUCCESS");
         
-        Map< String, Object > resultMap = new HashMap< String, Object >();
-        resultMap.put( "resultInfo", returnMap );
-        resultMap.put( "maxPosition", maxPosition );
-        resultMap.put( "contents", list );
-        resultMap.put( "viewStartHour", hour);
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("resultInfo", returnMap);
+        resultMap.put("maxPosition", maxPosition);
+        resultMap.put("contents", list);
+        resultMap.put("viewStartHour", hour);
         
 		return (Map<String, Object>) resultMap;
 	}
@@ -209,7 +209,7 @@ public class ScheduleMgmtController {
 	@RequestMapping(value = "view/checkBandwidth.do")
 	@ResponseBody
 	public Map<String, Object> checkBandwidth(@RequestParam Map<String, String> params, HttpServletRequest req, Locale locale) {
-		Map< String, Object > resultMap = new HashMap< String, Object >();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		int inputBandwidth = Integer.parseInt(params.get("bandwidth"));
 		if(params.get("saidList").equals("")){
@@ -256,7 +256,7 @@ public class ScheduleMgmtController {
 	@RequestMapping(value = "view/checkExistSaid.do")
 	@ResponseBody
 	public Map<String, Object> checkExistSaid(@RequestParam Map<String, String> params, HttpServletRequest req, Locale locale) {
-		Map< String, Object > resultMap = new HashMap< String, Object >();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		
 		int result = mapper.checkExistSaid(params);
@@ -318,7 +318,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping( value = "/view/getScheduleForMain.do")
 	@ResponseBody
-	public Map< String, Object > getScheduleForMain( @RequestParam Map< String, Object > params,
+	public Map<String, Object> getScheduleForMain( @RequestParam Map<String, Object> params,
 	            HttpServletRequest req, Locale locale ) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		String searchDate = Utils.getFileDate("yyyy-MM-dd");
@@ -327,11 +327,11 @@ public class ScheduleMgmtController {
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 		List<Map> list = mapper.selectSchdule(params);
         
-        Map< String, Object > returnMap = new HashMap< String, Object >();
+        Map<String, Object> returnMap = new HashMap<String, Object>();
         returnMap.put( "resultCode", "1000" );
         returnMap.put( "resultMsg", "SUCCESS");
         
-        Map< String, Object > resultMap = new HashMap< String, Object >();
+        Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put( "resultInfo", returnMap );
         resultMap.put( "contents", list );
         
@@ -341,7 +341,7 @@ public class ScheduleMgmtController {
 	//스케쥴 최초 등록
 	@RequestMapping(value = "view/addScheduleWithInitContent.do")
 	@ResponseBody
-	public Map< String, Object > addScheduleWithInitContent( @RequestParam Map< String, Object > params,
+	public Map<String, Object> addScheduleWithInitContent( @RequestParam Map<String, Object> params,
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
@@ -357,7 +357,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/modifyScheduleTime.do")
 	@ResponseBody
-	public Map< String, Object > modifyScheduleTime( @RequestParam Map< String, String > params,
+	public Map<String, Object> modifyScheduleTime( @RequestParam Map< String, String > params,
             HttpServletRequest req) throws JsonGenerationException, JsonMappingException, IOException {
 
 		HashMap<String, String> retValue = new HashMap<String, String>();
@@ -447,7 +447,7 @@ public class ScheduleMgmtController {
 	
 
 	@RequestMapping(value = "view/schdMgmtDetail.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-	public ModelAndView schdMgmtDetail( @RequestParam Map< String, Object > params,  HttpServletRequest req, HttpSession session) throws UnsupportedEncodingException {
+	public ModelAndView schdMgmtDetail( @RequestParam Map<String, Object> params,  HttpServletRequest req, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmtDetail" );
 		Users user = (Users) session.getAttribute("USER");
 		if(user == null) {
@@ -502,7 +502,7 @@ public class ScheduleMgmtController {
 		List<Circle> circleList = operatorMapper.selectCircleListAll();
 		List<Map<String, String>> serviceClassList = mapper.selectServiceClassAll();
 		List<Map<String, String>> serviceIdList = mapper.selectServiceIdAll();
-//		int serviceIdIdx = mapper.selectServiceIdIdx();
+		int moodInterval = mapper.getMoodInterval();
 		
 		if (mapSchedule.get("BCID") == null || "".equals(mapSchedule.get("BCID"))){
 			mode = "new";
@@ -537,6 +537,7 @@ public class ScheduleMgmtController {
 		mv.addObject("mapContentUrl", mapContentUrl);
 		mv.addObject("mapSchedule", mapSchedule);
 		mv.addObject("userGrade", user.getGrade());
+		mv.addObject("moodInterval", moodInterval);
 		return mv;
 	}
 	
@@ -847,7 +848,7 @@ public class ScheduleMgmtController {
 				Element service = request.getChild("service");
 				Element timestamp = service.getChild("timestamp");
 				String crsId = timestamp.getAttributeValue("crsId");
-				List<HashMap<String, String>> currnetService = scheduleMapper.getCurrentMoodService(crsId);
+				List<HashMap<String, String>> currnetService = scheduleMapper.getTimeStampMoodService(crsId);
 				
 				System.out.println("================== Mood Receive Timestamp Start ==================");
 				Element messageNew = new Element("message");
@@ -1077,7 +1078,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/scheduleReg.do")
 	@ResponseBody
-	public Map< String, Object > scheduleReg( @RequestParam Map< String, String > params,
+	public Map<String, Object> scheduleReg( @RequestParam Map< String, String > params,
 			@RequestParam(value="saidData", required=false) List<String> saidData,
 			@RequestParam(value="schedule_start", required=false) List<String> schedule_start,
 			@RequestParam(value="schedule_stop", required=false) List<String> schedule_stop,
@@ -1390,7 +1391,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/delSchedule.do")
 	@ResponseBody
-	public Map< String, Object > delSchedule( @RequestParam Map< String, String > params,
+	public Map<String, Object> delSchedule( @RequestParam Map< String, String > params,
             HttpServletRequest request, Locale locale ) {
 		HashMap<String, String> retValue = new HashMap<String, String>();
 		logger.info("delSchedule params{}", params);
@@ -1455,7 +1456,7 @@ public class ScheduleMgmtController {
 	
 	@RequestMapping(value = "view/delScheduleSeSM.do")
 	@ResponseBody
-	public Map< String, Object > delScheduleSeSM(@RequestParam Map< String, String > params, HttpServletRequest request, Locale locale ) {
+	public Map<String, Object> delScheduleSeSM(@RequestParam Map< String, String > params, HttpServletRequest request, Locale locale ) {
 		try{
 			ScheduleMapper mapper = sqlSession.getMapper(ScheduleMapper.class);
 			
@@ -1566,11 +1567,11 @@ public class ScheduleMgmtController {
 	}
 	
 	private Map<String, Object> makeRetMsg(String code, String resStr) {
-		Map< String, Object > returnMap = new HashMap< String, Object >();
+		Map<String, Object> returnMap = new HashMap<String, Object>();
 	    returnMap.put( "resultCode", code );
 	    returnMap.put( "resultMsg", resStr);
 	      
-	    Map< String, Object > resultMap = new HashMap< String, Object >();
+	    Map<String, Object> resultMap = new HashMap<String, Object>();
 	    resultMap.put( "resultInfo", returnMap );
 	              
 		return (Map<String, Object>) resultMap;
@@ -1587,7 +1588,6 @@ public class ScheduleMgmtController {
 		}
 				
 		return retStr;
-		
 	}
 	
 	//20170317174445 --> 2017-02-27 16:00:00
