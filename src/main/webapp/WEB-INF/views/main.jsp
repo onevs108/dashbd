@@ -312,12 +312,13 @@
 				
 				var tempObj = rows[i];
 				var tempNextObj = rows[i+1];
-				
+				if(tempNextObj == undefined){
+					continue;
+				}
 				if(tempObj.circleName != 'emergency' && tempObj.circleName != 'national' ) {
-					if(tempObj.circleName == tempNextObj.circleName
-							&& $(trList[i]).find("i").hasClass("fa-plus-square")) {
-							$(trList[i]).find("i.fa.fa-plus-square").remove();
-						}	
+					if(tempObj.circleName == tempNextObj.circleName && $(trList[i]).find("i").hasClass("fa-plus-square")) {
+						$(trList[i]).find("i.fa.fa-plus-square").remove();
+					}	
 				}
 			}
 			
@@ -1046,7 +1047,11 @@
 		    	var nameIdx = 0;
 		    	for (var i = 0; i < $("tr[name]").length; i++) {
 		    		var name = $("tr[name]")[i].getAttribute("name");
-		    		idx[i] = name.substr(name.length-1,1);
+		    		if(name.search("nationalSub") == "0"){
+		    			idx[i] = name.replace("nationalSub", "");	
+		    		}else{
+		    			idx[i] = name.replace("sub", "");	
+		    		}
 		    		if($($($("tr[name]")[i])[0]).find("tbody").length > 1){
 		    			nameArray[nameIdx] = "sub"+ idx[i];
 		    			nameIdx++;

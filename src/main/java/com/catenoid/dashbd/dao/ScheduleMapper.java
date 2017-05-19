@@ -105,5 +105,6 @@ public interface ScheduleMapper {
 	void insertMoodService(Map<String, String> params);
 	List<HashMap<String, String>> getTimeStampMoodService(String crsId);
 	int getMoodInterval();
+	List<HashMap<String, String>> getBandWidthInfoList(String searchString);
     
 }

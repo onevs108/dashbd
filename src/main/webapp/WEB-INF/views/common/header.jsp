@@ -299,7 +299,7 @@
 			
 			$("#init-password-btn").hide();
 		} else if(accessDiv == 'edit') {
-			$(".modal-title").text("Edit Operator");
+// 			$(".modal-title").text("Edit Operator");
 			$("#editBtn").show();
 			$("#addBtn").hide();
 			getUserInfo(userId);
@@ -675,6 +675,7 @@
 				} else if($("#" + data.selected[0]).hasClass("hotspot")) {
 					said = tempSaid.substring(tempSaid.indexOf("C")+1);
 				} else {
+					$("#saname").html("");
 					$("#areaBandwidthModal #bandwidth").val("");
 					$("#areaBandwidthModal #usedBandwidth").val("");
 					$("#areaBandwidthModal #remainedBandwidth").val("");
@@ -686,13 +687,30 @@
 				    type: "POST",
 				    data : { 
 				    	saidList : said,
-				    	bandwidth : '0'
+				    	bandwidth : '0',
+				    	type : 'bandwidth'
 				    },
 				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 				    success : function(responseData) {
-				        $("#areaBandwidthModal #bandwidth").val(data.node.data.band);
-				        $("#areaBandwidthModal #usedBandwidth").val(responseData.usedBandwidth);
-				        $("#areaBandwidthModal #remainedBandwidth").val(responseData.enableBandwidth);
+				    	var infoList = responseData.bandWidthInfoList;
+				    	$("#saname").html(data.node.text);
+				        $("#areaBandwidthModal #bandwidth").val(Number(data.node.data.band)/1000000+"M Bytes");
+				        $("#areaBandwidthModal #usedBandwidth").val(Number(responseData.usedBandwidth)/1000000+"M Bytes");
+				        $("#areaBandwidthModal #remainedBandwidth").val(Number(responseData.enableBandwidth)/1000000+"M Bytes");
+				        $("#bandwidthInfoList").html("");
+				        if(infoList.length > 0){
+				        	var html = "";
+				        	for (var i = 0; i < infoList.length; i++) {
+				        		html+='<tr class="active">';
+				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].serviceId+'</td>';
+				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].service_name+'</td>';
+				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].service+'</td>';
+				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].serviceMode+'</td>';
+				        		html+='	 <td class="active" style="text-align: center;">'+Number(infoList[i].GBR)/1000+'K</td>';
+				        		html+='</tr>';
+							}
+				        	$("#bandwidthInfoList").html(html);
+				        }
 				    },
 			        error : function(xhr, status, error) {
 			        	swal({
@@ -724,7 +742,7 @@
 		if(event.keyCode == 13) {
 			searchServiceAreaTreeNode();
 	    }
-	})
+	});
 
 	function searchServiceAreaTreeNode() {
 		var searchString = $("#areaBandwidthModal #search-input").val();

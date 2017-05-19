@@ -798,6 +798,14 @@
 	</update>
 	<!--  inbo 작성 쿼리 끝  -->
 
+	<select id="getBandWidthInfoList" parameterType="String" resultType="java.util.Map">
+		select * from broadcast_info a inner join schedule b on a.BCID = b.BCID 
+		where CONCAT(',', a.said, ',') REGEXP CONCAT(',', #{searchString}, ',')
+		and (now() <![CDATA[ > ]]> a.schedule_start)
+		and (now() <![CDATA[ < ]]> a.schedule_stop)
+		and b.del_yn = 'N'
+	</select>
+
 	<select id="checkBandwidth" parameterType="java.util.Map" resultType="java.util.Map">
 		select said, bandwidth, type from 
 		(
@@ -913,7 +921,7 @@
 	<select id="getCurrentMoodService" parameterType="String" resultType="HashMap">
 		select a.serviceId, max(c.timestamp) from 
 		broadcast_info a inner join crs_said_mapping b 
-		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
+		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',')
 		inner join mood_request c on a.serviceId = c.serviceId and b.crs_id = c.crsId
 		inner join schedule s on s.BCID = a.BCID
 		where service = 'streaming' 

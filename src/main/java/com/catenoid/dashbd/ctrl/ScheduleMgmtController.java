@@ -217,11 +217,11 @@ public class ScheduleMgmtController {
 			resultMap.put("resultObj", "SUCCESS");
 			return resultMap;
 		}
-		
+		String searchString = "";
 		List<Map<String, String>> bwList = mapper.checkBandwidth(params);
 		for (int j = 0; j < bwList.size(); j++) {
 			List<String> saidList = mapper.selectSaidRange(bwList.get(j));
-			String searchString = "";
+			searchString = "";
 			for (int i = 0; i < saidList.size(); i++) {
 				if(i == saidList.size()-1){
 					searchString += saidList.get(i);
@@ -244,6 +244,11 @@ public class ScheduleMgmtController {
 			}
 			resultMap.put("usedBandwidth", usedBWint);
 			resultMap.put("enableBandwidth", usableBWint);
+		}
+		
+		if("bandwidth".equals(params.get("type"))) {
+			List<HashMap<String, String>> bandWidthInfoList = mapper.getBandWidthInfoList(searchString);
+			resultMap.put("bandWidthInfoList", bandWidthInfoList);
 		}
 		
 		resultMap.put("result", "SUCCESS");
@@ -1536,8 +1541,7 @@ public class ScheduleMgmtController {
 			}
 			rtvs[0] = respBody;
 			rtvs[1] = reqBody;
-			
-		}catch(Exception e){ 
+		} catch(Exception e) { 
 			logger.error("", e);
 			return makeRetMsg("N", "FAIL");
 		}

@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!-- s : POPUP - Add Operator -->
-<div class="modal inmodal" id="areaBandwidthModal" tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog">
+<div class="modal inmodal" id="areaBandwidthModal" tabindex="-1" role="dialog" aria-hidden="true" style="width: 100%;" >
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content animated bounceInRight">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
@@ -43,21 +43,40 @@
 						</div>
 						<div class="row">
 							<div class="col-lg-12" style="overflow: auto; height: 500px;">
-								<div class="col-sm-6" id="serviceAreaTree"></div>
-								<div class="col-sm-6">
+								<div class="col-sm-4" id="serviceAreaTree"></div>
+								<div class="col-sm-8">
 									<div class="well">
-	                                   <div class="form-group">
-	                                       <label class="control-label">Bandwidth</label>
-	                                       <div class=""><input type="text" class="form-control input-sm" id="bandwidth" name="bandwidth" value="" disabled=""></div>
-	                                   </div>
-	                                   <div class="form-group">
-	                                       <label class="control-label">Used Bandwidth</label>
-	                                       <div class=""><input type="text" class="form-control input-sm" id="usedBandwidth" name="usedBandwidth" value="" disabled=""></div>
-	                                   </div>
-	                                   <div class="form-group">
-	                                       <label class="control-label">Remained Bandwidth</label>
-	                                       <div class=""><input type="text" class="form-control input-sm" id="remainedBandwidth" name="remainedBandwidth" value="" disabled=""></div>
-	                                   </div>
+										<b>Bandwidth Usage for <span id="saname"></span></b>
+										<table class="table table-bordered">
+											<tr class="active">
+												<td class="active" style="text-align: center;">Bandwidth Configured</td>
+												<td class="active" style="text-align: center;">Remaining Bandwidth</td>
+												<td class="active" style="text-align: center;">Allocated Bandwidth</td>
+											</tr>
+											<tr class="active">
+												<td class="active">
+													<input type="text" class="form-control input-sm" id="bandwidth" name="bandwidth" value="" disabled="">
+												</td>
+												<td class="active">
+													<input type="text" class="form-control input-sm" id="remainedBandwidth" name="remainedBandwidth" value="" disabled="">
+												</td>
+												<td class="active">
+													<input type="text" class="form-control input-sm" id="usedBandwidth" name="usedBandwidth" value="" disabled="">
+												</td>
+											</tr>
+										</table>
+										<b>Service list taking the bandwidth</b>
+										<table class="table table-bordered">
+											<tr class="active">
+												<td class="active" style="text-align: center;">Service ID</td>
+												<td class="active" style="text-align: center;">Service Name</td>
+												<td class="active" style="text-align: center;">Service Type</td>
+												<td class="active" style="text-align: center;">Service Mode</td>
+												<td class="active" style="text-align: center;">GBR</td>
+											</tr>
+											<tbody id="bandwidthInfoList">
+											</tbody>
+										</table>
 	                            	</div>
 								</div>
 							</div>
