@@ -3384,6 +3384,7 @@ public class ServiceAreaController {
 				
 				if(resultCnt > 0) {
 					resultObj.put("resultCode", "S");
+					resultObj.put("group_id", inserthParam.get("group_id"));
 					txManager.commit(txStatus);
 				} else {
 					resultObj.put("resultCode", "F");

@@ -245,7 +245,7 @@ public class ScheduleMgmtController {
 			resultMap.put("usedBandwidth", usedBWint);
 			resultMap.put("enableBandwidth", usableBWint);
 		}
-		
+
 		if("bandwidth".equals(params.get("type"))) {
 			List<HashMap<String, String>> bandWidthInfoList = mapper.getBandWidthInfoList(searchString);
 			resultMap.put("bandWidthInfoList", bandWidthInfoList);

@@ -43,6 +43,7 @@
 										<div class="col-lg-6" style="height: 415px;">
 											<div class="col-lg-12">
 												<div class="form-group">
+													<h3>Select the Area to view the list of Service Area Group</h3>
 													<select class="input-sm form-control input-s-sm" id="search-circle" onchange="changeCircle()" <c:if test="${USER.grade ==  9999}">readonly</c:if>>
 					                            		<option value="" <c:if test="${USER.grade ==  9999}">disabled</c:if>>Select Area</option>
 					                            		<c:forEach var="circle" items="${circleList}" varStatus="status">
@@ -65,8 +66,7 @@
 					                                </select>
 												</div>
 												<div class="row">
-													<h3 style="height: 17px;"><span id="selectedCircle"></span></h3>
-													<div class="slimScrollDiv" style="position: relative; overflow: auto; width: auto; height: 263px;">
+													<div class="slimScrollDiv" style="position: relative; overflow: auto; width: auto; height: 295px;">
 														<div class="scroll_content" style="width: auto;">
 															<ul class="list-group" id="group_area"></ul>
 														</div>
@@ -74,30 +74,34 @@
 <!-- 														<div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div> -->
 													</div>
 													<div class="hr-line-dashed"></div>
-													<div class="input-group">
-														<input type="text" class="form-control" style="display:none;">
+													<div class="input-group" style="text-align: center;">
+<!-- 														<input type="text" class="form-control" style="display:none;"> -->
 														<span class="input-group-btn">
-															<button type="button" class="btn btn-primary" onclick="addServiceAreaGroup(this)" style="display:none;">Add</button>
+															<button type="button" class="btn btn-primary" onclick="openModal()" style="display:none;">Create a New Service Area Group</button>
 														</span>
+<!-- 														<span class="input-group-btn"> -->
+<!-- 															<button type="button" class="btn btn-primary" onclick="addServiceAreaGroup(this)" style="display:none;">Add</button> -->
+<!-- 														</span> -->
 													</div>
-													<div class="input-group infoArea" style="margin-top: 5px;display:none">
-													  Please enter the Service Area Group name and click “Add” button to add the Service Area Group
-													</div>
+<!-- 													<div class="input-group infoArea" style="margin-top: 5px;display:none"> -->
+<!-- 													  Please enter the Service Area Group name and click “Add” button to add the Service Area Group -->
+<!-- 													</div> -->
 												</div>
 											</div>
 										</div>
 										<div class="col-lg-6">
+											<h3 style="height: 17px;"><span id="selectedCircle"></span></h3>
 											<div class="tb_tpl table-responsive vertical-bsl typeA" id="service_area">
 												<div id="treeNode" style="height: 340px; overflow: auto;"></div>
 											</div>
 											<div class="row">
 												<div class="hr-line-dashed"></div>
-					                        	<div class="col-md-12" style="margin-bottom:5px">
-													<button class="btn btn-w-m btn-primary" type="button" id="save-btn" style="display:none;">Save</button>
+					                        	<div class="col-md-12" style="margin-bottom:5px; text-align: center;">
+													<button class="btn btn-w-m btn-primary" type="button" id="save-btn" style="display:none;">Save the Service Area Group <span id="groupName"/></button>
 					                        	</div>
-					                        	<div class="input-group infoArea" style="display:none">
-												  Please select city or hotspot to be included to the Service Area Group and click “Save” button
-												</div>
+<!-- 					                        	<div class="input-group infoArea" style="display:none"> -->
+<!-- 												  Please select city or hotspot to be included to the Service Area Group and click “Save” button -->
+<!-- 												</div> -->
 					                        </div>
 										</div>
 									</form>
@@ -111,29 +115,33 @@
 		<jsp:include page="common/footer.jsp" />
 	</div><!-- end page-wrapper -->
 </div><!-- end wrapper -->
+<div class="modal" id="myModal3" aria-hidden="true" style="display: none; z-index: 1060;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="text-align: center;">
+				<h3 class="modal-title2">Create New Service Area Group for <span id="groupNameModal"></span> Area</h3>
+			</div>
+			<div class="modal-body">
+				<form class="form-inline" style="text-align: center;">
+	            	<div class="form-group">
+						<label class="control-label">Service Area Group Name</label>
+						<input type="text" placeholder="" class="form-control" id="newGroupName" name="newGroupName" style="margin-left: 20px;">
+					</div>
+				</form>
+				<div class="hr-line-dashed"></div>
+				<div class="tb_tpl table-responsive vertical-bsl typeA" id="service_area">
+					<div id="treeNodeModal" style="height: 340px; overflow: auto;"></div>
+				</div>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+				<button type="button" onclick="javascript:addServiceAreaGroup(this);" class="btn btn-primary">Create</button>
+				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 
-<!-- Mainly scripts -->
-<!-- <script src="/dashbd/resources/js/jquery-2.1.1.js"></script> -->
-<!-- <script src="/dashbd/resources/js/bootstrap.min.js"></script> -->
-<!-- <script src="/dashbd/resources/js/plugins/metisMenu/jquery.metisMenu.js"></script> -->
-<!-- <script src="/dashbd/resources/js/plugins/slimscroll/jquery.slimscroll.min.js"></script> -->
-
-<!-- FooTable -->
-<!-- <script src="/dashbd/resources/js/plugins/footable/footable.all.min.js"></script> -->
-
-<!-- Custom and plugin javascript -->
-<!-- <script src="/dashbd/resources/js/inspinia.js"></script> -->
-<!-- <script src="/dashbd/resources/js/plugins/pace/pace.min.js"></script> -->
-
-<!-- Sweet alert -->
-<!--    <script src="/dashbd/resources/js/plugins/sweetalert/sweetalert.min.js"></script> -->
-   
-<!-- <script src="/dashbd/resources/app-js/config.js"></script> -->
-
-<!-- <script src="/dashbd/resources/js/markerwithlabel.js"></script> -->
 <script src="/dashbd/resources/app-js/apps/svc_area_group_map.js"></script>
-   
-<!-- <script src="js/common.js"></script> -->
    
 <script type="text/javascript">
 	$(document).ready(function() {
