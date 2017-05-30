@@ -55,6 +55,7 @@ public class Const {
 //	public static final String ROLE_SERVICE_CLASS_MGMT 		= "ROLE_SERVICE_CLASS_MGMT";
 //	public static final String ROLE_SESSION_MONITORING 		= "ROLE_SESSION_MONITORING";
 	public static final String ROLE_SYSTEM_MGMT 			= "ROLE_SYSTEM_MGMT";
+	public static final String ROLE_MOOD_MONITORING 		= "MOOD_MONITORING";
 	
 	/**
 	 * menu
@@ -86,6 +87,7 @@ public class Const {
 	public static final String MENU_LOG_MGMT				= "LOG_MGMT";
 	public static final String MENU_SYSTEM_CONF_MGMT		= "SYSTEM_CONF_MGMT";
 	public static final String MENU_SYSTEM_DB_MGMT			= "SYSTEM_DB_MGMT";
+	public static final String MENU_MOOD_MONITORING			= "MOOD_MONITORING";
 	
 	public static String getLogTime() {
 		Calendar cal = Calendar.getInstance(Locale.KOREA);

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.catenoid.dashbd.dao.MoodMapper" >
+	
+	<select id="selectMoodService" parameterType="HashMap" resultType="HashMap">
+		select * <if test="serviceId == null or serviceId == ''">, count(serviceId) svCount </if> from (
+			select T1.serviceId, T1.service_name, T1.circle, T1.city, T1.hotspot, T1.service, T1.serviceMode
+				  ,T1.scheduleStart, T1.scheduleStop, T1.national_yn, T1.emergency_yn, T1.said
+          		  ,d.mode, c.countUC, c.countBC, c.insertDate from (
+          		select *, (select circle_name as name from circle where circle_id IN (said)) circle
+			            , (select city_name as name from city where city_id IN (said)) city
+			            , (select hotspot_name as name from hotspot where hotspot_id IN (said)) hotspot
+		        from
+		        (
+					select 
+						serviceId, service_name, service, serviceMode
+		            	, SUBSTRING_INDEX(SUBSTRING_INDEX(said, ',', n.n), ',', -1) as said
+			            , schedule_start scheduleStart, schedule_stop scheduleStop
+	                	, national_yn, emergency_yn
+					from 
+				    	(select b.*, s.national_yn, s.emergency_yn FROM broadcast_info b INNER JOIN schedule s ON b.BCID = s.BCID
+					    	WHERE s.del_yn = 'N') t CROSS JOIN 
+					    (
+					       SELECT a.N + b.N * 10 + 1 n
+					       	FROM 
+					        (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+					       ,(SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+					        ORDER BY n
+					    ) n
+				    WHERE n.n <![CDATA[<=]]> 1 + (LENGTH(said) - LENGTH(REPLACE(said, ',', '')))
+				    order by BCID desc
+				) T1
+			) T1 
+			inner join mood_request c on T1.said = c.said and T1.serviceId = c.serviceId
+			inner join mood_service d on c.saId = d.said and c.serviceId = d.serviceId
+			order by c.insertDate desc
+		) T2
+		WHERE 1=1
+		<if test="deleveryType != null and deleveryType != ''">
+			AND mode = #{deleveryType}
+		</if>
+		<if test="searchSchedule != null and searchSchedule != ''">
+			<choose>
+				<when test="searchSchedule == 'onair'">
+					AND now() between scheduleStart and scheduleStop
+				</when>
+				<when test="searchSchedule == 'today'">
+					<![CDATA[
+					AND (date_format(now(), '%Y%m%d') = date_format(scheduleStart, '%Y%m%d')
+						OR date_format(now(), '%Y%m%d') < date_format(scheduleStop, '%Y%m%d'))
+					]]>
+				</when>
+			</choose>
+		</if>
+		<if test="searchArea != null and searchArea != ''">
+			<choose>
+				<when test="searchArea == 'National'">
+					AND (national_yn = 'Y' OR emergency_yn = 'Y')
+				</when>
+				<when test="searchArea == 'Regional'">
+					AND (national_yn is null AND emergency_yn is null)
+				</when>
+			</choose>
+		</if>
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<choose>
+				<when test="searchType == 'serviceId'">
+					AND serviceId LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<when test="searchType == 'serviceName'">
+					AND service_name LIKE CONCAT('%', #{searchKeyword}, '%') 
+				</when>
+				<otherwise>
+					AND (serviceId LIKE CONCAT('%', #{searchKeyword}, '%') OR service_name LIKE CONCAT('%', #{searchKeyword}, '%'))
+				</otherwise>
+			</choose>
+		</if>
+		<choose>
+			<when test="serviceId != null and serviceId != ''">
+				AND (serviceId = #{serviceId} and said != #{psaid})
+				group by said
+			</when>
+			<otherwise>
+				group by serviceId
+				limit #{start}, #{end}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="selectMoodServiceCount" parameterType="HashMap" resultType="int">
+		select count(*) from (
+			select * from (
+				select T1.serviceId, T1.service_name, T1.circle, T1.city, T1.hotspot, T1.service, T1.serviceMode, d.mode, c.countUC, c.countBC, c.insertDate from (
+					select 
+						serviceId, service_name, service, serviceMode
+		            	, SUBSTRING_INDEX(SUBSTRING_INDEX(said, ',', n.n), ',', -1) as said
+		        		, (select circle_name as name from circle where circle_id IN (said)) circle
+			            , (select city_name as name from city where city_id IN (said)) city
+			            , (select hotspot_name as name from hotspot where hotspot_id IN (said)) hotspot
+					from 
+				    	(select broad.* FROM broadcast_info broad INNER JOIN schedule schedule ON broad.BCID = schedule.BCID
+					    	WHERE schedule.national_yn is null AND schedule.del_yn = 'N') t CROSS JOIN 
+					    (
+					       SELECT a.N + b.N * 10 + 1 n
+					       	FROM 
+					        (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) a
+					       ,(SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) b
+					        ORDER BY n
+					    ) n
+				    WHERE n.n <![CDATA[ <= ]]>1 + (LENGTH(said) - LENGTH(REPLACE(said, ',', '')))
+				) T1 
+				inner join mood_request c on T1.said = c.said and T1.serviceId = c.serviceId
+				inner join mood_service d on c.saId = d.said and c.serviceId = d.serviceId
+			) T2
+			group by serviceId
+		) T3
+	</select>
+	
+</mapper>

@@ -10,7 +10,7 @@
 					<span aria-hidden="true">&times;</span><span
 						class="sr-only">Close</span>
 				</button>
-				<h4 class="modal-title">Service Area Bandwidth</h4>
+				<h5 class="modal-title">Service Area Bandwidth</h5>
 			</div>
 			<form role="form" id="form" class="form-horizontal" action="javascript:void(0);">
 				<div class="modal-body">

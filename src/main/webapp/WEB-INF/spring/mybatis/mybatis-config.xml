@@ -46,6 +46,7 @@
 		<mapper resource="com/catenoid/dashbd/dao/map/StatusNotifyMapper.xml" />
 		<mapper resource="com/catenoid/dashbd/dao/map/ContentsImagesMapper.xml" />
 		<mapper resource="com/catenoid/dashbd/dao/map/LogMapper.xml" />
+		<mapper resource="com/catenoid/dashbd/dao/map/MoodMapper.xml" />
 	</mappers>
 	
 </configuration>

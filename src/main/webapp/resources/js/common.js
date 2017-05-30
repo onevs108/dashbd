@@ -304,3 +304,23 @@ function updateClock ()
   	var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds;
   	$("#headerClock").html(currentTimeString);
  }
+
+function launchCenter(url, name, width, height, scroll) {
+	var str = "height=" + height + ",innerHeight=" + height;
+	str += ",width=" + width + ",innerWidth=" + width;
+	str += ",status=no,scrollbars=" + scroll;
+
+	if (window.screen)
+	{
+		var ah = screen.availHeight - 30;
+		var aw = screen.availWidth - 10;
+
+		var xc = (aw - width) / 2;
+		var yc = (ah - height) / 2;
+
+		str += ",left=" + xc + ",screenX=" + xc;
+		str += ",top=" + yc + ",screenY=" + yc;
+	}
+
+	return window.open(url, name, str);
+}

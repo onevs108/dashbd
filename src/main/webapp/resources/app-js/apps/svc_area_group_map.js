@@ -124,7 +124,7 @@ function treeInit(data) {
 	
 	for (var i = 0; i < 100; i++) {
 		$($("#j"+i+"_2_anchor").children()[0]).remove(); 
-	} 
+	}
 	
 	//저장 취소 버튼 표시
 	$(".proccess-btn").show();
