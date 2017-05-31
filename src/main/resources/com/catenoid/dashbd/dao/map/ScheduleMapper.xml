@@ -418,11 +418,15 @@
 	<insert id = "insertMoodRequest" parameterType="HashMap">
 		INSERT INTO mood_request
 		(	 
-			transaction, agentKey, crsId, serviceId, saId, countUC, countBC, timestamp, insertDate 
+			transaction, agentKey, crsId, serviceId, saId, countUC, countBC
+			, mode
+			, timestamp, insertDate 
 		)
 		VALUES
 		(	  
-			#{transaction}, #{agentKey}, #{crsId}, #{serviceId}, #{saId}, ${countUC}, ${countBC}, #{timestamp}, now() 
+			#{transaction}, #{agentKey}, #{crsId}, #{serviceId}, #{saId}, ${countUC}, ${countBC}
+			, (select mode from mood_service where serviceId = #{serviceId} and said = #{saId})
+			, #{timestamp}, now() 
 		)
 	</insert>
 	

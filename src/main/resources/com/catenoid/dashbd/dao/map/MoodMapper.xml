@@ -75,6 +75,15 @@
 				</otherwise>
 			</choose>
 		</if>
+		<if test="circleListStr != '' and circleListStr != null">
+	    	AND said IN (${circleListStr})
+	    </if>
+		<if test="cityListStr != '' and cityListStr != null">
+	    	AND said IN (${cityListStr})
+	    </if>
+		<if test="hotspotListStr != '' and hotspotListStr != null">
+	    	AND said IN (${hotspotListStr})
+	    </if>
 		<choose>
 			<when test="serviceId != null and serviceId != ''">
 				AND (serviceId = #{serviceId} and said != #{psaid})
@@ -114,6 +123,12 @@
 			) T2
 			group by serviceId
 		) T3
+	</select>
+	
+	<select id="getMoodHistory" parameterType="HashMap" resultType="HashMap">
+		select said, countUC, countBC, DATE_FORMAT(insertDate, '%H:%i:%s') insertDate, mode
+		from mood_request
+		where serviceId = #{serviceId} and said = #{said}
 	</select>
 	
 </mapper>

@@ -8,10 +8,10 @@
 <html>
 <head>
 	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
-	<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-	<link href="../resources/css/sampleVideo.css" rel="stylesheet" />
-	<script src="../resources/js/dash.all.debug.js"></script>
-	<script src="../resources/js/sampleVideo.js"></script>
+	<link href="/dashbd/resources/newPublish/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<link href="/dashbd/resources/css/sampleVideo.css" rel="stylesheet"/>
+	<script src="/dashbd/resources/js/dash.all.debug.js" rel="stylesheet"></script>
+	<script src="/dashbd/resources/js/sampleVideo.js" rel="stylesheet"></script>
 	
 	<style type="text/css">
 		.main .main-sch .tb_tpl1 #table > tbody > tr > td > table thead th {
@@ -449,8 +449,8 @@
 		}
 		
 		function openMoodHistory(serviceId, said) {
-			var url = "getMoodStats.do";
-			launchCenter(url, "initPassword",  "600", "373", "yes");
+			var url = "getMoodStats.do?serviceId="+serviceId+"&said="+said;
+			launchCenter(url, "initPassword",  "700", "375", "yes");
 		}
 		
 		function callSubMoodData(targetObj, serviceId, psaid) {
@@ -841,7 +841,7 @@
 			location.href = '/dashbd/view/schedule.do?id=' + scheduleId + "&contentsType=" + contentType;
 		}
 		
-		function changeDeleveryType(row) { 
+		function changeDeleveryType(row) {
 			swal({
 				  title: "Are you sure?",
 				  text: "Service mode will be changed to Unicast/Broadcast.  Continue?",

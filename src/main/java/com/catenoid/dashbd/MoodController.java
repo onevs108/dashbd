@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -220,14 +222,14 @@ public class MoodController{
 		return resultObj.toJSONString();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/mood/getMoodStats.do", method = {RequestMethod.GET, RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public String getMoodStats(HttpServletRequest request, HttpServletResponse response) {
-		JSONObject resultObj = new JSONObject();
-		JSONArray resultArray = new JSONArray();
+	public String getMoodStats(@RequestParam HashMap<String, Object> param, ModelMap model) {
+		MoodMapper mapper = sqlSession.getMapper(MoodMapper.class);
 		try {
-			MoodMapper mapper = sqlSession.getMapper(MoodMapper.class);
-			
+			List<HashMap<String, Object>> moodList = mapper.getMoodHistory(param);
+			Gson gson = new Gson();
+			String moodData = gson.toJson(moodList);
+			model.addAttribute("moodData", moodData);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
