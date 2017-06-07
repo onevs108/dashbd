@@ -87,10 +87,13 @@ function treeInit(data) {
 				} else {
 					$($(compareNode).find("ul")[0]).append(liStr);
 				}
-				
 				break;
 			}
 		}
+	}
+	
+	if(serviceAreaGroupId == ""){
+		$(".root").append('<div id="message" style="margin-top: 100px;">Please Click Service Area Group from<br> left pannel to view the members of the group!</div>')
 	}
 	
 	$('#treeNode').bind('ready.jstree', function (event, data) { 
@@ -373,6 +376,7 @@ function openModal() {
 
 //서비스 영업 그룹 테이블 선택시 발동하는 함수
 function selectServiceAreaGroup(obj) {
+	$("#message").remove();
 	$(obj).css("background", blue);
 	$(obj).css("color", white);
 	$(obj).find("button").css("color", white);
@@ -419,6 +423,7 @@ function changeCircle() {
 		        
 		        //콤보박스 변경시 트리 셋팅
 		        jsTreeSetting();
+		        $("#myModal3").modal('hide');
 		    },
 	        error : function(xhr, status, error) {
 	        	swal({

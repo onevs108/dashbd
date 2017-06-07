@@ -41,6 +41,10 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
 		</init-param>
+		<init-param>
+	      <param-name>dispatchOptionsRequest</param-name>
+	      <param-value>true</param-value>
+	    </init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 		
@@ -111,5 +115,6 @@
 	<session-config>
 		<session-timeout>1440</session-timeout> <!-- 24시간 : 1440분 -->
 	</session-config>
+	
 <!-- 	<distributable/> -->
 </web-app>

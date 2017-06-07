@@ -130,7 +130,8 @@
 						}
 					}
 				}
-				
+				$("#selectServiceLanguage").val("${mapSchedule.language}");
+				$("#selectServiceNameLanguage").val("${mapSchedule.serviceNameLanguage}");
 				$("#serviceMode").val("${mapSchedule.serviceMode}");
 				$("#serviceMode").change();
 				$("#serviceClass").val("${mapSchedule.serviceClass}");
@@ -364,7 +365,7 @@
 	                       	    </div>
                        	    </div>
                        	    <div id="serviceModeArea" style="display: none; margin-right: 35px;">
-	                            <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>service Mode</label>
+	                            <label class="col-sm-2 control-label"><i class="fa fa-check text-importance"></i>Service Mode</label>
 	                       	    <div class="col-sm-3">
 	                       	    	<select class="input-sm form-control input-s-sm" id="serviceMode" name="serviceMode">
 	                       	    		<option value="BC">BC (Broadcast Only)</option>
@@ -390,7 +391,7 @@
 		                    		</c:if>
 	                        		<c:if test="${not empty mapSchedule.BCID}">
 	                        			<input type="hidden" id=serviceNameLanguage" name="serviceNameLanguage" value="${mapSchedule.serviceNameLanguage}">
-	                        			<select class="input-sm form-control input-s-sm" disabled>
+	                        			<select id="selectServiceNameLanguage" class="input-sm form-control input-s-sm" disabled>
 	                        		</c:if>
                         	    	    <option value="EN"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>EN</option>
                         	    	    <option value="KR">KR</option>
@@ -404,7 +405,7 @@
 		                    		</c:if>
 	                        		<c:if test="${not empty mapSchedule.BCID}">
 	                        			<input type="hidden" id=serviceLanguage" name="serviceLanguage" value="${mapSchedule.language}">
-	                        			<select class="input-sm form-control input-s-sm" disabled>            	
+	                        			<select id="selectServiceLanguage" class="input-sm form-control input-s-sm" disabled>            	
 	                        		</c:if>
                         	    	    <option value="EN"<c:if test="${mapSchedule.language eq 'fileDownload'}"> selected</c:if>>EN</option>
                         	    	    <option value="KR">KR</option>
@@ -773,7 +774,7 @@
                                    <div class="form-group">
                                        <label class="col-sm-3 control-label">Report Type</label>
                                        <div class="col-sm-9">
-                                           <select class="input input-sm form-control" id="reportType" name="reportType" onchange="changePercentage();" <c:if test="${mapSchedule.receptionReport == null}">disabled</c:if>>
+                                           <select class="input input-sm form-control" id="reportType" name="reportType" <c:if test="${mapSchedule.receptionReport == null}">disabled</c:if>>
                                                <option value="RAck">RAck</option>
                                                <option value="StaR-all">StaR-all</option>
                                            </select>

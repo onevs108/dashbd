@@ -403,12 +403,18 @@
 	
 	<select id="getEnableBandwidth" parameterType="java.util.Map" resultType="HashMap">
 		SELECT ifnull(${bandwidth} - sum(gbr), ${bandwidth}) usableBW, ifnull(sum(gbr), 0) usedBW 
-		FROM broadcast_info a inner join schedule b on a.BCID = b.BCID inner join crs_said_mapping c on c.said = a.said
+		FROM broadcast_info a inner join schedule b on a.BCID = b.BCID
 		where CONCAT(',', a.said, ',') REGEXP CONCAT(',', #{searchString}, ',')
 		and (now() <![CDATA[ > ]]> schedule_start)
 		and (now() <![CDATA[ < ]]> schedule_stop)
-		and (serviceMode != 'MooD' or (serviceMode = 'MooD' and c.crs_mode != 'Unicast'))
 		and del_yn = 'N'
+		and 
+		(
+			serviceMode != 'MooD' or 
+			(
+				serviceMode = 'MooD' and (select mode from mood_service where serviceId = a.serviceId and CONCAT(',', said, ',') REGEXP CONCAT(',', #{searchString}, ',')) = 'Broadcast'
+			)
+		)
 	</select>
 	
 	<select id="getMoodInterval" resultType="int">

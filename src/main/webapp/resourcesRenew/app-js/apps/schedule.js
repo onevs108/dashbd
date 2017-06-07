@@ -119,26 +119,31 @@ $(document).ready(function()
 	});
 	
 	$("#receptionReport").on("change", function() {
-		changePercentage();
 		if(this.checked) {
 			$("#offsetTime").prop('disabled', false);
 			if(!($("#serviceType").val() == "streaming")){
 				$("#reportType").prop('disabled', false);
 			}
 			$("#randomTime").prop('disabled', false);
+			$("#samplePercentage").prop('disabled', false);
 		} else {
 			$("#offsetTime").prop('disabled', true);
 			$("#reportType").prop('disabled', true);
-			$("#samplePercentage").prop('disabled', true);
 			$("#randomTime").prop('disabled', true);
+			$("#samplePercentage").prop('disabled', true);
 		}
+		$("#reportType").change();
 	});
 	
 	$("#reportType").on("change", function() {
-		if($("#reportType").val() == "RAck"){
+		if(!$("#receptionReport").is(":checked")){
 			$("#samplePercentage").prop('disabled', true);
 		}else{
-			$("#samplePercentage").prop('disabled', false);
+			if($("#reportType").val() == "RAck"){
+				$("#samplePercentage").prop('disabled', true);
+			}else{
+				$("#samplePercentage").prop('disabled', false);
+			}
 		}
 	});
 	
@@ -1298,19 +1303,6 @@ function setDefaultQCI_Level_SegmentAvailableOffset(){
 
 	if ($("#segmentAvailableOffset").val() == '')
 		$("#segmentAvailableOffset").val(10);
-}
-
-function changePercentage() {
-//	if ($("#reportType").val()== 'RAck'){
-//		$("#samplePercentage").prop('disabled', true);
-//		$("#samplePercentage").val("100");
-//	}else if ($("#reportType").val()== 'StaR-all'){
-//		$("#samplePercentage").prop('disabled', false);
-////		$("#samplePercentage").val("");
-//	}else{
-//		$("#samplePercentage").prop('disabled', false);
-////		$("#samplePercentage").val("");
-//	}
 }
 
 

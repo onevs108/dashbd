@@ -692,11 +692,12 @@
 				    },
 				    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 				    success : function(responseData) {
+				    	debugger;
 				    	var infoList = responseData.bandWidthInfoList;
 				    	$("#saname").html(data.node.text);
-				        $("#areaBandwidthModal #bandwidth").val(Number(data.node.data.band)/1000000+"M Bytes");
-				        $("#areaBandwidthModal #usedBandwidth").val(Number(responseData.usedBandwidth)/1000000+"M Bytes");
-				        $("#areaBandwidthModal #remainedBandwidth").val(Number(responseData.enableBandwidth)/1000000+"M Bytes");
+				        $("#areaBandwidthModal #bandwidth").val(Number(data.node.data.band)/1000+"K");
+				        $("#areaBandwidthModal #usedBandwidth").val(Number(responseData.usedBandwidth)/1000+"K");
+				        $("#areaBandwidthModal #remainedBandwidth").val(Number(responseData.enableBandwidth)/1000+"K");
 				        $("#bandwidthInfoList").html("");
 				        if(infoList.length > 0){
 				        	var html = "";

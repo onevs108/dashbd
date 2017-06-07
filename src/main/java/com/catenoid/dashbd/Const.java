@@ -32,7 +32,7 @@ public class Const {
 	 */
 	public static final String ROLE_ADMIN 					= "ROLE_ADMIN";
 //	public static final String ROLE_USER_MGMT 				= "ROLE_USER_MGMT";
-//	public static final String ROLE_PERMISSION_MGMT 		= "ROLE_PERMISSION_MGMT";
+	public static final String ROLE_PERMISSION_MGMT 		= "ROLE_PERMISSION_MGMT";
 //	public static final String ROLE_CONTENTS_MGMT 			= "ROLE_CONTENTS_MGMT";
 //	public static final String ROLE_OPERATOR_MGMT 			= "ROLE_OPERATOR_MGMT";
 //	public static final String ROLE_BMSC_MGMT				= "ROLE_BMSC_MGMT";
@@ -61,7 +61,7 @@ public class Const {
 	 * menu
 	 */
 //	public static final String MENU_USER_MGMT 				= "USER_MGMT";
-//	public static final String MENU_PERMISSION_MGMT 		= "PERMISSION_MGMT";
+	public static final String MENU_PERMISSION_MGMT 		= "PERMISSION_MGMT";
 	public static final String MENU_CONTENTS_MGMT 			= "CONTENTS_MGMT";
 //	public static final String MENU_OPERATOR_MGMT 			= "OPERATOR_MGMT";
 //	public static final String MENU_BMSC_MGMT				= "BMSC_MGMT";

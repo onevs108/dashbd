@@ -27,7 +27,8 @@
 		<intercept-url pattern="/view/schdMgmtDetail.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" />
 		<intercept-url pattern="/view/schedule.do" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SCHEDULE_MGMT')" />
 		<intercept-url pattern="/view/receiveMoodRequest.do" access="permitAll"/>
-		<intercept-url pattern="/view/receiveHeartbeat.do" access="permitAll"/>
+		<intercept-url pattern="/view/receiveHeartbeatBMSC.do" access="permitAll"/>
+		<intercept-url pattern="/view/receiveHeartbeatCRS.do" access="permitAll"/>
 		<intercept-url pattern="/mood/getMoodStats.do" access="permitAll"/>
 		
         <form-login

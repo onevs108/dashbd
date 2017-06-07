@@ -98,7 +98,7 @@
 																	<label class="checkbox-inline i-checks" onclick="radioCheck('')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="" name="searchSchedule" style="position: absolute; opacity: 0;" checked><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> All</label>
 																	<label class="checkbox-inline i-checks" onclick="radioCheck('onair')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="onair" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> On-Air</label>
 																	<label class="checkbox-inline i-checks" onclick="radioCheck('today')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="today" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Today</label>
-																	<label class="checkbox-inline i-checks" onclick="radioCheck('national')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="national" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> National</label>
+																	<label class="checkbox-inline i-checks" onclick="radioCheck('National')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="national" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> National</label>
 																</div>
 															</div>
 														</div>
@@ -296,7 +296,7 @@
 		});
 		
 		function radioCheck(value) {
-			if(value != '' && value != 'national') {
+			if(value != '' && value != 'National') {
 				$($("#searchDateFrom").parents(".row")[0]).hide();
 				$($("#searchDateTo").parents(".row")[0]).hide();
 			} else {
@@ -315,7 +315,7 @@
 				if(tempNextObj == undefined){
 					continue;
 				}
-				if(tempObj.circleName != 'emergency' && tempObj.circleName != 'national' ) {
+				if(tempObj.circleName != 'emergency' && tempObj.circleName != 'National' ) {
 					if(tempObj.circleName == tempNextObj.circleName && $(trList[i]).find("i").hasClass("fa-plus-square")) {
 						$(trList[i]).find("i.fa.fa-plus-square").remove();
 					}	
@@ -428,7 +428,7 @@
 					formatter: function(value, row, index) {
 						var html = '';
 						
-						if(value == 'emergency' || value == 'national') {
+						if(value == 'emergency' || value == 'National') {
 							if(row.serviceMode == 'MooD') 
 								html += '<span style="cursor: pointer;" onclick="callNationalSubScheduleData(this, \'' + row.serviceId + '\', ' + JSON.stringify(row).replace(/\"/gi, "\'") + ')"><i class="fa fa-plus-square"></i> ' + value + '</span> ';
 							else
@@ -477,7 +477,7 @@
 								else {
 									var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + value + '</a>';
 								}
-							} else if($("#circleId").val() != '' && row.circleName != 'national') {
+							} else if($("#circleId").val() != '' && row.circleName != 'National') {
 								var html='<a href="javascript:void(0);" onclick="moveScheduleDetail(\'' + row.scheduleId + '\', \'' + row.service + '\')">' + value + '</a>';
 							} else {
 								var html = value;

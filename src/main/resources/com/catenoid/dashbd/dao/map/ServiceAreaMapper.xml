@@ -1708,7 +1708,7 @@
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( 	SELECT result.*
 						FROM (
-							<if test="searchSchedule != 'national'">
+							<if test="searchSchedule != 'National'">
 						      SELECT  
 						              IFNULL(circle.circle_id, cityhotspot.circle_id) as circleId
 						            , IFNULL(circle.circle_name, cityhotspot.circle_name) as circleName
@@ -1865,11 +1865,11 @@
 							      		WHERE cityhotspot.circle_id = #{circle_id}
 							      </if>
 						      </if>
-						      <if test="searchSchedule != 'national'">
+						      <if test="searchSchedule != 'National'">
 						      	UNION ALL
 						      </if>
-								SELECT 	'' as circleId, IF(schedule.emergency_yn = 'Y', 'emergency','national') as circleName
-									  , 3 as subCnt, '' as psaid, 'national' as layerDiv
+								SELECT 	'' as circleId, IF(schedule.emergency_yn = 'Y', 'emergency','National') as circleName
+									  , 3 as subCnt, '' as psaid, 'National' as layerDiv
 									  , broad.serviceId, broad.service_name as serviceName
 							          , broad.fileURI, broad.serviceClass
 							          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart
@@ -1979,7 +1979,7 @@
 		FROM (
 			SELECT result.*
 			FROM (
-				  <if test="searchSchedule != 'national'">
+				  <if test="searchSchedule != 'National'">
 				      SELECT  
 				              IFNULL(circle.circle_id, cityhotspot.circle_id) as circleId
 				            , IFNULL(circle.circle_name, cityhotspot.circle_name) as circleName
@@ -2115,11 +2115,11 @@
 				      		WHERE cityhotspot.circle_id = #{circle_id}
 				      </if>
 			      </if>
-			      <if test="searchSchedule != 'national'">
+			      <if test="searchSchedule != 'National'">
 			      	UNION ALL
 			      </if>
-					SELECT 	'' as circleId, 'national' as circleName
-						  , 3 as subCnt, '' as psaid, 'national' as layerDiv
+					SELECT 	'' as circleId, 'National' as circleName
+						  , 3 as subCnt, '' as psaid, 'National' as layerDiv
 						  , broad.serviceId, broad.service_name as serviceName
 				          , broad.fileURI, broad.serviceClass
 				          , broad.service, 'Single Session' as scheduleType, date_format(broad.schedule_start, '%Y-%m-%d %T') as scheduleStart

@@ -1,2 +1,5 @@
 /target
 /dashbd/
+/.settings/
+/.gitignore
+/.classpath
