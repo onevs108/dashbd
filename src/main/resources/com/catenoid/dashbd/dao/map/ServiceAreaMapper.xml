@@ -1708,7 +1708,7 @@
 			   FROM ( SELECT @ROWNUM := 0 AS rownum) R,
 					( 	SELECT result.*
 						FROM (
-							<if test="searchSchedule != 'National'">
+							<if test="searchArea != 'national'">
 						      SELECT  
 						              IFNULL(circle.circle_id, cityhotspot.circle_id) as circleId
 						            , IFNULL(circle.circle_name, cityhotspot.circle_name) as circleName
@@ -1865,7 +1865,7 @@
 							      		WHERE cityhotspot.circle_id = #{circle_id}
 							      </if>
 						      </if>
-						      <if test="searchSchedule != 'National'">
+						      <if test="searchArea != 'national'">
 						      	UNION ALL
 						      </if>
 								SELECT 	'' as circleId, IF(schedule.emergency_yn = 'Y', 'emergency','National') as circleName
@@ -1900,7 +1900,7 @@
 						) result
 						WHERE 
 						<choose>
-							<when test="circleListStr == null">
+							<when test="circleListStr == null or circleListStr == ''">
 								1=1
 							</when>
 							<otherwise>
@@ -1979,7 +1979,7 @@
 		FROM (
 			SELECT result.*
 			FROM (
-				  <if test="searchSchedule != 'National'">
+				  <if test="searchArea != 'national'">
 				      SELECT  
 				              IFNULL(circle.circle_id, cityhotspot.circle_id) as circleId
 				            , IFNULL(circle.circle_name, cityhotspot.circle_name) as circleName
@@ -2115,7 +2115,7 @@
 				      		WHERE cityhotspot.circle_id = #{circle_id}
 				      </if>
 			      </if>
-			      <if test="searchSchedule != 'National'">
+			      <if test="searchArea != 'national'">
 			      	UNION ALL
 			      </if>
 					SELECT 	'' as circleId, 'National' as circleName
@@ -2147,7 +2147,7 @@
 			) result
 			WHERE 
 			<choose>
-				<when test="circleListStr == null">
+				<when test="circleListStr == null or circleListStr == ''">
 					1=1
 				</when>
 				<otherwise>

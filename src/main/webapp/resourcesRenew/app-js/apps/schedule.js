@@ -408,6 +408,25 @@ function detailValidationCheck() {
 		});
 	});
 	
+	$("#serviceIdNum").blur(function(){
+		var serviceId = $("#serviceIdSel").val() + ":" + $("#serviceIdNum").val();
+		$.ajax({
+			type : "POST",
+			url : "checkServiceId.do",
+			data : {serviceId: serviceId},
+			success : function( data ) {
+				if(data != "SUCCESS") {
+					alert(serviceId+" is already exist!");
+					return false;
+				}
+				$("#serviceId").val(serviceId);
+			},
+			error : function(request, status, error) {
+				alert("request=" +request +",status=" + status + ",error=" + error);
+			}
+		});
+	});
+	
 	$("#UCThreshold").blur(function(){
 		if(this.value != ""){
 			if(!checkInteger9(this.value)){
@@ -844,7 +863,7 @@ function getServiceIdList() {
 		clickToSelect: false,
 		columns: [{
 			field: 'id_name',
-			title: 'Id Name',
+			title: 'Template',
 			width: '40%',
 			align: 'center',
 			valign: 'middle',
@@ -982,6 +1001,7 @@ function setServiceIdView() {
 				html += "<option value='"+data.rows[i].id_name+"'>"+data.rows[i].id_name+"</option>";
 			}
 			$("#selectServiceId").html(html);
+			$("#serviceIdSel").html(html);
 			$("#serviceId_M").val($("#selectServiceId").val()+":1");
 		},
 		error : function(request, status, error) {
@@ -1204,10 +1224,18 @@ function addContentRemoveEvent(){
 }
 
 function valadationCheck(){
-	if($("#serviceId").val() == ""){
-		alert("Please enter the Service Id");
-		$("#serviceId").focus();
-		return;
+	if($("#newId").html() == "Enter text"){
+		if($("#serviceIdNum").val() == ""){
+			alert("Please enter the Service Id Sequence");
+			$("#serviceIdNum").focus();
+			return;
+		}
+	}else{
+		if($("#serviceId").val() == ""){
+			alert("Please enter the Service Id");
+			$("#serviceId").focus();
+			return;
+		}
 	}
 	
 	if($("#serviceMode").val() == "MooD"){
@@ -1246,23 +1274,6 @@ function valadationCheck(){
 			}
 		}
 	}
-	
-//	var s_start = $("#schedule_start").val().replace(/[^0-9]/g,'');
-//	var s_stop = $("#schedule_stop").val().replace(/[^0-9]/g,'');
-//	var d_start = $("#deliveryInfo_start").val().replace(/[^0-9]/g,'');
-//	var d_end = $("#deliveryInfo_end").val().replace(/[^0-9]/g,'');
-//	
-//	if($("#serviceType").val() == "fileDownload"){
-//		if (d_start < s_start ){
-//			alert("It can not be 'content start time' over than 'schedule start time' ");
-//			return false;
-//		}
-//		
-//		if (d_end > s_stop ){
-//			alert("It can not be 'content start stop time' over than 'schedule Stop time' ");
-//			return false;
-//		}
-//	}
 	
 	return true;
 }

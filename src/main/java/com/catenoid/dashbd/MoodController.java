@@ -1,5 +1,7 @@
 package com.catenoid.dashbd;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,7 +52,6 @@ public class MoodController{
 	public ModelAndView systemMgmtView(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("moodMain");
 		
-//		MoodMapper mapper = sqlSession.getMapper(MoodMapper.class);
 		Integer page = request.getParameter("page") == null ? 1 : Integer.valueOf(request.getParameter("page"));
 		Integer perPage = 50;
 		
@@ -58,19 +59,11 @@ public class MoodController{
 		searchParam.setPage((page-1) * perPage);
 		searchParam.setPerPage(perPage);
 		
-//		List<Operator> result = mapper.getServiceAreaOperator(searchParam);
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_MONTH, -7);
+		Date date = calendar.getTime();
 		
-//		Operator initOperator = result.get(0);
-//		
-//		searchParam = new OperatorSearchParam();
-//		searchParam.setPage((page-1) * perPage);
-//		searchParam.setPerPage(perPage);
-//		searchParam.setOperatorId(initOperator.getId());
-//		
-//		List<Bmsc> bmscs = mapper.getSeviceAreaBmSc(searchParam);
-//		
-//		mv.addObject("OperatorList", result);
-//		mv.addObject("BmscList", bmscs);
+		mv.addObject("beforeDate", date);
 		
 		return mv;
 	}
@@ -79,7 +72,6 @@ public class MoodController{
 	@RequestMapping(value = "/mood/searchMoodList.do", method = {RequestMethod.POST}, produces="application/json;charset=UTF-8;")
 	@ResponseBody
 	public String searchMoodList(@RequestBody String body, HttpServletRequest request) {
-//		ServiceAreaMapper mapper = sqlSession.getMapper(ServiceAreaMapper.class);
 		MoodMapper mapper = sqlSession.getMapper(MoodMapper.class);
 		JSONObject jsonResult = new JSONObject();
 		JSONParser jsonParser = new JSONParser();
@@ -96,11 +88,28 @@ public class MoodController{
 			String searchSchedule = (String) requestJson.get("searchSchedule");
 			String searchArea = (String) requestJson.get("searchArea");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
+			String searchDateFrom = (String) requestJson.get("searchDateFrom");
+			String searchDateTo = (String) requestJson.get("searchDateTo");
 			String searchType = (String) requestJson.get("searchType");
 			String choiceTreeStr = (String) requestJson.get("choiceTreeStr"); 
 			String circle_id = (String) requestJson.get("circle_id");
 			String deleveryType = (String) requestJson.get("deleveryType");
 			String serviceId = (String) requestJson.get("serviceId");
+			
+			if(searchSchedule.equals("") || searchArea.equals("national")) {
+				if(!searchDateFrom.equals("")) {
+					String[] tempSearchDateFrom = searchDateFrom.split("/");
+					searchDateFrom = tempSearchDateFrom[2] + tempSearchDateFrom[0] + tempSearchDateFrom[1];
+				}
+				
+				if(!searchDateTo.equals("")) {
+					String[] tempSearchDateTo = searchDateTo.split("/");
+					searchDateTo = tempSearchDateTo[2] + tempSearchDateTo[0] + tempSearchDateTo[1];
+				}
+			} else {
+				searchDateFrom = "";
+				searchDateTo = "";
+			}
 			
 			HashMap<String, Object> searchParam = new HashMap<String, Object>();
 			searchParam.put("sort", sort);
@@ -110,6 +119,8 @@ public class MoodController{
 			searchParam.put("searchServiceType", searchServiceType);
 			searchParam.put("searchSchedule", searchSchedule);
 			searchParam.put("searchArea", searchArea);
+			searchParam.put("searchDateFrom", searchDateFrom);
+			searchParam.put("searchDateTo", searchDateTo); 
 			searchParam.put("searchType", searchType);
 			searchParam.put("searchKeyword", searchKeyword);
 			searchParam.put("circle_id", circle_id);

@@ -52,38 +52,55 @@
 											<input type="hidden" id="choiceTreeStr" value="all">
 											<div class="col-lg-7">
 												<div class="form-group">
-													<label class="col-sm-3 control-label">Schedule</label>
+													<label class="col-sm-3 control-label">Service Area</label>
 													<div class="col-sm-9">
 														<div class="row">
 															<div class="col-lg-12">
-																<label class="checkbox-inline i-checks" onclick="radioCheck('')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="" name="searchSchedule" style="position: absolute; opacity: 0;" checked><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> All</label>
-																<label class="checkbox-inline i-checks" onclick="radioCheck('onair')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="onair" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> On-Air</label>
-																<label class="checkbox-inline i-checks" onclick="radioCheck('today')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="today" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Today</label>
+																<label class="checkbox-inline i-checks" onclick="initServiceArea()">
+																	<div class="iradio_square-green" style="position: relative;">
+																		<input type="radio" value="national" name="searchArea" style="position: absolute; opacity: 0;" checked>
+																			<ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+																	</div> National
+																</label>
+																<label class="checkbox-inline i-checks" onclick="choiceServiceArea();">
+																	<div class="iradio_square-green" style="position: relative;">
+																		<input type="radio" value="regional" name="searchArea" style="position: absolute; opacity: 0;">
+																			<ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
+																	</div> Regional
+																</label>
 															</div>
 														</div>
 													</div>
 												</div>
 												<div class="form-group">
-													<label class="col-sm-3 control-label">Area</label>
+													<label class="col-sm-3 control-label">Service Time</label>
 													<div class="col-sm-9">
 														<div class="row">
 															<div class="col-lg-12">
-																<div class="input-group">
-																	<label class="checkbox-inline i-checks" onclick="radioCheck('')">
-																		<div class="iradio_square-green" style="position: relative;">
-																			<input type="radio" value="National" name="searchArea" style="position: absolute; opacity: 0;" checked>
-																				<ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
-																		</div> National
-																	</label>
-																	<label class="checkbox-inline i-checks" onclick="radioCheck('onair')">
-																		<div class="iradio_square-green" style="position: relative;">
-																			<input type="radio" value="Regional" name="searchArea" style="position: absolute; opacity: 0;" checked="checked">
-																				<ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
-																		</div> Regional
-																	</label>
-																	<span class="input-group-btn">
-																		<a href="#" class="btn btn-w-m btn-link"><i class="fa fa-link"></i> <u onclick="choiceServiceArea()">Select Service Area</u></a>
-																	</span>
+																<label class="checkbox-inline i-checks" onclick="radioCheck('onair')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="onair" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> On-Air</label>
+																<label class="checkbox-inline i-checks" onclick="radioCheck('today')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="today" name="searchSchedule" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Today</label>
+																<label class="checkbox-inline i-checks" onclick="radioCheck('')"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="" name="searchSchedule" style="position: absolute; opacity: 0;" checked><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Select Date</label>
+															</div>
+														</div><br>
+														<div class="row">
+															<div class="col-lg-6">
+																<div class="form-group">
+																	<label class="col-sm-2 control-label">From</label>
+																	<div class="col-sm-10">
+																		<div class="input-group date" id="data_1">
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateFrom" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${beforeDate}" />'>
+										                                </div>
+																	</div>
+																</div>
+															</div>
+															<div class="col-lg-6">
+																<div class="form-group">
+																	<label class="col-sm-2 control-label">To</label>
+																	<div class="col-sm-10">
+																		<div class="input-group date" id="data_2">
+										                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="searchDateTo" value='<fmt:formatDate pattern="MM/dd/yyyy" value="${now}" />'>
+										                                </div>
+																	</div>
 																</div>
 															</div>
 														</div>
@@ -91,34 +108,29 @@
 												</div>
 												<div class="form-group">
 													<label class="col-sm-3 control-label">Delivery Type</label>
-													<div class="col-sm-9">
-														<div class="input-group">
-															<select id="deleveryType" class="input-sm form-control input-s-sm inline">
-																<option value="">All</option>
-																<option value="Unicast">Unicast</option>
-																<option value="Broadcast">Broadcast</option>
-															</select>
-														</div>
+													<div class="col-sm-3">
+														<select id="deleveryType" class="input-sm form-control input-s-sm inline">
+															<option value="">All</option>
+															<option value="Unicast">Unicast</option>
+															<option value="Broadcast">Broadcast</option>
+														</select>
 													</div> 
 												</div>
 												<div class="form-group">
-													<div class="col-sm-12">
-														<div class="col-xs-6">
-															<select id="searchType" name="searchType" class="form-control">
-							                                    <option value="">Select</option>
-							                                    <option value="serviceId">ServiceID</option>
-							                                    <option value="serviceName">ServiceName</option>
-<!-- 							                                    <option value="uri">URI</option> -->
-<!-- 							                                    <option value="serviceClass">Service Class</option> -->
-							                                </select>
-														</div>
-														<div class="col-xs-6">
-															<div class="input-group">
-																<input type="text" placeholder="Keyword" id="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) searchRegionalSchedule(false);">
-																<span class="input-group-btn">
-																	<button type="button" class="btn btn-primary" onclick="searchRegionalSchedule(false)">Search</button>
-																</span>
-															</div>
+													<label class="col-sm-3 control-label">Keyword</label>
+													<div class="col-xs-3">
+														<select id="searchType" name="searchType" class="form-control">
+						                                    <option value="">Select</option>
+						                                    <option value="serviceId">ServiceID</option>
+						                                    <option value="serviceName">ServiceName</option>
+						                                </select>
+													</div>
+													<div class="col-xs-6">
+														<div class="input-group">
+															<input type="text" placeholder="Keyword" id="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) searchRegionalSchedule(false);">
+															<span class="input-group-btn">
+																<button type="button" class="btn btn-primary" onclick="searchRegionalSchedule(false)">Search</button>
+															</span>
 														</div>
 													</div>
 												</div>
@@ -223,7 +235,7 @@
 		});
 		
 		function radioCheck(value) {
-			if(value != '' && value != 'national') {
+			if(value == 'onair' || value == 'today') {
 				$($("#searchDateFrom").parents(".row")[0]).hide();
 				$($("#searchDateTo").parents(".row")[0]).hide();
 			} else {
@@ -901,6 +913,10 @@
 			var intE = strCook.indexOf("~!");
 			var strPos = strCook.substring(intS+2, intE);//스크롤 위치를 구한다.
 			document.body.scrollTop = strPos;//스크롤 위치를 적용시킨다.
+		}
+		
+		function initServiceArea(){
+			$("#choiceTreeStr").val("all");
 		}
 		
 		//auto refresh

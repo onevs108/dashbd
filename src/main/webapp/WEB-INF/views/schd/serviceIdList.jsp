@@ -12,24 +12,24 @@
 		                	<div class="ibox">
 		                		<div class="row">
 			                        <div class="ibox-title">
-			                            <h4>Service ID Mgmt<i class="fa fa-times" style="cursor:pointer;float: right;" onclick="closeIdModal()"></i></h4>
+			                            <h4>Service ID Template<i class="fa fa-times" style="cursor:pointer;float: right;" onclick="closeIdModal()"></i></h4>
 			                        </div>
 		                        </div>
-		                        <hr style="margin-top: 0px;">
+<!-- 		                        <hr style="margin-top: 0px;"> -->
 <!-- 		                        <label>Select Service Id</label> -->
-		                        <div class="row">
-									<input type="hidden" id="idIdx" value="${serviceIdIdx}">
-	                                <div class="col-md-8"><!-- col-md-offset-2 -->
-                             	    	<select type="text" class="form-control" id="selectServiceId" onchange="setSelectServiceId()">
-                             	    		<c:forEach var="row" items="${serviceIdList}">
-                             	    			<option value="${row.id_name}">${row.id_name}</option>
-                             	    		</c:forEach>
-                             	    	</select>
-                             	    </div>
-	                                <div class="col-md-4">
-	                                	<button type="button" id="btnOK_M" class="btn btn-block btn-primary btn-sm" onclick="setServiceId()">OK</button>
-	                                </div>
-				                </div>
+<!-- 		                        <div class="row"> -->
+<%-- 									<input type="hidden" id="idIdx" value="${serviceIdIdx}"> --%>
+<!-- 	                                <div class="col-md-8">col-md-offset-2 -->
+<!--                              	    	<select type="text" class="form-control" id="selectServiceId" onchange="setSelectServiceId()"> -->
+<%--                              	    		<c:forEach var="row" items="${serviceIdList}"> --%>
+<%--                              	    			<option value="${row.id_name}">${row.id_name}</option> --%>
+<%--                              	    		</c:forEach> --%>
+<!--                              	    	</select> -->
+<!--                              	    </div> -->
+<!-- 	                                <div class="col-md-4"> -->
+<!-- 	                                	<button type="button" id="btnOK_M" class="btn btn-block btn-primary btn-sm" onclick="setServiceId()">OK</button> -->
+<!-- 	                                </div> -->
+<!-- 				                </div> -->
 				                <hr style="margin-top: 10px;">
 <!-- 				                <label>Select Service Id</label> -->
 		                        <div id="idFirst" class="row">
@@ -38,6 +38,11 @@
 	                                </div>
 	                                <div class="col-md-4">
 	                                	<button type="button" id="addId" class="btn btn-block btn-primary btn-sm" onclick="addId()">Add</button>
+	                                </div>
+				                </div>
+		                        <div class="row">
+		                        	<div class="col-md-12">
+	                                	<h4 style="margin: 25px 5px -1px 5px;">List of Registered Template</h4>
 	                                </div>
 				                </div>
 				                <hr style="margin-top: 10px;">

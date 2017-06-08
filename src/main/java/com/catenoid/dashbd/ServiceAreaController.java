@@ -1480,6 +1480,7 @@ public class ServiceAreaController {
 			
 			String searchServiceType = (String) requestJson.get("searchServiceType");
 			String searchSchedule = (String) requestJson.get("searchSchedule");
+			String searchArea = (String) requestJson.get("searchArea");
 			String searchDateFrom = (String) requestJson.get("searchDateFrom");
 			String searchDateTo = (String) requestJson.get("searchDateTo");
 			String searchKeyword = (String) requestJson.get("searchKeyword");
@@ -1488,7 +1489,7 @@ public class ServiceAreaController {
 			String circle_id = (String) requestJson.get("circle_id");
 			
 			//All or National이 아닐 경우 From To Date Reset
-			if(searchSchedule.equals("") || searchSchedule.equals("national")) {
+			if(searchSchedule.equals("") || searchArea.equals("national")) {
 				if(!searchDateFrom.equals("")) {
 					String[] tempSearchDateFrom = searchDateFrom.split("/");
 					searchDateFrom = tempSearchDateFrom[2] + tempSearchDateFrom[0] + tempSearchDateFrom[1];
@@ -1511,6 +1512,7 @@ public class ServiceAreaController {
 			searchParam.put("end", offset + limit);
 			searchParam.put("searchServiceType", searchServiceType);
 			searchParam.put("searchSchedule", searchSchedule);
+			searchParam.put("searchArea", searchArea);
 			searchParam.put("searchDateFrom", searchDateFrom);
 			searchParam.put("searchDateTo", searchDateTo); 
 			searchParam.put("searchType", searchType);
