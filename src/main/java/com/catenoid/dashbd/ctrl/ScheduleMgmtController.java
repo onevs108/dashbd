@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
@@ -1051,45 +1052,13 @@ public class ScheduleMgmtController {
 	}
 	
 	@RequestMapping(value = "view/receiveHeartbeatCRS.do", method=RequestMethod.OPTIONS)
-	@ResponseBody
-	public String receiveHeartbeatCRS(@RequestParam HashMap<String,String> param, HttpServletRequest req, @RequestBody String postData) {
-		SAXBuilder builder = new SAXBuilder();
-		String returnStr = "";
+	public void receiveHeartbeatCRS(HttpServletResponse response) {
 		try {
-			InputStream stream = new ByteArrayInputStream(java.net.URLDecoder.decode(postData, "utf-8").getBytes("utf-8"));
-			Document doc = builder.build(stream);	//test XML 파일
-			System.out.println(outString(doc));
-			Element message = doc.getRootElement();
-			Element transaction = (Element) message.getChildren().get(0);
-			
-			System.out.println("================== Heartbeat Start ==================");
-			Element messageNew = new Element("message");
-			messageNew.setAttribute(new Attribute("name", "HEARTBEAT.CHECK"));	
-			messageNew.setAttribute(new Attribute("type", "RESPONSE"));
-			Document docNew = new Document(messageNew);
-			docNew.setRootElement(messageNew);
-			Element resultNew = new Element("result");
-			Element codeNew = new Element("code");
-			Element message2New = new Element("message");
-			resultNew.addContent(codeNew.setText("100"));
-			resultNew.addContent(message2New.setText("OK"));
-			
-			Element transactionNew = new Element("transaction");
-			transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
-			transactionNew.addContent(resultNew);		
-			
-			docNew.getRootElement().addContent(transactionNew);
-			System.out.println(outString(docNew));
-			System.out.println("================== Heartbeat End ==================");
-			returnStr = outString(docNew);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (JDOMException e) {
-			e.printStackTrace();
+			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
+			response.getWriter().print("OK");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return returnStr;
 	}
 	
 	@RequestMapping(value = "view/receiveRetrieveRequest.do")

@@ -228,7 +228,7 @@ public class HomeController {
 			List<Permission> permissions = user.getPermissions();
 			
 			if (user.getGrade() == Const.USER_GRADE_ADMIN) {
-				menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
+//				menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/user.do'><i class='fa fa-th-large'></i> <span class='nav-label'>Operator Mgmt</span> <span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_GROUP_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/operator.do'><i class='fa fa-group'></i> <span class='nav-label'>Operator Group Mgmt</span><span class='fa arrow'></span></a></li>");
 				menuHtml.append(currentMenu.equals(Const.MENU_CONTENTS_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/view/content.do\"><i class=\"fa fa-file\"></i> <span class=\"nav-label\">Contents Mgmt</span><span class='fa arrow'></span></a></li>");
@@ -244,8 +244,8 @@ public class HomeController {
 			else {
 				for (Permission permission : permissions) {
 					if (permission.getRole().equals(Const.ROLE_ADMIN)); // 위 에서 처리 함
-					else if (permission.getRole().equals(Const.ROLE_PERMISSION_MGMT))
-						menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
+//					else if (permission.getRole().equals(Const.ROLE_PERMISSION_MGMT))
+//						menuHtml.append(currentMenu.equals(Const.MENU_PERMISSION_MGMT) ? "<li class=\"landing_link\">" : "<li>").append("<a href=\"/dashbd/resources/permission.do\"><i class=\"fa fa-lock\"></i> <span class=\"nav-label\">Permission Mgmt</span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_OPERATOR_MGMT))
 						menuHtml.append(currentMenu.equals(Const.MENU_OPERATOR_MGMT) ? "<li class=\'landing_link\'>" : "<li>").append("<a href='/dashbd/resources/user.do'><i class='fa fa-th-large'></i> <span class='nav-label'>Operator Mgmt</span> <span class='fa arrow'></span></a></li>");
 					else if (permission.getRole().equals(Const.ROLE_OPERATOR_GROUP_MGMT))
