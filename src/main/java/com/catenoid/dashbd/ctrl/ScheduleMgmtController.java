@@ -1061,10 +1061,25 @@ public class ScheduleMgmtController {
 	}
 	
 	@RequestMapping(value = "view/receiveHeartbeatCRS.do", method=RequestMethod.OPTIONS)
-	public void receiveHeartbeatCRS(HttpServletResponse response) {
+	public void receiveHeartbeatCRS(HttpServletResponse response, HttpServletRequest req) {
+		String returnStr = "";
 		try {
+			Document doc = new Document();
+			Element root = new Element("message");
+			Element transaction = new Element("transaction");
+			transaction.setAttribute("id", makeTransId());
+			Element result = new Element("result");
+			Element code = new Element("code").setText("100");
+			Element message = new Element("message").setText("OK");
+			result.addContent(code);
+			result.addContent(message);
+			transaction.addContent(result);
+			root.addContent(transaction);
+			doc.setRootElement(root);
+			returnStr = outString(doc);
+			System.out.println(returnStr);
 			response.setContentType("application/x-www-form-urlencoded; charset=utf-8");
-			response.getWriter().print("OK");
+			response.getWriter().print(returnStr);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -226,6 +226,8 @@ var ctrl = {
 				, type 			: type
 				, serviceType	: $("#serviceType").val()
 				, serviceClass	: $("#serviceClass").val()
+				, searchType	: $("#searchType").val()
+				, searchKeyword	: $("#searchKeyword").val()
 			};
 			
 		$.ajax({

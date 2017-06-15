@@ -83,18 +83,21 @@ $(document).ready(function()
 		{
 			$("#moodArea").show();
 			$("#bcServiceArea").hide();
+			$("#thresholdArea").hide();
 			$("#consumptionReport").hide();
 		}
 		else if($(this).val() == "MooD")	//Mood 일 때
 		{
 			$("#moodArea").show();
 			$("#bcServiceArea").show();
+			$("#thresholdArea").show();
 			$("#consumptionReport").show();
 		}
 		else
 		{
 			$("#moodArea").hide();
 			$("#bcServiceArea").hide();
+			$("#thresholdArea").hide();
 			$("#consumptionReport").hide();
 		}
 	});

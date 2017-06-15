@@ -664,7 +664,7 @@
 					                                </div> 
 			                                    </div>
 			                                </div>
-			                                <div class="row" style="margin-left: -9%;"> 
+			                                <div id="thresholdArea" class="row" style="margin-left: -9%;"> 
 	                                    		<label class="col-sm-2 control-label col-sm-offset-2">UC Threshold</label>
 		                                        <div class="col-sm-2">
 		                                        	<input type="text" class="form-control" id="UCThreshold" name="UCThreshold" value="${mapSchedule.UCThreshold}">
