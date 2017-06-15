@@ -71,7 +71,7 @@
 									<div class="row">
 										<form class="form-horizontal" action="javascript:void(0);">
 											<input type="hidden" id="choiceTreeStr" value="all">
-											<div class="col-lg-7">
+											<div class="col-lg-8">
 												<div class="form-group">
 													<label class="col-sm-3 control-label">Service Type</label>
 													<div class="col-sm-3">
@@ -118,8 +118,10 @@
 																	</div>
 																</div>
 															</div>
+														<!-- 
 														</div>
 														<div class="row">
+														-->
 															<div class="col-lg-6">
 																<div class="form-group">
 																	<label class="col-sm-2 control-label">To</label>
@@ -154,15 +156,15 @@
 													</div>
 												</div>
 											</div>
-											<div class="col-lg-5 profile-content today">
-												<h2 class="text-center"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h2>
+											<div class="col-lg-4 profile-content today">
+												<h3 class="text-center"><fmt:formatDate pattern="yyyy-MM-dd" value="${now}" /></h3>
 												<div id="clock" class="light">
 													<div class="digits"></div>
 												</div>
 												<div class="row total">
 													<div class="col-sm-4">
 														<div class="panel panel-primary text-center">
-															<div class="panel-heading">Total Users</div>
+															<div class="panel-heading">Users</div>
 															<div class="panel-body">
 																<span class="text-info">${total_user}</span>
 															</div>
