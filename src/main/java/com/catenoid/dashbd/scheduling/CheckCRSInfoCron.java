@@ -92,12 +92,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 					String agentKeyCRS = Base64Coder.encode(crsInfo.get("ip"));
 					reqBodyCrs = makeModityXmlCRS(tempSvId, crsInfo, agentKeyCRS, said);
 					respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
-					/*List<HashMap<String, String>> otherCRS = mapper.getCurrentMoodServiceOthers(crsParam);
-					for (int k = 0; k < otherCRS.size(); k++) {
-						reqBodyCrs = makeModityXmlCRS(otherCRS.get(k).get("serviceId"), crsInfo, agentKeyCRS, said);
-						respBodyCrs = new HttpNetAgent().execute("http://" + crsInfo.get("ip") + crsInfo.get("updateUrl"), "", reqBodyCrs, false);
-						sendedServiceId.add(otherCRS.get(k).get("serviceId"));
-					}*/
 					mapper.updateSaidMode(crsSaidList.get(j));
 					System.out.println(" ================== ("+said+") CRS Mood Update End ================== ");
 				}

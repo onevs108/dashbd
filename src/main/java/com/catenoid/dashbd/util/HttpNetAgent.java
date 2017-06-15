@@ -2,7 +2,6 @@ package com.catenoid.dashbd.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -17,7 +16,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.commons.httpclient.protocol.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

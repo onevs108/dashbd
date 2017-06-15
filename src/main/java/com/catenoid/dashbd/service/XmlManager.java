@@ -298,14 +298,17 @@ public class XmlManager {
 	}
 
 	public boolean isSuccess(String retStr) throws JDOMException, IOException{
-		Document doc = null;
-		doc = new SAXBuilder().build(new StringReader(retStr));
-		Element message = doc.getRootElement();
-		int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
-		
-		if (resultCode == 1000 || resultCode == 200)
-			return true;
-		
+		try {
+			Document doc = null;
+			doc = new SAXBuilder().build(new StringReader(retStr));
+			Element message = doc.getRootElement();
+			int resultCode = Integer.parseInt(message.getChild("transaction").getChild("result").getChild("code").getValue());
+			
+			if (resultCode == 1000 || resultCode == 200)
+				return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 	
