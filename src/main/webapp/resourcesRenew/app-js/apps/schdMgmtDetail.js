@@ -8,6 +8,7 @@ var currentTime = getTimeStamp();
 var glovalSaid = "";
 var g_ServiceGroupId = '';
 var g_ServiceAreaId = '';
+var g_type = '';
 
 $(document).ready(function() {
 	$('#scheduleSearch').click(function(){
@@ -148,47 +149,48 @@ $(document).ready(function() {
 		g_ServiceAreaId = hotspotId;
 		ctrl.initialize();
     });
-    
-    $("input[name='radio']").click(function() {
-    	var radioType = $("input[name='radio']:checked").val();
-    	if(userGrade == 9999) {
-    		$("#emergency").hide();
-			$("#national").hide();
-		}
-    	if(radioType == "group")
-    	{
-    		$("#selectHotspot").hide();
-    		$("#selectHotspotLabel").hide();
-    		$("#selectCityLabel").html("Group");
-    		$("#selectArea").show();
-    		if(glovalSaid != ""){
-    			$('#scheduleSearch').click();
-    		}
-    	}
-    	else if(radioType == "area")
-    	{
-    		$("#selectHotspot").show();
-    		$("#selectHotspotLabel").show();
-    		$("#selectCityLabel").html("City");
-    		$("#selectArea").show();
-    	}
-    	else
-    	{
-    		$("#selectArea").hide();
-    		$('#scheduleSearch').click();
-    	}
-		
-    	$("#selectCircle").val("");
-		$("#selectCity").val("");
-		$("#selectCity").html("");
-    	$("#selectHotspot").html("");
-    });
-	
 });
+
+function radioClick(type) {
+	g_type = type;
+	if(userGrade == 9999) {
+		$("#emergency").hide();
+		$("#national").hide();
+	}
+	if(type == "group")
+	{
+		$("#selectHotspot").hide();
+		$("#selectHotspotLabel").hide();
+		$("#selectCityLabel").html("Group");
+		$("#selectArea").parent().css({"margin-left":"1px", "margin-bottom":"15px"});
+		$("#selectArea").show();
+		if(glovalSaid != ""){
+			$('#scheduleSearch').click();
+		}
+	}
+	else if(type == "area")
+	{
+		$("#selectHotspot").show();
+		$("#selectHotspotLabel").show();
+		$("#selectCityLabel").html("City");
+		$("#selectArea").parent().css({"margin-left":"1px", "margin-bottom":"15px"});
+		$("#selectArea").show();
+	}
+	else
+	{
+		$("#selectArea").hide();
+		$('#scheduleSearch').click();
+	}
+	
+	$("#selectCircle").val("");
+	$("#selectCity").val("");
+	$("#selectCity").html("");
+	$("#selectHotspot").html("");
+}
 
 $(window).load(function() {
     if(userGrade == 9999) {
-		$($("input[name='radio']")[2]).click();
+		$($("input[name='radio']")[2]).parent().click();
 		$("#selectHotspot").show();
 		$("#selectHotspotLabel").show();
 		$("#selectCityLabel").html("City");
@@ -197,14 +199,14 @@ $(window).load(function() {
 		$("#selectCircle").change();
 		g_ServiceAreaId = $("#selectCircle").val().split("^")[0];
 	} else {
-		$($("input[name='radio']")[1]).click();
+		$($("input[name='radio']")[1]).parent().click()
 	}
     $("#tab2").click();
 });
 
 var ctrl = {
 	initialize : function() {
-		var type = $("input[name='radio']:checked").val();
+		var type = g_type;
 		$("#type").val(type);
 		if(type == "national" || type == "emergency"){
 			g_ServiceAreaId = setAllCircleSaid();

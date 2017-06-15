@@ -217,7 +217,7 @@
 		$($(".legendColorBox")[1]).before($($(".legendLabel")[1]));
 		$($(".legendLabel")[0]).append("&nbsp;");
 		$($(".legendColorBox")[0]).after('<td class="background"><div style="border:1px solid #ccc;padding:1px"><div style="width: 8px; height: 0px; border: 4px solid rgb(255, 255, 255); overflow: hidden;"></div></div></td>')
-		$($(".legendColorBox")[1]).after('<td class="background"><div style="border:0px solid #ccc;padding:1px"><div style="width: 10px; height: 0px; border: 5px solid rgb(170, 170, 170); overflow: hidden;"></div></div></td>')
+		$($(".legendColorBox")[1]).after('<td class="background"><div style="border:0px solid #ccc;padding:1px"><div style="width: 10px; height: 0px; border: 5px solid rgb(229, 229, 229); overflow: hidden;"></div></div></td>')
 	}
 	
 	function drawGraph() {
@@ -257,7 +257,7 @@
 	                	var begin = Date.UTC(9999,12,31,tempValFrom[0], tempValFrom[1], tempValFrom[2]);
 	                	var end = Date.UTC(9999,12,31,tempValTo[0], tempValTo[1], tempValTo[2]);
 	                	if(moodJson[i].mode == "Unicast"){
-	                		markings.push({ xaxis: { from: begin, to: end}, color: "#aaaaaa"});
+	                		markings.push({ xaxis: { from: begin, to: end}, color: "#E5E5E5"});
 	                	}
 	                	else
 	                	{

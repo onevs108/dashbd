@@ -21,12 +21,12 @@
 	<link href="../resourcesRenew/css/custom.css" rel="stylesheet">
     <link href="../resourcesRenew/css/plugins/datapicker/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="../resourcesRenew/font-awesome/css/font-awesome.css" rel="stylesheet">
-
-    
+	<link href="/dashbd/resources/newPublish/css/plugins/iCheck/custom.css" rel="stylesheet">
+	<link href="/dashbd/resources/newPublish/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
     <!-- Mainly scripts -->
+
 	<script src="../resourcesRenew/js/jquery-2.1.1.js"></script>
 	<script src="../resourcesRenew/js/jquery-ui-1.10.4.min.js"></script>
-	
 	<script src="../resourcesRenew/js/bootstrap.min.js"></script>
 	<script src="../resourcesRenew/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="../resourcesRenew/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -51,13 +51,19 @@
 	<link href="/dashbd/resources/css/plugins/jsTree/style.min.css" rel="stylesheet">
 	<script src="/dashbd/resources/js/plugins/jsTree/jstree.min.js"></script>
 	<script src="/dashbd/resources/newPublish/js/plugins/blockUI/blockUI.js"></script>
+	<script src="/dashbd/resources/newPublish/js/plugins/iCheck/icheck.min.js"></script>
 	<!-- Page-Level Scripts -->
 	<script>
 		var userGrade = ${userGrade};
 		$(document).ready(function() {
 			getMenuList('SCHEDULE_MGMT');
 			$("#selectCircle").val("");
+			$('.i-checks').iCheck({
+	            checkboxClass: 'icheckbox_square-green',
+	            radioClass: 'iradio_square-green',
+	        });
 		});
+		
 	</script>
 	
 	<!-- Page-Level Scripts -->
@@ -114,15 +120,27 @@
             
             <div class="col-lg-12">
                     <div class="ibox float-e-margins ibox-title">
-                        <div class="ibox-title">
-							<div>
-								<h5 style="padding-right: 20px;">Schedule</h5>
-<!-- 								<button type="button" class="btn btn-primary btn-xs" id="sendMood" style="float: right;" onclick="sendMood()">Send MoodData Test</button> -->
-<!-- 								<button type="button" class="btn btn-primary btn-xs" id="btnScheduleDetail" style="float: right;">Create Schedule</button> -->
-								<span id="emergency"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="emergency"/>Emergency</span>
-								<span id="national"><input type="radio" class="btn btn-primary btn-xs" name="radio" value="national" checked/>National</span>
-								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="area"/>Service Area&nbsp;
-								<input type="radio" class="btn btn-primary btn-xs" name="radio" value="group"/>Service Area Group&nbsp;
+                    	<div class="row" style="margin-left: 1px; margin-bottom: 15px;">
+							<div class="form-group">
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Service Type</label>
+								<div class="col-sm-3" style="width: 20%;">
+									<select id="serviceType" class="input-sm form-control input">
+		                               <option value="">All</option>
+		                               <option value="fileDownload">File Download</option>
+                                       <option value="streaming">Streaming</option>
+                                       <option value="carouselMultiple">Carousel Multiple Files</option>
+                                       <option value="carouselSingle">Carousel Single File</option>
+		                            </select>
+	                            </div>
+							</div>
+						</div>
+						<div class="row" style="margin-left: 1px;">
+							<div class="form-group">
+								<label class="col-sm-2" style="width: 12%;margin-right: 15px;">Schedule</label>
+								<span id="emergency"><label class="checkbox-inline i-checks" onclick="radioClick('emergency');"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="emergency" name="radio" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Emergency</span></label>
+								<span id="national"><label class="checkbox-inline i-checks" onclick="radioClick('national');"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="national" name="radio" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> National</span></label>
+								<label class="checkbox-inline i-checks" onclick="radioClick('area');"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="area" name="radio" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Service Area</label>
+								<label class="checkbox-inline i-checks" onclick="radioClick('group');"><div class="iradio_square-green" style="position: relative;"><input type="radio" value="group" name="radio" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div> Service Area Group</label>								
 							</div>
 						</div>
 						<div class="row" style="margin-left: 1px;">
@@ -146,34 +164,29 @@
 								<div class="col-sm-3" style="width: 20%;">
 									<select id="selectHotspot" class="input-sm form-control input">
 		                               
-		                            </select>
+		                            </select> 
 		                        </div>
 	                        </div>
 		                </div>
-		                <hr style="margin-top: 10px;margin-bottom: 10px;">
 		                <div class="row" style="margin-left: 1px;margin-bottom: 10px;">
 							<div class="form-group">
-								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Service Type</label>
+								<label class="col-sm-2" style="margin-top: 5px;width: 12%;">Keyword</label>
 								<div class="col-sm-3" style="width: 20%;">
-									<select id="serviceType" class="input-sm form-control input">
-		                               <option value="">All</option>
-		                               <option value="fileDownload">File Download</option>
-                                       <option value="streaming">Streaming</option>
-                                       <option value="carouselMultiple">Carousel Multiple Files</option>
-                                       <option value="carouselSingle">Carousel Single File</option>
-		                            </select>
+									<select id="searchType" name="searchType" class="form-control">
+	                                    <option value="">Select</option>
+	                                    <option value="serviceId">ServiceID</option>
+	                                    <option value="serviceName">ServiceName</option>
+	                                    <option value="uri">URI</option>
+	                                    <option value="serviceClass">Service Class</option>
+	                                </select>
 	                            </div>
-	                            <label class="col-sm-2" style="margin-top: 5px;width: 12%;">Service Class</label>
-								<div class="col-sm-3" style="width: 20%;">
-									<select id="serviceClass" class="input-sm form-control input">
-		                               <option value="">Select Class</option>
-		                               <c:forEach var="row" items="${scList}">
-		                               	<option value="${row.class_name}">${row.class_name}</option>
-		                               </c:forEach>
-		                            </select>
-	                            </div>
-								<div class="col-sm-2" style="width: 15%;">
-									<button id="scheduleSearch" class="btn btn-primary btn-sm">Search</button>
+								<div class="col-sm-3">
+									<div class="input-group">
+										<input type="text" placeholder="Keyword" id="searchKeyword" class="form-control" onkeydown="javascript:if(event.keyCode == 13) searchRegionalSchedule(false);">
+										<span class="input-group-btn">
+											<button id="scheduleSearch" type="button" class="btn btn-primary">Search</button>
+										</span>
+									</div>
 	                            </div>
 							</div>
 						</div>
