@@ -298,6 +298,9 @@ public class XmlManager {
 	}
 
 	public boolean isSuccess(String retStr) throws JDOMException, IOException{
+		if(retStr == "FAIL"){
+			return false;
+		}
 		try {
 			Document doc = null;
 			doc = new SAXBuilder().build(new StringReader(retStr));

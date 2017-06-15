@@ -70,6 +70,7 @@ import com.catenoid.dashbd.dao.model.TransReportExample;
 import com.catenoid.dashbd.dao.model.TransferConfig;
 import com.catenoid.dashbd.util.Base64Coder;
 import com.catenoid.dashbd.util.ErrorCodes;
+import com.catenoid.dashbd.util.HttpNetAgent;
 import com.catenoid.dashbd.util.MyException;
 
 import catenoid.net.msg.XmlPara;
@@ -1887,7 +1888,6 @@ public class ServiceController {
 			return new ResponseEntity<String>(strXml, HttpStatus.OK);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.toString());
 		}		
 		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);

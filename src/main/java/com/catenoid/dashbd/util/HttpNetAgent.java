@@ -96,17 +96,20 @@ public class HttpNetAgent {
 	}
 	
 	public String execute(String url, String queryString, String body, boolean sslExceptionIgnore) throws HttpNetAgentException, UnsupportedEncodingException{
-
-		PostMethod postMethod = null;
-		String responseBody = null;
-		
-		postMethod = new PostMethod(url);
-		postMethod.setQueryString(queryString);
-		
-		postMethod.setRequestEntity(new StringRequestEntity(body, null, "UTF-8"));
-		responseBody = send(postMethod, sslExceptionIgnore);
-		
-		return responseBody;
+		try {
+			PostMethod postMethod = null;
+			String responseBody = null;
+			
+			postMethod = new PostMethod(url);
+			postMethod.setQueryString(queryString);
+			
+			postMethod.setRequestEntity(new StringRequestEntity(body, null, "UTF-8"));
+			responseBody = send(postMethod, sslExceptionIgnore);
+			
+			return responseBody;
+		} catch (Exception e) {
+			return "FAIL";
+		}
 	}
 	
 	private String send(HttpMethod method, boolean sslExceptionIgnore) throws HttpNetAgentException{
@@ -221,4 +224,5 @@ public class HttpNetAgent {
 		
 		return sb.toString();
 	}
+
 }
