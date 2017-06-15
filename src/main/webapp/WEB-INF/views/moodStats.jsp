@@ -65,7 +65,8 @@
                         <h5><span id="serviceId"></span>Mood History</h5>
                     </div>
                     <div class="ibox-content">
-
+						<div id="legend-area" align="right">
+                    	</div>
                         <div class="flot-chart">
                             <div class="flot-chart-content" id="flot-line-chart"></div>
                         </div>
@@ -204,7 +205,20 @@
 			$($(".close-link")[i]).click();
 		}
 		drawGraph();
+		setLegend();
 	});
+	
+	function setLegend() {
+		$($(".legendColorBox").children()[0]).css({"border": "0px", "padding": "1px"});
+		$($(".legendColorBox").children()[1]).css({"border": "0px", "padding": "1px"});
+		$($(".legendColorBox").children().children()[0]).css({"width": "10px", "border": "1px solid rgb(0,205,255)"});
+		$($(".legendColorBox").children().children()[1]).css({"width": "10px", "border": "1px solid rgb(244,164,96)"});
+		$($(".legendColorBox")[0]).before($($(".legendLabel")[0]));
+		$($(".legendColorBox")[1]).before($($(".legendLabel")[1]));
+		$($(".legendLabel")[0]).append("&nbsp;");
+		$($(".legendColorBox")[0]).after('<td class="background"><div style="border:1px solid #ccc;padding:1px"><div style="width: 8px; height: 0px; border: 4px solid rgb(255, 255, 255); overflow: hidden;"></div></div></td>')
+		$($(".legendColorBox")[1]).after('<td class="background"><div style="border:0px solid #ccc;padding:1px"><div style="width: 10px; height: 0px; border: 5px solid rgb(170, 170, 170); overflow: hidden;"></div></div></td>')
+	}
 	
 	function drawGraph() {
 	    var barOptions = {
@@ -243,11 +257,11 @@
 	                	var begin = Date.UTC(9999,12,31,tempValFrom[0], tempValFrom[1], tempValFrom[2]);
 	                	var end = Date.UTC(9999,12,31,tempValTo[0], tempValTo[1], tempValTo[2]);
 	                	if(moodJson[i].mode == "Unicast"){
-	                		markings.push({ xaxis: { from: begin, to: end}, color: "#46BEFF"});
+	                		markings.push({ xaxis: { from: begin, to: end}, color: "#aaaaaa"});
 	                	}
 	                	else
 	                	{
-	                		markings.push({ xaxis: { from: begin, to: end}, color: "#D7567F"});
+	                		markings.push({ xaxis: { from: begin, to: end}, color: "#FFFFFF"});
 	                	}
 	                }
 	                return markings;
@@ -255,13 +269,14 @@
 	        },
 	        legend: {
 	            show: true,
+	            container: $("#legend-area"),
 	            position: "ne"
 	        },
 	        tooltip: true,
 	        tooltipOpts: {
 	            content: "x: %x, y: %y"
 	        },
-	        colors: ["#0022FF", "#FF7070"]				//라인 색상
+	        colors: ["#00CDFF", "#F4A460"]				//라인 색상
 	    };
 	    
 	    var countUC = [];

@@ -410,7 +410,7 @@
 		and del_yn = 'N'
 		and 
 		(
-			serviceMode != 'MooD' or 
+			serviceMode is null or 
 			(
 				serviceMode = 'MooD' and (select mode from mood_service where serviceId = a.serviceId and CONCAT(',', said, ',') REGEXP CONCAT(',', #{searchString}, ',')) = 'Broadcast'
 			)
@@ -418,7 +418,7 @@
 	</select>
 	
 	<select id="getMoodInterval" resultType="int">
-		select crs_limit.interval from crs_limit 
+		select crs_limit.interval from crs_limit
 	</select>
 	
 	<insert id = "insertMoodRequest" parameterType="HashMap">
@@ -944,7 +944,7 @@
 	</select>
 	
 	<select id="getTimeStampMoodService" parameterType="String" resultType="HashMap">
-		select a.serviceId, max(c.timestamp) from 
+		select a.serviceId, max(c.timestamp) timestamp from 
 		broadcast_info a inner join crs_said_mapping b 
 		on CONCAT(',', a.said, ',') REGEXP CONCAT(',', b.said, ',') 
 		inner join mood_request c on a.serviceId = c.serviceId and b.crs_id = c.crsId

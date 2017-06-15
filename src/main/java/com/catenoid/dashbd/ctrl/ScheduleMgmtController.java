@@ -864,9 +864,7 @@ public class ScheduleMgmtController {
 				docNew.setRootElement(messageNew);
 				Element timestampNew = new Element("timestamp");
 				timestampNew.setAttribute(new Attribute("crsId", crsId));
-//				Element crsIdNew = new Element("crsId");
-//				crsIdNew.setText(crsId);
-//				timestampNew.addContent(crsIdNew);
+				
 				for (int i = 0; i < currnetService.size(); i++) {
 					Element timeset = new Element("timeset");
 					Element serviceId = new Element("serviceId").setText(currnetService.get(i).get("serviceId"));
@@ -878,7 +876,16 @@ public class ScheduleMgmtController {
 				
 				Element transactionNew = new Element("transaction");
 				transactionNew.setAttribute(new Attribute("id", transaction.getAttributeValue("id")));
-				transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));		
+				transactionNew.addContent(new Element("agentKey").setText(transaction.getChild("agentKey").getText()));
+				
+				if(currnetService.size() == 0){
+					Element result = new Element("result");
+					Element code = new Element("code").setText("404");
+					Element message0 = new Element("message").setText("Service Not Found");
+					result.addContent(code);
+					result.addContent(message0);
+					transactionNew.addContent(result);
+				}
 				
 				Element reply = new Element("reply");
 				Element serviceNew = new Element("service");
@@ -887,7 +894,9 @@ public class ScheduleMgmtController {
 				reply.addContent(serviceNew);
 				
 				docNew.getRootElement().addContent(transactionNew);
-				docNew.getRootElement().addContent(reply);
+				if(currnetService.size() != 0){
+					docNew.getRootElement().addContent(reply);
+				}
 				System.out.println(outString(docNew));
 				System.out.println("================== Mood Receive Timestamp End ==================");
 				returnStr = outString(docNew);

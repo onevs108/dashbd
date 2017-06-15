@@ -702,11 +702,15 @@
 				        if(infoList.length > 0){
 				        	var html = "";
 				        	for (var i = 0; i < infoList.length; i++) {
+				        		var serviceMode = infoList[i].serviceMode;
+				        		if(serviceMode == undefined){
+				        			serviceMode = "-";
+				        		}
 				        		html+='<tr class="active">';
 				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].serviceId+'</td>';
 				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].service_name+'</td>';
 				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].service+'</td>';
-				        		html+='	 <td class="active" style="text-align: center;">'+infoList[i].serviceMode+'</td>';
+				        		html+='	 <td class="active" style="text-align: center;">'+serviceMode+'</td>';
 				        		html+='	 <td class="active" style="text-align: center;">'+Number(infoList[i].GBR)/1000+'K</td>';
 				        		html+='</tr>';
 							}

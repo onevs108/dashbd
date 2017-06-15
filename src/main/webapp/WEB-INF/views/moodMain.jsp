@@ -462,7 +462,7 @@
 		
 		function openMoodHistory(serviceId, said) {
 			var url = "getMoodStats.do?serviceId="+serviceId+"&said="+said;
-			launchCenter(url, "initPassword",  "700", "375", "yes");
+			launchCenter(url, "initPassword",  "700", "404", "yes");
 		}
 		
 		function callSubMoodData(targetObj, serviceId, psaid) {
