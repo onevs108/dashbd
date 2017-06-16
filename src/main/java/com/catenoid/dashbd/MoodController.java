@@ -223,8 +223,8 @@ public class MoodController{
 				temp.put("deleveryType", resultList.get(i).get("mode"));
 				temp.put("countUC", resultList.get(i).get("countUC"));
 				temp.put("countBC", resultList.get(i).get("countBC"));
-				temp.put("scheduleStart", resultList.get(i).get("scheduleStart"));
-				temp.put("scheduleStop", resultList.get(i).get("scheduleStop"));
+				temp.put("scheduleStart", convertDateFormat4(resultList.get(i).get("scheduleStart").toString()));
+				temp.put("scheduleStop", convertDateFormat4(resultList.get(i).get("scheduleStop").toString()));;
 				temp.put("viewers", Integer.parseInt(resultList.get(i).get("countUC").toString()) + Integer.parseInt(resultList.get(i).get("countBC").toString()));
 				resultArray.add(temp);
 			}
@@ -256,17 +256,32 @@ public class MoodController{
 		return "moodStats";
 	}
 	
-	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
+	//Wed Mar 15 2017 17:17:00 --> 2017-02-27 16:00:00
 	private String convertDateFormat3(String dateTime){
 		String retStr = "";
 		
-		SimpleDateFormat sdfFrom = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss", Locale.US);
+		SimpleDateFormat sdfFrom = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.US);
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			Date dateFrom = sdfFrom.parse(dateTime);
 			retStr = sdfTo.format(dateFrom);
 		} catch (Exception e) {
-//			logger.error("", e);
+			e.printStackTrace();
+		}
+		return retStr;
+	}
+	
+	//2017-02-27 16:00:00 --> Wed Mar 15 2017 17:17:00
+	private String convertDateFormat4(String dateTime){
+		String retStr = "";
+		
+		SimpleDateFormat sdfFrom= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdfTo = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.US);
+		try {
+			Date dateFrom = sdfFrom.parse(dateTime.substring(0,21));
+			retStr = sdfTo.format(dateFrom);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return retStr;
 	}

@@ -461,6 +461,8 @@
 		}
 		
 		function openMoodHistory(serviceId, said, scheduleStart, scheduleStop) {
+			var scheduleStart = decodeURI(scheduleStart);
+			var scheduleStop = decodeURI(scheduleStop);
 			var url = "getMoodStats.do?serviceId="+serviceId+"&said="+said+"&scheduleStart="+new Date(scheduleStart)+"&scheduleStop="+new Date(scheduleStop);
 			launchCenter(url, "initPassword",  "700", "404", "yes");
 		}
