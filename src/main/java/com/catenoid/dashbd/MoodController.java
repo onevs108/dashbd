@@ -1,9 +1,11 @@
 package com.catenoid.dashbd;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -221,6 +223,8 @@ public class MoodController{
 				temp.put("deleveryType", resultList.get(i).get("mode"));
 				temp.put("countUC", resultList.get(i).get("countUC"));
 				temp.put("countBC", resultList.get(i).get("countBC"));
+				temp.put("scheduleStart", resultList.get(i).get("scheduleStart"));
+				temp.put("scheduleStop", resultList.get(i).get("scheduleStop"));
 				temp.put("viewers", Integer.parseInt(resultList.get(i).get("countUC").toString()) + Integer.parseInt(resultList.get(i).get("countBC").toString()));
 				resultArray.add(temp);
 			}
@@ -239,12 +243,31 @@ public class MoodController{
 		try {
 			List<HashMap<String, Object>> moodList = mapper.getMoodHistory(param);
 			Gson gson = new Gson();
+			String scheduleStart = convertDateFormat3(param.get("scheduleStart").toString().substring(0,24));
+			String scheduleStop = convertDateFormat3(param.get("scheduleStop").toString().substring(0,24));
 			String moodData = gson.toJson(moodList);
 			model.addAttribute("moodData", moodData);
+			model.addAttribute("serviceId", param.get("serviceId"));
+			model.addAttribute("scheduleStart", scheduleStart);
+			model.addAttribute("scheduleStop", scheduleStop);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "moodStats";
 	}
 	
+	//Wed Mar 15 17:17:00 2017 --> 2017-02-27 16:00:00
+	private String convertDateFormat3(String dateTime){
+		String retStr = "";
+		
+		SimpleDateFormat sdfFrom = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss", Locale.US);
+		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			Date dateFrom = sdfFrom.parse(dateTime);
+			retStr = sdfTo.format(dateFrom);
+		} catch (Exception e) {
+//			logger.error("", e);
+		}
+		return retStr;
+	}
 }

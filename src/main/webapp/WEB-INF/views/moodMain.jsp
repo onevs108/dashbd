@@ -382,7 +382,7 @@
 					valign: 'middle',
 					sortable: true,
 					formatter: function(value, row, index) {
-						var html = '<a href=javascript:openMoodHistory(\''+row.serviceId+'\',\''+row.said+'\'); style="color:#5ACCFF;">'+value+'</a>';
+						var html = '<a href=javascript:openMoodHistory(\''+row.serviceId+'\',\''+row.said+'\',\''+encodeURI(row.scheduleStart)+'\',\''+encodeURI(row.scheduleStop)+'\'); style="color:#5ACCFF;">'+value+'</a>';
 						return html;
 					}
 				}, {
@@ -460,8 +460,8 @@
 			});
 		}
 		
-		function openMoodHistory(serviceId, said) {
-			var url = "getMoodStats.do?serviceId="+serviceId+"&said="+said;
+		function openMoodHistory(serviceId, said, scheduleStart, scheduleStop) {
+			var url = "getMoodStats.do?serviceId="+serviceId+"&said="+said+"&scheduleStart="+new Date(scheduleStart)+"&scheduleStop="+new Date(scheduleStop);
 			launchCenter(url, "initPassword",  "700", "404", "yes");
 		}
 		
@@ -472,9 +472,6 @@
 				var tableHtml = '';
 				tableHtml += '<tr name="sub' + $(targetObj).attr("data-index") + '" style="display: table-row;"><td colspan="12">';
 				tableHtml += '<table class="table table-striped">';
-// 				tableHtml += '<colgroup><col style="width: 13%;"><col style="width: 12%;"><col style="width: 10%;">';
-// 				tableHtml += '<col style="width: 10%;"><col style="width: 10%;"><col style="width: 10%;">';
-// 				tableHtml += '<col style="width: 5%;"><col style="width: 5%;"><col style="width: 10%;"></colgroup>';
 				
 				$.ajax({
 				    url : "getSubMoodData.do",
@@ -493,13 +490,6 @@
 				        $("#ajax").remove();
 				        var data = JSON.parse(responseData).resultList;
 				        
-// 				        tableHtml += '<thead><tr><th>Area</th><th>Service Type</th>';
-// 				        tableHtml += '<th>Service ID</th>';
-// 				        tableHtml += '<th>Service Name</th>';
-// 				        tableHtml += '<th>Service Name</th><th>Service Name</th><th>Area</th><th>Service Type</th>';
-// 						tableHtml += '<th>Service Mode</th><th>Delevery Type</th><th>countUC</th><th>countBC</th><th>Num Viewers</th></tr></thead>';
-// 						tableHtml += '<tbody>';
-				        
 				        for(var i=0; i < data.length; i++) {
 				        	var row = data[i];
 				        	var nRow = data[i+1];
@@ -508,7 +498,7 @@
 				        	
 							var onair = row.onAirYn == 'Y'? 'onair' : ''; 
 							tableHtml += '<td style="text-align: center; width: 12%;">' + row.serviceId + '</a></td>'; 						
-							tableHtml += '<td style="text-align: center; width: 20%;"><a style="cursor: pointer; color:#5ACCFF;" onclick=openMoodHistory(\''+row.serviceId+'\',\''+row.said+'\')>' + row.serviceName + '</a></td>';
+							tableHtml += '<td style="text-align: center; width: 20%;"><a style="cursor: pointer; color:#5ACCFF;" onclick=openMoodHistory(\''+row.serviceId+'\',\''+row.said+'\',\''+encodeURI(row.scheduleStart)+'\',\''+encodeURI(row.scheduleStop)+'\')>' + row.serviceName + '</a></td>';
 							tableHtml += '<td style="text-align: center; width: 17%;">' + row.area + '</td>';
 							tableHtml += '<td style="text-align: center; width: 10%;">' + row.serviceType + '</td>';
 							tableHtml += '<td style="text-align: center; width: 10%;">' + row.serviceMode + '</td>';

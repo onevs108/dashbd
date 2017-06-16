@@ -853,7 +853,7 @@ public class ScheduleMgmtController {
 			{
 				Element service = request.getChild("service");
 				Element timestamp = service.getChild("timestamp");
-				String crsId = timestamp.getAttributeValue("crsId");
+				String crsId = timestamp.getChild("crsId").getText();
 				List<HashMap<String, String>> currnetService = scheduleMapper.getTimeStampMoodService(crsId);
 				
 				System.out.println("================== Mood Receive Timestamp Start ==================");
@@ -863,7 +863,7 @@ public class ScheduleMgmtController {
 				Document docNew = new Document(messageNew);
 				docNew.setRootElement(messageNew);
 				Element timestampNew = new Element("timestamp");
-				timestampNew.setAttribute(new Attribute("crsId", crsId));
+				timestampNew.addContent(new Element("crsId").setText(crsId));
 				
 				for (int i = 0; i < currnetService.size(); i++) {
 					Element timeset = new Element("timeset");
@@ -1241,7 +1241,7 @@ public class ScheduleMgmtController {
 			String[] resStr = xmlManager.sendBroadcast(params, xmlMode, saidData, paramList);
 			HashMap<String, String> retValue = parseRes(resStr[0]);
 			//@ check return XML success
-			if (!xmlManager.isSuccess(resStr[0])){
+			if (!xmlManager.isSuccess(resStr[0]) || resStr[0].contains("ABORT")){
 				return makeRetMsg(retValue.get("code"), retValue.get("message"));
 			}
 			
@@ -1258,11 +1258,6 @@ public class ScheduleMgmtController {
 					params.put("bcServiceArea", bcSaidListString);
 				}
 				
-//				//서비스ID 숫자 증가
-//				String svId = params.get("serviceId").toString();
-//				params.put("serviceIdIdx", svId.substring(svId.lastIndexOf(":")+1));
-//				params.put("serviceIdFormat", svId.substring(0, svId.lastIndexOf(":")));
-//				ret = mapper.updateServiceIdIdx(params);
 				//방송 정보 삽입
 				ret = mapper.insertBroadcastInfo(params);
 				//전송 후 본래의 스케쥴 업데이트

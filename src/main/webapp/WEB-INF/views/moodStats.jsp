@@ -62,7 +62,7 @@
             <div class="col-lg-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5><span id="serviceId"></span>Mood History</h5>
+                        <h5><span id="serviceId"></span>Mood History of ${serviceId} (${scheduleStart} ~ ${scheduleStop})</h5>
                     </div>
                     <div class="ibox-content">
 						<div id="legend-area" align="right">
@@ -211,13 +211,13 @@
 	function setLegend() {
 		$($(".legendColorBox").children()[0]).css({"border": "0px", "padding": "1px"});
 		$($(".legendColorBox").children()[1]).css({"border": "0px", "padding": "1px"});
-		$($(".legendColorBox").children().children()[0]).css({"width": "10px", "border": "1px solid rgb(0,205,255)"});
-		$($(".legendColorBox").children().children()[1]).css({"width": "10px", "border": "1px solid rgb(244,164,96)"});
+		$($(".legendColorBox").children().children()[0]).css({"width": "10px", "border": "1px solid rgb(0, 205, 255)"});
+		$($(".legendColorBox").children().children()[1]).css({"width": "10px", "border": "1px solid rgb(244, 164, 96)"});
 		$($(".legendColorBox")[0]).before($($(".legendLabel")[0]));
 		$($(".legendColorBox")[1]).before($($(".legendLabel")[1]));
 		$($(".legendLabel")[0]).append("&nbsp;");
-		$($(".legendColorBox")[0]).after('<td class="background"><div style="border:1px solid #ccc;padding:1px"><div style="width: 8px; height: 0px; border: 4px solid rgb(255, 255, 255); overflow: hidden;"></div></div></td>')
-		$($(".legendColorBox")[1]).after('<td class="background"><div style="border:0px solid #ccc;padding:1px"><div style="width: 10px; height: 0px; border: 5px solid rgb(229, 229, 229); overflow: hidden;"></div></div></td>')
+		$($(".legendColorBox")[0]).after('<td class="background"><div style="border:0px solid #ccc;padding:1px"><div style="width: 10px; height: 0px; border: 5px solid rgb(229, 229, 229); overflow: hidden;"></div></div></td>')
+		$($(".legendColorBox")[1]).after('<td class="background"><div style="border:1px solid #ccc;padding:1px"><div style="width: 8px; height: 0px; border: 4px solid rgb(255, 255, 255); overflow: hidden;"></div></div></td>')
 	}
 	
 	function drawGraph() {

@@ -1819,9 +1819,10 @@ public class ServiceController {
 			logger.info(req.toString());
 			
 			XmlParaSet reqXml = XmlFormer.toXmlParaSet(req.toString().replaceAll("&", "&amp;"));
+			String mode = reqXml.getAttr("name").substring(reqXml.getAttr("name").indexOf(".")+1).toLowerCase();
 			
 			String strXml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                    "<message name=\"SERVICE.CREATE\" type=\"RESPONSE\">\n" +
+                    "<message name=\"SERVICE."+mode.toUpperCase()+"\" type=\"RESPONSE\">\n" +
                     "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
                     "        <result>\n" +
                     "            <code>1000</code>\n" +
@@ -1871,14 +1872,14 @@ public class ServiceController {
 	                    "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
 	                    "        <agentKey>"+ getPara(reqXml, "transaction").getPara("agentKey").getValue() +"</agentKey>\n" +
 	                    "        <result>\n" +
-	                    "            <code>200</code>\n" +
+	                    "            <code>404</code>\n" +
 	                    "            <message>"+message+"</message>\n" +
 	                    "        </result>\n" +
 	                    "    </transaction>\n" +
 	                    "    <reply>\n" +
 	                    "        <service>\n" +
 	                    "            <"+mode+">\n" +
-	                    "                <code>200</code>\n" +
+	                    "                <code>404</code>\n" +
 	                    "                <message>"+message+"</message>\n" +
 	                    "            </"+mode+">\n" +
 	                    "        </service>\n" +

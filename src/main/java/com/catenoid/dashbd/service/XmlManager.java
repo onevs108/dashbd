@@ -163,7 +163,7 @@ public class XmlManager {
 				if(BMSC_XML_CREATE == mode) {
 					for (int i = 0; i < respBodyCrsList.size(); i++) {
 						if(!isSuccess(respBodyCrsList.get(i))){
-							String deleteStr = makeXmlDelete(params, mode);
+							String deleteStr = makeXmlDelete(params, 5);
 							respBody = new HttpNetAgent().execute("http://" + bmscIp + b2InterfefaceURL, "", deleteStr, false);
 							break;
 						}
@@ -275,7 +275,7 @@ public class XmlManager {
 				Element contentSet = new Element("contentSet");
 				Element serviceArea = new Element("serviceArea");
 				for (int j = 0; j < bcSaidList.length(); j++) {
-					serviceArea.addContent( new Element("said").setText(((JSONObject)bcSaidList.get(j)).get("said").toString()));
+					serviceArea.addContent(new Element("said").setText(((JSONObject)bcSaidList.get(j)).get("said").toString()));
 				}
 				contentSet.addContent(serviceArea);
 				create.addContent(schedule);
@@ -291,7 +291,7 @@ public class XmlManager {
 			System.out.println(outString(doc));
 			System.out.println("============================ Mood Create End ============================");
 		} catch (Exception e) {
-			makeXmlDelete(params, mode);
+			makeXmlDelete(params, 5);
 			e.printStackTrace();
 		}
 		return outString(doc);
