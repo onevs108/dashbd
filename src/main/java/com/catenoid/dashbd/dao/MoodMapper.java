@@ -10,5 +10,7 @@ public interface MoodMapper {
 	int selectMoodServiceCount(HashMap<String, Object> searchParam);
 
 	List<HashMap<String, Object>> getMoodHistory(HashMap<String, Object> param);
+
+	String selectMultiYN(HashMap<String, Object> hashMap);
     
 }

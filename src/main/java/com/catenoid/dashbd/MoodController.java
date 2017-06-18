@@ -146,11 +146,12 @@ public class MoodController{
 			JSONArray rows = new JSONArray();
 			
 			List<HashMap<String, Object>> resultList = mapper.selectMoodService(searchParam);
-			for(HashMap<String, Object> map : resultList) {
-				String tempJsonStr = json.toJson(map);
+			for(int i = 0; i < resultList.size(); i++) {
+				String multiYN = mapper.selectMultiYN(resultList.get(i));
+				resultList.get(i).put("multiYN", multiYN);
+				String tempJsonStr = json.toJson(resultList.get(i));
 				rows.add(json.fromJson(tempJsonStr, JSONObject.class));
 			}
-			
 			jsonResult.put("rows", rows);
 			
 			int total = mapper.selectMoodServiceCount(searchParam);
@@ -243,8 +244,8 @@ public class MoodController{
 		try {
 			List<HashMap<String, Object>> moodList = mapper.getMoodHistory(param);
 			Gson gson = new Gson();
-			String scheduleStart = convertDateFormat3(param.get("scheduleStart").toString().substring(0,24));
-			String scheduleStop = convertDateFormat3(param.get("scheduleStop").toString().substring(0,24));
+			String scheduleStart = convertDateFormat3(param.get("scheduleStart").toString());
+			String scheduleStop = convertDateFormat3(param.get("scheduleStop").toString());
 			String moodData = gson.toJson(moodList);
 			model.addAttribute("moodData", moodData);
 			model.addAttribute("serviceId", param.get("serviceId"));
@@ -263,7 +264,7 @@ public class MoodController{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.US);
 		SimpleDateFormat sdfTo= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			Date dateFrom = sdfFrom.parse(dateTime);
+			Date dateFrom = sdfFrom.parse(dateTime.substring(0,24));
 			retStr = sdfTo.format(dateFrom);
 		} catch (Exception e) {
 			e.printStackTrace();

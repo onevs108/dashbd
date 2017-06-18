@@ -367,7 +367,7 @@
 							else
 								html = value;
 						} else {
-							if(row.svCount > 1) 
+							if(row.multiYN == 'Y') 
 								html += '<span style="cursor: pointer;" onclick="callSubMoodData(this, \'' + row.serviceId + '\', \'' + row.said + '\')"> <i class="fa fa-plus-square"></i> ' + value + '</span>';
 							else
 								html = value;
@@ -682,7 +682,6 @@
 						} else {
 							$($(compareNode).find("ul")[0]).append(liStr);
 						}
-						
 						break;
 					}
 				}

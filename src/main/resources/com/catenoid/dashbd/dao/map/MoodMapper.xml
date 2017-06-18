@@ -3,7 +3,7 @@
 <mapper namespace="com.catenoid.dashbd.dao.MoodMapper" >
 	
 	<select id="selectMoodService" parameterType="HashMap" resultType="HashMap">
-		select * <if test="serviceId == null or serviceId == ''">, count(serviceId) svCount </if> from (
+		select * <if test="serviceId == null or serviceId == ''">, count(said) svCount </if> from (
 			select T1.serviceId, T1.service_name, T1.circle, T1.city, T1.hotspot, T1.service, T1.serviceMode
 				  ,T1.scheduleStart, T1.scheduleStop, T1.national_yn, T1.emergency_yn, T1.said
           		  ,d.mode, c.countUC, c.countBC, c.insertDate from (
@@ -108,7 +108,7 @@
 	
 	<select id="selectMoodServiceCount" parameterType="HashMap" resultType="int">
 		select count(*) from (
-			select * <if test="serviceId == null or serviceId == ''">, count(serviceId) svCount </if> from (
+			select * <if test="serviceId == null or serviceId == ''">, count(said) svCount </if> from (
 				select T1.serviceId, T1.service_name, T1.circle, T1.city, T1.hotspot, T1.service, T1.serviceMode
 				  ,T1.scheduleStart, T1.scheduleStop, T1.national_yn, T1.emergency_yn, T1.said
           		  ,d.mode, c.countUC, c.countBC, c.insertDate 
@@ -214,6 +214,12 @@
 		select said, countUC, countBC, DATE_FORMAT(insertDate, '%H:%i:%s') insertDate, mode
 		from mood_request
 		where serviceId = #{serviceId} and said = #{said}
+	</select>
+	
+	<select id="selectMultiYN" parameterType="HashMap" resultType="String">
+		 select case when count(*) > 1 then 'Y' else 'N' end from (
+            select * from mood_request where serviceId = #{serviceId} group by said
+         ) t1
 	</select>
 	
 </mapper>
