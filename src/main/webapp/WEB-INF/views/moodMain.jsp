@@ -367,7 +367,7 @@
 							else
 								html = value;
 						} else {
-							if(row.multiYN == 'Y') 
+							if(row.multiYN == 'Y')
 								html += '<span style="cursor: pointer;" onclick="callSubMoodData(this, \'' + row.serviceId + '\', \'' + row.said + '\')"> <i class="fa fa-plus-square"></i> ' + value + '</span>';
 							else
 								html = value;

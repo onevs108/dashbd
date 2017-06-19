@@ -3,6 +3,7 @@
 <mapper namespace="com.catenoid.dashbd.dao.MoodMapper" >
 	
 	<select id="selectMoodService" parameterType="HashMap" resultType="HashMap">
+	select * from (
 		select * <if test="serviceId == null or serviceId == ''">, count(said) svCount </if> from (
 			select T1.serviceId, T1.service_name, T1.circle, T1.city, T1.hotspot, T1.service, T1.serviceMode
 				  ,T1.scheduleStart, T1.scheduleStop, T1.national_yn, T1.emergency_yn, T1.said
@@ -97,15 +98,18 @@
 		<choose>
 			<when test="serviceId != null and serviceId != ''">
 				AND (serviceId = #{serviceId} and said != #{psaid})
-				group by said
+				order by insertDate desc
 			</when>
 			<otherwise>
 				group by serviceId
 				limit #{start}, #{end}
 			</otherwise>
 		</choose>
+	) T3
+	<if test="serviceId != null and serviceId != ''">
+		group by said
+	</if>
 	</select>
-	
 	<select id="selectMoodServiceCount" parameterType="HashMap" resultType="int">
 		select count(*) from (
 			select * <if test="serviceId == null or serviceId == ''">, count(said) svCount </if> from (
@@ -200,7 +204,7 @@
 			<choose>
 				<when test="serviceId != null and serviceId != ''">
 					AND (serviceId = #{serviceId} and said != #{psaid})
-					group by said
+					order by insertDate desc
 				</when>
 				<otherwise>
 					group by serviceId
