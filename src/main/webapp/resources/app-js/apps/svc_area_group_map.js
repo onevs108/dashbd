@@ -28,29 +28,32 @@ function jsTreeSetting() {
 	
 	//Tree 데이터를 불러오기 전에 전역변수에 할당
 	serviceAreaGroupId = group_id;
-	
-	$.ajax({
-		url : "/dashbd/api/getTreeNodeData.do",
-		type: "POST",
-		data : { 
-			group_id : group_id,
-			circle_id : $("#search-circle").val()
-		},
-		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-		success : function(responseData) {
-			$("#ajax").remove();
-			var data = JSON.parse(responseData);
-			
-			$("#treeNode").jstree("destroy").empty();
-			treeInit(data);
-		},
-		error : function(xhr, status, error) {
-			swal({
-				title: "Fail !",
-				text: "Error"
-			});
-		}
-	});
+	if(serviceAreaGroupId != ""){
+		$.ajax({
+			url : "/dashbd/api/getTreeNodeData.do",
+			type: "POST",
+			data : { 
+				group_id : group_id,
+				circle_id : $("#search-circle").val()
+			},
+			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			success : function(responseData) {
+				$("#ajax").remove();
+				var data = JSON.parse(responseData);
+				
+				$("#treeNode").jstree("destroy").empty();
+				treeInit(data);
+			},
+			error : function(xhr, status, error) {
+				swal({
+					title: "Fail !",
+					text: "Error"
+				});
+			}
+		});
+	}else{
+		$("#treeNode").append('<div id="message" style="width: 90%;margin-top: 150px;margin-left: 40px;"><b>Please Click Service Area Group from<br> left pannel to view the members of the group!</b></div>')
+	}
 }
 
 var checkNodeList;
@@ -90,10 +93,6 @@ function treeInit(data) {
 				break;
 			}
 		}
-	}
-	
-	if(serviceAreaGroupId == ""){
-		$(".root").append('<div id="message" style="margin-top: 100px;">Please Click Service Area Group from<br> left pannel to view the members of the group!</div>')
 	}
 	
 	$('#treeNode').bind('ready.jstree', function (event, data) { 
