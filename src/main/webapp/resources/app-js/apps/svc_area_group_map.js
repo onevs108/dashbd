@@ -301,6 +301,11 @@ function treeInitModal(data) {
 	
 	//제일 처음 노드 오픈
 	$("#treeNodeModal").jstree("open_node", $($("#treeNodeModal li")[0]));
+	
+	for (var i = 0; i < 100; i++) {
+		$($("#j"+i+"_2_anchor").children()[0]).remove(); 
+	}
+	
 	//저장 취소 버튼 표시
 	$(".proccess-btn").show();
 }

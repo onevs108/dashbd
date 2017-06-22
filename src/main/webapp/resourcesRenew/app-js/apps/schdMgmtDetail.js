@@ -156,7 +156,7 @@ function radioClick(type) {
 	if(userGrade == 9999) {
 		$("#emergency").hide();
 		$("#national").hide();
-	}
+	}g_ServiceGroupId
 	if(type == "group")
 	{
 		$("#selectHotspot").hide();
@@ -175,6 +175,7 @@ function radioClick(type) {
 		$("#selectCityLabel").html("City");
 		$("#selectArea").parent().css({"margin-left":"1px", "margin-bottom":"15px"});
 		$("#selectArea").show();
+		g_ServiceGroupId = '';
 	}
 	else
 	{

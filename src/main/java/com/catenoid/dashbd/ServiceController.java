@@ -1872,14 +1872,14 @@ public class ServiceController {
 	                    "    <transaction id=\"" + getPara(reqXml, "transaction").getIntAttr("id") + "\">\n" +
 	                    "        <agentKey>"+ getPara(reqXml, "transaction").getPara("agentKey").getValue() +"</agentKey>\n" +
 	                    "        <result>\n" +
-	                    "            <code>404</code>\n" +
+	                    "            <code>200</code>\n" +
 	                    "            <message>"+message+"</message>\n" +
 	                    "        </result>\n" +
 	                    "    </transaction>\n" +
 	                    "    <reply>\n" +
 	                    "        <service>\n" +
 	                    "            <"+mode+">\n" +
-	                    "                <code>404</code>\n" +
+	                    "                <code>200</code>\n" +
 	                    "                <message>"+message+"</message>\n" +
 	                    "            </"+mode+">\n" +
 	                    "        </service>\n" +

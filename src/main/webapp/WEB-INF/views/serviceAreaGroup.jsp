@@ -92,7 +92,7 @@
 										<div class="col-lg-6">
 											<h3 style="height: 17px;"><span id="selectedCircle"></span></h3>
 											<div class="tb_tpl table-responsive vertical-bsl typeA" id="service_area">
-												<div id="treeNode" style="height: 340px; overflow: auto;"></div>
+												<div id="treeNode" style="height: 333px; overflow: auto;"></div>
 											</div>
 											<div class="row">
 												<div class="hr-line-dashed"></div>
