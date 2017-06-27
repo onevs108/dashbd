@@ -74,27 +74,12 @@ public class ScheduleMgmtController {
 	@Autowired
 	private SqlSession sqlSession;
 	
-//	private SqlSession sqlSession;
-//	
-//	public void setSqlSession(SqlSession sqlSession) {
-//		this.sqlSession = sqlSession;
-//	}
-	
 	@Autowired
 	private XmlManager xmlManager;
 	
 	@Value("#{config['bmscId']}")
 	private String bmscId;
-	/**
-	 * �뒪耳�以� 硫붿씤�럹�씠吏�
-	 * @param params
-	 * @param req
-	 * @param locale
-	 * @return
-	 * @throws JsonGenerationException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
+	
 	@RequestMapping(value = "/view/schdMgmt.do")
 	public ModelAndView schdMgmt(@RequestParam Map<String, Object> params, HttpServletRequest request, HttpSession session) throws UnsupportedEncodingException {
 		ModelAndView mv = new ModelAndView( "schd/schdMgmt" );
@@ -930,11 +915,20 @@ public class ScheduleMgmtController {
 				schedule.addContent(stop);
 				
 				Element contentSet = new Element("contentSet");
+				Element serviceArea = new Element("serviceArea");
+				String saidList = retrieveInfo.get("said");
+				if(saidList != null && saidList.length() > 0){
+					String[] saidArray = saidList.split(",");
+					for (int i = 0; i < saidArray.length; i++) {
+						serviceArea.addContent(new Element("said").setText(saidArray[i]));
+					}
+				}
+				contentSet.addContent(serviceArea);
 				Element associatedDelivery = new Element("associatedDelivery");
 				Element consumptionReport = new Element("consumptionReport");
 				Element reportInterval = new Element("reportInterval").setText(retrieveInfo.get("moodReportInterval"));
 				Element moodUsageDataReportInterval = new Element("moodUsageDataReportInterval").setText(String.valueOf(retrieveInfo.get("moodUsageDataReportInterval")));
-				
+
 				consumptionReport.addContent(reportInterval);
 				consumptionReport.addContent(moodUsageDataReportInterval);
 				associatedDelivery.addContent(consumptionReport);

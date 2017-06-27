@@ -51,8 +51,6 @@ public class CheckCRSInfoCron extends QuartzJobBean{
 				serviceIdList.add(param);
 			}
 		}
-		
-		System.out.println("serviceIdList ================== "+serviceIdList.size()+ " ================== ");
 		List<String> sendedServiceId = new ArrayList<String>();
 		for (int i = 0; i < serviceIdList.size(); i++) {
 			String[] rtvs = new String[2];
